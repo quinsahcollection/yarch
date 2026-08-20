@@ -1,0 +1,584 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Aplikasi Web Manga - Full UI & Detail</title>
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" integrity="sha512-DTOQO9RWCH3ppGqcWaEA1BIZOC6xxalwEsw9c2QQeAIftl+Vegovlnee1c9QX4TctnWMn13TZye+giMm8e2LwA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    
+    <style>
+        /* Variabel Tema Biru */
+        :root {
+            --primary-blue: #007aff;
+            --light-blue: #e5f1ff;
+            --dark-blue: #005bb5;
+            --bg-gray: #e5e5e5;
+            --text-dark: #111111;
+            --text-gray: #777777;
+        }
+
+        /* Reset & Base Styles */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Inter', sans-serif;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            background-color: var(--bg-gray);
+            color: var(--text-dark);
+            display: flex;
+            justify-content: center;
+        }
+
+        .app-container {
+            width: 100%;
+            max-width: 480px;
+            background-color: #ffffff;
+            min-height: 100vh;
+            position: relative;
+            padding-bottom: 65px;
+            box-shadow: 0 0 20px rgba(0,0,0,0.15);
+            overflow-x: hidden;
+        }
+
+        /* =========================================
+           STYLE HALAMAN HOME (LENGKAP SEMUA SEKSI)
+           ========================================= */
+        .header {
+            display: flex;
+            align-items: center;
+            padding: 12px 16px;
+            gap: 12px;
+            background-color: #ffffff;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            border-bottom: 1px solid #f0f0f0;
+        }
+
+        .search-container {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            background-color: #f5f6f8;
+            padding: 10px 16px;
+            border-radius: 24px;
+            border: 1px solid #eef0f2;
+        }
+
+        .search-container i { color: var(--primary-blue); margin-right: 8px; font-size: 14px; }
+        .search-container input { border: none; background: transparent; outline: none; width: 100%; font-size: 14px; color: #111; }
+        .search-container input::placeholder { color: #888; }
+        .header-icons { display: flex; gap: 14px; color: var(--primary-blue); font-size: 18px; align-items: center; }
+
+        /* Hero Section Slider */
+        .slider-container { position: relative; width: 100%; height: 380px; overflow: hidden; background-color: #1a1a1a; }
+        .slides-wrapper { display: flex; width: 100%; height: 100%; transition: transform 0.5s ease-in-out; }
+        .slide { flex: 0 0 100%; height: 100%; background-size: cover; background-position: center; position: relative; }
+        .slide::before { content: ''; position: absolute; top: 0; left: 0; right: 0; bottom: 0; background: linear-gradient(to bottom, rgba(0,0,0,0.1) 40%, rgba(0,0,0,0.9) 95%); z-index: 1; }
+        
+        .hero-content { position: absolute; bottom: 25px; left: 0; width: 100%; padding: 24px 16px; z-index: 2; color: white; display: flex; flex-direction: column; justify-content: flex-end; }
+        .korea-badge { position: absolute; top: -260px; right: 16px; background: rgba(255, 255, 255, 0.95); border-radius: 50%; width: 26px; height: 26px; display: flex; align-items: center; justify-content: center; font-size: 14px; box-shadow: 0 2px 8px rgba(0,0,0,0.3); color: #333; }
+        .hero-title { font-size: 24px; font-weight: 700; line-height: 1.2; margin-bottom: 6px; text-shadow: 1px 1px 4px rgba(0,0,0,0.8); }
+        .hero-chapter { font-size: 14px; color: #e0e0e0; margin-bottom: 16px; font-weight: 500; }
+        .hero-stats { display: flex; align-items: center; justify-content: space-between; }
+        .stats-left { display: flex; align-items: center; gap: 12px; font-size: 13px; font-weight: 500; }
+        .view-count i { margin-right: 4px; }
+        .rating { background-color: #ffc107; color: #000; padding: 3px 8px; border-radius: 12px; font-weight: 700; font-size: 12px; display: flex; align-items: center; gap: 4px; }
+        .btn-read { background-color: var(--primary-blue); color: #ffffff; border: none; padding: 10px 20px; border-radius: 24px; font-weight: 700; font-size: 14px; cursor: pointer; box-shadow: 0 4px 10px rgba(0, 122, 255, 0.4); transition: 0.2s; }
+        .btn-read:active { background-color: var(--dark-blue); }
+
+        .slider-indicators { position: absolute; bottom: 15px; left: 50%; transform: translateX(-50%); display: flex; gap: 8px; z-index: 3; }
+        .dot { width: 8px; height: 8px; background-color: rgba(255, 255, 255, 0.4); border-radius: 50%; cursor: pointer; transition: all 0.3s ease; }
+        .dot.active { width: 20px; border-radius: 4px; background-color: var(--primary-blue); }
+
+        /* Sections */
+        .section-container { padding: 20px 16px 10px 16px; background: white; }
+        .section-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; }
+        .section-title-wrapper { display: flex; align-items: center; gap: 8px; }
+        .section-title { font-size: 16px; font-weight: 700; color: #111; }
+        .see-all { color: var(--primary-blue); font-size: 13px; text-decoration: none; font-weight: 600; }
+        
+        .horizontal-scroll { display: flex; gap: 12px; overflow-x: auto; padding-bottom: 8px; scrollbar-width: none; }
+        .horizontal-scroll::-webkit-scrollbar { display: none; }
+
+        /* Cards */
+        .manga-card-history, .manga-card-simple { min-width: 120px; width: 120px; background: #ffffff; border-radius: 6px; overflow: hidden; border: 1px solid #e0e0e0; box-shadow: 0 2px 4px rgba(0,0,0,0.02); display: flex; flex-direction: column; cursor: pointer; }
+        .manga-card-history { min-width: 130px; width: 130px; }
+        .manga-card-history img { border-bottom: 3px solid var(--primary-blue); }
+        .manga-card-simple img, .manga-card-history img { width: 100%; height: 150px; object-fit: cover; background-color: #f5f5f5; }
+        .manga-card-history img { height: 170px; }
+        .manga-card-simple img { border-bottom: 1px solid #eeeeee; }
+        .manga-card-simple .info-container, .manga-card-history .info { padding: 8px; flex-grow: 1; display: flex; flex-direction: column; justify-content: flex-start; }
+        .manga-card-simple .title, .manga-card-history .title { font-size: 12px; font-weight: 600; color: #222; text-align: left; line-height: 1.4; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+        .manga-card-history .title { font-size: 13px; font-weight: 700; }
+        .manga-card-history .chapter { font-size: 11px; color: #777; margin-top: 4px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+
+        /* Report Banner */
+        .report-banner { margin: 15px 16px; background-color: var(--light-blue); border: 1px solid #cce5ff; border-radius: 8px; padding: 12px 16px; display: flex; justify-content: space-between; align-items: center; }
+        .report-text { font-size: 12px; color: #004085; max-width: 60%; line-height: 1.4; font-weight: 500; }
+        .report-icons { display: flex; gap: 12px; color: var(--primary-blue); font-size: 18px; }
+
+        /* Bottom Navigation */
+        .bottom-nav { position: fixed; bottom: 0; width: 100%; max-width: 480px; background-color: #ffffff; display: flex; justify-content: space-around; padding: 8px 10px 12px 10px; border-top: 1px solid #eaeaea; z-index: 100; }
+        .nav-item { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px; color: #999999; font-size: 10px; text-decoration: none; font-weight: 600; flex: 1; cursor: pointer;}
+        .nav-item i { font-size: 20px; margin-bottom: 2px; }
+        .nav-item.active { color: var(--primary-blue); }
+        .nav-item.active .icon-bg { background-color: var(--light-blue); width: 48px; height: 28px; display: flex; align-items: center; justify-content: center; border-radius: 14px; }
+        .nav-item.active i { color: var(--primary-blue); margin-bottom: 0; }
+
+        /* =========================================
+           STYLE HALAMAN DETAIL KOMIK (PILIHAN 3 TAB)
+           ========================================= */
+        #detail-page {
+            display: none;
+            background-color: #ffffff;
+            min-height: 100vh;
+            animation: fadeIn 0.3s ease-in-out;
+        }
+
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+        .detail-top-nav {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            max-width: 480px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 20px;
+            z-index: 200;
+            background: rgba(0, 0, 0, 0.2);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            color: white;
+            transition: background 0.3s;
+        }
+        .detail-top-nav i { font-size: 20px; cursor: pointer; text-shadow: 0 1px 3px rgba(0,0,0,0.5); }
+        .detail-top-nav .right-icons { display: flex; gap: 20px; }
+
+        .detail-header {
+            position: relative;
+            padding: 80px 20px 30px 20px;
+            background-image: url('https://images.unsplash.com/photo-1528360983277-13d401cdc186?auto=format&fit=crop&q=80&w=600');
+            background-size: cover;
+            background-position: center;
+            color: white;
+        }
+        .detail-header::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: linear-gradient(to bottom, rgba(0,0,0,0.4) 0%, rgba(0,0,0,0.85) 100%);
+            z-index: 1;
+        }
+
+        .comic-info-layout {
+            position: relative;
+            z-index: 2;
+            display: flex;
+            gap: 15px;
+            align-items: flex-end;
+        }
+
+        .comic-cover-wrapper { position: relative; width: 110px; flex-shrink: 0; }
+        .comic-cover { width: 100%; border-radius: 8px; box-shadow: 0 5px 15px rgba(0,0,0,0.5); border: 1px solid rgba(255,255,255,0.2); }
+        
+        .age-rating {
+            background: linear-gradient(135deg, #ff9800, #ff5722);
+            color: white;
+            text-align: center;
+            padding: 4px 0;
+            border-bottom-left-radius: 8px;
+            border-bottom-right-radius: 8px;
+            font-size: 11px;
+            font-weight: 700;
+            margin-top: -4px;
+            position: relative;
+        }
+        .age-rating span { font-size: 14px; display: block; }
+
+        .comic-meta { flex-grow: 1; padding-bottom: 5px;}
+        .comic-detail-title { font-size: 20px; font-weight: 700; line-height: 1.2; margin-bottom: 4px; text-shadow: 0 2px 4px rgba(0,0,0,0.5); }
+        .comic-alt-title { font-size: 11px; color: #cccccc; margin-bottom: 8px; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; font-style: italic; }
+        
+        .comic-stats-row { display: flex; align-items: center; gap: 10px; font-size: 12px; color: #eeeeee; margin-bottom: 12px; flex-wrap: wrap;}
+        .comic-stats-row .stat-rating { color: #ffc107; font-weight: 700; display: flex; align-items: center; gap: 4px; }
+        .stat-rating span { color: #ccc; font-weight: 400; font-size: 10px;}
+        .status-badge { background-color: #28a745; color: white; padding: 2px 8px; border-radius: 12px; font-size: 10px; font-weight: 600; }
+
+        .genre-tags { display: flex; flex-wrap: wrap; gap: 6px; }
+        .genre-tags .tag {
+            border: 1px solid rgba(255, 255, 255, 0.4);
+            padding: 3px 10px;
+            border-radius: 14px;
+            font-size: 10px;
+            color: #ffffff;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(4px);
+        }
+
+        /* Detail Tabs */
+        .detail-tabs {
+            display: flex;
+            border-bottom: 1px solid #eeeeee;
+            background: #ffffff;
+            position: sticky;
+            top: 50px;
+            z-index: 99;
+        }
+        .tab-btn {
+            flex: 1;
+            text-align: center;
+            padding: 15px 0;
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--text-gray);
+            cursor: pointer;
+            border-bottom: 2px solid transparent;
+            transition: all 0.3s;
+        }
+        .tab-btn.active {
+            color: var(--primary-blue);
+            border-bottom: 2px solid var(--primary-blue);
+        }
+
+        /* Tab Content Area */
+        .tab-content { padding: 20px; display: none; }
+        .tab-content.active { display: block; animation: fadeIn 0.3s; }
+
+        .synopsis-title { font-size: 16px; font-weight: 700; margin-bottom: 10px; color: var(--text-dark); }
+        .synopsis-text { font-size: 13px; color: #444; line-height: 1.6; text-align: justify; }
+
+        .placeholder-text { text-align: center; color: var(--text-gray); padding: 40px 0; font-size: 14px; }
+        .placeholder-text i { font-size: 30px; margin-bottom: 10px; color: #ccc; }
+
+    </style>
+</head>
+<body>
+
+    <div class="app-container">
+
+        <!-- =========================================
+             HALAMAN 1: HOME (LENGKAP)
+             ========================================= -->
+        <div id="home-page">
+            <header class="header">
+                <div class="search-container">
+                    <i class="fa-solid fa-magnifying-glass"></i>
+                    <input type="text" placeholder="Cari komik...">
+                </div>
+                <div class="header-icons">
+                    <i class="fa-solid fa-filter"></i>
+                    <i class="fa-solid fa-arrow-down-a-z"></i>
+                    <i class="fa-solid fa-bag-shopping"></i>
+                    <i class="fa-solid fa-chart-simple"></i>
+                </div>
+            </header>
+
+            <main>
+                <!-- Hero Slider -->
+                <section class="slider-container">
+                    <div class="slides-wrapper" id="hero-slider">
+                        <div class="slide" style="background-image: url('https://images.unsplash.com/photo-1541562232579-512a21360020?auto=format&fit=crop&q=80&w=600');">
+                            <div class="hero-content">
+                                <div class="korea-badge">🇰🇷</div>
+                                <h1 class="hero-title">Lord Baby Runs A Romance Fantasy</h1>
+                                <div class="hero-chapter">Chapter 128</div>
+                                <div class="hero-stats">
+                                    <div class="stats-left">
+                                        <span class="view-count"><i class="fa-regular fa-eye"></i> 1,3M views</span>
+                                        <div class="rating"><i class="fa-solid fa-star"></i> 9.5</div>
+                                    </div>
+                                    <button class="btn-read">Baca Sekarang</button>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="slide" style="background-image: url('https://images.unsplash.com/photo-1578632767115-351597cf2477?auto=format&fit=crop&q=80&w=600');">
+                            <div class="hero-content">
+                                <div class="korea-badge">🇯🇵</div>
+                                <h1 class="hero-title">The World's Best Kunlun Tavern</h1>
+                                <div class="hero-chapter">Chapter 123</div>
+                                <div class="hero-stats">
+                                    <div class="stats-left">
+                                        <span class="view-count"><i class="fa-regular fa-eye"></i> 890K views</span>
+                                        <div class="rating"><i class="fa-solid fa-star"></i> 9.1</div>
+                                    </div>
+                                    <button class="btn-read">Baca Sekarang</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="slider-indicators">
+                        <span class="dot active" onclick="currentSlide(0)"></span>
+                        <span class="dot" onclick="currentSlide(1)"></span>
+                    </div>
+                </section>
+
+                <!-- Lanjutkan Membaca Section -->
+                <section class="section-container">
+                    <div class="section-header">
+                        <div class="section-title-wrapper"><h2 class="section-title">Lanjutkan Membaca</h2></div>
+                        <a href="#" class="see-all">Lihat Semua</a>
+                    </div>
+                    <div class="horizontal-scroll">
+                        <div class="manga-card-history">
+                            <img src="https://images.unsplash.com/photo-1614583224978-f05ce51ef5fa?auto=format&fit=crop&q=80&w=300" alt="The Great Master">
+                            <div class="info">
+                                <div class="title">The Great Master</div>
+                                <div class="chapter">Chapter 150 • 2026-...</div>
+                            </div>
+                        </div>
+                        <div class="manga-card-history">
+                            <img src="https://images.unsplash.com/photo-1613376023733-2240b9e1c1db?auto=format&fit=crop&q=80&w=300" alt="Hunter x Hunter">
+                            <div class="info">
+                                <div class="title">Hunter x Hunter</div>
+                                <div class="chapter">Chapter 416 • 2026-...</div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Jadwal Hari Ini Section (Bisa diklik ke Detail) -->
+                <section class="section-container">
+                    <div class="section-header">
+                        <div class="section-title-wrapper">
+                            <i class="fa-regular fa-calendar-days" style="color: var(--primary-blue); font-size: 16px;"></i>
+                            <h2 class="section-title">Jadwal Hari Ini</h2>
+                        </div>
+                        <a href="#" class="see-all">Lihat Semua</a>
+                    </div>
+                    <div class="horizontal-scroll">
+                        <div class="manga-card-simple" onclick="openDetail()">
+                            <img src="https://images.unsplash.com/photo-1528360983277-13d401cdc186?auto=format&fit=crop&q=80&w=300" alt="Cover 1">
+                            <div class="info-container"><div class="title">A Martial Master Wakes Up as a C...</div></div>
+                        </div>
+                        <div class="manga-card-simple">
+                            <img src="https://images.unsplash.com/photo-1618519764620-7403abdbdf9c?auto=format&fit=crop&q=80&w=300" alt="Cover 2">
+                            <div class="info-container"><div class="title">One Day, Suddenly, Seoul Is</div></div>
+                        </div>
+                        <div class="manga-card-simple">
+                            <img src="https://images.unsplash.com/photo-1578632767115-351597cf2477?auto=format&fit=crop&q=80&w=300" alt="Cover 3">
+                            <div class="info-container"><div class="title">Moonrise by the Cliff</div></div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Manga Section -->
+                <section class="section-container">
+                    <div class="section-header">
+                        <div class="section-title-wrapper">
+                            <span style="color: var(--primary-blue); font-size: 10px;">●</span>
+                            <h2 class="section-title">Manga</h2>
+                        </div>
+                        <a href="#" class="see-all">Lihat Semua</a>
+                    </div>
+                    <div class="horizontal-scroll">
+                        <div class="manga-card-simple"><img src="https://images.unsplash.com/photo-1607604276583-eef5d076aa5f?auto=format&fit=crop&q=80&w=300"><div class="info-container"><div class="title">Kenja no Deshi</div></div></div>
+                        <div class="manga-card-simple"><img src="https://images.unsplash.com/photo-1541562232579-512a21360020?auto=format&fit=crop&q=80&w=300"><div class="info-container"><div class="title">The Calamity Prince</div></div></div>
+                    </div>
+                </section>
+
+                <!-- Manhwa Section -->
+                <section class="section-container">
+                    <div class="section-header">
+                        <div class="section-title-wrapper"><span>🇰🇷</span><h2 class="section-title">Manhwa</h2></div>
+                        <a href="#" class="see-all">Lihat Semua</a>
+                    </div>
+                    <div class="horizontal-scroll">
+                        <div class="manga-card-simple"><img src="https://images.unsplash.com/photo-1618519764620-7403abdbdf9c?auto=format&fit=crop&q=80&w=300"><div class="info-container"><div class="title">Max Level Player</div></div></div>
+                        <div class="manga-card-simple"><img src="https://images.unsplash.com/photo-1528360983277-13d401cdc186?auto=format&fit=crop&q=80&w=300"><div class="info-container"><div class="title">Have a Good Day</div></div></div>
+                    </div>
+                </section>
+
+                <!-- Manhua Section -->
+                <section class="section-container">
+                    <div class="section-header">
+                        <div class="section-title-wrapper"><span>🇨🇳</span><h2 class="section-title">Manhua</h2></div>
+                        <a href="#" class="see-all">Lihat Semua</a>
+                    </div>
+                    <div class="horizontal-scroll">
+                        <div class="manga-card-simple"><img src="https://images.unsplash.com/photo-1541562232579-512a21360020?auto=format&fit=crop&q=80&w=300"><div class="info-container"><div class="title">With a No-Cooldown</div></div></div>
+                        <div class="manga-card-simple"><img src="https://images.unsplash.com/photo-1613376023733-2240b9e1c1db?auto=format&fit=crop&q=80&w=300"><div class="info-container"><div class="title">After Breaking off</div></div></div>
+                    </div>
+                </section>
+
+                <!-- Report Banner -->
+                <div class="report-banner">
+                    <div class="report-text">Ada gambar rusak? Report di salah satu Sosial Media Kami.</div>
+                    <div class="report-icons">
+                        <i class="fa-brands fa-tiktok"></i>
+                        <i class="fa-brands fa-instagram"></i>
+                        <i class="fa-brands fa-telegram"></i>
+                        <i class="fa-solid fa-envelope"></i>
+                    </div>
+                </div>
+
+                <!-- Update Terbaru Section -->
+                <section class="section-container" style="padding-bottom: 30px;">
+                    <div class="section-header">
+                        <div class="section-title-wrapper"><h2 class="section-title">Update Terbaru</h2></div>
+                        <a href="#" class="see-all">Lihat Semua</a>
+                    </div>
+                    <div class="horizontal-scroll">
+                        <div class="manga-card-simple"><img src="https://images.unsplash.com/photo-1528360983277-13d401cdc186?auto=format&fit=crop&q=80&w=300"><div class="info-container"><div class="title">Hongshi Loves Me!</div></div></div>
+                        <div class="manga-card-simple"><img src="https://images.unsplash.com/photo-1614583224978-f05ce51ef5fa?auto=format&fit=crop&q=80&w=300"><div class="info-container"><div class="title">A Martial Master</div></div></div>
+                    </div>
+                </section>
+            </main>
+        </div>
+        <!-- AKHIR HALAMAN HOME -->
+
+
+        <!-- =========================================
+             HALAMAN 2: DETAIL KOMIK (BERSIH TANPA KOTAK UPDATE)
+             ========================================= -->
+        <div id="detail-page">
+            <div class="detail-top-nav" id="detailNav">
+                <i class="fa-solid fa-arrow-left" onclick="closeDetail()"></i>
+                <div class="right-icons">
+                    <i class="fa-regular fa-bookmark"></i>
+                    <i class="fa-regular fa-comment-dots"></i>
+                </div>
+            </div>
+
+            <main>
+                <!-- Header / Banner Cover Blur -->
+                <div class="detail-header">
+                    <div class="comic-info-layout">
+                        <div class="comic-cover-wrapper">
+                            <img src="https://images.unsplash.com/photo-1528360983277-13d401cdc186?auto=format&fit=crop&q=80&w=300" alt="Cover" class="comic-cover">
+                            <div class="age-rating">Remaja<span>16+</span></div>
+                        </div>
+                        
+                        <div class="comic-meta">
+                            <h1 class="comic-detail-title">A Martial Master Wakes Up as a Concubine</h1>
+                            <div class="comic-alt-title">A Martial Master, Who Woke Up as a Concubine, Gosu...</div>
+                            <div style="font-size: 11px; color: #ddd; margin-bottom: 8px;">Chapter 97</div>
+                            
+                            <div class="comic-stats-row">
+                                <span><i class="fa-regular fa-eye"></i> 39,4K views</span>
+                                <span class="stat-rating"><i class="fa-solid fa-star"></i> 9.2 <span>(39)</span></span>
+                                <span class="status-badge">Ongoing</span>
+                            </div>
+
+                            <div class="genre-tags">
+                                <span class="tag">Manhwa</span>
+                                <span class="tag">Comedy</span>
+                                <span class="tag">Drama</span>
+                                <span class="tag">Fantasy</span>
+                                <span class="tag">Josei</span>
+                                <span class="tag">Romance</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Tabs Menu (Detail, Chapter, Comment) -->
+                <div class="detail-tabs">
+                    <div class="tab-btn active" onclick="switchTab('detail')">Detail</div>
+                    <div class="tab-btn" onclick="switchTab('chapter')">Chapter <span style="font-size:10px; background:var(--primary-blue); color:white; padding:2px 6px; border-radius:10px; margin-left:4px;">97</span></div>
+                    <div class="tab-btn" onclick="switchTab('comment')">Comment</div>
+                </div>
+
+                <!-- Tab Content: DETAIL -->
+                <div class="tab-content active" id="tab-detail">
+                    <h3 class="synopsis-title">Synopsis</h3>
+                    <p class="synopsis-text">
+                        Cheon Nyeon Bi, seorang ahli terkuat bela diri mati karena memakan buah naga beracun yang diberikan oleh kekasihnya. Tiba-tiba Cheon Nyeon Bi terbangun dalam tubuh selir kaisar bernama Cheon Soyeo! 
+                        <br><br>
+                        Cheon Nyeon Bi harus menyesuaikan diri dan sikap menjadi seorang selir! Di saat dia menyesuaikan diri menjadi selir, Cheon Nyeon Bi bertemu dengan seorang laki-laki yang identitasnya... tidak mudah untuk diketahui. Mampukah ia bertahan hidup di kerasnya kehidupan istana yang penuh intrik ini?
+                    </p>
+                </div>
+
+                <!-- Tab Content: CHAPTER -->
+                <div class="tab-content" id="tab-chapter">
+                    <div class="placeholder-text">
+                        <i class="fa-solid fa-list-ol"></i>
+                        <br>Daftar 97 Chapter komik tersedia di sini.
+                    </div>
+                </div>
+
+                <!-- Tab Content: COMMENT -->
+                <div class="tab-content" id="tab-comment">
+                    <div class="placeholder-text">
+                        <i class="fa-regular fa-comments"></i>
+                        <br>Belum ada komentar terbaru.
+                    </div>
+                </div>
+            </main>
+        </div>
+        <!-- AKHIR HALAMAN DETAIL -->
+
+        <!-- Bottom Navigation Tetap Utuh -->
+        <nav class="bottom-nav">
+            <a href="#" class="nav-item active" onclick="closeDetail()">
+                <div class="icon-bg"><i class="fa-solid fa-house"></i></div>
+                <span>Home</span>
+            </a>
+            <a href="#" class="nav-item"><i class="fa-solid fa-border-all"></i><span>Discovery</span></a>
+            <a href="#" class="nav-item"><i class="fa-solid fa-fire"></i><span>Hot</span></a>
+            <a href="#" class="nav-item"><i class="fa-regular fa-bookmark"></i><span>Bookmark</span></a>
+            <a href="#" class="nav-item"><i class="fa-regular fa-user"></i><span>Profile</span></a>
+        </nav>
+    </div>
+
+    <!-- SCRIPT INTERAKSI -->
+    <script>
+        const homePage = document.getElementById('home-page');
+        const detailPage = document.getElementById('detail-page');
+
+        function openDetail() {
+            homePage.style.display = 'none';
+            detailPage.style.display = 'block';
+            window.scrollTo(0, 0);
+        }
+
+        function closeDetail() {
+            detailPage.style.display = 'none';
+            homePage.style.display = 'block';
+            window.scrollTo(0, 0);
+        }
+
+        window.onscroll = function() {
+            if(detailPage.style.display === 'block') {
+                const nav = document.getElementById('detailNav');
+                if (window.scrollY > 50) {
+                    nav.style.background = 'rgba(0, 91, 181, 0.9)';
+                } else {
+                    nav.style.background = 'rgba(0, 0, 0, 0.2)';
+                }
+            }
+        };
+
+        function switchTab(tabName) {
+            document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+            document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
+
+            event.currentTarget.classList.add('active');
+            document.getElementById('tab-' + tabName).classList.add('active');
+        }
+
+        // Slider otomatis Home
+        let slideIndex = 0;
+        const slides = document.getElementById('hero-slider');
+        const dots = document.querySelectorAll('.dot');
+        if(slides && dots.length > 0) {
+            setInterval(() => {
+                slideIndex = (slideIndex + 1) % dots.length;
+                slides.style.transform = `translateX(-${slideIndex * 100}%)`;
+                dots.forEach(dot => dot.classList.remove('active'));
+                dots[slideIndex].classList.add('active');
+            }, 3500);
+        }
+    </script>
+
+</body>
+</html>

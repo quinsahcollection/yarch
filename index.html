@@ -48,7 +48,7 @@
         }
 
         /* =========================================
-           STYLE HALAMAN HOME (LENGKAP SEMUA SEKSI)
+           STYLE HALAMAN HOME
            ========================================= */
         .header {
             display: flex;
@@ -105,7 +105,8 @@
         .section-title { font-size: 16px; font-weight: 700; color: #111; }
         .see-all { color: var(--primary-blue); font-size: 13px; text-decoration: none; font-weight: 600; }
         
-        .horizontal-scroll { display: flex; gap: 12px; overflow-x: auto; padding-bottom: 8px; scrollbar-width: none; }
+        /* DIPERBAIKI: Mengubah gap dari 12px menjadi 6px agar lebih rapat */
+        .horizontal-scroll { display: flex; gap: 6px; overflow-x: auto; padding-bottom: 8px; scrollbar-width: none; }
         .horizontal-scroll::-webkit-scrollbar { display: none; }
 
         /* Cards */
@@ -134,7 +135,7 @@
         .nav-item.active i { color: var(--primary-blue); margin-bottom: 0; }
 
         /* =========================================
-           STYLE HALAMAN DETAIL KOMIK (PILIHAN 3 TAB)
+           STYLE HALAMAN DETAIL KOMIK
            ========================================= */
         #detail-page {
             display: none;
@@ -267,7 +268,7 @@
     <div class="app-container">
 
         <!-- =========================================
-             HALAMAN 1: HOME (LENGKAP)
+             HALAMAN 1: HOME
              ========================================= -->
         <div id="home-page">
             <header class="header">
@@ -346,7 +347,7 @@
                     </div>
                 </section>
 
-                <!-- Jadwal Hari Ini Section (Bisa diklik ke Detail) -->
+                <!-- Jadwal Hari Ini Section -->
                 <section class="section-container">
                     <div class="section-header">
                         <div class="section-title-wrapper">
@@ -436,9 +437,8 @@
         </div>
         <!-- AKHIR HALAMAN HOME -->
 
-
         <!-- =========================================
-             HALAMAN 2: DETAIL KOMIK (BERSIH TANPA KOTAK UPDATE)
+             HALAMAN 2: DETAIL KOMIK
              ========================================= -->
         <div id="detail-page">
             <div class="detail-top-nav" id="detailNav">
@@ -481,7 +481,7 @@
                     </div>
                 </div>
 
-                <!-- Tabs Menu (Detail, Chapter, Comment) -->
+                <!-- Tabs Menu -->
                 <div class="detail-tabs">
                     <div class="tab-btn active" onclick="switchTab('detail')">Detail</div>
                     <div class="tab-btn" onclick="switchTab('chapter')">Chapter <span style="font-size:10px; background:var(--primary-blue); color:white; padding:2px 6px; border-radius:10px; margin-left:4px;">97</span></div>
@@ -517,7 +517,7 @@
         </div>
         <!-- AKHIR HALAMAN DETAIL -->
 
-        <!-- Bottom Navigation Tetap Utuh -->
+        <!-- Bottom Navigation -->
         <nav class="bottom-nav">
             <a href="#" class="nav-item active" onclick="closeDetail()">
                 <div class="icon-bg"><i class="fa-solid fa-house"></i></div>
@@ -570,15 +570,15 @@
         let slideIndex = 0;
         const slides = document.getElementById('hero-slider');
         const dots = document.querySelectorAll('.dot');
+        
         if(slides && dots.length > 0) {
             setInterval(() => {
                 slideIndex = (slideIndex + 1) % dots.length;
                 slides.style.transform = `translateX(-${slideIndex * 100}%)`;
                 dots.forEach(dot => dot.classList.remove('active'));
                 dots[slideIndex].classList.add('active');
-            }, 3500);
+            }, 3000);
         }
     </script>
-
 </body>
 </html>

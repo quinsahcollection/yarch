@@ -2,92 +2,199 @@
 <html lang="id">
 <head>
     <meta charset="UTF-8">
-    <title>Admin - Upload Komik</title>
+    <title>Admin Panel - Manga App</title>
     <style>
         body { font-family: sans-serif; background: #f4f7f6; padding: 20px; }
-        .admin-container { max-width: 500px; background: white; padding: 20px; border-radius: 8px; margin: 0 auto; }
+        .admin-container { max-width: 500px; background: white; padding: 25px; border-radius: 8px; margin: 0 auto; box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
         .form-group { margin-bottom: 15px; }
-        label { display: block; font-weight: bold; margin-bottom: 5px; }
-        input, select, textarea { width: 100%; padding: 8px; box-sizing: border-box; }
-        button { background: #007aff; color: white; border: none; padding: 10px 20px; border-radius: 4px; cursor: pointer; width: 100%; font-weight: bold; }
-        #status { margin-top: 15px; font-weight: bold; text-align: center; }
+        label { display: block; font-weight: bold; margin-bottom: 5px; color: #333; }
+        input { width: 100%; padding: 10px; box-sizing: border-box; border: 1px solid #ccc; border-radius: 5px; }
+        button { background: #007aff; color: white; border: none; padding: 12px 20px; border-radius: 5px; cursor: pointer; width: 100%; font-weight: bold; font-size: 16px; margin-top: 10px; }
+        button:hover { background: #005bb5; }
+        
+        /* Tombol Logout */
+        .btn-logout { background: #dc3545; margin-bottom: 20px; width: auto; float: right; padding: 8px 15px; font-size: 14px;}
+        .btn-logout:hover { background: #c82333; }
+        
+        .status-msg { margin-top: 15px; font-weight: bold; text-align: center; }
+        
+        /* Class untuk menyembunyikan elemen */
+        .hidden { display: none !important; }
+        .clearfix::after { content: ""; clear: both; display: table; }
     </style>
 </head>
 <body>
 
 <div class="admin-container">
-    <h2>Upload Komik Baru</h2>
-    <form id="uploadForm">
-        <div class="form-group">
-            <label>Judul Komik</label>
-            <input type="text" id="title" required>
-        </div>
-        <div class="form-group">
-            <label>Gambar Cover (.jpg, .png)</label>
-            <input type="file" id="coverImage" accept="image/*" required>
-        </div>
-        <button type="submit">Upload Sekarang</button>
-    </form>
-    <div id="status"></div>
+
+    <!-- ==================== SEGMEN LOGIN ==================== -->
+    <div id="loginSection">
+        <h2 style="text-align: center; color: #333;">Login Admin</h2>
+        <form id="loginForm">
+            <div class="form-group">
+                <label>Email Admin</label>
+                <input type="email" id="adminEmail" required placeholder="admin@email.com">
+            </div>
+            <div class="form-group">
+                <label>Password</label>
+                <input type="password" id="adminPassword" required placeholder="******">
+            </div>
+            <button type="submit">Masuk</button>
+        </form>
+        <div id="loginStatus" class="status-msg"></div>
+    </div>
+
+    <!-- ==================== SEGMEN UPLOAD ==================== -->
+    <div id="uploadSection" class="hidden clearfix">
+        <button id="logoutBtn" class="btn-logout">Logout</button>
+        <h2 style="margin-top: 0; color: #333;">Upload Komik Baru</h2>
+        
+        <form id="uploadForm">
+            <div class="form-group">
+                <label>Kunci Rahasia Worker (X-Admin-Key)</label>
+                <!-- Masukkan kunci yang kamu set di Environment Variable Cloudflare -->
+                <input type="password" id="secretKey" required placeholder="Masukkan Secret Key R2...">
+            </div>
+            <div class="form-group">
+                <label>Judul Komik</label>
+                <input type="text" id="title" required placeholder="Contoh: One Piece Chapter 1000">
+            </div>
+            <div class="form-group">
+                <label>Gambar Cover (.jpg, .png)</label>
+                <input type="file" id="coverImage" accept="image/*" required>
+            </div>
+            <button type="submit">Upload Sekarang</button>
+        </form>
+        <div id="uploadStatus" class="status-msg"></div>
+    </div>
+
 </div>
 
 <script type="module">
-    // 1. Setup Firebase langsung di HTML
+    // 1. Setup Firebase dan Auth langsung di HTML
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
     import { getFirestore, collection, addDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+    import { getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
 
+    // Konfigurasi Firebase-mu
     const firebaseConfig = {
-  apiKey: "AIzaSyAt1V2Ogx0P8rSLSNz9_zZpYt00cCN5JL0",
-  authDomain: "yarch-b63d8.firebaseapp.com",
-  projectId: "yarch-b63d8",
-  storageBucket: "yarch-b63d8.firebasestorage.app",
-  messagingSenderId: "778365226622",
-  appId: "1:778365226622:web:56a71b1fbf4e5fbc8f522f",
-  measurementId: "G-7K4Q05DV11"
-};
+        apiKey: "AIzaSyAt1V2Ogx0P8rSLSNz9_zZpYt00cCN5JL0",
+        authDomain: "yarch-b63d8.firebaseapp.com",
+        projectId: "yarch-b63d8",
+        storageBucket: "yarch-b63d8.firebasestorage.app",
+        messagingSenderId: "778365226622",
+        appId: "1:778365226622:web:56a71b1fbf4e5fbc8f522f",
+        measurementId: "G-7K4Q05DV11"
+    };
     const app = initializeApp(firebaseConfig);
     const db = getFirestore(app);
+    const auth = getAuth(app);
 
-    // URL Cloudflare Worker yang baru saja kamu Deploy
+    // URL Cloudflare Worker Kamu
     const WORKER_URL = "https://yarch.hrmnkosasi.workers.dev/";
 
+    // --- REFERENSI UI ---
+    const loginSection = document.getElementById('loginSection');
+    const uploadSection = document.getElementById('uploadSection');
+    const loginStatus = document.getElementById('loginStatus');
+    const uploadStatus = document.getElementById('uploadStatus');
+
+    // --- LOGIKA SESI LOGIN (Realtime) ---
+    // Fungsi ini akan mengecek apakah admin sudah login atau belum
+    onAuthStateChanged(auth, (user) => {
+        if (user) {
+            // Jika valid, sembunyikan login, munculkan halaman upload
+            loginSection.classList.add('hidden');
+            uploadSection.classList.remove('hidden');
+        } else {
+            // Jika belum login / logout, kembali ke halaman login
+            loginSection.classList.remove('hidden');
+            uploadSection.classList.add('hidden');
+        }
+    });
+
+    // --- PROSES LOGIN ---
+    document.getElementById('loginForm').addEventListener('submit', async (e) => {
+        e.preventDefault();
+        loginStatus.innerText = "Memeriksa kredensial...";
+        loginStatus.style.color = "blue";
+        
+        const email = document.getElementById('adminEmail').value;
+        const password = document.getElementById('adminPassword').value;
+
+        try {
+            await signInWithEmailAndPassword(auth, email, password);
+            loginStatus.innerText = ""; // Bersihkan teks jika sukses
+        } catch (error) {
+            loginStatus.innerText = "Login Gagal: Periksa email & password!";
+            loginStatus.style.color = "red";
+        }
+    });
+
+    // --- PROSES LOGOUT ---
+    document.getElementById('logoutBtn').addEventListener('click', async () => {
+        await signOut(auth);
+        uploadStatus.innerText = ""; // Bersihkan pesan upload
+        document.getElementById('loginForm').reset();
+    });
+
+    // --- PROSES UPLOAD ---
     document.getElementById('uploadForm').addEventListener('submit', async (e) => {
         e.preventDefault();
-        const statusEl = document.getElementById('status');
-        statusEl.innerText = "Mengunggah gambar ke R2...";
         
-        // A. Ambil file gambar
+        // Pastikan token Firebase masih ada
+        if (!auth.currentUser) {
+            alert("Sesi Anda telah habis, silakan login kembali.");
+            return;
+        }
+
+        uploadStatus.innerText = "Mengunggah gambar ke R2...";
+        uploadStatus.style.color = "blue";
+        
+        const secretKey = document.getElementById('secretKey').value;
         const fileInput = document.getElementById('coverImage').files[0];
+        
         const formData = new FormData();
         formData.append('coverImage', fileInput);
 
         try {
-            // B. Kirim gambar ke Cloudflare Worker
+            // 1. Kirim gambar ke Cloudflare Worker
             const workerResponse = await fetch(WORKER_URL, {
                 method: 'POST',
+                headers: {
+                    'X-Admin-Key': secretKey // Mengirim kunci rahasia ke worker
+                },
                 body: formData
             });
+            
             const workerData = await workerResponse.json();
             
-            if (!workerResponse.ok) throw new Error("Gagal upload ke R2");
+            // Jika worker menolak (kunci salah atau file rusak)
+            if (!workerResponse.ok) {
+                throw new Error(workerData.error || "Gagal upload ke Server R2");
+            }
 
-            statusEl.innerText = "Gambar berhasil! Menyimpan ke Database...";
+            uploadStatus.innerText = "Gambar berhasil diunggah! Menyimpan ke Database...";
 
-            // C. Simpan judul & URL Gambar dari Worker ke Firestore
+            // 2. Simpan Data ke Firestore
             await addDoc(collection(db, "comics"), {
                 title: document.getElementById('title').value,
-                coverUrl: workerData.url, // Ini link dari R2
+                coverUrl: workerData.url, // Link dari R2 yang dikembalikan worker
+                uploader: auth.currentUser.email, // Mencatat email siapa yang upload
                 views: 0,
                 createdAt: serverTimestamp()
             });
 
-            statusEl.innerText = "Upload Komik Berhasil Sempurna!";
-            statusEl.style.color = "green";
-            document.getElementById('uploadForm').reset();
+            uploadStatus.innerText = "Upload Komik Berhasil Sempurna!";
+            uploadStatus.style.color = "green";
+            
+            // Bersihkan form judul & gambar saja (Secret Key tidak dihapus agar tidak capek ketik ulang)
+            document.getElementById('title').value = "";
+            document.getElementById('coverImage').value = "";
 
         } catch (error) {
-            statusEl.innerText = "Error: " + error.message;
-            statusEl.style.color = "red";
+            uploadStatus.innerText = "Error: " + error.message;
+            uploadStatus.style.color = "red";
         }
     });
 </script>

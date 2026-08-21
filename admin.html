@@ -36,12 +36,15 @@
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
     import { getFirestore, collection, addDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
-    // Ganti dengan Config Firebase kamu
     const firebaseConfig = {
-        apiKey: "API_KEY_KAMU",
-        authDomain: "PROJECT_ID.firebaseapp.com",
-        projectId: "PROJECT_ID",
-    };
+  apiKey: "AIzaSyAt1V2Ogx0P8rSLSNz9_zZpYt00cCN5JL0",
+  authDomain: "yarch-b63d8.firebaseapp.com",
+  projectId: "yarch-b63d8",
+  storageBucket: "yarch-b63d8.firebasestorage.app",
+  messagingSenderId: "778365226622",
+  appId: "1:778365226622:web:56a71b1fbf4e5fbc8f522f",
+  measurementId: "G-7K4Q05DV11"
+};
     const app = initializeApp(firebaseConfig);
     const db = getFirestore(app);
 

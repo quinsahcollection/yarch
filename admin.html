@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <title>Admin - Upload Komik</title>
+    <style>
+        body { font-family: sans-serif; background: #f4f7f6; padding: 20px; }
+        .admin-container { max-width: 500px; background: white; padding: 20px; border-radius: 8px; margin: 0 auto; }
+        .form-group { margin-bottom: 15px; }
+        label { display: block; font-weight: bold; margin-bottom: 5px; }
+        input, select, textarea { width: 100%; padding: 8px; box-sizing: border-box; }
+        button { background: #007aff; color: white; border: none; padding: 10px 20px; border-radius: 4px; cursor: pointer; width: 100%; font-weight: bold; }
+        #status { margin-top: 15px; font-weight: bold; text-align: center; }
+    </style>
+</head>
+<body>
+
+<div class="admin-container">
+    <h2>Upload Komik Baru</h2>
+    <form id="uploadForm">
+        <div class="form-group">
+            <label>Judul Komik</label>
+            <input type="text" id="title" required>
+        </div>
+        <div class="form-group">
+            <label>Gambar Cover (.jpg, .png)</label>
+            <input type="file" id="coverImage" accept="image/*" required>
+        </div>
+        <button type="submit">Upload Sekarang</button>
+    </form>
+    <div id="status"></div>
+</div>
+
+<script type="module">
+    // 1. Setup Firebase langsung di HTML
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+    import { getFirestore, collection, addDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+
+    // Ganti dengan Config Firebase kamu
+    const firebaseConfig = {
+        apiKey: "API_KEY_KAMU",
+        authDomain: "PROJECT_ID.firebaseapp.com",
+        projectId: "PROJECT_ID",
+    };
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+
+    // URL Cloudflare Worker yang baru saja kamu Deploy
+    const WORKER_URL = "https://yarch.hrmnkosasi.workers.dev/";
+
+    document.getElementById('uploadForm').addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const statusEl = document.getElementById('status');
+        statusEl.innerText = "Mengunggah gambar ke R2...";
+        
+        // A. Ambil file gambar
+        const fileInput = document.getElementById('coverImage').files[0];
+        const formData = new FormData();
+        formData.append('coverImage', fileInput);
+
+        try {
+            // B. Kirim gambar ke Cloudflare Worker
+            const workerResponse = await fetch(WORKER_URL, {
+                method: 'POST',
+                body: formData
+            });
+            const workerData = await workerResponse.json();
+            
+            if (!workerResponse.ok) throw new Error("Gagal upload ke R2");
+
+            statusEl.innerText = "Gambar berhasil! Menyimpan ke Database...";
+
+            // C. Simpan judul & URL Gambar dari Worker ke Firestore
+            await addDoc(collection(db, "comics"), {
+                title: document.getElementById('title').value,
+                coverUrl: workerData.url, // Ini link dari R2
+                views: 0,
+                createdAt: serverTimestamp()
+            });
+
+            statusEl.innerText = "Upload Komik Berhasil Sempurna!";
+            statusEl.style.color = "green";
+            document.getElementById('uploadForm').reset();
+
+        } catch (error) {
+            statusEl.innerText = "Error: " + error.message;
+            statusEl.style.color = "red";
+        }
+    });
+</script>
+</body>
+</html>

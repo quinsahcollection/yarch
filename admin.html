@@ -12,15 +12,13 @@
         button { background: #007aff; color: white; border: none; padding: 12px 20px; border-radius: 5px; cursor: pointer; width: 100%; font-weight: bold; font-size: 16px; margin-top: 10px; }
         button:hover { background: #005bb5; }
         
-        /* Tombol Logout */
         .btn-logout { background: #dc3545; margin-bottom: 20px; width: auto; float: right; padding: 8px 15px; font-size: 14px;}
         .btn-logout:hover { background: #c82333; }
         
         .status-msg { margin-top: 15px; font-weight: bold; text-align: center; }
-        
-        /* Class untuk menyembunyikan elemen */
         .hidden { display: none !important; }
         .clearfix::after { content: ""; clear: both; display: table; }
+        .help-text { font-size: 12px; color: #666; margin-top: 5px; display: block; }
     </style>
 </head>
 <body>
@@ -52,8 +50,9 @@
         <form id="uploadForm">
             <div class="form-group">
                 <label>Kunci Rahasia Worker (X-Admin-Key)</label>
-                <!-- Masukkan kunci yang kamu set di Environment Variable Cloudflare -->
+                <!-- Di sinilah kamu memasukkan ADMIN_SECRET_KEY yang kamu buat di Cloudflare -->
                 <input type="password" id="secretKey" required placeholder="Masukkan Secret Key R2...">
+                <span class="help-text">Tenang, kunci ini akan diingat otomatis oleh browsermu setelah upload pertama.</span>
             </div>
             <div class="form-group">
                 <label>Judul Komik</label>
@@ -71,12 +70,10 @@
 </div>
 
 <script type="module">
-    // 1. Setup Firebase dan Auth langsung di HTML
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
     import { getFirestore, collection, addDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
     import { getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
 
-    // Konfigurasi Firebase-mu
     const firebaseConfig = {
         apiKey: "AIzaSyAt1V2Ogx0P8rSLSNz9_zZpYt00cCN5JL0",
         authDomain: "yarch-b63d8.firebaseapp.com",
@@ -90,30 +87,33 @@
     const db = getFirestore(app);
     const auth = getAuth(app);
 
-    // URL Cloudflare Worker Kamu
     const WORKER_URL = "https://yarch.hrmnkosasi.workers.dev/";
 
-    // --- REFERENSI UI ---
     const loginSection = document.getElementById('loginSection');
     const uploadSection = document.getElementById('uploadSection');
     const loginStatus = document.getElementById('loginStatus');
     const uploadStatus = document.getElementById('uploadStatus');
+    const secretKeyInput = document.getElementById('secretKey');
 
-    // --- LOGIKA SESI LOGIN (Realtime) ---
-    // Fungsi ini akan mengecek apakah admin sudah login atau belum
+    // --- FITUR MENGINGAT KUNCI RAHASIA ---
+    // Cek apakah browser sudah pernah menyimpan kunci sebelumnya
+    const savedSecretKey = localStorage.getItem('workerSecretKey');
+    if (savedSecretKey) {
+        secretKeyInput.value = savedSecretKey; // Isi otomatis!
+    }
+
+    // --- CEK SESI LOGIN ---
     onAuthStateChanged(auth, (user) => {
         if (user) {
-            // Jika valid, sembunyikan login, munculkan halaman upload
             loginSection.classList.add('hidden');
             uploadSection.classList.remove('hidden');
         } else {
-            // Jika belum login / logout, kembali ke halaman login
             loginSection.classList.remove('hidden');
             uploadSection.classList.add('hidden');
         }
     });
 
-    // --- PROSES LOGIN ---
+    // --- LOGIN ---
     document.getElementById('loginForm').addEventListener('submit', async (e) => {
         e.preventDefault();
         loginStatus.innerText = "Memeriksa kredensial...";
@@ -124,17 +124,17 @@
 
         try {
             await signInWithEmailAndPassword(auth, email, password);
-            loginStatus.innerText = ""; // Bersihkan teks jika sukses
+            loginStatus.innerText = ""; 
         } catch (error) {
             loginStatus.innerText = "Login Gagal: Periksa email & password!";
             loginStatus.style.color = "red";
         }
     });
 
-    // --- PROSES LOGOUT ---
+    // --- LOGOUT ---
     document.getElementById('logoutBtn').addEventListener('click', async () => {
         await signOut(auth);
-        uploadStatus.innerText = ""; // Bersihkan pesan upload
+        uploadStatus.innerText = ""; 
         document.getElementById('loginForm').reset();
     });
 
@@ -142,45 +142,42 @@
     document.getElementById('uploadForm').addEventListener('submit', async (e) => {
         e.preventDefault();
         
-        // Pastikan token Firebase masih ada
-        if (!auth.currentUser) {
-            alert("Sesi Anda telah habis, silakan login kembali.");
-            return;
-        }
+        if (!auth.currentUser) return;
 
         uploadStatus.innerText = "Mengunggah gambar ke R2...";
         uploadStatus.style.color = "blue";
         
-        const secretKey = document.getElementById('secretKey').value;
+        const currentSecretKey = secretKeyInput.value;
         const fileInput = document.getElementById('coverImage').files[0];
         
         const formData = new FormData();
         formData.append('coverImage', fileInput);
 
         try {
-            // 1. Kirim gambar ke Cloudflare Worker
             const workerResponse = await fetch(WORKER_URL, {
                 method: 'POST',
                 headers: {
-                    'X-Admin-Key': secretKey // Mengirim kunci rahasia ke worker
+                    'X-Admin-Key': currentSecretKey 
                 },
                 body: formData
             });
             
             const workerData = await workerResponse.json();
             
-            // Jika worker menolak (kunci salah atau file rusak)
             if (!workerResponse.ok) {
                 throw new Error(workerData.error || "Gagal upload ke Server R2");
             }
 
+            // SIMPAN KUNCI KE BROWSER JIKA UPLOAD BERHASIL
+            // (Jadi kalau kuncinya benar, akan diingat untuk selamanya di komputermu)
+            localStorage.setItem('workerSecretKey', currentSecretKey);
+
             uploadStatus.innerText = "Gambar berhasil diunggah! Menyimpan ke Database...";
 
-            // 2. Simpan Data ke Firestore
             await addDoc(collection(db, "comics"), {
                 title: document.getElementById('title').value,
-                coverUrl: workerData.url, // Link dari R2 yang dikembalikan worker
-                uploader: auth.currentUser.email, // Mencatat email siapa yang upload
+                coverUrl: workerData.url, 
+                uploader: auth.currentUser.email,
                 views: 0,
                 createdAt: serverTimestamp()
             });
@@ -188,7 +185,7 @@
             uploadStatus.innerText = "Upload Komik Berhasil Sempurna!";
             uploadStatus.style.color = "green";
             
-            // Bersihkan form judul & gambar saja (Secret Key tidak dihapus agar tidak capek ketik ulang)
+            // Hanya hapus input judul dan gambar, Kunci Rahasia tetap aman di kolomnya
             document.getElementById('title').value = "";
             document.getElementById('coverImage').value = "";
 

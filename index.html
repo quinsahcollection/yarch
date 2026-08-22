@@ -105,7 +105,6 @@
         .section-title { font-size: 16px; font-weight: 700; color: #111; }
         .see-all { color: var(--primary-blue); font-size: 13px; text-decoration: none; font-weight: 600; }
         
-        /* DIPERBAIKI: Mengubah gap dari 12px menjadi 6px agar lebih rapat */
         .horizontal-scroll { display: flex; gap: 6px; overflow-x: auto; padding-bottom: 8px; scrollbar-width: none; }
         .horizontal-scroll::-webkit-scrollbar { display: none; }
 
@@ -266,7 +265,6 @@
 <body>
 
     <div class="app-container">
-
         <!-- =========================================
              HALAMAN 1: HOME
              ========================================= -->
@@ -428,9 +426,10 @@
                         <div class="section-title-wrapper"><h2 class="section-title">Update Terbaru</h2></div>
                         <a href="#" class="see-all">Lihat Semua</a>
                     </div>
-                    <div class="horizontal-scroll">
-                        <div class="manga-card-simple"><img src="https://images.unsplash.com/photo-1528360983277-13d401cdc186?auto=format&fit=crop&q=80&w=300"><div class="info-container"><div class="title">Hongshi Loves Me!</div></div></div>
-                        <div class="manga-card-simple"><img src="https://images.unsplash.com/photo-1614583224978-f05ce51ef5fa?auto=format&fit=crop&q=80&w=300"><div class="info-container"><div class="title">A Martial Master</div></div></div>
+                    <!-- Kontainer horizontal scroll ini akan ditimpa dengan data Firebase -->
+                    <div class="horizontal-scroll" id="firebase-updates">
+                        <!-- Data statis sementara sebelum API selesai load -->
+                        <div class="manga-card-simple"><img src="https://images.unsplash.com/photo-1528360983277-13d401cdc186?auto=format&fit=crop&q=80&w=300"><div class="info-container"><div class="title">Memuat data...</div></div></div>
                     </div>
                 </section>
             </main>
@@ -454,28 +453,25 @@
                 <div class="detail-header">
                     <div class="comic-info-layout">
                         <div class="comic-cover-wrapper">
-                            <img src="https://images.unsplash.com/photo-1528360983277-13d401cdc186?auto=format&fit=crop&q=80&w=300" alt="Cover" class="comic-cover">
+                            <img src="https://images.unsplash.com/photo-1528360983277-13d401cdc186?auto=format&fit=crop&q=80&w=300" alt="Cover" class="comic-cover" id="detailCoverImage">
                             <div class="age-rating">Remaja<span>16+</span></div>
                         </div>
                         
                         <div class="comic-meta">
-                            <h1 class="comic-detail-title">A Martial Master Wakes Up as a Concubine</h1>
-                            <div class="comic-alt-title">A Martial Master, Who Woke Up as a Concubine, Gosu...</div>
+                            <h1 class="comic-detail-title" id="detailTitle">A Martial Master Wakes Up as a Concubine</h1>
+                            <div class="comic-alt-title" id="detailAltTitle">A Martial Master, Who Woke Up as a Concubine, Gosu...</div>
                             <div style="font-size: 11px; color: #ddd; margin-bottom: 8px;">Chapter 97</div>
                             
                             <div class="comic-stats-row">
                                 <span><i class="fa-regular fa-eye"></i> 39,4K views</span>
                                 <span class="stat-rating"><i class="fa-solid fa-star"></i> 9.2 <span>(39)</span></span>
-                                <span class="status-badge">Ongoing</span>
+                                <span class="status-badge" id="detailStatus">Ongoing</span>
                             </div>
 
-                            <div class="genre-tags">
+                            <div class="genre-tags" id="detailTags">
                                 <span class="tag">Manhwa</span>
                                 <span class="tag">Comedy</span>
                                 <span class="tag">Drama</span>
-                                <span class="tag">Fantasy</span>
-                                <span class="tag">Josei</span>
-                                <span class="tag">Romance</span>
                             </div>
                         </div>
                     </div>
@@ -491,10 +487,8 @@
                 <!-- Tab Content: DETAIL -->
                 <div class="tab-content active" id="tab-detail">
                     <h3 class="synopsis-title">Synopsis</h3>
-                    <p class="synopsis-text">
-                        Cheon Nyeon Bi, seorang ahli terkuat bela diri mati karena memakan buah naga beracun yang diberikan oleh kekasihnya. Tiba-tiba Cheon Nyeon Bi terbangun dalam tubuh selir kaisar bernama Cheon Soyeo! 
-                        <br><br>
-                        Cheon Nyeon Bi harus menyesuaikan diri dan sikap menjadi seorang selir! Di saat dia menyesuaikan diri menjadi selir, Cheon Nyeon Bi bertemu dengan seorang laki-laki yang identitasnya... tidak mudah untuk diketahui. Mampukah ia bertahan hidup di kerasnya kehidupan istana yang penuh intrik ini?
+                    <p class="synopsis-text" id="detailSynopsis">
+                        Cheon Nyeon Bi, seorang ahli terkuat bela diri mati karena memakan buah naga beracun yang diberikan oleh kekasihnya...
                     </p>
                 </div>
 
@@ -502,7 +496,7 @@
                 <div class="tab-content" id="tab-chapter">
                     <div class="placeholder-text">
                         <i class="fa-solid fa-list-ol"></i>
-                        <br>Daftar 97 Chapter komik tersedia di sini.
+                        <br>Daftar Chapter komik tersedia di sini.
                     </div>
                 </div>
 
@@ -530,18 +524,91 @@
         </nav>
     </div>
 
-    <!-- SCRIPT INTERAKSI -->
-    <script>
+    <!-- SCRIPT FIREBASE & INTERAKSI LOGIKA UI -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+        import { getFirestore, collection, getDocs, query, orderBy, limit } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+
+        // 1. Inisialisasi Konfigurasi Firebase (Menyesuaikan dengan konfigurasi Admin Anda)
+        const firebaseConfig = {
+            apiKey: "AIzaSyAt1V2Ogx0P8rSLSNz9_zZpYt00cCN5JL0",
+            authDomain: "yarch-b63d8.firebaseapp.com",
+            projectId: "yarch-b63d8",
+            storageBucket: "yarch-b63d8.firebasestorage.app",
+            messagingSenderId: "778365226622",
+            appId: "1:778365226622:web:56a71b1fbf4e5fbc8f522f",
+            measurementId: "G-7K4Q05DV11"
+        };
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+
+        // Data komik mentah yang siap diolah
+        let comicsData = [];
+
+        // 2. Logika Pengambilan Data (Fetch)
+        async function fetchComics() {
+            try {
+                const q = query(collection(db, "comics"), orderBy("createdAt", "desc"), limit(10));
+                const querySnapshot = await getDocs(q);
+                
+                const updateContainer = document.getElementById('firebase-updates');
+                let updateHTML = '';
+                
+                querySnapshot.forEach((doc) => {
+                    const data = doc.data();
+                    comicsData[doc.id] = data; // Simpan data di local caching array
+                    
+                    // Membuat element card yang akan membuka fungsi openDetail saat diklik
+                    updateHTML += `
+                        <div class="manga-card-simple" onclick="openDetail('${doc.id}')">
+                            <img src="${data.coverUrl}" alt="${data.title}">
+                            <div class="info-container">
+                                <div class="title">${data.title}</div>
+                            </div>
+                        </div>
+                    `;
+                });
+
+                if(updateHTML && updateContainer) {
+                    updateContainer.innerHTML = updateHTML; // Mengganti data statis dengan data Firestore dinamis
+                }
+            } catch (error) {
+                console.error("Gagal menarik data dari Database Firebase:", error);
+            }
+        }
+        
+        // Panggil fungsi secara otomatis ketika halaman diakses
+        fetchComics();
+
+        // 3. Logika Navigasi dan Halaman UI (Mengekspos ke window object)
         const homePage = document.getElementById('home-page');
         const detailPage = document.getElementById('detail-page');
 
-        function openDetail() {
+        window.openDetail = function(comicId) {
             homePage.style.display = 'none';
             detailPage.style.display = 'block';
             window.scrollTo(0, 0);
+
+            // Jika ID komik tersedia (dari Firebase), ganti isi pada halaman detail komiknya
+            if (comicId && comicsData[comicId]) {
+                const data = comicsData[comicId];
+                document.getElementById('detailTitle').innerText = data.title;
+                document.getElementById('detailAltTitle').innerText = data.altTitle || "-";
+                document.getElementById('detailStatus').innerText = data.status || "Ongoing";
+                document.getElementById('detailSynopsis').innerText = data.synopsis || "Belum ada sinopsis.";
+                document.getElementById('detailCoverImage').src = data.coverUrl;
+
+                const tagsContainer = document.getElementById('detailTags');
+                tagsContainer.innerHTML = `<span class="tag">${data.type}</span>`;
+                if(data.genres && Array.isArray(data.genres)) {
+                    data.genres.forEach(genre => {
+                        tagsContainer.innerHTML += `<span class="tag">${genre}</span>`;
+                    });
+                }
+            }
         }
 
-        function closeDetail() {
+        window.closeDetail = function() {
             detailPage.style.display = 'none';
             homePage.style.display = 'block';
             window.scrollTo(0, 0);
@@ -558,10 +625,9 @@
             }
         };
 
-        function switchTab(tabName) {
+        window.switchTab = function(tabName) {
             document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
             document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
-
             event.currentTarget.classList.add('active');
             document.getElementById('tab-' + tabName).classList.add('active');
         }
@@ -571,12 +637,19 @@
         const slides = document.getElementById('hero-slider');
         const dots = document.querySelectorAll('.dot');
         
-        if(slides && dots.length > 0) {
-            setInterval(() => {
-                slideIndex = (slideIndex + 1) % dots.length;
+        window.currentSlide = function(index) {
+            slideIndex = index;
+            if(slides && dots.length > 0) {
                 slides.style.transform = `translateX(-${slideIndex * 100}%)`;
                 dots.forEach(dot => dot.classList.remove('active'));
                 dots[slideIndex].classList.add('active');
+            }
+        }
+
+        if(slides && dots.length > 0) {
+            setInterval(() => {
+                slideIndex = (slideIndex + 1) % dots.length;
+                window.currentSlide(slideIndex);
             }, 3000);
         }
     </script>

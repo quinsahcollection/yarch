@@ -71,7 +71,7 @@
         .sidebar-menu a {
             display: flex; align-items: center; gap: 12px; padding: 12px 15px;
             color: #a0a5b1; text-decoration: none; border-radius: 8px; font-weight: 500;
-            transition: all 0.2s;
+            transition: all 0.2s; cursor: pointer;
         }
         .sidebar-menu a:hover, .sidebar-menu a.active { background: var(--sidebar-hover); color: var(--white); }
         .sidebar-menu a.active i { color: var(--primary); }
@@ -97,11 +97,16 @@
         .btn-logout { background: var(--danger); color: white; border: none; padding: 8px 16px; border-radius: 6px; cursor: pointer; font-weight: 600; font-size: 13px; transition: 0.2s; }
         .btn-logout:hover { opacity: 0.9; }
 
-        /* Content Area */
+        /* Content Area & Views (Multi-page system) */
         .content-area { padding: 30px; }
         .page-title { margin-bottom: 20px; font-size: 22px; font-weight: 700; color: var(--sidebar-bg); }
+        
+        .admin-view { display: none; animation: fadeIn 0.3s; }
+        .admin-view.active { display: block; }
 
-        /* Card Form */
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+        /* General Forms & Cards */
         .card { background: var(--white); border-radius: 12px; padding: 25px; box-shadow: 0 4px 15px rgba(0,0,0,0.03); }
         .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
         .form-group.full-width { grid-column: 1 / -1; }
@@ -116,12 +121,10 @@
         
         .help-text { font-size: 11px; color: var(--text-muted); margin-top: 5px; display: block; }
         
-        /* Checkbox list */
         .genre-list { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 5px; }
         .genre-list label { display: flex; align-items: center; gap: 5px; font-weight: 400; cursor: pointer; background: var(--bg-light); padding: 6px 12px; border-radius: 20px; border: 1px solid var(--border); }
         .genre-list input { cursor: pointer; }
 
-        /* File Upload & Preview */
         .upload-area { border: 2px dashed var(--border); border-radius: 8px; padding: 20px; text-align: center; background: #f8fafc; cursor: pointer; transition: 0.2s; position: relative;}
         .upload-area:hover { border-color: var(--primary); background: rgba(67, 97, 238, 0.02); }
         .upload-area input { position: absolute; width: 100%; height: 100%; top: 0; left: 0; opacity: 0; cursor: pointer; }
@@ -130,15 +133,56 @@
 
         .btn-submit { background: var(--primary); color: white; border: none; padding: 14px 20px; border-radius: 8px; cursor: pointer; width: 100%; font-weight: 600; font-size: 15px; margin-top: 25px; transition: 0.2s; }
         .btn-submit:hover { background: var(--primary-hover); transform: translateY(-1px); }
-
         .status-msg { margin-top: 15px; font-weight: 600; text-align: center; font-size: 14px; padding: 10px; border-radius: 6px; }
+
+        /* ==================== MASTER DATA UI (KATEGORI & GENRE) ==================== */
+        .master-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 20px;
+        }
+        .master-card {
+            background: var(--white);
+            border-radius: 12px;
+            padding: 20px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.03);
+            border: 1px solid var(--border);
+        }
+        .master-card h3 {
+            font-size: 15px;
+            margin-bottom: 15px;
+            color: var(--sidebar-bg);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            border-bottom: 1px solid var(--border);
+            padding-bottom: 10px;
+        }
+        .master-card h3 i { color: var(--primary); }
+        .master-input-group { display: flex; gap: 8px; margin-bottom: 15px; }
+        .master-input-group input { padding: 10px; flex: 1; }
+        .btn-add {
+            background: var(--primary); color: white; border: none;
+            padding: 0 15px; border-radius: 8px; cursor: pointer; font-weight: 600; transition: 0.2s;
+        }
+        .btn-add:hover { background: var(--primary-hover); }
+        
+        .master-list { list-style: none; max-height: 250px; overflow-y: auto; padding-right: 5px; }
+        .master-list::-webkit-scrollbar { width: 5px; }
+        .master-list::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 5px; }
+        .master-list li {
+            display: flex; justify-content: space-between; align-items: center;
+            padding: 10px 12px; background: #f8fafc; margin-bottom: 8px;
+            border-radius: 6px; border: 1px solid var(--border); font-size: 13px; font-weight: 500;
+        }
+        .btn-delete { color: var(--danger); background: none; border: none; cursor: pointer; font-size: 14px; padding: 4px; transition: 0.2s;}
+        .btn-delete:hover { transform: scale(1.1); }
 
         /* ==================== RESPONSIVE ==================== */
         @media (max-width: 992px) {
             .sidebar { transform: translateX(-100%); }
             .sidebar.active { transform: translateX(0); }
             .main-content { margin-left: 0; width: 100%; }
-            /* Overlay saat sidebar aktif di mobile */
             .sidebar-overlay {
                 display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
                 background: rgba(0,0,0,0.5); z-index: 999;
@@ -185,12 +229,12 @@
                 <i class="fa-solid fa-bolt"></i> MangaPanel
             </div>
             <ul class="sidebar-menu">
-                <li><a href="#"><i class="fa-solid fa-chart-pie"></i> Dashboard</a></li>
-                <li><a href="#" class="active"><i class="fa-solid fa-square-plus"></i> Tambah Komik</a></li>
-                <li><a href="#"><i class="fa-solid fa-list"></i> Daftar Komik</a></li>
-                <li><a href="#"><i class="fa-solid fa-layer-group"></i> Kelola Chapter</a></li>
-                <li><a href="#"><i class="fa-solid fa-tags"></i> Kategori & Genre</a></li>
-                <li><a href="#"><i class="fa-solid fa-gear"></i> Pengaturan</a></li>
+                <li><a onclick="switchView('view-dashboard', this)"><i class="fa-solid fa-chart-pie"></i> Dashboard</a></li>
+                <li><a onclick="switchView('view-tambah', this)" class="active"><i class="fa-solid fa-square-plus"></i> Tambah Komik</a></li>
+                <li><a onclick="switchView('view-daftar', this)"><i class="fa-solid fa-list"></i> Daftar Komik</a></li>
+                <li><a onclick="switchView('view-chapter', this)"><i class="fa-solid fa-layer-group"></i> Kelola Chapter</a></li>
+                <li><a onclick="switchView('view-kategori', this)"><i class="fa-solid fa-tags"></i> Kategori & Genre</a></li>
+                <li><a onclick="switchView('view-pengaturan', this)"><i class="fa-solid fa-gear"></i> Pengaturan</a></li>
             </ul>
         </aside>
 
@@ -205,107 +249,196 @@
                 </div>
             </header>
 
-            <!-- Content -->
+            <!-- ==================== AREA KONTEN (MULTI-VIEW) ==================== -->
             <div class="content-area">
-                <h1 class="page-title">Tambah Komik Baru</h1>
                 
-                <div class="card">
-                    <form id="uploadForm">
-                        <div class="form-grid">
+                <!-- VIEW 1: TAMBAH KOMIK (Default Active) -->
+                <div id="view-tambah" class="admin-view active">
+                    <h1 class="page-title">Tambah Komik Baru</h1>
+                    
+                    <div class="card">
+                        <form id="uploadForm">
+                            <div class="form-grid">
+                                <!-- Keamanan API -->
+                                <div class="form-group full-width">
+                                    <label style="color: var(--primary);"><i class="fa-solid fa-key"></i> Kunci Rahasia Worker (X-Admin-Key)</label>
+                                    <input type="password" id="secretKey" required placeholder="Masukkan Secret Key R2...">
+                                    <span class="help-text">Tersimpan otomatis di browser setelah sukses upload.</span>
+                                </div>
+
+                                <div class="form-group full-width"><hr style="border: 0; border-top: 1px solid var(--border); margin: 10px 0;"></div>
+
+                                <!-- Informasi Dasar -->
+                                <div class="form-group full-width">
+                                    <label>Judul Utama Komik *</label>
+                                    <input type="text" id="title" required placeholder="Contoh: One Piece, Solo Leveling...">
+                                </div>
+
+                                <div class="form-group">
+                                    <label>Judul Alternatif</label>
+                                    <input type="text" id="altTitle" placeholder="Contoh: Wan Pisu, Na Honjaman Rebeleop">
+                                </div>
+
+                                <div class="form-group">
+                                    <label>Author / Artist</label>
+                                    <!-- Nanti opsinya ditarik dari Master Data -->
+                                    <input type="text" id="author" placeholder="Nama pengarang...">
+                                </div>
+
+                                <!-- Klasifikasi -->
+                                <div class="form-group">
+                                    <label>Tipe Komik *</label>
+                                    <select id="type" required>
+                                        <option value="Manga">Manga (Jepang)</option>
+                                        <option value="Manhwa">Manhwa (Korea)</option>
+                                        <option value="Manhua">Manhua (China)</option>
+                                        <option value="Comic">Comic (Barat/Lokal)</option>
+                                    </select>
+                                </div>
+
+                                <div class="form-group">
+                                    <label>Status *</label>
+                                    <select id="status" required>
+                                        <option value="Ongoing">Ongoing (Berjalan)</option>
+                                        <option value="Completed">Completed (Tamat)</option>
+                                        <option value="Hiatus">Hiatus</option>
+                                        <option value="Dropped">Dropped</option>
+                                    </select>
+                                </div>
+
+                                <div class="form-group">
+                                    <label>Rating Usia</label>
+                                    <select id="ageRating">
+                                        <option value="Semua Umur">Semua Umur</option>
+                                        <option value="13+">Remaja 13+</option>
+                                        <option value="16+">Dewasa 16+</option>
+                                        <option value="18+">Mature 18+</option>
+                                    </select>
+                                </div>
+
+                                <div class="form-group full-width">
+                                    <label>Genre (Pilih yang sesuai)</label>
+                                    <!-- Nanti checkbox ini bisa di-generate otomatis dari Master Data Genre -->
+                                    <div class="genre-list" id="genreCheckboxContainer">
+                                        <label><input type="checkbox" value="Action" class="genre-check"> Action</label>
+                                        <label><input type="checkbox" value="Adventure" class="genre-check"> Adventure</label>
+                                        <label><input type="checkbox" value="Comedy" class="genre-check"> Comedy</label>
+                                        <label><input type="checkbox" value="Drama" class="genre-check"> Drama</label>
+                                        <label><input type="checkbox" value="Fantasy" class="genre-check"> Fantasy</label>
+                                        <label><input type="checkbox" value="Romance" class="genre-check"> Romance</label>
+                                        <label><input type="checkbox" value="Isekai" class="genre-check"> Isekai</label>
+                                        <label><input type="checkbox" value="Slice of Life" class="genre-check"> Slice of Life</label>
+                                    </div>
+                                </div>
+
+                                <!-- Detail Lanjutan -->
+                                <div class="form-group full-width">
+                                    <label>Sinopsis / Deskripsi</label>
+                                    <textarea id="synopsis" placeholder="Ceritakan plot komik ini..."></textarea>
+                                </div>
+
+                                <!-- Upload Gambar -->
+                                <div class="form-group full-width">
+                                    <label>Gambar Cover (Thumbnail) *</label>
+                                    <div class="upload-area">
+                                        <i class="fa-solid fa-cloud-arrow-up"></i>
+                                        <p style="font-size: 14px; font-weight: 500;">Klik atau Tarik gambar ke sini (.jpg, .png)</p>
+                                        <input type="file" id="coverImage" accept="image/*" required onchange="previewImage(event)">
+                                    </div>
+                                    <img id="coverPreview" class="image-preview" alt="Preview Cover">
+                                </div>
+
+                            </div>
                             
-                            <!-- Keamanan API -->
-                            <div class="form-group full-width">
-                                <label style="color: var(--primary);"><i class="fa-solid fa-key"></i> Kunci Rahasia Worker (X-Admin-Key)</label>
-                                <input type="password" id="secretKey" required placeholder="Masukkan Secret Key R2...">
-                                <span class="help-text">Tersimpan otomatis di browser setelah sukses upload.</span>
-                            </div>
-
-                            <div class="form-group full-width"><hr style="border: 0; border-top: 1px solid var(--border); margin: 10px 0;"></div>
-
-                            <!-- Informasi Dasar -->
-                            <div class="form-group full-width">
-                                <label>Judul Utama Komik *</label>
-                                <input type="text" id="title" required placeholder="Contoh: One Piece, Solo Leveling...">
-                            </div>
-
-                            <div class="form-group">
-                                <label>Judul Alternatif</label>
-                                <input type="text" id="altTitle" placeholder="Contoh: Wan Pisu, Na Honjaman Rebeleop">
-                            </div>
-
-                            <div class="form-group">
-                                <label>Author / Artist</label>
-                                <input type="text" id="author" placeholder="Nama pengarang...">
-                            </div>
-
-                            <!-- Klasifikasi -->
-                            <div class="form-group">
-                                <label>Tipe Komik *</label>
-                                <select id="type" required>
-                                    <option value="Manga">Manga (Jepang)</option>
-                                    <option value="Manhwa">Manhwa (Korea)</option>
-                                    <option value="Manhua">Manhua (China)</option>
-                                    <option value="Comic">Comic (Barat/Lokal)</option>
-                                </select>
-                            </div>
-
-                            <div class="form-group">
-                                <label>Status *</label>
-                                <select id="status" required>
-                                    <option value="Ongoing">Ongoing (Berjalan)</option>
-                                    <option value="Completed">Completed (Tamat)</option>
-                                    <option value="Hiatus">Hiatus</option>
-                                    <option value="Dropped">Dropped</option>
-                                </select>
-                            </div>
-
-                            <div class="form-group">
-                                <label>Rating Usia</label>
-                                <select id="ageRating">
-                                    <option value="Semua Umur">Semua Umur</option>
-                                    <option value="13+">Remaja 13+</option>
-                                    <option value="16+">Dewasa 16+</option>
-                                    <option value="18+">Mature 18+</option>
-                                </select>
-                            </div>
-
-                            <div class="form-group full-width">
-                                <label>Genre (Pilih yang sesuai)</label>
-                                <div class="genre-list">
-                                    <label><input type="checkbox" value="Action" class="genre-check"> Action</label>
-                                    <label><input type="checkbox" value="Adventure" class="genre-check"> Adventure</label>
-                                    <label><input type="checkbox" value="Comedy" class="genre-check"> Comedy</label>
-                                    <label><input type="checkbox" value="Drama" class="genre-check"> Drama</label>
-                                    <label><input type="checkbox" value="Fantasy" class="genre-check"> Fantasy</label>
-                                    <label><input type="checkbox" value="Romance" class="genre-check"> Romance</label>
-                                    <label><input type="checkbox" value="Isekai" class="genre-check"> Isekai</label>
-                                    <label><input type="checkbox" value="Slice of Life" class="genre-check"> Slice of Life</label>
-                                </div>
-                            </div>
-
-                            <!-- Detail Lanjutan -->
-                            <div class="form-group full-width">
-                                <label>Sinopsis / Deskripsi</label>
-                                <textarea id="synopsis" placeholder="Ceritakan plot komik ini..."></textarea>
-                            </div>
-
-                            <!-- Upload Gambar -->
-                            <div class="form-group full-width">
-                                <label>Gambar Cover (Thumbnail) *</label>
-                                <div class="upload-area">
-                                    <i class="fa-solid fa-cloud-arrow-up"></i>
-                                    <p style="font-size: 14px; font-weight: 500;">Klik atau Tarik gambar ke sini (.jpg, .png)</p>
-                                    <input type="file" id="coverImage" accept="image/*" required onchange="previewImage(event)">
-                                </div>
-                                <img id="coverPreview" class="image-preview" alt="Preview Cover">
-                            </div>
-
-                        </div>
-                        
-                        <button type="submit" class="btn-submit"><i class="fa-solid fa-upload"></i> Publikasikan Komik</button>
-                    </form>
-                    <div id="uploadStatus" class="status-msg"></div>
+                            <button type="submit" class="btn-submit"><i class="fa-solid fa-upload"></i> Publikasikan Komik</button>
+                        </form>
+                        <div id="uploadStatus" class="status-msg"></div>
+                    </div>
                 </div>
+
+                <!-- VIEW 2: KATEGORI & GENRE (Data Master) -->
+                <div id="view-kategori" class="admin-view">
+                    <h1 class="page-title">Kelola Data Master</h1>
+                    <p style="color: var(--text-muted); margin-bottom: 20px; font-size: 14px;">Data yang Anda tambahkan di sini akan muncul sebagai pilihan saat menambahkan komik baru.</p>
+
+                    <div class="master-grid">
+                        
+                        <!-- Card: Author/Artist -->
+                        <div class="master-card">
+                            <h3><i class="fa-solid fa-user-pen"></i> Author & Artist</h3>
+                            <div class="master-input-group">
+                                <input type="text" id="inputAuthor" placeholder="Tambah nama author...">
+                                <button class="btn-add" onclick="addMasterData('author')"><i class="fa-solid fa-plus"></i></button>
+                            </div>
+                            <ul class="master-list" id="listAuthor">
+                                <!-- Dummy Data -->
+                                <li>Eiichiro Oda <button class="btn-delete"><i class="fa-solid fa-trash-can"></i></button></li>
+                                <li>Chugong <button class="btn-delete"><i class="fa-solid fa-trash-can"></i></button></li>
+                            </ul>
+                        </div>
+
+                        <!-- Card: Genre -->
+                        <div class="master-card">
+                            <h3><i class="fa-solid fa-masks-theater"></i> Genre</h3>
+                            <div class="master-input-group">
+                                <input type="text" id="inputGenre" placeholder="Tambah genre baru...">
+                                <button class="btn-add" onclick="addMasterData('genre')"><i class="fa-solid fa-plus"></i></button>
+                            </div>
+                            <ul class="master-list" id="listGenre">
+                                <li>Action <button class="btn-delete"><i class="fa-solid fa-trash-can"></i></button></li>
+                                <li>Romance <button class="btn-delete"><i class="fa-solid fa-trash-can"></i></button></li>
+                                <li>Fantasy <button class="btn-delete"><i class="fa-solid fa-trash-can"></i></button></li>
+                            </ul>
+                        </div>
+
+                        <!-- Card: Tipe Komik -->
+                        <div class="master-card">
+                            <h3><i class="fa-solid fa-book-open"></i> Tipe Komik</h3>
+                            <div class="master-input-group">
+                                <input type="text" id="inputType" placeholder="Manga, Manhwa...">
+                                <button class="btn-add" onclick="addMasterData('type')"><i class="fa-solid fa-plus"></i></button>
+                            </div>
+                            <ul class="master-list" id="listType">
+                                <li>Manga (Jepang) <button class="btn-delete"><i class="fa-solid fa-trash-can"></i></button></li>
+                                <li>Manhwa (Korea) <button class="btn-delete"><i class="fa-solid fa-trash-can"></i></button></li>
+                            </ul>
+                        </div>
+
+                        <!-- Card: Status -->
+                        <div class="master-card">
+                            <h3><i class="fa-solid fa-signal"></i> Status Terbit</h3>
+                            <div class="master-input-group">
+                                <input type="text" id="inputStatus" placeholder="Ongoing, Tamat...">
+                                <button class="btn-add" onclick="addMasterData('status')"><i class="fa-solid fa-plus"></i></button>
+                            </div>
+                            <ul class="master-list" id="listStatus">
+                                <li>Ongoing <button class="btn-delete"><i class="fa-solid fa-trash-can"></i></button></li>
+                                <li>Completed <button class="btn-delete"><i class="fa-solid fa-trash-can"></i></button></li>
+                            </ul>
+                        </div>
+
+                        <!-- Card: Rating Usia -->
+                        <div class="master-card">
+                            <h3><i class="fa-solid fa-user-shield"></i> Rating Usia</h3>
+                            <div class="master-input-group">
+                                <input type="text" id="inputAge" placeholder="13+, 18+...">
+                                <button class="btn-add" onclick="addMasterData('age')"><i class="fa-solid fa-plus"></i></button>
+                            </div>
+                            <ul class="master-list" id="listAge">
+                                <li>Semua Umur <button class="btn-delete"><i class="fa-solid fa-trash-can"></i></button></li>
+                                <li>16+ Dewasa <button class="btn-delete"><i class="fa-solid fa-trash-can"></i></button></li>
+                            </ul>
+                        </div>
+
+                    </div>
+                </div>
+                
+                <!-- (View lain seperti Dashboard, Daftar Komik bisa ditambahkan format serupa di bawah ini) -->
+                <div id="view-dashboard" class="admin-view">
+                    <h1 class="page-title">Dashboard Analitik</h1>
+                    <div class="card"><p>Halaman ini akan menampilkan statistik pengunjung dan komik populer.</p></div>
+                </div>
+
             </div>
         </main>
     </div>
@@ -332,14 +465,12 @@
 
         const WORKER_URL = "https://yarch.hrmnkosasi.workers.dev/";
 
-        // Element DOM
         const loginSection = document.getElementById('loginSection');
         const dashboardSection = document.getElementById('dashboardSection');
         const loginStatus = document.getElementById('loginStatus');
         const uploadStatus = document.getElementById('uploadStatus');
         const secretKeyInput = document.getElementById('secretKey');
 
-        // FITUR MENGINGAT KUNCI RAHASIA
         const savedSecretKey = localStorage.getItem('workerSecretKey');
         if (savedSecretKey) secretKeyInput.value = savedSecretKey;
 
@@ -381,7 +512,7 @@
             document.getElementById('loginForm').reset();
         });
 
-        // PROSES UPLOAD (FORM SUPER LENGKAP)
+        // PROSES UPLOAD KOMIK
         document.getElementById('uploadForm').addEventListener('submit', async (e) => {
             e.preventDefault();
             if (!auth.currentUser) return;
@@ -398,7 +529,6 @@
             formData.append('coverImage', fileInput);
 
             try {
-                // 1. Upload Gambar ke R2 Worker
                 const workerResponse = await fetch(WORKER_URL, {
                     method: 'POST',
                     headers: { 'X-Admin-Key': currentSecretKey },
@@ -414,13 +544,11 @@
                 localStorage.setItem('workerSecretKey', currentSecretKey);
                 uploadStatus.innerText = "Gambar sukses! Menyimpan data komik...";
 
-                // Ambil semua Genre yang di-ceklis
                 const genres = [];
                 document.querySelectorAll('.genre-check:checked').forEach(cb => {
                     genres.push(cb.value);
                 });
 
-                // 2. Simpan Data Super Lengkap ke Firestore Database
                 await addDoc(collection(db, "comics"), {
                     title: document.getElementById('title').value,
                     altTitle: document.getElementById('altTitle').value,
@@ -440,7 +568,6 @@
                 uploadStatus.style.color = "var(--success)";
                 uploadStatus.style.background = "#e5ffef";
                 
-                // Reset form (kecuali secret key)
                 document.getElementById('uploadForm').reset();
                 document.getElementById('coverPreview').style.display = 'none';
                 secretKeyInput.value = currentSecretKey; 
@@ -453,8 +580,28 @@
         });
     </script>
 
-    <!-- SCRIPT INTERAKSI UI (Sidebar & Image Preview) -->
+    <!-- SCRIPT INTERAKSI UI (Tabs, Master Data, dll) -->
     <script>
+        // Logika Perpindahan Menu (Single Page Application - SPA)
+        function switchView(viewId, element) {
+            // Hilangkan status active dari semua menu sidebar
+            document.querySelectorAll('.sidebar-menu a').forEach(el => el.classList.remove('active'));
+            // Set menu yang diklik menjadi active
+            if(element) element.classList.add('active');
+
+            // Sembunyikan semua konten view
+            document.querySelectorAll('.admin-view').forEach(view => {
+                view.classList.remove('active');
+            });
+            
+            // Tampilkan view yang dituju
+            const targetView = document.getElementById(viewId);
+            if (targetView) targetView.classList.add('active');
+
+            // Tutup sidebar di versi mobile saat menu diklik
+            if(window.innerWidth <= 992) toggleSidebar();
+        }
+
         // Toggle Sidebar Mobile
         const sidebar = document.getElementById('sidebar');
         const sidebarToggle = document.getElementById('sidebarToggle');
@@ -478,6 +625,31 @@
             };
             if(event.target.files[0]){
                 reader.readAsDataURL(event.target.files[0]);
+            }
+        }
+
+        // Logika Tambah Master Data ke List UI
+        // (Ini baru fungsi visual frontend, nantinya bisa di-fetch/push ke collection Firestore "master_data")
+        function addMasterData(type) {
+            let inputId = '';
+            let listId = '';
+
+            // Mapping id berdasarkan tipe
+            if(type === 'author') { inputId = 'inputAuthor'; listId = 'listAuthor'; }
+            else if(type === 'genre') { inputId = 'inputGenre'; listId = 'listGenre'; }
+            else if(type === 'type') { inputId = 'inputType'; listId = 'listType'; }
+            else if(type === 'status') { inputId = 'inputStatus'; listId = 'listStatus'; }
+            else if(type === 'age') { inputId = 'inputAge'; listId = 'listAge'; }
+
+            const inputField = document.getElementById(inputId);
+            const value = inputField.value.trim();
+
+            if(value !== "") {
+                const ul = document.getElementById(listId);
+                const li = document.createElement('li');
+                li.innerHTML = `${value} <button class="btn-delete" onclick="this.parentElement.remove()"><i class="fa-solid fa-trash-can"></i></button>`;
+                ul.appendChild(li);
+                inputField.value = ""; // Bersihkan kolom input
             }
         }
     </script>

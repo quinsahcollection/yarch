@@ -194,7 +194,6 @@
                                     <input type="text" id="altTitle" placeholder="Contoh: Wan Pisu, Na Honjaman Rebeleop">
                                 </div>
 
-                                <!-- Dropdown ini akan diisi otomatis oleh Firebase -->
                                 <div class="form-group">
                                     <label>Author / Artist *</label>
                                     <select id="author" required><option value="">Memuat data...</option></select>
@@ -271,7 +270,7 @@
                             <h3><i class="fa-solid fa-user-pen"></i> Author & Artist</h3>
                             <div class="master-input-group">
                                 <input type="text" id="inputAuthor" placeholder="Tambah nama...">
-                                <button class="btn-add" onclick="window.addMasterDataFirebase('authors', 'inputAuthor')"><i class="fa-solid fa-plus"></i></button>
+                                <button type="button" class="btn-add" onclick="window.addMasterDataFirebase('authors', 'inputAuthor')"><i class="fa-solid fa-plus"></i></button>
                             </div>
                             <ul class="master-list" id="listAuthor"></ul>
                         </div>
@@ -280,7 +279,7 @@
                             <h3><i class="fa-solid fa-masks-theater"></i> Genre</h3>
                             <div class="master-input-group">
                                 <input type="text" id="inputGenre" placeholder="Tambah genre...">
-                                <button class="btn-add" onclick="window.addMasterDataFirebase('genres', 'inputGenre')"><i class="fa-solid fa-plus"></i></button>
+                                <button type="button" class="btn-add" onclick="window.addMasterDataFirebase('genres', 'inputGenre')"><i class="fa-solid fa-plus"></i></button>
                             </div>
                             <ul class="master-list" id="listGenre"></ul>
                         </div>
@@ -289,7 +288,7 @@
                             <h3><i class="fa-solid fa-book-open"></i> Tipe Komik</h3>
                             <div class="master-input-group">
                                 <input type="text" id="inputType" placeholder="Manga, Manhwa...">
-                                <button class="btn-add" onclick="window.addMasterDataFirebase('types', 'inputType')"><i class="fa-solid fa-plus"></i></button>
+                                <button type="button" class="btn-add" onclick="window.addMasterDataFirebase('types', 'inputType')"><i class="fa-solid fa-plus"></i></button>
                             </div>
                             <ul class="master-list" id="listType"></ul>
                         </div>
@@ -298,7 +297,7 @@
                             <h3><i class="fa-solid fa-signal"></i> Status Terbit</h3>
                             <div class="master-input-group">
                                 <input type="text" id="inputStatus" placeholder="Ongoing, Tamat...">
-                                <button class="btn-add" onclick="window.addMasterDataFirebase('statuses', 'inputStatus')"><i class="fa-solid fa-plus"></i></button>
+                                <button type="button" class="btn-add" onclick="window.addMasterDataFirebase('statuses', 'inputStatus')"><i class="fa-solid fa-plus"></i></button>
                             </div>
                             <ul class="master-list" id="listStatus"></ul>
                         </div>
@@ -307,7 +306,7 @@
                             <h3><i class="fa-solid fa-user-shield"></i> Rating Usia</h3>
                             <div class="master-input-group">
                                 <input type="text" id="inputAge" placeholder="13+, 18+...">
-                                <button class="btn-add" onclick="window.addMasterDataFirebase('ageRatings', 'inputAge')"><i class="fa-solid fa-plus"></i></button>
+                                <button type="button" class="btn-add" onclick="window.addMasterDataFirebase('ageRatings', 'inputAge')"><i class="fa-solid fa-plus"></i></button>
                             </div>
                             <ul class="master-list" id="listAge"></ul>
                         </div>
@@ -346,18 +345,19 @@
         const loginSection = document.getElementById('loginSection');
         const dashboardSection = document.getElementById('dashboardSection');
         const uploadStatus = document.getElementById('uploadStatus');
-        
-        // Simpan API Key
         const secretKeyInput = document.getElementById('secretKey');
-        if (localStorage.getItem('workerSecretKey')) secretKeyInput.value = localStorage.getItem('workerSecretKey');
+        
+        if (localStorage.getItem('workerSecretKey')) {
+            secretKeyInput.value = localStorage.getItem('workerSecretKey');
+        }
 
-        // CEK LOGIN & INISIASI DATA
+        // CEK LOGIN
         onAuthStateChanged(auth, (user) => {
             if (user) {
                 loginSection.classList.add('hidden');
                 dashboardSection.classList.remove('hidden');
-                initMasterData(); // Jalankan load Kategori & Genre
-                window.loadComicsList(); // Jalankan load Daftar Komik
+                initMasterData(); 
+                window.loadComicsList(); 
             } else {
                 loginSection.classList.remove('hidden');
                 dashboardSection.classList.add('hidden');
@@ -385,63 +385,80 @@
         const masterDocRef = doc(db, "settings", "master_data");
         
         async function initMasterData() {
-            const snap = await getDoc(masterDocRef);
-            if (!snap.exists()) {
-                await setDoc(masterDocRef, { authors: [], genres: [], types: [], statuses: [], ageRatings: [] });
-            }
-
-            // Real-time listener: Tiap ada perubahan di Database, form otomatis terupdate
-            onSnapshot(masterDocRef, (docSnap) => {
-                const data = docSnap.data();
-                
-                // 1. Update List di UI Master Data
-                renderMasterList('listAuthor', data.authors, 'authors');
-                renderMasterList('listGenre', data.genres, 'genres');
-                renderMasterList('listType', data.types, 'types');
-                renderMasterList('listStatus', data.statuses, 'statuses');
-                renderMasterList('listAge', data.ageRatings, 'ageRatings');
-
-                // 2. Update Dropdown di UI Tambah Komik
-                renderDropdown('author', data.authors, 'Author / Artist');
-                renderDropdown('type', data.types, 'Tipe Komik');
-                renderDropdown('status', data.statuses, 'Status');
-                renderDropdown('ageRating', data.ageRatings, 'Rating Usia');
-                
-                // 3. Update Checkbox Genre
-                const genreContainer = document.getElementById('genreCheckboxContainer');
-                genreContainer.innerHTML = '';
-                if(data.genres && data.genres.length > 0) {
-                    data.genres.forEach(genre => {
-                        genreContainer.innerHTML += `<label><input type="checkbox" value="${genre}" class="genre-check"> ${genre}</label>`;
-                    });
-                } else {
-                    genreContainer.innerHTML = '<span class="help-text">Belum ada data genre.</span>';
+            try {
+                const snap = await getDoc(masterDocRef);
+                if (!snap.exists()) {
+                    await setDoc(masterDocRef, { authors: [], genres: [], types: [], statuses: [], ageRatings: [] });
                 }
-            });
+
+                onSnapshot(masterDocRef, (docSnap) => {
+                    const data = docSnap.data();
+                    if (!data) return;
+
+                    renderMasterList('listAuthor', data.authors, 'authors');
+                    renderMasterList('listGenre', data.genres, 'genres');
+                    renderMasterList('listType', data.types, 'types');
+                    renderMasterList('listStatus', data.statuses, 'statuses');
+                    renderMasterList('listAge', data.ageRatings, 'ageRatings');
+
+                    renderDropdown('author', data.authors, 'Author / Artist');
+                    renderDropdown('type', data.types, 'Tipe Komik');
+                    renderDropdown('status', data.statuses, 'Status');
+                    renderDropdown('ageRating', data.ageRatings, 'Rating Usia');
+                    
+                    const genreContainer = document.getElementById('genreCheckboxContainer');
+                    genreContainer.innerHTML = '';
+                    if(data.genres && data.genres.length > 0) {
+                        data.genres.forEach(genre => {
+                            genreContainer.innerHTML += `<label><input type="checkbox" value="${genre}" class="genre-check"> ${genre}</label>`;
+                        });
+                    } else {
+                        genreContainer.innerHTML = '<span class="help-text">Belum ada data genre.</span>';
+                    }
+                });
+            } catch (error) {
+                console.error(error);
+                alert("Gagal memuat sistem Kategori. Pastikan aturan Firestore Rules sudah di-update!");
+            }
         }
 
-        // Fungsi Helper untuk merender list & dropdown
         function renderMasterList(id, dataArray, field) {
             const el = document.getElementById(id);
             el.innerHTML = '';
-            if(dataArray) dataArray.forEach(val => el.innerHTML += `<li>${val} <button class="btn-delete" onclick="window.removeMasterDataFirebase('${field}', '${val}')"><i class="fa-solid fa-trash-can"></i></button></li>`);
+            if(dataArray && dataArray.length > 0) {
+                dataArray.forEach(val => el.innerHTML += `<li>${val} <button type="button" class="btn-delete" onclick="window.removeMasterDataFirebase('${field}', '${val}')"><i class="fa-solid fa-trash-can"></i></button></li>`);
+            } else {
+                el.innerHTML = '<li style="color:#888; justify-content:center; font-size:12px;">Data kosong</li>';
+            }
         }
+
         function renderDropdown(id, dataArray, placeholder) {
             const el = document.getElementById(id);
             el.innerHTML = `<option value="">Pilih ${placeholder}...</option>`;
             if(dataArray) dataArray.forEach(val => el.innerHTML += `<option value="${val}">${val}</option>`);
         }
 
-        // Fungsi Tambah/Hapus Master Data (Global via Window)
         window.addMasterDataFirebase = async function(field, inputId) {
             const inputEl = document.getElementById(inputId);
             const val = inputEl.value.trim();
             if (val === "") return;
-            await updateDoc(masterDocRef, { [field]: arrayUnion(val) });
-            inputEl.value = ""; 
+            
+            try {
+                await updateDoc(masterDocRef, { [field]: arrayUnion(val) });
+                inputEl.value = ""; 
+            } catch (error) {
+                alert("Gagal menyimpan data! Error: " + error.message);
+            }
         };
+
         window.removeMasterDataFirebase = async function(field, val) {
-            if(confirm(`Hapus "${val}"?`)) await updateDoc(masterDocRef, { [field]: arrayRemove(val) });
+            if(confirm(`Hapus "${val}"?`)) {
+                try {
+                    await updateDoc(masterDocRef, { [field]: arrayRemove(val) });
+                } catch (error) {
+                    alert("Gagal menghapus data! Error: " + error.message);
+                }
+            }
         };
 
         /* =========================================
@@ -461,7 +478,7 @@
 
                 snapshot.forEach(docSnap => {
                     const data = docSnap.data();
-                    const isPub = data.isPublished !== false; // Bawaan true
+                    const isPub = data.isPublished !== false; 
 
                     tbody.innerHTML += `
                         <tr>
@@ -478,7 +495,7 @@
                                 </label>
                             </td>
                             <td>
-                                <button class="btn-delete" onclick="window.deleteComic('${docSnap.id}')" title="Hapus"><i class="fa-solid fa-trash-can"></i></button>
+                                <button type="button" class="btn-delete" onclick="window.deleteComic('${docSnap.id}')" title="Hapus"><i class="fa-solid fa-trash-can"></i></button>
                             </td>
                         </tr>
                     `;
@@ -488,18 +505,23 @@
             }
         };
 
-        // Fungsi Toggle Publish / Unpublish
         window.togglePublish = async function(id, status) {
             try {
                 await updateDoc(doc(db, "comics", id), { isPublished: status });
-            } catch (e) { alert("Gagal memperbarui status!"); window.loadComicsList(); }
+            } catch (e) { 
+                alert("Gagal memperbarui status!"); 
+                window.loadComicsList(); 
+            }
         };
 
-        // Fungsi Hapus Komik
         window.deleteComic = async function(id) {
             if(confirm("Yakin ingin menghapus komik ini permanen?")) {
-                await deleteDoc(doc(db, "comics", id));
-                window.loadComicsList();
+                try {
+                    await deleteDoc(doc(db, "comics", id));
+                    window.loadComicsList();
+                } catch(e) {
+                    alert("Gagal menghapus komik.");
+                }
             }
         };
 
@@ -508,7 +530,10 @@
            ========================================= */
         document.getElementById('uploadForm').addEventListener('submit', async (e) => {
             e.preventDefault();
-            uploadStatus.innerText = "Mengunggah cover..."; uploadStatus.style.display = "block"; uploadStatus.style.background = "#e5f1ff"; uploadStatus.style.color = "var(--primary)";
+            uploadStatus.innerText = "Mengunggah cover..."; 
+            uploadStatus.style.display = "block"; 
+            uploadStatus.style.background = "#e5f1ff"; 
+            uploadStatus.style.color = "var(--primary)";
             
             const currentSecretKey = secretKeyInput.value;
             const formData = new FormData();
@@ -537,23 +562,24 @@
                     coverUrl: workerData.url, 
                     uploader: auth.currentUser.email,
                     views: 0,
-                    isPublished: true, // Default langsung publish
+                    isPublished: true, 
                     createdAt: serverTimestamp()
                 });
 
                 uploadStatus.innerText = "✅ Komik Baru Berhasil Dipublikasikan!";
-                uploadStatus.style.color = "var(--success)"; uploadStatus.style.background = "#e5ffef";
+                uploadStatus.style.color = "var(--success)"; 
+                uploadStatus.style.background = "#e5ffef";
                 
                 document.getElementById('uploadForm').reset();
                 document.getElementById('coverPreview').style.display = 'none';
                 secretKeyInput.value = currentSecretKey; 
-
-                // Refresh List Komik di tabel
-                window.loadComicsList();
+                
+                window.loadComicsList(); // Update tabel daftar komik
 
             } catch (error) {
                 uploadStatus.innerText = "❌ Error: " + error.message;
-                uploadStatus.style.color = "var(--danger)"; uploadStatus.style.background = "#ffe5e6";
+                uploadStatus.style.color = "var(--danger)"; 
+                uploadStatus.style.background = "#ffe5e6";
             }
         });
     </script>
@@ -569,7 +595,6 @@
 
             if(window.innerWidth <= 992) toggleSidebar();
             
-            // Jika masuk ke tab daftar komik, panggil ulang data agar paling fresh
             if(viewId === 'view-daftar' && typeof window.loadComicsList === 'function') {
                 window.loadComicsList();
             }

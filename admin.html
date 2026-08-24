@@ -68,7 +68,7 @@
         .form-group.full-width { grid-column: 1 / -1; }
         
         label { display: block; font-weight: 600; margin-bottom: 8px; font-size: 13px; color: #444; }
-        input[type="text"], input[type="email"], input[type="password"], select, textarea { width: 100%; padding: 12px 15px; border: 1px solid var(--border); border-radius: 8px; font-size: 14px; background: #f8fafc; outline: none; }
+        input[type="text"], input[type="number"], input[type="email"], input[type="password"], select, textarea { width: 100%; padding: 12px 15px; border: 1px solid var(--border); border-radius: 8px; font-size: 14px; background: #f8fafc; outline: none; }
         input:focus, select:focus, textarea:focus { border-color: var(--primary); box-shadow: 0 0 0 3px rgba(67, 97, 238, 0.1); background: var(--white); }
         textarea { resize: vertical; min-height: 100px; }
         
@@ -180,7 +180,6 @@
                             <div class="form-grid">
                                 <div class="form-group full-width">
                                     <label style="color: var(--primary);"><i class="fa-solid fa-key"></i> Kunci Rahasia Worker (X-Admin-Key)</label>
-                                    <!-- ID DI BAWAH INI TELAH DIPERBAIKI KEMBALI MENJADI "secretKey" -->
                                     <input type="password" id="secretKey" required placeholder="Masukkan Secret Key R2...">
                                 </div>
                                 <div class="form-group full-width"><hr style="border: 0; border-top: 1px solid var(--border);"></div>
@@ -247,21 +246,83 @@
                         <table class="comic-table">
                             <thead>
                                 <tr>
-                                    <th width="80">Cover</th>
+                                    <th width="70">Cover</th>
                                     <th>Detail Komik</th>
                                     <th>Author</th>
-                                    <th width="100">Publish</th>
-                                    <th width="80">Aksi</th>
+                                    <!-- TAMBAHAN: Kolom Tanggal Terbit -->
+                                    <th width="110">Tanggal</th>
+                                    <th width="80">Publish</th>
+                                    <th width="70">Aksi</th>
                                 </tr>
                             </thead>
                             <tbody id="comicListTableBody">
-                                <tr><td colspan="5" style="text-align: center;">Memuat data...</td></tr>
+                                <tr><td colspan="6" style="text-align: center;">Memuat data...</td></tr>
                             </tbody>
                         </table>
                     </div>
                 </div>
 
-                <!-- VIEW 3: KATEGORI & GENRE (Data Master) -->
+                <!-- VIEW 3: KELOLA CHAPTER (BARU DITAMBAHKAN) -->
+                <div id="view-chapter" class="admin-view">
+                    <h1 class="page-title">Kelola Chapter Komik</h1>
+                    
+                    <!-- Form Tambah Chapter -->
+                    <div class="card" style="margin-bottom: 25px;">
+                        <form id="uploadChapterForm">
+                            <div class="form-grid">
+                                <div class="form-group full-width">
+                                    <label>Pilih Komik *</label>
+                                    <select id="chapterComicSelect" required><option value="">Memuat data...</option></select>
+                                </div>
+                                <div class="form-group">
+                                    <label>Nomor Chapter *</label>
+                                    <input type="number" step="0.1" id="chapterNumber" required placeholder="Contoh: 1 atau 1.5">
+                                </div>
+                                <div class="form-group">
+                                    <label>Judul Chapter (Opsional)</label>
+                                    <input type="text" id="chapterTitle" placeholder="Contoh: Awal Petualangan">
+                                </div>
+                                <div class="form-group full-width">
+                                    <label>Gambar Chapter (Bisa pilih LEBIH DARI 1 gambar) *</label>
+                                    <div class="upload-area">
+                                        <i class="fa-solid fa-images"></i>
+                                        <p style="font-size: 14px; font-weight: 500;">Blok & Pilih banyak gambar sekaligus (.jpg, .png)</p>
+                                        <input type="file" id="chapterImages" accept="image/*" multiple required>
+                                    </div>
+                                    <div id="chapterImagesPreview" style="display:flex; gap:10px; flex-wrap:wrap; margin-top:15px;"></div>
+                                </div>
+                            </div>
+                            <button type="submit" class="btn-submit"><i class="fa-solid fa-upload"></i> Upload & Terbitkan Chapter</button>
+                        </form>
+                        <div id="chapterUploadStatus" class="status-msg"></div>
+                    </div>
+
+                    <!-- Tabel Daftar Chapter -->
+                    <div class="card" style="padding: 10px 25px;">
+                        <div style="margin: 15px 0;">
+                            <label style="color: var(--primary);">Filter Daftar Chapter berdasarkan Komik:</label>
+                            <select id="filterChapterComic" onchange="window.loadChaptersList()" style="width:100%; max-width:400px; padding:10px; border-radius:6px; border:1px solid var(--border);">
+                                <option value="">Memuat data...</option>
+                            </select>
+                        </div>
+                        <table class="comic-table">
+                            <thead>
+                                <tr>
+                                    <th width="100">Chapter</th>
+                                    <th>Judul Chapter</th>
+                                    <th width="120">Total Gambar</th>
+                                    <th width="120">Tanggal</th>
+                                    <th width="80">Aksi</th>
+                                </tr>
+                            </thead>
+                            <tbody id="chapterListTableBody">
+                                <tr><td colspan="5" style="text-align: center;">Silakan pilih komik di atas...</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- VIEW 4: KATEGORI & GENRE (Data Master) -->
                 <div id="view-kategori" class="admin-view">
                     <h1 class="page-title">Kelola Data Master</h1>
                     <p style="color: var(--text-muted); margin-bottom: 20px; font-size: 14px;">Data yang ditambah akan tersimpan di Firebase dan muncul di form Tambah Komik.</p>
@@ -316,7 +377,6 @@
                 </div>
                 
                 <div id="view-dashboard" class="admin-view"><h1 class="page-title">Dashboard Analitik</h1><div class="card"><p>Statistik segera hadir.</p></div></div>
-                <div id="view-chapter" class="admin-view"><h1 class="page-title">Kelola Chapter</h1><div class="card"><p>Fitur upload chapter segera hadir.</p></div></div>
                 <div id="view-pengaturan" class="admin-view"><h1 class="page-title">Pengaturan</h1><div class="card"><p>Pengaturan web.</p></div></div>
 
             </div>
@@ -326,7 +386,7 @@
     <!-- ==================== SCRIPT FIREBASE LOGIC ==================== -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-        import { getFirestore, collection, addDoc, serverTimestamp, doc, getDoc, setDoc, updateDoc, arrayUnion, arrayRemove, onSnapshot, query, orderBy, getDocs, deleteDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+        import { getFirestore, collection, addDoc, serverTimestamp, doc, getDoc, setDoc, updateDoc, arrayUnion, arrayRemove, onSnapshot, query, orderBy, getDocs, deleteDoc, where } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
         import { getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
 
         const firebaseConfig = {
@@ -467,28 +527,44 @@
            ========================================= */
         window.loadComicsList = async function() {
             const tbody = document.getElementById('comicListTableBody');
+            
+            // Elemen dropdown untuk menu Kelola Chapter
+            const chapterSelect = document.getElementById('chapterComicSelect');
+            const filterSelect = document.getElementById('filterChapterComic');
+            
             try {
                 const q = query(collection(db, "comics"), orderBy("createdAt", "desc"));
                 const snapshot = await getDocs(q);
+                
                 tbody.innerHTML = '';
+                let optionsHTML = '<option value="">Pilih Komik...</option>';
                 
                 if (snapshot.empty) {
-                    tbody.innerHTML = '<tr><td colspan="5" style="text-align:center;">Belum ada komik terpublish.</td></tr>';
+                    tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;">Belum ada komik terpublish.</td></tr>';
+                    chapterSelect.innerHTML = optionsHTML;
+                    filterSelect.innerHTML = optionsHTML;
                     return;
                 }
 
                 snapshot.forEach(docSnap => {
                     const data = docSnap.data();
                     const isPub = data.isPublished !== false; 
+                    
+                    // Format Tanggal Terbit
+                    const date = data.createdAt ? data.createdAt.toDate().toLocaleDateString('id-ID', {day:'numeric', month:'short', year:'numeric'}) : '-';
+                    
+                    // Tambahkan ke opsi dropdown Chapter
+                    optionsHTML += `<option value="${docSnap.id}">${data.title}</option>`;
 
                     tbody.innerHTML += `
                         <tr>
-                            <td><img src="${data.coverUrl}" style="width: 50px; height: 70px; object-fit: cover; border-radius: 6px; box-shadow: 0 2px 5px rgba(0,0,0,0.1);"></td>
+                            <td><img src="${data.coverUrl}" style="width: 50px; height: 70px; object-fit: cover; border-radius: 6px; box-shadow: 0 2px 5px rgba(0,0,0,0.1);" onerror="this.src='https://placehold.co/50x70?text=Error'"></td>
                             <td>
                                 <strong>${data.title}</strong><br>
                                 <span style="font-size: 11px; color: #888;">${data.type || '-'} • ${data.status || '-'}</span>
                             </td>
                             <td>${data.author || '-'}</td>
+                            <td><span style="font-size: 13px; font-weight: 500;">${date}</span></td>
                             <td>
                                 <label class="toggle-switch">
                                     <input type="checkbox" ${isPub ? 'checked' : ''} onchange="window.togglePublish('${docSnap.id}', this.checked)">
@@ -501,6 +577,11 @@
                         </tr>
                     `;
                 });
+                
+                // Update dropdown menu Kelola Chapter
+                chapterSelect.innerHTML = optionsHTML;
+                filterSelect.innerHTML = optionsHTML;
+
             } catch (e) {
                 console.error(e);
             }
@@ -516,7 +597,7 @@
         };
 
         window.deleteComic = async function(id) {
-            if(confirm("Yakin ingin menghapus komik ini permanen?")) {
+            if(confirm("Yakin ingin menghapus komik ini permanen beserta seluruh chapternya?")) {
                 try {
                     await deleteDoc(doc(db, "comics", id));
                     window.loadComicsList();
@@ -527,7 +608,7 @@
         };
 
         /* =========================================
-           PROSES UPLOAD KOMIK
+           PROSES UPLOAD KOMIK BARU
            ========================================= */
         document.getElementById('uploadForm').addEventListener('submit', async (e) => {
             e.preventDefault();
@@ -575,7 +656,7 @@
                 document.getElementById('coverPreview').style.display = 'none';
                 secretKeyInput.value = currentSecretKey; 
                 
-                window.loadComicsList(); // Update tabel daftar komik
+                window.loadComicsList(); // Update tabel daftar komik & opsi dropdown
 
             } catch (error) {
                 uploadStatus.innerText = "❌ Error: " + error.message;
@@ -583,6 +664,146 @@
                 uploadStatus.style.background = "#ffe5e6";
             }
         });
+
+        /* =========================================
+           LOGIKA KELOLA CHAPTER (MULTIPLE UPLOAD)
+           ========================================= */
+           
+        // Tampilkan Preview Semua Gambar Chapter
+        document.getElementById('chapterImages').addEventListener('change', function(e) {
+            const previewContainer = document.getElementById('chapterImagesPreview');
+            previewContainer.innerHTML = '';
+            
+            Array.from(this.files).forEach(file => {
+                const reader = new FileReader();
+                reader.onload = function(event) {
+                    previewContainer.innerHTML += `<img src="${event.target.result}" style="width: 50px; height: 75px; object-fit: cover; border-radius: 4px; border: 1px solid #ccc; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">`;
+                }
+                reader.readAsDataURL(file);
+            });
+        });
+
+        // Proses Upload & Simpan Chapter
+        document.getElementById('uploadChapterForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const statusEl = document.getElementById('chapterUploadStatus');
+            const comicId = document.getElementById('chapterComicSelect').value;
+            const chapterNum = document.getElementById('chapterNumber').value;
+            const chapterTitle = document.getElementById('chapterTitle').value;
+            const files = document.getElementById('chapterImages').files;
+            
+            if(!comicId || files.length === 0) {
+                alert("Mohon pilih komik dan masukkan minimal 1 gambar!"); return;
+            }
+
+            statusEl.style.display = "block"; 
+            statusEl.style.background = "#e5f1ff"; 
+            statusEl.style.color = "var(--primary)";
+            
+            const currentSecretKey = secretKeyInput.value;
+            let uploadedUrls = [];
+
+            try {
+                // Loop upload tiap gambar ke Cloudflare
+                for(let i = 0; i < files.length; i++) {
+                    statusEl.innerText = `Mengunggah gambar ${i+1} dari ${files.length} ...`;
+                    
+                    const formData = new FormData();
+                    formData.append('coverImage', files[i]); // Gunakan rute endpoint R2 yang sama
+
+                    const workerResponse = await fetch(WORKER_URL, { method: 'POST', headers: { 'X-Admin-Key': currentSecretKey }, body: formData });
+                    const workerData = await workerResponse.json();
+                    
+                    if (!workerResponse.ok) throw new Error(workerData.error || "Gagal upload gambar ke server.");
+                    uploadedUrls.push(workerData.url);
+                }
+
+                statusEl.innerText = "Menyimpan data chapter ke Database Firebase...";
+                
+                // Simpan chapter ke Sub-Koleksi di dalam dokumen Komik tersebut
+                const chaptersRef = collection(db, "comics", comicId, "chapters");
+                await addDoc(chaptersRef, {
+                    chapterNumber: parseFloat(chapterNum),
+                    title: chapterTitle,
+                    images: uploadedUrls,
+                    createdAt: serverTimestamp()
+                });
+
+                statusEl.innerText = "✅ Chapter Berhasil Ditambahkan!";
+                statusEl.style.color = "var(--success)"; statusEl.style.background = "#e5ffef";
+                
+                document.getElementById('uploadChapterForm').reset();
+                document.getElementById('chapterImagesPreview').innerHTML = '';
+                
+                // Segarkan tabel daftar chapter jika filter sedang memilih komik yg sama
+                if(document.getElementById('filterChapterComic').value === comicId) {
+                    window.loadChaptersList();
+                }
+
+            } catch (error) {
+                statusEl.innerText = "❌ Error: " + error.message;
+                statusEl.style.color = "var(--danger)"; statusEl.style.background = "#ffe5e6";
+            }
+        });
+
+        // Muat Daftar Chapter berdasarkan Komik Pilihan
+        window.loadChaptersList = async function() {
+            const comicId = document.getElementById('filterChapterComic').value;
+            const tbody = document.getElementById('chapterListTableBody');
+            
+            if(!comicId) {
+                tbody.innerHTML = '<tr><td colspan="5" style="text-align: center;">Silakan pilih komik di atas...</td></tr>';
+                return;
+            }
+            
+            tbody.innerHTML = '<tr><td colspan="5" style="text-align: center;">Memuat chapter...</td></tr>';
+            
+            try {
+                const chaptersRef = collection(db, "comics", comicId, "chapters");
+                const snapshot = await getDocs(chaptersRef);
+                
+                let chapters = [];
+                snapshot.forEach(doc => chapters.push({ id: doc.id, ...doc.data() }));
+                
+                // Urutkan dari chapter terbesar ke terkecil
+                chapters.sort((a, b) => b.chapterNumber - a.chapterNumber);
+                
+                tbody.innerHTML = '';
+                if(chapters.length === 0) {
+                    tbody.innerHTML = '<tr><td colspan="5" style="text-align: center;">Belum ada chapter untuk komik ini.</td></tr>';
+                    return;
+                }
+                
+                chapters.forEach(ch => {
+                    const date = ch.createdAt ? ch.createdAt.toDate().toLocaleDateString('id-ID', {day:'numeric', month:'short', year:'numeric'}) : '-';
+                    tbody.innerHTML += `
+                        <tr>
+                            <td><strong>Chapter ${ch.chapterNumber}</strong></td>
+                            <td>${ch.title || '-'}</td>
+                            <td>${ch.images ? ch.images.length : 0} Halaman</td>
+                            <td><span style="font-size: 13px;">${date}</span></td>
+                            <td>
+                                <button type="button" class="btn-delete" onclick="window.deleteChapter('${comicId}', '${ch.id}')" title="Hapus"><i class="fa-solid fa-trash-can"></i></button>
+                            </td>
+                        </tr>
+                    `;
+                });
+            } catch(e) {
+                console.error(e);
+                tbody.innerHTML = '<tr><td colspan="5" style="text-align: center; color: red;">Gagal memuat chapter.</td></tr>';
+            }
+        }
+
+        window.deleteChapter = async function(comicId, chapterId) {
+            if(confirm("Yakin ingin menghapus chapter ini secara permanen?")) {
+                try {
+                    await deleteDoc(doc(db, "comics", comicId, "chapters", chapterId));
+                    window.loadChaptersList();
+                } catch(e) {
+                    alert("Gagal menghapus chapter.");
+                }
+            }
+        }
     </script>
 
     <!-- SCRIPT INTERAKSI UI (Tabs) -->

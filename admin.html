@@ -180,7 +180,8 @@
                             <div class="form-grid">
                                 <div class="form-group full-width">
                                     <label style="color: var(--primary);"><i class="fa-solid fa-key"></i> Kunci Rahasia Worker (X-Admin-Key)</label>
-                                    <input type="password" id="Yarch_12" required placeholder="Masukkan Secret Key R2...">
+                                    <!-- ID DI BAWAH INI TELAH DIPERBAIKI KEMBALI MENJADI "secretKey" -->
+                                    <input type="password" id="secretKey" required placeholder="Masukkan Secret Key R2...">
                                 </div>
                                 <div class="form-group full-width"><hr style="border: 0; border-top: 1px solid var(--border);"></div>
 
@@ -347,7 +348,7 @@
         const uploadStatus = document.getElementById('uploadStatus');
         const secretKeyInput = document.getElementById('secretKey');
         
-        if (localStorage.getItem('workerSecretKey')) {
+        if (localStorage.getItem('workerSecretKey') && secretKeyInput) {
             secretKeyInput.value = localStorage.getItem('workerSecretKey');
         }
 

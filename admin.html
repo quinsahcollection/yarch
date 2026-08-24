@@ -11,17 +11,18 @@
     
     <style>
         :root {
-            --primary: #4361ee;
-            --primary-hover: #3a53d0;
+            --primary: #2563eb;
+            --primary-hover: #1d4ed8;
             --sidebar-bg: #1e1e2d;
             --sidebar-hover: #2b2b40;
             --bg-light: #f5f6fa;
             --text-dark: #2b2b2b;
-            --text-muted: #888ea8;
-            --border: #e0e6ed;
+            --text-muted: #64748b;
+            --border: #e2e8f0;
             --white: #ffffff;
-            --danger: #e7515a;
-            --success: #00ab55;
+            --danger: #ef4444;
+            --success: #10b981;
+            --light-blue: #eff6ff;
         }
 
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; }
@@ -31,7 +32,7 @@
         .hidden { display: none !important; }
 
         /* ==================== LOGIN SCREEN ==================== */
-        .login-wrapper { height: 100vh; display: flex; align-items: center; justify-content: center; background: linear-gradient(135deg, rgba(67, 97, 238, 0.1) 0%, rgba(67, 97, 238, 0.05) 100%); }
+        .login-wrapper { height: 100vh; display: flex; align-items: center; justify-content: center; background: linear-gradient(135deg, rgba(37, 99, 235, 0.1) 0%, rgba(37, 99, 235, 0.05) 100%); }
         .login-card { background: var(--white); padding: 40px; border-radius: 16px; box-shadow: 0 10px 30px rgba(0,0,0,0.05); width: 100%; max-width: 400px; }
         .login-card h2 { text-align: center; margin-bottom: 25px; color: var(--sidebar-bg); }
         .login-card .fa-book-open { display: block; text-align: center; font-size: 40px; color: var(--primary); margin-bottom: 10px; }
@@ -41,12 +42,12 @@
 
         .sidebar { width: 260px; background: var(--sidebar-bg); color: var(--white); display: flex; flex-direction: column; transition: all 0.3s ease; position: fixed; height: 100vh; z-index: 1000; }
         .sidebar-header { padding: 20px; font-size: 20px; font-weight: 700; border-bottom: 1px solid rgba(255,255,255,0.05); display: flex; align-items: center; gap: 10px; }
-        .sidebar-header i { color: var(--primary); }
+        .sidebar-header i { color: #38bdf8; }
         .sidebar-menu { list-style: none; padding: 20px 0; flex-grow: 1; }
         .sidebar-menu li { padding: 0 15px; margin-bottom: 5px; }
         .sidebar-menu a { display: flex; align-items: center; gap: 12px; padding: 12px 15px; color: #a0a5b1; text-decoration: none; border-radius: 8px; font-weight: 500; transition: all 0.2s; cursor: pointer; }
         .sidebar-menu a:hover, .sidebar-menu a.active { background: var(--sidebar-hover); color: var(--white); }
-        .sidebar-menu a.active i { color: var(--primary); }
+        .sidebar-menu a.active i { color: #38bdf8; }
 
         .main-content { flex-grow: 1; margin-left: 260px; display: flex; flex-direction: column; transition: all 0.3s ease; width: calc(100% - 260px); }
 
@@ -68,8 +69,8 @@
         .form-group.full-width { grid-column: 1 / -1; }
         
         label { display: block; font-weight: 600; margin-bottom: 8px; font-size: 13px; color: #444; }
-        input[type="text"], input[type="number"], input[type="email"], input[type="password"], select, textarea { width: 100%; padding: 12px 15px; border: 1px solid var(--border); border-radius: 8px; font-size: 14px; background: #f8fafc; outline: none; }
-        input:focus, select:focus, textarea:focus { border-color: var(--primary); box-shadow: 0 0 0 3px rgba(67, 97, 238, 0.1); background: var(--white); }
+        input[type="text"], input[type="number"], input[type="email"], input[type="password"], select, textarea { width: 100%; padding: 12px 15px; border: 1px solid var(--border); border-radius: 8px; font-size: 14px; background: #f8fafc; outline: none; transition: 0.2s; }
+        input:focus, select:focus, textarea:focus { border-color: var(--primary); box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1); background: var(--white); }
         textarea { resize: vertical; min-height: 100px; }
         
         .help-text { font-size: 11px; color: var(--text-muted); margin-top: 5px; display: block; }
@@ -97,31 +98,46 @@
 
         /* ==================== CLOUD GALLERY MODAL ==================== */
         .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); z-index: 2000; display: flex; align-items: center; justify-content: center; backdrop-filter: blur(4px); }
-        .modal-container { background: var(--white); width: 95%; max-width: 900px; height: 90vh; border-radius: 16px; display: flex; flex-direction: column; overflow: hidden; box-shadow: 0 15px 40px rgba(0,0,0,0.2); animation: fadeIn 0.3s; }
+        .modal-container { background: var(--bg-light); width: 98%; max-width: 1000px; height: 90vh; border-radius: 16px; display: flex; flex-direction: column; overflow: hidden; box-shadow: 0 15px 40px rgba(0,0,0,0.2); animation: fadeIn 0.3s; }
         
-        .modal-header { padding: 20px; border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; background: #f8fafc; }
-        .modal-header h3 { font-size: 18px; color: var(--sidebar-bg); margin: 0; }
+        .modal-header { padding: 20px; border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; background: var(--white); }
+        .modal-header h3 { font-size: 18px; color: var(--sidebar-bg); margin: 0; display: flex; align-items: center; gap: 8px; }
         .modal-actions { display: flex; gap: 10px; align-items: center; }
-        .btn-success-sm { background: var(--success); color: white; border: none; padding: 8px 16px; border-radius: 6px; cursor: pointer; font-weight: 600; }
+        .btn-success-sm { background: var(--success); color: white; border: none; padding: 10px 18px; border-radius: 20px; cursor: pointer; font-weight: 600; font-size: 14px; display: flex; align-items: center; gap: 8px; }
         .btn-close { background: none; border: none; font-size: 24px; cursor: pointer; color: var(--text-muted); }
         
-        .modal-toolbar { padding: 15px 20px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border); background: white; flex-wrap: wrap; gap: 10px; }
-        .tabs-cloud { display: flex; gap: 10px; }
-        .tab-cloud { padding: 8px 20px; border: 1px solid var(--border); background: #fff; border-radius: 20px; cursor: pointer; font-weight: 600; font-size: 13px; color: var(--text-muted); }
-        .tab-cloud.active { background: var(--primary); color: white; border-color: var(--primary); }
+        .modal-toolbar { padding: 15px 20px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border); background: var(--white); flex-wrap: wrap; gap: 15px; }
+        .tabs-cloud { display: flex; gap: 10px; background: #f1f5f9; padding: 4px; border-radius: 30px; }
+        .tab-cloud { padding: 8px 24px; border-radius: 30px; cursor: pointer; font-weight: 600; font-size: 13px; color: var(--text-muted); transition: 0.2s; }
+        .tab-cloud.active { background: #06b6d4; color: white; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
         
         .btn-upload-cloud { background: var(--sidebar-bg); color: white; border: none; padding: 10px 20px; border-radius: 8px; cursor: pointer; font-weight: 600; font-size: 13px; display: flex; align-items: center; gap: 8px; }
         .btn-upload-cloud:hover { background: var(--sidebar-hover); }
 
-        .gallery-grid { flex-grow: 1; padding: 20px; overflow-y: auto; display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 15px; background: #f8fafc; }
-        .gallery-item { position: relative; border-radius: 8px; overflow: hidden; cursor: pointer; border: 2px solid transparent; background: white; box-shadow: 0 2px 5px rgba(0,0,0,0.05); aspect-ratio: 1/1.4; transition: 0.2s; }
-        .gallery-item img { width: 100%; height: 100%; object-fit: cover; }
-        .gallery-item video { width: 100%; height: 100%; object-fit: cover; }
-        .gallery-item:hover { transform: translateY(-3px); box-shadow: 0 5px 15px rgba(0,0,0,0.1); }
-        .gallery-item.selected { border-color: var(--primary); }
-        .gallery-item.selected::after { content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(67, 97, 238, 0.2); pointer-events: none; }
+        .gallery-grid { flex-grow: 1; padding: 20px; overflow-y: auto; display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 15px; background: var(--bg-light); }
         
-        .order-badge { position: absolute; top: 8px; right: 8px; background: var(--primary); color: white; width: 26px; height: 26px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 12px; border: 2px solid white; z-index: 10; box-shadow: 0 2px 5px rgba(0,0,0,0.3); }
+        /* MODERN CARD STYLE FOR MEDIA GALLERY */
+        .media-card { background: var(--white); border-radius: 10px; border: 1px solid var(--border); overflow: hidden; display: flex; flex-direction: column; transition: 0.2s; position: relative; }
+        .media-card:hover { box-shadow: 0 5px 15px rgba(0,0,0,0.08); transform: translateY(-3px); }
+        .media-card.selected { border-color: var(--primary); border-width: 2px; }
+        
+        .media-thumb { width: 100%; aspect-ratio: 1/1.2; position: relative; background: #f8fafc; border-bottom: 1px solid var(--border); cursor: pointer; }
+        .media-thumb img, .media-thumb video { width: 100%; height: 100%; object-fit: cover; }
+        
+        /* CHECKBOX CIRCLE */
+        .check-circle { position: absolute; top: 10px; left: 10px; width: 28px; height: 28px; border-radius: 50%; border: 2px solid var(--white); background: rgba(0,0,0,0.3); display: flex; align-items: center; justify-content: center; color: transparent; font-weight: bold; font-size: 13px; transition: 0.2s; z-index: 5; box-shadow: 0 2px 4px rgba(0,0,0,0.2); }
+        .media-card.selected .check-circle { background: var(--primary); color: white; border-color: var(--primary); }
+        
+        .media-info { padding: 10px; text-align: center; font-size: 12px; color: var(--text-muted); font-weight: 500; }
+        .media-actions { padding: 0 10px 15px; display: flex; gap: 8px; }
+        
+        .btn-pilih { flex: 1; background: var(--primary); color: white; border: none; padding: 8px; border-radius: 6px; font-weight: 600; font-size: 13px; cursor: pointer; transition: 0.2s; }
+        .media-card.selected .btn-pilih { background: var(--success); }
+        
+        .btn-icon-outline { background: transparent; border: 1px solid var(--border); border-radius: 6px; width: 32px; height: 32px; display: flex; align-items: center; justify-content: center; cursor: pointer; color: var(--text-muted); transition: 0.2s; }
+        .btn-icon-outline:hover { background: #f1f5f9; }
+        .btn-icon-outline.text-danger { color: var(--danger); border-color: #fecaca; }
+        .btn-icon-outline.text-danger:hover { background: #fee2e2; }
 
         /* Preview Selected in Form */
         .selected-media-preview { display: flex; gap: 12px; flex-wrap: wrap; margin-top: 15px; }
@@ -334,7 +350,7 @@
                                     <button type="button" class="btn-upload-cloud" style="width:100%; justify-content:center; padding:15px; font-size:15px;" onclick="openMediaGallery()">
                                         <i class="fa-solid fa-images"></i> Buka Galeri Media Cloud
                                     </button>
-                                    <div class="help-text" style="text-align:center; margin-top:8px;">Anda bisa mengurutkan 100+ gambar atau memilih video dari Galeri.</div>
+                                    <div class="help-text" style="text-align:center; margin-top:8px;">Anda bisa mengurutkan ratusan gambar atau memilih video dari Galeri.</div>
                                     
                                     <!-- Tempat Munculnya Preview Urutan Media yang dipilih -->
                                     <div id="selectedMediaPreview" class="selected-media-preview"></div>
@@ -451,8 +467,8 @@
                     <div class="tab-cloud active" id="tabFoto" onclick="switchGalleryTab('image')">Foto</div>
                     <div class="tab-cloud" id="tabVideo" onclick="switchGalleryTab('video')">Video / Film</div>
                 </div>
-                <div style="display:flex; gap:10px; align-items:center;">
-                    <select id="galleryComicFilter" onchange="window.loadCloudGallery()" style="padding:8px 12px; border-radius:6px; border:1px solid var(--border); outline:none;">
+                <div style="display:flex; gap:10px; align-items:center; flex-wrap:wrap;">
+                    <select id="galleryComicFilter" onchange="window.loadCloudGallery()" style="padding:10px 15px; border-radius:8px; border:1px solid var(--border); outline:none; font-size:14px; min-width:200px;">
                         <option value="">Semua Folder Komik...</option>
                     </select>
                     <button class="btn-upload-cloud" onclick="document.getElementById('cloudUploadInput').click()">
@@ -463,13 +479,12 @@
                 </div>
             </div>
             
-            <div id="galleryUploadStatus" style="display:none; padding:10px; background:#e5f1ff; color:var(--primary); text-align:center; font-weight:600; font-size:13px;">
-                Mengunggah 0 / 0 file ke server Cloudflare...
+            <div id="galleryUploadStatus" style="display:none; padding:12px; background:#eff6ff; color:var(--primary); text-align:center; font-weight:600; font-size:14px; border-bottom: 1px solid #bfdbfe;">
+                <i class="fa-solid fa-spinner fa-spin"></i> Mengunggah file ke Server Cloud...
             </div>
 
-            <div class="gallery-grid" id="cloudGalleryGrid">
-                <!-- Media items will be injected here -->
-            </div>
+            <!-- Di sinilah Kartu Media yang cantik akan muncul -->
+            <div class="gallery-grid" id="cloudGalleryGrid"></div>
         </div>
     </div>
 
@@ -602,7 +617,7 @@
                 const snapshot = await getDocs(q);
                 
                 tbody.innerHTML = '';
-                allComicsList = []; // Reset array
+                allComicsList = []; 
                 
                 if (snapshot.empty) {
                     tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;">Belum ada komik terpublish.</td></tr>';
@@ -616,7 +631,6 @@
                     const isPub = data.isPublished !== false; 
                     const date = data.createdAt ? data.createdAt.toDate().toLocaleDateString('id-ID', {day:'numeric', month:'short', year:'numeric'}) : '-';
                     
-                    // Push to array for Custom Select Dropdown
                     allComicsList.push({ id: docSnap.id, title: data.title });
 
                     tbody.innerHTML += `
@@ -641,11 +655,9 @@
                     `;
                 });
                 
-                // Render Searchable Dropdowns for Chapter Selection
                 renderSearchableOptions('chapterComicList', 'chapterComicId', 'chapterComicSearch', allComicsList);
                 renderSearchableOptions('filterChapterList', 'filterChapterId', 'filterChapterSearch', allComicsList);
                 
-                // Render Dropdown untuk Filter di Galeri Cloud
                 const galleryFilter = document.getElementById('galleryComicFilter');
                 let galOptions = '<option value="">Semua Folder Komik...</option>';
                 allComicsList.forEach(c => galOptions += `<option value="${c.id}">${c.title}</option>`);
@@ -678,7 +690,7 @@
            ========================================= */
         document.getElementById('uploadForm').addEventListener('submit', async (e) => {
             e.preventDefault();
-            uploadStatus.innerText = "Mengunggah cover..."; uploadStatus.style.display = "block"; uploadStatus.style.background = "#e5f1ff"; uploadStatus.style.color = "var(--primary)";
+            uploadStatus.innerText = "Mengunggah cover..."; uploadStatus.style.display = "block"; uploadStatus.style.background = "#eff6ff"; uploadStatus.style.color = "var(--primary)";
             
             const currentSecretKey = secretKeyInput.value;
             const formData = new FormData();
@@ -707,27 +719,34 @@
                     coverUrl: workerData.url, uploader: auth.currentUser.email, views: 0, isPublished: true, createdAt: serverTimestamp()
                 });
 
-                uploadStatus.innerText = "✅ Komik Baru Berhasil Dipublikasikan!"; uploadStatus.style.color = "var(--success)"; uploadStatus.style.background = "#e5ffef";
+                uploadStatus.innerText = "✅ Komik Baru Berhasil Dipublikasikan!"; uploadStatus.style.color = "var(--success)"; uploadStatus.style.background = "#ecfdf5";
                 document.getElementById('uploadForm').reset(); document.getElementById('coverPreview').style.display = 'none'; secretKeyInput.value = currentSecretKey; 
                 window.loadComicsList(); 
             } catch (error) {
-                uploadStatus.innerText = "❌ Error: " + error.message; uploadStatus.style.color = "var(--danger)"; uploadStatus.style.background = "#ffe5e6";
+                uploadStatus.innerText = "❌ Error: " + error.message; uploadStatus.style.color = "var(--danger)"; uploadStatus.style.background = "#fef2f2";
             }
         });
 
         /* =========================================
-           LOGIKA GALERI CLOUD MEDIA (FITUR BARU)
+           LOGIKA GALERI CLOUD MEDIA (DIOPTIMASI ANTI-ERROR FIREBASE)
            ========================================= */
         let activeGalleryTab = 'image'; // image atau video
         
+        // Helper: Format Bytes
+        function formatBytes(bytes) {
+            if (bytes === 0) return '0 Bytes';
+            const k = 1024, dm = 2, sizes = ['Bytes', 'KB', 'MB', 'GB'], i = Math.floor(Math.log(bytes) / Math.log(k));
+            return parseFloat((bytes / Math.pow(k, i)).toFixed(dm)) + ' ' + sizes[i];
+        }
+
         // Fungsi Upload File ke Galeri Cloud
         window.processCloudUpload = async function(inputElement) {
             const files = inputElement.files;
             if(files.length === 0) return;
             
-            const folderComicId = document.getElementById('chapterComicId').value || 'general'; // Default folder jika komik belum dipilih
+            const folderComicId = document.getElementById('chapterComicId').value || 'general'; 
             const currentSecretKey = secretKeyInput.value;
-            if(!currentSecretKey) { alert("Isi Kunci Rahasia Worker (X-Admin-Key) di form Tambah Komik terlebih dahulu!"); return; }
+            if(!currentSecretKey) { alert("Isi Kunci Rahasia Worker di form Tambah Komik terlebih dahulu!"); return; }
 
             const statusEl = document.getElementById('galleryUploadStatus');
             statusEl.style.display = 'block';
@@ -735,7 +754,7 @@
             try {
                 for(let i = 0; i < files.length; i++) {
                     const file = files[i];
-                    statusEl.innerText = `Mengunggah file ${i+1} dari ${files.length} ke Server Cloud...`;
+                    statusEl.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i> Mengunggah file ${i+1} dari ${files.length}...`;
                     
                     const formData = new FormData();
                     formData.append('coverImage', file);
@@ -744,12 +763,12 @@
                     const workerData = await workerResponse.json();
                     if (!workerResponse.ok) throw new Error(workerData.error || "Gagal upload gambar ke server.");
                     
-                    // Simpan record Media ke database Firebase 'media_gallery'
                     const mediaType = file.type.startsWith('video') ? 'video' : 'image';
                     await addDoc(collection(db, "media_gallery"), {
                         url: workerData.url,
-                        comicId: folderComicId, // Sesuai komik yg dipilih di form
+                        comicId: folderComicId, 
                         type: mediaType,
+                        size: formatBytes(file.size), // Menyimpan ukuran file
                         createdAt: serverTimestamp()
                     });
                 }
@@ -757,51 +776,85 @@
                 inputElement.value = ''; // Reset input
                 window.loadCloudGallery(); // Reload galeri
             } catch(e) {
-                statusEl.innerText = `❌ Error Upload: ${e.message}`;
-                statusEl.style.color = "red";
+                statusEl.innerHTML = `❌ Error Upload: ${e.message}`;
+                statusEl.style.color = "var(--danger)";
+                statusEl.style.background = "#fef2f2";
             }
         }
 
-        // Fungsi Load Galeri dari Firebase
+        // Fungsi Load Galeri dari Firebase tanpa Indexing Error
         window.loadCloudGallery = async function() {
             const grid = document.getElementById('cloudGalleryGrid');
             const folderFilter = document.getElementById('galleryComicFilter').value;
             
-            grid.innerHTML = '<div style="grid-column: 1/-1; text-align:center; padding:20px;">Memuat galeri...</div>';
+            grid.innerHTML = '<div style="grid-column: 1/-1; text-align:center; padding:30px; font-weight:500;"><i class="fa-solid fa-spinner fa-spin"></i> Memuat galeri dari cloud...</div>';
             
             try {
-                let q;
-                if(folderFilter) {
-                    q = query(collection(db, "media_gallery"), where("type", "==", activeGalleryTab), where("comicId", "==", folderFilter), orderBy("createdAt", "desc"));
-                } else {
-                    q = query(collection(db, "media_gallery"), where("type", "==", activeGalleryTab), orderBy("createdAt", "desc"));
-                }
-
-                const snapshot = await getDocs(q);
-                grid.innerHTML = '';
+                // Ambil SEMUA data galeri (Tidak menggunakan query kompleks untuk menghindari perlunya Index Firebase)
+                const snapshot = await getDocs(collection(db, "media_gallery"));
                 
-                if(snapshot.empty) {
-                    grid.innerHTML = '<div style="grid-column: 1/-1; text-align:center; padding:20px; color:#888;">Belum ada media di folder/kategori ini.</div>';
+                let mediaData = [];
+                snapshot.forEach(doc => { mediaData.push({ id: doc.id, ...doc.data() }); });
+                
+                // Proses Filter & Sort manual menggunakan JavaScript (Anti-Error & Cepat)
+                mediaData = mediaData.filter(m => m.type === activeGalleryTab);
+                if (folderFilter) {
+                    mediaData = mediaData.filter(m => m.comicId === folderFilter);
+                }
+                
+                // Urutkan dari yang terbaru (waktu terbanyak) ke terlama
+                mediaData.sort((a, b) => {
+                    const timeA = a.createdAt ? a.createdAt.toMillis() : 0;
+                    const timeB = b.createdAt ? b.createdAt.toMillis() : 0;
+                    return timeB - timeA;
+                });
+                
+                grid.innerHTML = '';
+                if(mediaData.length === 0) {
+                    grid.innerHTML = '<div style="grid-column: 1/-1; text-align:center; padding:40px; color:var(--text-muted);"><i class="fa-solid fa-folder-open" style="font-size:40px; margin-bottom:15px; color:#cbd5e1; display:block;"></i>Belum ada media di folder/kategori ini.</div>';
                     return;
                 }
 
-                snapshot.forEach(docSnap => {
-                    const data = docSnap.data();
+                mediaData.forEach(data => {
                     const isSelected = window.selectedMediaGallery.findIndex(m => m.url === data.url) !== -1;
                     const orderIndex = isSelected ? window.selectedMediaGallery.findIndex(m => m.url === data.url) + 1 : '';
+                    const fileSize = data.size || 'Ukuran tidak diketahui';
                     
                     let mediaHTML = data.type === 'video' 
                         ? `<video src="${data.url}"></video>` 
                         : `<img src="${data.url}" loading="lazy">`;
 
                     grid.innerHTML += `
-                        <div class="gallery-item ${isSelected ? 'selected' : ''}" id="gal-item-${docSnap.id}" onclick="window.toggleSelectGalleryItem('${docSnap.id}', '${data.url}')">
-                            ${mediaHTML}
-                            <div class="order-badge" id="badge-${docSnap.id}" style="${isSelected ? '' : 'display:none;'}">${orderIndex}</div>
+                        <div class="media-card ${isSelected ? 'selected' : ''}" id="gal-item-${data.id}">
+                            <div class="media-thumb" onclick="window.toggleSelectGalleryItem('${data.id}', '${data.url}')">
+                                <div class="check-circle" id="badge-${data.id}">${orderIndex}</div>
+                                ${mediaHTML}
+                            </div>
+                            <div class="media-info">${fileSize}</div>
+                            <div class="media-actions">
+                                <button class="btn-pilih" onclick="window.toggleSelectGalleryItem('${data.id}', '${data.url}')">
+                                    ${isSelected ? 'Terpilih' : 'Pilih'}
+                                </button>
+                                <button class="btn-icon-outline" onclick="window.open('${data.url}', '_blank')" title="Buka Gambar"><i class="fa-solid fa-expand"></i></button>
+                                <button class="btn-icon-outline text-danger" onclick="window.deleteMediaFromGallery('${data.id}')" title="Hapus"><i class="fa-solid fa-trash-can"></i></button>
+                            </div>
                         </div>
                     `;
                 });
-            } catch(e) { console.error(e); grid.innerHTML = 'Error memuat galeri.'; }
+            } catch(e) { 
+                console.error(e); 
+                grid.innerHTML = `<div style="grid-column: 1/-1; text-align:center; padding:20px; color:red;">Gagal memuat galeri. Pastikan koneksi aman.</div>`; 
+            }
+        }
+
+        // Fungsi Hapus Media
+        window.deleteMediaFromGallery = async function(mediaId) {
+            if(confirm("Yakin ingin menghapus media ini dari database?")) {
+                try {
+                    await deleteDoc(doc(db, "media_gallery", mediaId));
+                    window.loadCloudGallery();
+                } catch(e) { alert("Gagal menghapus media."); }
+            }
         }
 
         /* =========================================
@@ -812,29 +865,32 @@
         window.toggleSelectGalleryItem = function(docId, url) {
             const index = window.selectedMediaGallery.findIndex(m => m.url === url);
             if(index !== -1) {
-                // Remove if already selected
+                // Hapus jika sudah terpilih
                 window.selectedMediaGallery.splice(index, 1);
             } else {
-                // Add to selection (at the end = maintains order)
+                // Tambahkan di urutan terakhir
                 window.selectedMediaGallery.push({ url: url, docId: docId });
             }
-            // Update Badges UI in Modal
             window.refreshGalleryBadges();
         }
 
         window.refreshGalleryBadges = function() {
-            // Sembunyikan semua badge dulu
-            document.querySelectorAll('.gallery-item').forEach(el => el.classList.remove('selected'));
-            document.querySelectorAll('.order-badge').forEach(el => el.style.display = 'none');
+            // Sembunyikan dan reset warna semua tombol
+            document.querySelectorAll('.media-card').forEach(el => {
+                el.classList.remove('selected');
+                const btn = el.querySelector('.btn-pilih');
+                if(btn) btn.innerText = "Pilih";
+                const badge = el.querySelector('.check-circle');
+                if(badge) badge.innerText = "";
+            });
             
-            // Tampilkan urutan baru
+            // Render urutan baru
             window.selectedMediaGallery.forEach((item, index) => {
-                const badge = document.getElementById(`badge-${item.docId}`);
                 const galItem = document.getElementById(`gal-item-${item.docId}`);
-                if(badge && galItem) {
+                if(galItem) {
                     galItem.classList.add('selected');
-                    badge.style.display = 'flex';
-                    badge.innerText = index + 1; // Order number
+                    galItem.querySelector('.btn-pilih').innerText = "Terpilih";
+                    galItem.querySelector('.check-circle').innerText = index + 1; // Order number
                 }
             });
             document.getElementById('gallerySelCount').innerText = window.selectedMediaGallery.length;
@@ -877,7 +933,7 @@
 
             const btnSubmit = document.getElementById('btnSubmitChapter');
             btnSubmit.innerHTML = "Menyimpan..."; btnSubmit.disabled = true;
-            statusEl.style.display = "block"; statusEl.style.background = "#e5f1ff"; statusEl.style.color = "var(--primary)";
+            statusEl.style.display = "block"; statusEl.style.background = "#eff6ff"; statusEl.style.color = "var(--primary)";
             statusEl.innerText = "Menyimpan data chapter ke Database Firebase...";
 
             try {
@@ -889,27 +945,27 @@
                 await addDoc(chaptersRef, {
                     chapterNumber: parseFloat(chapterNum),
                     title: chapterTitle,
-                    images: finalUrls, // Karena namanya images, aplikasi utama akan langsung membacanya (mendukung video via HTML5 player)
+                    images: finalUrls, 
                     createdAt: serverTimestamp()
                 });
 
                 statusEl.innerText = "✅ Chapter Berhasil Diterbitkan!";
-                statusEl.style.color = "var(--success)"; statusEl.style.background = "#e5ffef";
+                statusEl.style.color = "var(--success)"; statusEl.style.background = "#ecfdf5";
                 
                 // Reset Form
                 document.getElementById('uploadChapterForm').reset();
                 document.getElementById('chapterComicSearch').value = '';
                 document.getElementById('chapterComicId').value = '';
                 document.getElementById('selectedMediaPreview').innerHTML = '';
-                window.selectedMediaGallery = []; // Reset memori pilihan
+                window.selectedMediaGallery = []; 
                 document.getElementById('gallerySelCount').innerText = "0";
                 
-                // Reload tabel chapter jika filter sama
+                // Reload tabel chapter
                 if(document.getElementById('filterChapterId').value === comicId) { window.loadChaptersList(); }
 
             } catch (error) {
                 statusEl.innerText = "❌ Error: " + error.message;
-                statusEl.style.color = "var(--danger)"; statusEl.style.background = "#ffe5e6";
+                statusEl.style.color = "var(--danger)"; statusEl.style.background = "#fef2f2";
             }
             btnSubmit.innerHTML = '<i class="fa-solid fa-paper-plane"></i> Publikasikan Chapter Ini'; btnSubmit.disabled = false;
         });
@@ -999,7 +1055,6 @@
             document.getElementById(inputId).value = title;
             document.getElementById(listId).classList.remove('show');
             
-            // Trigger onChange event if needed
             if(hiddenId === 'filterChapterId' && typeof window.loadChaptersList === 'function') {
                 window.loadChaptersList();
             }
@@ -1008,7 +1063,6 @@
             }
         };
 
-        // Close dropdown when clicking outside
         window.onclick = function(event) {
             if (!event.target.matches('.search-select input')) {
                 document.querySelectorAll('.search-options.show').forEach(el => el.classList.remove('show'));
@@ -1026,7 +1080,6 @@
         function switchGalleryTab(type) {
             document.querySelectorAll('.tab-cloud').forEach(t => t.classList.remove('active'));
             document.getElementById(type === 'image' ? 'tabFoto' : 'tabVideo').classList.add('active');
-            // 'type' harus 'image' atau 'video' untuk memfilter firebase request
             activeGalleryTab = type;
             window.loadCloudGallery();
         }

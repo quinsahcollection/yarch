@@ -83,8 +83,51 @@
         .upload-area i { font-size: 30px; color: var(--text-muted); margin-bottom: 10px; }
         .image-preview { margin-top: 15px; width: 100%; max-width: 200px; border-radius: 8px; display: none; box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
 
-        .btn-submit { background: var(--primary); color: white; border: none; padding: 14px 20px; border-radius: 8px; cursor: pointer; width: 100%; font-weight: 600; font-size: 15px; margin-top: 25px; }
+        .btn-submit { background: var(--primary); color: white; border: none; padding: 14px 20px; border-radius: 8px; cursor: pointer; width: 100%; font-weight: 600; font-size: 15px; margin-top: 25px; transition: 0.2s; }
+        .btn-submit:hover { background: var(--primary-hover); }
         .status-msg { margin-top: 15px; font-weight: 600; text-align: center; font-size: 14px; padding: 10px; border-radius: 6px; }
+
+        /* ==================== SEARCHABLE DROPDOWN ==================== */
+        .search-select { position: relative; width: 100%; }
+        .search-select input { width: 100%; padding: 12px 15px; border: 1px solid var(--border); border-radius: 8px; font-size: 14px; background: #f8fafc; outline: none; cursor: pointer; }
+        .search-options { position: absolute; top: 100%; left: 0; right: 0; background: var(--white); border: 1px solid var(--border); border-radius: 8px; max-height: 250px; overflow-y: auto; z-index: 10; display: none; box-shadow: 0 10px 25px rgba(0,0,0,0.1); margin-top: 5px; }
+        .search-options.show { display: block; }
+        .search-options div { padding: 12px 15px; cursor: pointer; border-bottom: 1px solid #f1f1f1; font-size: 14px; }
+        .search-options div:hover { background: var(--light-blue); color: var(--primary); font-weight: 600; }
+
+        /* ==================== CLOUD GALLERY MODAL ==================== */
+        .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); z-index: 2000; display: flex; align-items: center; justify-content: center; backdrop-filter: blur(4px); }
+        .modal-container { background: var(--white); width: 95%; max-width: 900px; height: 90vh; border-radius: 16px; display: flex; flex-direction: column; overflow: hidden; box-shadow: 0 15px 40px rgba(0,0,0,0.2); animation: fadeIn 0.3s; }
+        
+        .modal-header { padding: 20px; border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; background: #f8fafc; }
+        .modal-header h3 { font-size: 18px; color: var(--sidebar-bg); margin: 0; }
+        .modal-actions { display: flex; gap: 10px; align-items: center; }
+        .btn-success-sm { background: var(--success); color: white; border: none; padding: 8px 16px; border-radius: 6px; cursor: pointer; font-weight: 600; }
+        .btn-close { background: none; border: none; font-size: 24px; cursor: pointer; color: var(--text-muted); }
+        
+        .modal-toolbar { padding: 15px 20px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border); background: white; flex-wrap: wrap; gap: 10px; }
+        .tabs-cloud { display: flex; gap: 10px; }
+        .tab-cloud { padding: 8px 20px; border: 1px solid var(--border); background: #fff; border-radius: 20px; cursor: pointer; font-weight: 600; font-size: 13px; color: var(--text-muted); }
+        .tab-cloud.active { background: var(--primary); color: white; border-color: var(--primary); }
+        
+        .btn-upload-cloud { background: var(--sidebar-bg); color: white; border: none; padding: 10px 20px; border-radius: 8px; cursor: pointer; font-weight: 600; font-size: 13px; display: flex; align-items: center; gap: 8px; }
+        .btn-upload-cloud:hover { background: var(--sidebar-hover); }
+
+        .gallery-grid { flex-grow: 1; padding: 20px; overflow-y: auto; display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 15px; background: #f8fafc; }
+        .gallery-item { position: relative; border-radius: 8px; overflow: hidden; cursor: pointer; border: 2px solid transparent; background: white; box-shadow: 0 2px 5px rgba(0,0,0,0.05); aspect-ratio: 1/1.4; transition: 0.2s; }
+        .gallery-item img { width: 100%; height: 100%; object-fit: cover; }
+        .gallery-item video { width: 100%; height: 100%; object-fit: cover; }
+        .gallery-item:hover { transform: translateY(-3px); box-shadow: 0 5px 15px rgba(0,0,0,0.1); }
+        .gallery-item.selected { border-color: var(--primary); }
+        .gallery-item.selected::after { content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(67, 97, 238, 0.2); pointer-events: none; }
+        
+        .order-badge { position: absolute; top: 8px; right: 8px; background: var(--primary); color: white; width: 26px; height: 26px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 12px; border: 2px solid white; z-index: 10; box-shadow: 0 2px 5px rgba(0,0,0,0.3); }
+
+        /* Preview Selected in Form */
+        .selected-media-preview { display: flex; gap: 12px; flex-wrap: wrap; margin-top: 15px; }
+        .preview-thumb { position: relative; width: 80px; height: 110px; border-radius: 6px; overflow: hidden; border: 1px solid var(--border); }
+        .preview-thumb img { width: 100%; height: 100%; object-fit: cover; }
+        .preview-badge { position: absolute; bottom: 0; left: 0; width: 100%; background: rgba(0,0,0,0.7); color: white; text-align: center; font-size: 11px; padding: 3px 0; font-weight: bold; }
 
         /* ==================== MASTER DATA UI ==================== */
         .master-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 20px; }
@@ -249,7 +292,6 @@
                                     <th width="70">Cover</th>
                                     <th>Detail Komik</th>
                                     <th>Author</th>
-                                    <!-- TAMBAHAN: Kolom Tanggal Terbit -->
                                     <th width="110">Tanggal</th>
                                     <th width="80">Publish</th>
                                     <th width="70">Aksi</th>
@@ -262,37 +304,43 @@
                     </div>
                 </div>
 
-                <!-- VIEW 3: KELOLA CHAPTER (BARU DITAMBAHKAN) -->
+                <!-- VIEW 3: KELOLA CHAPTER -->
                 <div id="view-chapter" class="admin-view">
-                    <h1 class="page-title">Kelola Chapter Komik</h1>
+                    <h1 class="page-title">Kelola Chapter Komik & Film</h1>
                     
                     <!-- Form Tambah Chapter -->
                     <div class="card" style="margin-bottom: 25px;">
                         <form id="uploadChapterForm">
                             <div class="form-grid">
                                 <div class="form-group full-width">
-                                    <label>Pilih Komik *</label>
-                                    <select id="chapterComicSelect" required><option value="">Memuat data...</option></select>
+                                    <label>Pilih Komik / Folder *</label>
+                                    <div class="search-select">
+                                        <input type="text" id="chapterComicSearch" placeholder="Ketik untuk mencari komik..." autocomplete="off" required onkeyup="filterCustomSelect(this, 'chapterComicList')" onclick="toggleCustomSelect('chapterComicList')">
+                                        <input type="hidden" id="chapterComicId" required>
+                                        <div class="search-options" id="chapterComicList"></div>
+                                    </div>
                                 </div>
                                 <div class="form-group">
-                                    <label>Nomor Chapter *</label>
+                                    <label>Nomor Chapter / Episode *</label>
                                     <input type="number" step="0.1" id="chapterNumber" required placeholder="Contoh: 1 atau 1.5">
                                 </div>
                                 <div class="form-group">
                                     <label>Judul Chapter (Opsional)</label>
                                     <input type="text" id="chapterTitle" placeholder="Contoh: Awal Petualangan">
                                 </div>
+                                
                                 <div class="form-group full-width">
-                                    <label>Gambar Chapter (Bisa pilih LEBIH DARI 1 gambar) *</label>
-                                    <div class="upload-area">
-                                        <i class="fa-solid fa-images"></i>
-                                        <p style="font-size: 14px; font-weight: 500;">Blok & Pilih banyak gambar sekaligus (.jpg, .png)</p>
-                                        <input type="file" id="chapterImages" accept="image/*" multiple required>
-                                    </div>
-                                    <div id="chapterImagesPreview" style="display:flex; gap:10px; flex-wrap:wrap; margin-top:15px;"></div>
+                                    <label>Media Chapter (Pilih urutan gambar / video dari Cloud)</label>
+                                    <button type="button" class="btn-upload-cloud" style="width:100%; justify-content:center; padding:15px; font-size:15px;" onclick="openMediaGallery()">
+                                        <i class="fa-solid fa-images"></i> Buka Galeri Media Cloud
+                                    </button>
+                                    <div class="help-text" style="text-align:center; margin-top:8px;">Anda bisa mengurutkan 100+ gambar atau memilih video dari Galeri.</div>
+                                    
+                                    <!-- Tempat Munculnya Preview Urutan Media yang dipilih -->
+                                    <div id="selectedMediaPreview" class="selected-media-preview"></div>
                                 </div>
                             </div>
-                            <button type="submit" class="btn-submit"><i class="fa-solid fa-upload"></i> Upload & Terbitkan Chapter</button>
+                            <button type="submit" class="btn-submit" id="btnSubmitChapter"><i class="fa-solid fa-paper-plane"></i> Publikasikan Chapter Ini</button>
                         </form>
                         <div id="chapterUploadStatus" class="status-msg"></div>
                     </div>
@@ -301,16 +349,18 @@
                     <div class="card" style="padding: 10px 25px;">
                         <div style="margin: 15px 0;">
                             <label style="color: var(--primary);">Filter Daftar Chapter berdasarkan Komik:</label>
-                            <select id="filterChapterComic" onchange="window.loadChaptersList()" style="width:100%; max-width:400px; padding:10px; border-radius:6px; border:1px solid var(--border);">
-                                <option value="">Memuat data...</option>
-                            </select>
+                            <div class="search-select" style="max-width: 400px;">
+                                <input type="text" id="filterChapterSearch" placeholder="Ketik untuk mencari komik..." autocomplete="off" onkeyup="filterCustomSelect(this, 'filterChapterList')" onclick="toggleCustomSelect('filterChapterList')">
+                                <input type="hidden" id="filterChapterId" onchange="window.loadChaptersList()">
+                                <div class="search-options" id="filterChapterList"></div>
+                            </div>
                         </div>
                         <table class="comic-table">
                             <thead>
                                 <tr>
                                     <th width="100">Chapter</th>
                                     <th>Judul Chapter</th>
-                                    <th width="120">Total Gambar</th>
+                                    <th width="120">Total Media</th>
                                     <th width="120">Tanggal</th>
                                     <th width="80">Aksi</th>
                                 </tr>
@@ -349,7 +399,7 @@
                         <div class="master-card">
                             <h3><i class="fa-solid fa-book-open"></i> Tipe Komik</h3>
                             <div class="master-input-group">
-                                <input type="text" id="inputType" placeholder="Manga, Manhwa...">
+                                <input type="text" id="inputType" placeholder="Manga, Manhwa, Film...">
                                 <button type="button" class="btn-add" onclick="window.addMasterDataFirebase('types', 'inputType')"><i class="fa-solid fa-plus"></i></button>
                             </div>
                             <ul class="master-list" id="listType"></ul>
@@ -383,6 +433,46 @@
         </main>
     </div>
 
+    <!-- ==================== MODAL GALERI CLOUD ==================== -->
+    <div id="cloudGalleryModal" class="modal-overlay hidden">
+        <div class="modal-container">
+            <div class="modal-header">
+                <h3><i class="fa-solid fa-cloud"></i> Galeri Media Cloud</h3>
+                <div class="modal-actions">
+                    <button class="btn-success-sm" onclick="confirmGallerySelection()">
+                        <i class="fa-solid fa-check"></i> Selesai Pilih (<span id="gallerySelCount">0</span>)
+                    </button>
+                    <button class="btn-close" onclick="closeMediaGallery()"><i class="fa-solid fa-times"></i></button>
+                </div>
+            </div>
+            
+            <div class="modal-toolbar">
+                <div class="tabs-cloud">
+                    <div class="tab-cloud active" id="tabFoto" onclick="switchGalleryTab('image')">Foto</div>
+                    <div class="tab-cloud" id="tabVideo" onclick="switchGalleryTab('video')">Video / Film</div>
+                </div>
+                <div style="display:flex; gap:10px; align-items:center;">
+                    <select id="galleryComicFilter" onchange="window.loadCloudGallery()" style="padding:8px 12px; border-radius:6px; border:1px solid var(--border); outline:none;">
+                        <option value="">Semua Folder Komik...</option>
+                    </select>
+                    <button class="btn-upload-cloud" onclick="document.getElementById('cloudUploadInput').click()">
+                        <i class="fa-solid fa-cloud-arrow-up"></i> Upload ke Cloud
+                    </button>
+                    <!-- Input file hidden untuk upload multiple -->
+                    <input type="file" id="cloudUploadInput" class="hidden" multiple accept="image/*,video/*" onchange="window.processCloudUpload(this)">
+                </div>
+            </div>
+            
+            <div id="galleryUploadStatus" style="display:none; padding:10px; background:#e5f1ff; color:var(--primary); text-align:center; font-weight:600; font-size:13px;">
+                Mengunggah 0 / 0 file ke server Cloudflare...
+            </div>
+
+            <div class="gallery-grid" id="cloudGalleryGrid">
+                <!-- Media items will be injected here -->
+            </div>
+        </div>
+    </div>
+
     <!-- ==================== SCRIPT FIREBASE LOGIC ==================== -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
@@ -408,6 +498,8 @@
         const uploadStatus = document.getElementById('uploadStatus');
         const secretKeyInput = document.getElementById('secretKey');
         
+        let allComicsList = []; // Menyimpan semua data komik untuk fitur Search
+
         if (localStorage.getItem('workerSecretKey') && secretKeyInput) {
             secretKeyInput.value = localStorage.getItem('workerSecretKey');
         }
@@ -441,17 +533,15 @@
         document.getElementById('logoutBtn').addEventListener('click', async () => await signOut(auth));
 
         /* =========================================
-           LOGIKA MASTER DATA (KATEGORI & GENRE)
+           LOGIKA MASTER DATA
            ========================================= */
         const masterDocRef = doc(db, "settings", "master_data");
-        
         async function initMasterData() {
             try {
                 const snap = await getDoc(masterDocRef);
                 if (!snap.exists()) {
                     await setDoc(masterDocRef, { authors: [], genres: [], types: [], statuses: [], ageRatings: [] });
                 }
-
                 onSnapshot(masterDocRef, (docSnap) => {
                     const data = docSnap.data();
                     if (!data) return;
@@ -470,17 +560,10 @@
                     const genreContainer = document.getElementById('genreCheckboxContainer');
                     genreContainer.innerHTML = '';
                     if(data.genres && data.genres.length > 0) {
-                        data.genres.forEach(genre => {
-                            genreContainer.innerHTML += `<label><input type="checkbox" value="${genre}" class="genre-check"> ${genre}</label>`;
-                        });
-                    } else {
-                        genreContainer.innerHTML = '<span class="help-text">Belum ada data genre.</span>';
-                    }
+                        data.genres.forEach(genre => { genreContainer.innerHTML += `<label><input type="checkbox" value="${genre}" class="genre-check"> ${genre}</label>`; });
+                    } else { genreContainer.innerHTML = '<span class="help-text">Belum ada data genre.</span>'; }
                 });
-            } catch (error) {
-                console.error(error);
-                alert("Gagal memuat sistem Kategori. Pastikan aturan Firestore Rules sudah di-update!");
-            }
+            } catch (error) { console.error(error); }
         }
 
         function renderMasterList(id, dataArray, field) {
@@ -488,9 +571,7 @@
             el.innerHTML = '';
             if(dataArray && dataArray.length > 0) {
                 dataArray.forEach(val => el.innerHTML += `<li>${val} <button type="button" class="btn-delete" onclick="window.removeMasterDataFirebase('${field}', '${val}')"><i class="fa-solid fa-trash-can"></i></button></li>`);
-            } else {
-                el.innerHTML = '<li style="color:#888; justify-content:center; font-size:12px;">Data kosong</li>';
-            }
+            } else { el.innerHTML = '<li style="color:#888; justify-content:center; font-size:12px;">Data kosong</li>'; }
         }
 
         function renderDropdown(id, dataArray, placeholder) {
@@ -503,58 +584,40 @@
             const inputEl = document.getElementById(inputId);
             const val = inputEl.value.trim();
             if (val === "") return;
-            
-            try {
-                await updateDoc(masterDocRef, { [field]: arrayUnion(val) });
-                inputEl.value = ""; 
-            } catch (error) {
-                alert("Gagal menyimpan data! Error: " + error.message);
-            }
+            try { await updateDoc(masterDocRef, { [field]: arrayUnion(val) }); inputEl.value = ""; } catch (error) { alert("Error: " + error.message); }
         };
 
         window.removeMasterDataFirebase = async function(field, val) {
-            if(confirm(`Hapus "${val}"?`)) {
-                try {
-                    await updateDoc(masterDocRef, { [field]: arrayRemove(val) });
-                } catch (error) {
-                    alert("Gagal menghapus data! Error: " + error.message);
-                }
-            }
+            if(confirm(`Hapus "${val}"?`)) { try { await updateDoc(masterDocRef, { [field]: arrayRemove(val) }); } catch (error) { alert("Error: " + error.message); } }
         };
 
         /* =========================================
-           LOGIKA DAFTAR KOMIK
+           LOGIKA DAFTAR KOMIK & RENDER DROPDOWN SEARCH
            ========================================= */
         window.loadComicsList = async function() {
             const tbody = document.getElementById('comicListTableBody');
-            
-            // Elemen dropdown untuk menu Kelola Chapter
-            const chapterSelect = document.getElementById('chapterComicSelect');
-            const filterSelect = document.getElementById('filterChapterComic');
             
             try {
                 const q = query(collection(db, "comics"), orderBy("createdAt", "desc"));
                 const snapshot = await getDocs(q);
                 
                 tbody.innerHTML = '';
-                let optionsHTML = '<option value="">Pilih Komik...</option>';
+                allComicsList = []; // Reset array
                 
                 if (snapshot.empty) {
                     tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;">Belum ada komik terpublish.</td></tr>';
-                    chapterSelect.innerHTML = optionsHTML;
-                    filterSelect.innerHTML = optionsHTML;
+                    renderSearchableOptions('chapterComicList', 'chapterComicId', 'chapterComicSearch', []);
+                    renderSearchableOptions('filterChapterList', 'filterChapterId', 'filterChapterSearch', []);
                     return;
                 }
 
                 snapshot.forEach(docSnap => {
                     const data = docSnap.data();
                     const isPub = data.isPublished !== false; 
-                    
-                    // Format Tanggal Terbit
                     const date = data.createdAt ? data.createdAt.toDate().toLocaleDateString('id-ID', {day:'numeric', month:'short', year:'numeric'}) : '-';
                     
-                    // Tambahkan ke opsi dropdown Chapter
-                    optionsHTML += `<option value="${docSnap.id}">${data.title}</option>`;
+                    // Push to array for Custom Select Dropdown
+                    allComicsList.push({ id: docSnap.id, title: data.title });
 
                     tbody.innerHTML += `
                         <tr>
@@ -578,44 +641,44 @@
                     `;
                 });
                 
-                // Update dropdown menu Kelola Chapter
-                chapterSelect.innerHTML = optionsHTML;
-                filterSelect.innerHTML = optionsHTML;
+                // Render Searchable Dropdowns for Chapter Selection
+                renderSearchableOptions('chapterComicList', 'chapterComicId', 'chapterComicSearch', allComicsList);
+                renderSearchableOptions('filterChapterList', 'filterChapterId', 'filterChapterSearch', allComicsList);
+                
+                // Render Dropdown untuk Filter di Galeri Cloud
+                const galleryFilter = document.getElementById('galleryComicFilter');
+                let galOptions = '<option value="">Semua Folder Komik...</option>';
+                allComicsList.forEach(c => galOptions += `<option value="${c.id}">${c.title}</option>`);
+                galleryFilter.innerHTML = galOptions;
 
-            } catch (e) {
-                console.error(e);
-            }
+            } catch (e) { console.error(e); }
         };
 
         window.togglePublish = async function(id, status) {
-            try {
-                await updateDoc(doc(db, "comics", id), { isPublished: status });
-            } catch (e) { 
-                alert("Gagal memperbarui status!"); 
-                window.loadComicsList(); 
-            }
+            try { await updateDoc(doc(db, "comics", id), { isPublished: status }); } catch (e) { alert("Gagal!"); window.loadComicsList(); }
         };
-
         window.deleteComic = async function(id) {
             if(confirm("Yakin ingin menghapus komik ini permanen beserta seluruh chapternya?")) {
-                try {
-                    await deleteDoc(doc(db, "comics", id));
-                    window.loadComicsList();
-                } catch(e) {
-                    alert("Gagal menghapus komik.");
-                }
+                try { await deleteDoc(doc(db, "comics", id)); window.loadComicsList(); } catch(e) { alert("Gagal!"); }
             }
         };
 
+        // RENDER CUSTOM SEARCHABLE SELECT
+        function renderSearchableOptions(listId, hiddenId, inputId, listData) {
+            let html = '';
+            listData.forEach(c => {
+                const safeTitle = c.title.replace(/'/g, "\\'").replace(/"/g, '&quot;');
+                html += `<div onclick="window.selectCustomOption('${c.id}', '${safeTitle}', '${hiddenId}', '${inputId}', '${listId}')">${c.title}</div>`;
+            });
+            document.getElementById(listId).innerHTML = html;
+        }
+
         /* =========================================
-           PROSES UPLOAD KOMIK BARU
+           UPLOAD KOMIK BARU
            ========================================= */
         document.getElementById('uploadForm').addEventListener('submit', async (e) => {
             e.preventDefault();
-            uploadStatus.innerText = "Mengunggah cover..."; 
-            uploadStatus.style.display = "block"; 
-            uploadStatus.style.background = "#e5f1ff"; 
-            uploadStatus.style.color = "var(--primary)";
+            uploadStatus.innerText = "Mengunggah cover..."; uploadStatus.style.display = "block"; uploadStatus.style.background = "#e5f1ff"; uploadStatus.style.color = "var(--primary)";
             
             const currentSecretKey = secretKeyInput.value;
             const formData = new FormData();
@@ -641,138 +704,235 @@
                     ageRating: document.getElementById('ageRating').value,
                     genres: genres,
                     synopsis: document.getElementById('synopsis').value,
-                    coverUrl: workerData.url, 
-                    uploader: auth.currentUser.email,
-                    views: 0,
-                    isPublished: true, 
-                    createdAt: serverTimestamp()
+                    coverUrl: workerData.url, uploader: auth.currentUser.email, views: 0, isPublished: true, createdAt: serverTimestamp()
                 });
 
-                uploadStatus.innerText = "✅ Komik Baru Berhasil Dipublikasikan!";
-                uploadStatus.style.color = "var(--success)"; 
-                uploadStatus.style.background = "#e5ffef";
-                
-                document.getElementById('uploadForm').reset();
-                document.getElementById('coverPreview').style.display = 'none';
-                secretKeyInput.value = currentSecretKey; 
-                
-                window.loadComicsList(); // Update tabel daftar komik & opsi dropdown
-
+                uploadStatus.innerText = "✅ Komik Baru Berhasil Dipublikasikan!"; uploadStatus.style.color = "var(--success)"; uploadStatus.style.background = "#e5ffef";
+                document.getElementById('uploadForm').reset(); document.getElementById('coverPreview').style.display = 'none'; secretKeyInput.value = currentSecretKey; 
+                window.loadComicsList(); 
             } catch (error) {
-                uploadStatus.innerText = "❌ Error: " + error.message;
-                uploadStatus.style.color = "var(--danger)"; 
-                uploadStatus.style.background = "#ffe5e6";
+                uploadStatus.innerText = "❌ Error: " + error.message; uploadStatus.style.color = "var(--danger)"; uploadStatus.style.background = "#ffe5e6";
             }
         });
 
         /* =========================================
-           LOGIKA KELOLA CHAPTER (MULTIPLE UPLOAD)
+           LOGIKA GALERI CLOUD MEDIA (FITUR BARU)
            ========================================= */
-           
-        // Tampilkan Preview Semua Gambar Chapter
-        document.getElementById('chapterImages').addEventListener('change', function(e) {
-            const previewContainer = document.getElementById('chapterImagesPreview');
-            previewContainer.innerHTML = '';
+        let activeGalleryTab = 'image'; // image atau video
+        
+        // Fungsi Upload File ke Galeri Cloud
+        window.processCloudUpload = async function(inputElement) {
+            const files = inputElement.files;
+            if(files.length === 0) return;
             
-            Array.from(this.files).forEach(file => {
-                const reader = new FileReader();
-                reader.onload = function(event) {
-                    previewContainer.innerHTML += `<img src="${event.target.result}" style="width: 50px; height: 75px; object-fit: cover; border-radius: 4px; border: 1px solid #ccc; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">`;
-                }
-                reader.readAsDataURL(file);
-            });
-        });
-
-        // Proses Upload & Simpan Chapter
-        document.getElementById('uploadChapterForm').addEventListener('submit', async (e) => {
-            e.preventDefault();
-            const statusEl = document.getElementById('chapterUploadStatus');
-            const comicId = document.getElementById('chapterComicSelect').value;
-            const chapterNum = document.getElementById('chapterNumber').value;
-            const chapterTitle = document.getElementById('chapterTitle').value;
-            const files = document.getElementById('chapterImages').files;
-            
-            if(!comicId || files.length === 0) {
-                alert("Mohon pilih komik dan masukkan minimal 1 gambar!"); return;
-            }
-
-            statusEl.style.display = "block"; 
-            statusEl.style.background = "#e5f1ff"; 
-            statusEl.style.color = "var(--primary)";
-            
+            const folderComicId = document.getElementById('chapterComicId').value || 'general'; // Default folder jika komik belum dipilih
             const currentSecretKey = secretKeyInput.value;
-            let uploadedUrls = [];
+            if(!currentSecretKey) { alert("Isi Kunci Rahasia Worker (X-Admin-Key) di form Tambah Komik terlebih dahulu!"); return; }
+
+            const statusEl = document.getElementById('galleryUploadStatus');
+            statusEl.style.display = 'block';
 
             try {
-                // Loop upload tiap gambar ke Cloudflare
                 for(let i = 0; i < files.length; i++) {
-                    statusEl.innerText = `Mengunggah gambar ${i+1} dari ${files.length} ...`;
+                    const file = files[i];
+                    statusEl.innerText = `Mengunggah file ${i+1} dari ${files.length} ke Server Cloud...`;
                     
                     const formData = new FormData();
-                    formData.append('coverImage', files[i]); // Gunakan rute endpoint R2 yang sama
+                    formData.append('coverImage', file);
 
                     const workerResponse = await fetch(WORKER_URL, { method: 'POST', headers: { 'X-Admin-Key': currentSecretKey }, body: formData });
                     const workerData = await workerResponse.json();
-                    
                     if (!workerResponse.ok) throw new Error(workerData.error || "Gagal upload gambar ke server.");
-                    uploadedUrls.push(workerData.url);
+                    
+                    // Simpan record Media ke database Firebase 'media_gallery'
+                    const mediaType = file.type.startsWith('video') ? 'video' : 'image';
+                    await addDoc(collection(db, "media_gallery"), {
+                        url: workerData.url,
+                        comicId: folderComicId, // Sesuai komik yg dipilih di form
+                        type: mediaType,
+                        createdAt: serverTimestamp()
+                    });
+                }
+                statusEl.style.display = 'none';
+                inputElement.value = ''; // Reset input
+                window.loadCloudGallery(); // Reload galeri
+            } catch(e) {
+                statusEl.innerText = `❌ Error Upload: ${e.message}`;
+                statusEl.style.color = "red";
+            }
+        }
+
+        // Fungsi Load Galeri dari Firebase
+        window.loadCloudGallery = async function() {
+            const grid = document.getElementById('cloudGalleryGrid');
+            const folderFilter = document.getElementById('galleryComicFilter').value;
+            
+            grid.innerHTML = '<div style="grid-column: 1/-1; text-align:center; padding:20px;">Memuat galeri...</div>';
+            
+            try {
+                let q;
+                if(folderFilter) {
+                    q = query(collection(db, "media_gallery"), where("type", "==", activeGalleryTab), where("comicId", "==", folderFilter), orderBy("createdAt", "desc"));
+                } else {
+                    q = query(collection(db, "media_gallery"), where("type", "==", activeGalleryTab), orderBy("createdAt", "desc"));
                 }
 
-                statusEl.innerText = "Menyimpan data chapter ke Database Firebase...";
+                const snapshot = await getDocs(q);
+                grid.innerHTML = '';
                 
-                // Simpan chapter ke Sub-Koleksi di dalam dokumen Komik tersebut
+                if(snapshot.empty) {
+                    grid.innerHTML = '<div style="grid-column: 1/-1; text-align:center; padding:20px; color:#888;">Belum ada media di folder/kategori ini.</div>';
+                    return;
+                }
+
+                snapshot.forEach(docSnap => {
+                    const data = docSnap.data();
+                    const isSelected = window.selectedMediaGallery.findIndex(m => m.url === data.url) !== -1;
+                    const orderIndex = isSelected ? window.selectedMediaGallery.findIndex(m => m.url === data.url) + 1 : '';
+                    
+                    let mediaHTML = data.type === 'video' 
+                        ? `<video src="${data.url}"></video>` 
+                        : `<img src="${data.url}" loading="lazy">`;
+
+                    grid.innerHTML += `
+                        <div class="gallery-item ${isSelected ? 'selected' : ''}" id="gal-item-${docSnap.id}" onclick="window.toggleSelectGalleryItem('${docSnap.id}', '${data.url}')">
+                            ${mediaHTML}
+                            <div class="order-badge" id="badge-${docSnap.id}" style="${isSelected ? '' : 'display:none;'}">${orderIndex}</div>
+                        </div>
+                    `;
+                });
+            } catch(e) { console.error(e); grid.innerHTML = 'Error memuat galeri.'; }
+        }
+
+        /* =========================================
+           LOGIKA PEMILIHAN MEDIA UNTUK CHAPTER
+           ========================================= */
+        window.selectedMediaGallery = []; // Format: [ {url: "..."} ]
+
+        window.toggleSelectGalleryItem = function(docId, url) {
+            const index = window.selectedMediaGallery.findIndex(m => m.url === url);
+            if(index !== -1) {
+                // Remove if already selected
+                window.selectedMediaGallery.splice(index, 1);
+            } else {
+                // Add to selection (at the end = maintains order)
+                window.selectedMediaGallery.push({ url: url, docId: docId });
+            }
+            // Update Badges UI in Modal
+            window.refreshGalleryBadges();
+        }
+
+        window.refreshGalleryBadges = function() {
+            // Sembunyikan semua badge dulu
+            document.querySelectorAll('.gallery-item').forEach(el => el.classList.remove('selected'));
+            document.querySelectorAll('.order-badge').forEach(el => el.style.display = 'none');
+            
+            // Tampilkan urutan baru
+            window.selectedMediaGallery.forEach((item, index) => {
+                const badge = document.getElementById(`badge-${item.docId}`);
+                const galItem = document.getElementById(`gal-item-${item.docId}`);
+                if(badge && galItem) {
+                    galItem.classList.add('selected');
+                    badge.style.display = 'flex';
+                    badge.innerText = index + 1; // Order number
+                }
+            });
+            document.getElementById('gallerySelCount').innerText = window.selectedMediaGallery.length;
+        }
+
+        window.confirmGallerySelection = function() {
+            const previewContainer = document.getElementById('selectedMediaPreview');
+            previewContainer.innerHTML = '';
+            
+            if(window.selectedMediaGallery.length === 0) {
+                previewContainer.innerHTML = '<span style="color:var(--text-muted); font-size:12px;">Belum ada media yang dipilih.</span>';
+            } else {
+                window.selectedMediaGallery.forEach((item, index) => {
+                    const isVideo = item.url.includes('.mp4') || item.url.includes('.webm') || item.url.includes('.mkv');
+                    const mediaHtml = isVideo ? `<video src="${item.url}" style="width:100%;height:100%;object-fit:cover;"></video>` : `<img src="${item.url}">`;
+                    
+                    previewContainer.innerHTML += `
+                        <div class="preview-thumb">
+                            ${mediaHtml}
+                            <div class="preview-badge">${index + 1}</div>
+                        </div>
+                    `;
+                });
+            }
+            closeMediaGallery();
+        }
+
+        /* =========================================
+           PUBLIKASI CHAPTER (MENGGUNAKAN MEDIA CLOUD)
+           ========================================= */
+        document.getElementById('uploadChapterForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const comicId = document.getElementById('chapterComicId').value;
+            const chapterNum = document.getElementById('chapterNumber').value;
+            const chapterTitle = document.getElementById('chapterTitle').value;
+            const statusEl = document.getElementById('chapterUploadStatus');
+            
+            if(!comicId) { alert("Pilih Komik terlebih dahulu dari daftar pencarian!"); return; }
+            if(window.selectedMediaGallery.length === 0) { alert("Silakan buka Galeri Media Cloud dan pilih urutan gambar/video untuk chapter ini!"); return; }
+
+            const btnSubmit = document.getElementById('btnSubmitChapter');
+            btnSubmit.innerHTML = "Menyimpan..."; btnSubmit.disabled = true;
+            statusEl.style.display = "block"; statusEl.style.background = "#e5f1ff"; statusEl.style.color = "var(--primary)";
+            statusEl.innerText = "Menyimpan data chapter ke Database Firebase...";
+
+            try {
+                // Ekstrak URL saja dari object media terpilih
+                const finalUrls = window.selectedMediaGallery.map(m => m.url);
+                
+                // Simpan chapter ke Sub-Koleksi "chapters"
                 const chaptersRef = collection(db, "comics", comicId, "chapters");
                 await addDoc(chaptersRef, {
                     chapterNumber: parseFloat(chapterNum),
                     title: chapterTitle,
-                    images: uploadedUrls,
+                    images: finalUrls, // Karena namanya images, aplikasi utama akan langsung membacanya (mendukung video via HTML5 player)
                     createdAt: serverTimestamp()
                 });
 
-                statusEl.innerText = "✅ Chapter Berhasil Ditambahkan!";
+                statusEl.innerText = "✅ Chapter Berhasil Diterbitkan!";
                 statusEl.style.color = "var(--success)"; statusEl.style.background = "#e5ffef";
                 
+                // Reset Form
                 document.getElementById('uploadChapterForm').reset();
-                document.getElementById('chapterImagesPreview').innerHTML = '';
+                document.getElementById('chapterComicSearch').value = '';
+                document.getElementById('chapterComicId').value = '';
+                document.getElementById('selectedMediaPreview').innerHTML = '';
+                window.selectedMediaGallery = []; // Reset memori pilihan
+                document.getElementById('gallerySelCount').innerText = "0";
                 
-                // Segarkan tabel daftar chapter jika filter sedang memilih komik yg sama
-                if(document.getElementById('filterChapterComic').value === comicId) {
-                    window.loadChaptersList();
-                }
+                // Reload tabel chapter jika filter sama
+                if(document.getElementById('filterChapterId').value === comicId) { window.loadChaptersList(); }
 
             } catch (error) {
                 statusEl.innerText = "❌ Error: " + error.message;
                 statusEl.style.color = "var(--danger)"; statusEl.style.background = "#ffe5e6";
             }
+            btnSubmit.innerHTML = '<i class="fa-solid fa-paper-plane"></i> Publikasikan Chapter Ini'; btnSubmit.disabled = false;
         });
 
-        // Muat Daftar Chapter berdasarkan Komik Pilihan
+        // Muat Daftar Chapter Table
         window.loadChaptersList = async function() {
-            const comicId = document.getElementById('filterChapterComic').value;
+            const comicId = document.getElementById('filterChapterId').value;
             const tbody = document.getElementById('chapterListTableBody');
             
-            if(!comicId) {
-                tbody.innerHTML = '<tr><td colspan="5" style="text-align: center;">Silakan pilih komik di atas...</td></tr>';
-                return;
-            }
+            if(!comicId) { tbody.innerHTML = '<tr><td colspan="5" style="text-align: center;">Silakan pilih komik di atas...</td></tr>'; return; }
             
             tbody.innerHTML = '<tr><td colspan="5" style="text-align: center;">Memuat chapter...</td></tr>';
             
             try {
                 const chaptersRef = collection(db, "comics", comicId, "chapters");
                 const snapshot = await getDocs(chaptersRef);
-                
                 let chapters = [];
                 snapshot.forEach(doc => chapters.push({ id: doc.id, ...doc.data() }));
                 
-                // Urutkan dari chapter terbesar ke terkecil
-                chapters.sort((a, b) => b.chapterNumber - a.chapterNumber);
+                chapters.sort((a, b) => b.chapterNumber - a.chapterNumber); // Descending
                 
                 tbody.innerHTML = '';
-                if(chapters.length === 0) {
-                    tbody.innerHTML = '<tr><td colspan="5" style="text-align: center;">Belum ada chapter untuk komik ini.</td></tr>';
-                    return;
-                }
+                if(chapters.length === 0) { tbody.innerHTML = '<tr><td colspan="5" style="text-align: center;">Belum ada chapter terpublish.</td></tr>'; return; }
                 
                 chapters.forEach(ch => {
                     const date = ch.createdAt ? ch.createdAt.toDate().toLocaleDateString('id-ID', {day:'numeric', month:'short', year:'numeric'}) : '-';
@@ -780,7 +940,7 @@
                         <tr>
                             <td><strong>Chapter ${ch.chapterNumber}</strong></td>
                             <td>${ch.title || '-'}</td>
-                            <td>${ch.images ? ch.images.length : 0} Halaman</td>
+                            <td>${ch.images ? ch.images.length : 0} Media</td>
                             <td><span style="font-size: 13px;">${date}</span></td>
                             <td>
                                 <button type="button" class="btn-delete" onclick="window.deleteChapter('${comicId}', '${ch.id}')" title="Hapus"><i class="fa-solid fa-trash-can"></i></button>
@@ -788,38 +948,26 @@
                         </tr>
                     `;
                 });
-            } catch(e) {
-                console.error(e);
-                tbody.innerHTML = '<tr><td colspan="5" style="text-align: center; color: red;">Gagal memuat chapter.</td></tr>';
-            }
+            } catch(e) { console.error(e); }
         }
 
         window.deleteChapter = async function(comicId, chapterId) {
             if(confirm("Yakin ingin menghapus chapter ini secara permanen?")) {
-                try {
-                    await deleteDoc(doc(db, "comics", comicId, "chapters", chapterId));
-                    window.loadChaptersList();
-                } catch(e) {
-                    alert("Gagal menghapus chapter.");
-                }
+                try { await deleteDoc(doc(db, "comics", comicId, "chapters", chapterId)); window.loadChaptersList(); } catch(e) { alert("Gagal!"); }
             }
         }
     </script>
 
-    <!-- SCRIPT INTERAKSI UI (Tabs) -->
+    <!-- SCRIPT INTERAKSI UI (Search Dropdown & Modals) -->
     <script>
+        // Tab Sidebar Admin
         function switchView(viewId, element) {
             document.querySelectorAll('.sidebar-menu a').forEach(el => el.classList.remove('active'));
             if(element) element.classList.add('active');
-
             document.querySelectorAll('.admin-view').forEach(view => view.classList.remove('active'));
             document.getElementById(viewId).classList.add('active');
-
             if(window.innerWidth <= 992) toggleSidebar();
-            
-            if(viewId === 'view-daftar' && typeof window.loadComicsList === 'function') {
-                window.loadComicsList();
-            }
+            if(viewId === 'view-daftar' && typeof window.loadComicsList === 'function') { window.loadComicsList(); }
         }
 
         const sidebar = document.getElementById('sidebar');
@@ -830,12 +978,57 @@
 
         function previewImage(event) {
             const reader = new FileReader();
-            reader.onload = function(){
-                const output = document.getElementById('coverPreview');
-                output.src = reader.result;
-                output.style.display = 'block';
-            };
+            reader.onload = function(){ document.getElementById('coverPreview').src = reader.result; document.getElementById('coverPreview').style.display = 'block'; };
             if(event.target.files[0]) reader.readAsDataURL(event.target.files[0]);
+        }
+
+        // Custom Searchable Dropdown Logic
+        function toggleCustomSelect(listId) {
+            document.getElementById(listId).classList.toggle('show');
+        }
+        function filterCustomSelect(inputElement, listId) {
+            let filter = inputElement.value.toUpperCase();
+            let divs = document.getElementById(listId).getElementsByTagName('div');
+            for (let i = 0; i < divs.length; i++) {
+                let txtValue = divs[i].textContent || divs[i].innerText;
+                divs[i].style.display = txtValue.toUpperCase().indexOf(filter) > -1 ? "" : "none";
+            }
+        }
+        window.selectCustomOption = function(id, title, hiddenId, inputId, listId) {
+            document.getElementById(hiddenId).value = id;
+            document.getElementById(inputId).value = title;
+            document.getElementById(listId).classList.remove('show');
+            
+            // Trigger onChange event if needed
+            if(hiddenId === 'filterChapterId' && typeof window.loadChaptersList === 'function') {
+                window.loadChaptersList();
+            }
+            if(hiddenId === 'chapterComicId') {
+                document.getElementById('galleryComicFilter').value = id; // Auto set folder di galeri
+            }
+        };
+
+        // Close dropdown when clicking outside
+        window.onclick = function(event) {
+            if (!event.target.matches('.search-select input')) {
+                document.querySelectorAll('.search-options.show').forEach(el => el.classList.remove('show'));
+            }
+        }
+
+        // Modal Galeri Cloud Logic
+        function openMediaGallery() {
+            document.getElementById('cloudGalleryModal').classList.remove('hidden');
+            window.loadCloudGallery();
+        }
+        function closeMediaGallery() {
+            document.getElementById('cloudGalleryModal').classList.add('hidden');
+        }
+        function switchGalleryTab(type) {
+            document.querySelectorAll('.tab-cloud').forEach(t => t.classList.remove('active'));
+            document.getElementById(type === 'image' ? 'tabFoto' : 'tabVideo').classList.add('active');
+            // 'type' harus 'image' atau 'video' untuk memfilter firebase request
+            activeGalleryTab = type;
+            window.loadCloudGallery();
         }
     </script>
 </body>

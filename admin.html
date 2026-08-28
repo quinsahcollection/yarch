@@ -266,6 +266,10 @@
                                     <select id="status" required><option value="">Memuat data...</option></select>
                                 </div>
                                 <div class="form-group">
+                                <label>Tanggal Rilis Komik</label>
+                                <input type="date" id="releaseDate" required>
+                                </div>
+                                <div class="form-group">
                                     <label>Rating Usia</label>
                                     <select id="ageRating"><option value="">Memuat data...</option></select>
                                 </div>
@@ -631,6 +635,9 @@
                     const isPub = data.isPublished !== false; 
                     const date = data.createdAt ? data.createdAt.toDate().toLocaleDateString('id-ID', {day:'numeric', month:'short', year:'numeric'}) : '-';
                     
+                    // Format tampilan tanggal rilis
+                    const releaseInfo = data.releaseDate ? ` • Rilis: ${data.releaseDate}` : '';
+
                     allComicsList.push({ id: docSnap.id, title: data.title });
 
                     tbody.innerHTML += `
@@ -638,7 +645,7 @@
                             <td><img src="${data.coverUrl}" style="width: 50px; height: 70px; object-fit: cover; border-radius: 6px; box-shadow: 0 2px 5px rgba(0,0,0,0.1);" onerror="this.src='https://placehold.co/50x70?text=Error'"></td>
                             <td>
                                 <strong>${data.title}</strong><br>
-                                <span style="font-size: 11px; color: #888;">${data.type || '-'} • ${data.status || '-'}</span>
+                                <span style="font-size: 11px; color: #888;">${data.type || '-'} • ${data.status || '-'}${releaseInfo}</span>
                             </td>
                             <td>${data.author || '-'}</td>
                             <td><span style="font-size: 13px; font-weight: 500;">${date}</span></td>
@@ -722,6 +729,7 @@ document.getElementById('uploadForm').addEventListener('submit', async (e) => {
             type: document.getElementById('type').value,
             status: document.getElementById('status').value,
             ageRating: document.getElementById('ageRating').value,
+            releaseDate: document.getElementById('releaseDate').value,
             genres: genres,
             synopsis: document.getElementById('synopsis').value,
             coverUrl: workerData.url, 

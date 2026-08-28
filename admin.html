@@ -103,7 +103,11 @@
         .modal-header { padding: 20px; border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; background: var(--white); }
         .modal-header h3 { font-size: 18px; color: var(--sidebar-bg); margin: 0; display: flex; align-items: center; gap: 8px; }
         .modal-actions { display: flex; gap: 10px; align-items: center; }
-        .btn-success-sm { background: var(--success); color: white; border: none; padding: 10px 18px; border-radius: 20px; cursor: pointer; font-weight: 600; font-size: 14px; display: flex; align-items: center; gap: 8px; }
+        
+        /* DESAIN BARU TOMBOL KONFIRMASI */
+        .btn-success-sm { background: var(--success); color: white; border: none; padding: 10px 16px; border-radius: 8px; cursor: pointer; font-weight: 600; font-size: 14px; display: flex; align-items: center; gap: 8px; box-shadow: 0 4px 10px rgba(16, 185, 129, 0.2); transition: 0.2s; }
+        .btn-success-sm:hover { background: #059669; transform: translateY(-1px); }
+        
         .btn-close { background: none; border: none; font-size: 24px; cursor: pointer; color: var(--text-muted); }
         
         .modal-toolbar { padding: 15px 20px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border); background: var(--white); flex-wrap: wrap; gap: 15px; }
@@ -117,7 +121,7 @@
         .btn-upload-cloud { background: var(--sidebar-bg); color: white; border: none; padding: 10px 20px; border-radius: 8px; cursor: pointer; font-weight: 600; font-size: 13px; display: flex; align-items: center; gap: 8px; }
         .btn-upload-cloud:hover { background: var(--sidebar-hover); }
 
-        .gallery-grid { flex-grow: 1; padding: 20px; overflow-y: auto; display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 15px; background: var(--bg-light); align-content: start; }
+        .gallery-grid { flex-grow: 1; padding: 20px; overflow-y: auto; display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 15px; background: var(--bg-light); align-content: start; }
         
         /* Folder Style */
         .folder-card { background: var(--white); border-radius: 12px; border: 1px solid var(--border); padding: 20px; text-align: center; cursor: pointer; transition: 0.2s; display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 160px; box-shadow: 0 2px 8px rgba(0,0,0,0.03); }
@@ -127,33 +131,43 @@
         .folder-title { font-weight: 700; font-size: 14px; color: var(--text-dark); margin-bottom: 5px; line-height: 1.3; }
         .folder-subtitle { font-size: 11px; color: var(--text-muted); font-weight: 500; }
 
-        /* Media Card Style */
-        .media-card { background: var(--white); border-radius: 10px; border: 1px solid var(--border); overflow: hidden; display: flex; flex-direction: column; transition: 0.2s; position: relative; }
-        .media-card:hover { box-shadow: 0 5px 15px rgba(0,0,0,0.08); transform: translateY(-3px); }
+        /* Media Card Style - REVISI PROFESIONAL */
+        .media-card { background: var(--white); border-radius: 8px; border: 1px solid var(--border); overflow: hidden; display: flex; flex-direction: column; transition: 0.2s; position: relative; }
+        .media-card:hover { box-shadow: 0 5px 15px rgba(0,0,0,0.08); transform: translateY(-3px); border-color: #cbd5e1; }
         .media-card.selected { border-color: var(--primary); border-width: 2px; }
         
-        .media-thumb { width: 100%; aspect-ratio: 1/1.2; position: relative; background: #f8fafc; border-bottom: 1px solid var(--border); cursor: pointer; }
-        .media-thumb img, .media-thumb video { width: 100%; height: 100%; object-fit: cover; }
+        .media-thumb { width: 100%; aspect-ratio: 3/4; position: relative; background: #e2e8f0; border-bottom: 1px solid var(--border); cursor: pointer; overflow: hidden; }
+        .media-thumb img, .media-thumb video { width: 100%; height: 100%; object-fit: cover; object-position: top; transition: transform 0.3s ease; }
+        .media-card:hover .media-thumb img { transform: scale(1.05); }
         
-        .check-circle { position: absolute; top: 10px; left: 10px; width: 28px; height: 28px; border-radius: 50%; border: 2px solid var(--white); background: rgba(0,0,0,0.3); display: flex; align-items: center; justify-content: center; color: transparent; font-weight: bold; font-size: 13px; transition: 0.2s; z-index: 5; box-shadow: 0 2px 4px rgba(0,0,0,0.2); }
+        .check-circle { position: absolute; top: 10px; left: 10px; width: 26px; height: 26px; border-radius: 50%; border: 2px solid var(--white); background: rgba(0,0,0,0.3); display: flex; align-items: center; justify-content: center; color: transparent; font-weight: bold; font-size: 12px; transition: 0.2s; z-index: 5; box-shadow: 0 2px 4px rgba(0,0,0,0.2); }
         .media-card.selected .check-circle { background: var(--primary); color: white; border-color: var(--primary); }
         
-        .media-info { padding: 10px; text-align: center; font-size: 12px; color: var(--text-muted); font-weight: 500; }
-        .media-actions { padding: 0 10px 15px; display: flex; gap: 8px; }
+        .media-info { padding: 8px 10px; text-align: center; font-size: 11px; color: var(--text-muted); font-weight: 500; border-bottom: 1px solid #f1f5f9; }
+        .media-actions { padding: 8px; display: flex; gap: 6px; background: #f8fafc; }
         
-        .btn-pilih { flex: 1; background: var(--primary); color: white; border: none; padding: 8px; border-radius: 6px; font-weight: 600; font-size: 13px; cursor: pointer; transition: 0.2s; }
+        .btn-pilih { flex: 1; background: var(--primary); color: white; border: none; padding: 6px; border-radius: 6px; font-weight: 600; font-size: 12px; cursor: pointer; transition: 0.2s; }
+        .btn-pilih:hover { background: var(--primary-hover); }
         .media-card.selected .btn-pilih { background: var(--success); }
         
-        .btn-icon-outline { background: transparent; border: 1px solid var(--border); border-radius: 6px; width: 32px; height: 32px; display: flex; align-items: center; justify-content: center; cursor: pointer; color: var(--text-muted); transition: 0.2s; }
-        .btn-icon-outline:hover { background: #f1f5f9; }
+        .btn-icon-outline { background: var(--white); border: 1px solid var(--border); border-radius: 6px; width: 30px; height: 30px; display: flex; align-items: center; justify-content: center; cursor: pointer; color: var(--text-muted); transition: 0.2s; font-size: 13px; }
+        .btn-icon-outline:hover { background: #f1f5f9; color: var(--text-dark); }
         .btn-icon-outline.text-danger { color: var(--danger); border-color: #fecaca; }
-        .btn-icon-outline.text-danger:hover { background: #fee2e2; }
+        .btn-icon-outline.text-danger:hover { background: #fee2e2; color: #b91c1c; }
 
         /* Preview Selected in Form */
         .selected-media-preview { display: flex; gap: 12px; flex-wrap: wrap; margin-top: 15px; }
         .preview-thumb { position: relative; width: 80px; height: 110px; border-radius: 6px; overflow: hidden; border: 1px solid var(--border); }
-        .preview-thumb img { width: 100%; height: 100%; object-fit: cover; }
+        .preview-thumb img { width: 100%; height: 100%; object-fit: cover; object-position: top; }
         .preview-badge { position: absolute; bottom: 0; left: 0; width: 100%; background: rgba(0,0,0,0.7); color: white; text-align: center; font-size: 11px; padding: 3px 0; font-weight: bold; }
+
+        /* ==================== LIGHTBOX MODAL PREVIEW ==================== */
+        .lightbox-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); z-index: 3000; display: flex; align-items: center; justify-content: center; backdrop-filter: blur(5px); opacity: 0; visibility: hidden; transition: 0.3s ease; }
+        .lightbox-overlay.show { opacity: 1; visibility: visible; }
+        .lightbox-content { position: relative; max-width: 90%; max-height: 90vh; }
+        .lightbox-content img { max-width: 100%; max-height: 90vh; border-radius: 8px; box-shadow: 0 10px 40px rgba(0,0,0,0.5); object-fit: contain; }
+        .lightbox-close { position: absolute; top: -15px; right: -15px; background: var(--danger); color: white; border: 2px solid white; border-radius: 50%; width: 34px; height: 34px; display: flex; align-items: center; justify-content: center; cursor: pointer; font-size: 16px; box-shadow: 0 4px 10px rgba(0,0,0,0.3); transition: 0.2s; }
+        .lightbox-close:hover { transform: scale(1.1); }
 
         /* ==================== MASTER DATA UI ==================== */
         .master-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 20px; }
@@ -189,7 +203,23 @@
             .sidebar-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 999; }
             .sidebar-overlay.active { display: block; }
         }
-        @media (max-width: 768px) { .form-grid { grid-template-columns: 1fr; } .content-area { padding: 20px 15px; } .comic-table { display: block; overflow-x: auto; white-space: nowrap; } }
+        
+        /* PERBAIKAN RESPONSIVE UNTUK MOBILE */
+        @media (max-width: 768px) { 
+            .form-grid { grid-template-columns: 1fr; } 
+            .content-area { padding: 20px 15px; } 
+            .comic-table { display: block; overflow-x: auto; white-space: nowrap; } 
+            
+            /* Kunci Galeri menjadi 2 Kolom pada Mobile */
+            .gallery-grid { grid-template-columns: repeat(2, 1fr); gap: 10px; padding: 15px; }
+            .folder-card { min-height: 130px; padding: 15px 10px; }
+            .folder-icon { font-size: 35px; }
+            
+            .modal-toolbar { flex-direction: column; align-items: flex-start; }
+            .btn-upload-cloud { width: 100%; justify-content: center; }
+            .modal-actions { gap: 5px; }
+            .btn-success-sm { padding: 8px 12px; font-size: 12px; }
+        }
     </style>
 </head>
 <body>
@@ -501,6 +531,14 @@
             <div class="gallery-grid" id="cloudGalleryGrid">
                 <!-- Folder komik, Folder Chapter, atau Daftar Media akan muncul di sini sesuai direktori -->
             </div>
+        </div>
+    </div>
+
+    <!-- ==================== MODAL LIGHTBOX PREVIEW ==================== -->
+    <div id="lightboxModal" class="lightbox-overlay">
+        <div class="lightbox-content">
+            <button class="lightbox-close" onclick="closeLightboxPreview()"><i class="fa-solid fa-times"></i></button>
+            <img id="lightboxImage" src="" alt="Preview">
         </div>
     </div>
 
@@ -817,7 +855,6 @@
             const btnUpload = document.getElementById('btnUploadCloudTop');
             const btnConfirm = document.getElementById('btnConfirmGallery');
 
-            // 1. Setup Breadcrumbs Navigasi
             let bcHtml = `<span onclick="window.navGalleryToRoot()"><i class="fa-solid fa-server"></i> Root (Semua Komik)</span>`;
             if(window.galleryState.level !== 'root') {
                 const safeName = window.galleryState.comicName.replace(/'/g, "\\'");
@@ -830,7 +867,6 @@
             }
             breadcrumb.innerHTML = bcHtml;
 
-            // 2. Tampilkan Tombol Upload & Konfirmasi HANYA di level 'pool'
             btnUpload.style.display = (window.galleryState.level === 'pool') ? 'flex' : 'none';
             btnConfirm.style.display = (window.galleryState.level === 'pool') ? 'flex' : 'none';
 
@@ -865,12 +901,11 @@
                         </div>
                     `;
 
-                    // Fetch Chapters dari Sub-Koleksi
                     const chaptersRef = collection(db, "comics", window.galleryState.comicId, "chapters");
                     const snapshot = await getDocs(chaptersRef);
                     let chapters = [];
                     snapshot.forEach(doc => chapters.push({ id: doc.id, ...doc.data() }));
-                    chapters.sort((a, b) => b.chapterNumber - a.chapterNumber); // Descending
+                    chapters.sort((a, b) => b.chapterNumber - a.chapterNumber);
 
                     chapters.forEach(ch => {
                         const date = ch.updateDate || (ch.createdAt ? ch.createdAt.toDate().toLocaleDateString('id-ID') : '-');
@@ -897,9 +932,12 @@
                         const mediaHtml = isVideo ? `<video src="${url}"></video>` : `<img src="${url}" loading="lazy">`;
                         grid.innerHTML += `
                             <div class="media-card">
-                                <div class="media-thumb" onclick="window.open('${url}', '_blank')" title="Lihat Layar Penuh">
+                                <div class="media-thumb" onclick="openLightboxPreview('${url}')" title="Klik untuk Lihat Penuh">
                                     <div class="check-circle" style="background:rgba(0,0,0,0.8); border:none; color:white;">${index+1}</div>
                                     ${mediaHtml}
+                                </div>
+                                <div class="media-actions" style="justify-content: center;">
+                                    <button class="btn-icon-outline" onclick="openLightboxPreview('${url}')" style="width: 100%; border-radius: 6px;"><i class="fa-solid fa-eye"></i> Preview Penuh</button>
                                 </div>
                             </div>
                         `;
@@ -935,15 +973,16 @@
 
                         grid.innerHTML += `
                             <div class="media-card ${isSelected ? 'selected' : ''}" id="gal-item-${data.id}">
-                                <div class="media-thumb" onclick="window.toggleSelectGalleryItem('${data.id}', '${data.url}')">
+                                <div class="media-thumb" onclick="window.toggleSelectGalleryItem('${data.id}', '${data.url}')" title="Klik untuk memilih">
                                     <div class="check-circle" id="badge-${data.id}">${orderIndex}</div>
                                     ${mediaHTML}
                                 </div>
                                 <div class="media-info">${fileSize}</div>
                                 <div class="media-actions">
                                     <button class="btn-pilih" onclick="window.toggleSelectGalleryItem('${data.id}', '${data.url}')">
-                                        ${isSelected ? 'Terpilih' : 'Pilih'}
+                                        ${isSelected ? '<i class="fa-solid fa-check"></i> Terpilih' : 'Pilih'}
                                     </button>
+                                    <button class="btn-icon-outline" onclick="openLightboxPreview('${data.url}')" title="Preview Image"><i class="fa-solid fa-eye"></i></button>
                                     <button class="btn-icon-outline text-danger" onclick="window.deleteMediaFromGallery('${data.id}')" title="Hapus Permanen"><i class="fa-solid fa-trash-can"></i></button>
                                 </div>
                             </div>
@@ -957,7 +996,7 @@
         }
 
         window.deleteMediaFromGallery = async function(mediaId) {
-            if(confirm("Yakin ingin menghapus media ini dari Cloud?")) {
+            if(confirm("Yakin ingin menghapus media ini secara permanen dari server?")) {
                 try {
                     await deleteDoc(doc(db, "media_gallery", mediaId));
                     window.loadCloudGallery();
@@ -990,7 +1029,7 @@
                 const galItem = document.getElementById(`gal-item-${item.docId}`);
                 if(galItem) {
                     galItem.classList.add('selected');
-                    galItem.querySelector('.btn-pilih').innerText = "Terpilih";
+                    galItem.querySelector('.btn-pilih').innerHTML = '<i class="fa-solid fa-check"></i> Terpilih';
                     galItem.querySelector('.check-circle').innerText = index + 1; 
                 }
             });
@@ -1185,7 +1224,6 @@
             const selectedComicId = document.getElementById('chapterComicId').value;
             const selectedComicName = document.getElementById('chapterComicSearch').value;
             
-            // Auto navigate ke Folder Komik jika sudah dipilih di input form
             if (selectedComicId) {
                 window.galleryState = { level: 'comic', comicId: selectedComicId, comicName: selectedComicName, chapterId: null, chapterName: '', chapterImages: [] };
             } else {
@@ -1196,6 +1234,16 @@
         
         function closeMediaGallery() {
             document.getElementById('cloudGalleryModal').classList.add('hidden');
+        }
+
+        /* --- FUNGSI LIGHTBOX PREVIEW --- */
+        window.openLightboxPreview = function(url) {
+            document.getElementById('lightboxImage').src = url;
+            document.getElementById('lightboxModal').classList.add('show');
+        }
+        window.closeLightboxPreview = function() {
+            document.getElementById('lightboxModal').classList.remove('show');
+            setTimeout(() => { document.getElementById('lightboxImage').src = ''; }, 300);
         }
     </script>
 </body>

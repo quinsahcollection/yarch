@@ -686,46 +686,71 @@
         }
 
         /* =========================================
-           UPLOAD KOMIK BARU
-           ========================================= */
-        document.getElementById('uploadForm').addEventListener('submit', async (e) => {
-            e.preventDefault();
-            uploadStatus.innerText = "Mengunggah cover..."; uploadStatus.style.display = "block"; uploadStatus.style.background = "#eff6ff"; uploadStatus.style.color = "var(--primary)";
-            
-            const currentSecretKey = secretKeyInput.value;
-            const formData = new FormData();
-            formData.append('coverImage', document.getElementById('coverImage').files[0]);
+   UPLOAD KOMIK BARU
+   ========================================= */
+document.getElementById('uploadForm').addEventListener('submit', async (e) => {
+    e.preventDefault();
 
-            try {
-                const workerResponse = await fetch(WORKER_URL, { method: 'POST', headers: { 'X-Admin-Key': currentSecretKey }, body: formData });
-                const workerData = await workerResponse.json();
-                if (!workerResponse.ok) throw new Error(workerData.error || "Gagal upload R2");
+    // 1. TANGKAP TOMBOL SUBMIT & KUNCI (DISABLE) AGAR TIDAK BISA DI-KLIK DOUBLE
+    const submitBtn = e.target.querySelector('button[type="submit"]');
+    if (submitBtn) submitBtn.disabled = true;
 
-                localStorage.setItem('workerSecretKey', currentSecretKey);
-                uploadStatus.innerText = "Menyimpan data komik ke Firebase...";
+    uploadStatus.innerText = "Mengunggah cover..."; 
+    uploadStatus.style.display = "block"; 
+    uploadStatus.style.background = "#eff6ff"; 
+    uploadStatus.style.color = "var(--primary)";
+    
+    const currentSecretKey = secretKeyInput.value;
+    const formData = new FormData();
+    formData.append('coverImage', document.getElementById('coverImage').files[0]);
 
-                const genres = [];
-                document.querySelectorAll('.genre-check:checked').forEach(cb => genres.push(cb.value));
+    try {
+        const workerResponse = await fetch(WORKER_URL, { method: 'POST', headers: { 'X-Admin-Key': currentSecretKey }, body: formData });
+        const workerData = await workerResponse.json();
+        if (!workerResponse.ok) throw new Error(workerData.error || "Gagal upload R2");
 
-                await addDoc(collection(db, "comics"), {
-                    title: document.getElementById('title').value,
-                    altTitle: document.getElementById('altTitle').value,
-                    author: document.getElementById('author').value,
-                    type: document.getElementById('type').value,
-                    status: document.getElementById('status').value,
-                    ageRating: document.getElementById('ageRating').value,
-                    genres: genres,
-                    synopsis: document.getElementById('synopsis').value,
-                    coverUrl: workerData.url, uploader: auth.currentUser.email, views: 0, isPublished: true, createdAt: serverTimestamp()
-                });
+        localStorage.setItem('workerSecretKey', currentSecretKey);
+        uploadStatus.innerText = "Menyimpan data komik ke Firebase...";
 
-                uploadStatus.innerText = "✅ Komik Baru Berhasil Dipublikasikan!"; uploadStatus.style.color = "var(--success)"; uploadStatus.style.background = "#ecfdf5";
-                document.getElementById('uploadForm').reset(); document.getElementById('coverPreview').style.display = 'none'; secretKeyInput.value = currentSecretKey; 
-                window.loadComicsList(); 
-            } catch (error) {
-                uploadStatus.innerText = "❌ Error: " + error.message; uploadStatus.style.color = "var(--danger)"; uploadStatus.style.background = "#fef2f2";
-            }
+        const genres = [];
+        document.querySelectorAll('.genre-check:checked').forEach(cb => genres.push(cb.value));
+
+        await addDoc(collection(db, "comics"), {
+            title: document.getElementById('title').value,
+            altTitle: document.getElementById('altTitle').value,
+            author: document.getElementById('author').value,
+            type: document.getElementById('type').value,
+            status: document.getElementById('status').value,
+            ageRating: document.getElementById('ageRating').value,
+            genres: genres,
+            synopsis: document.getElementById('synopsis').value,
+            coverUrl: workerData.url, 
+            uploader: auth.currentUser.email, 
+            views: 0, 
+            isPublished: true, 
+            createdAt: serverTimestamp()
         });
+
+        uploadStatus.innerText = "✅ Komik Baru Berhasil Dipublikasikan!"; 
+        uploadStatus.style.color = "var(--success)"; 
+        uploadStatus.style.background = "#ecfdf5";
+        
+        document.getElementById('uploadForm').reset(); 
+        document.getElementById('coverPreview').style.display = 'none'; 
+        secretKeyInput.value = currentSecretKey; 
+        
+        window.loadComicsList(); 
+
+    } catch (error) {
+        uploadStatus.innerText = "❌ Error: " + error.message; 
+        uploadStatus.style.color = "var(--danger)"; 
+        uploadStatus.style.background = "#fef2f2";
+    } finally {
+        // 2. BUKA KEMBALI KUNCI TOMBOL SETELAH PROSES SELESAI
+        // (Berjalan otomatis, baik saat berhasil maupun jika terjadi error)
+        if (submitBtn) submitBtn.disabled = false;
+    }
+});
 
         /* =========================================
            LOGIKA GALERI CLOUD MEDIA (DIOPTIMASI ANTI-ERROR FIREBASE)

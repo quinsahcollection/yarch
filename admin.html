@@ -84,7 +84,7 @@
         .upload-area i { font-size: 30px; color: var(--text-muted); margin-bottom: 10px; }
         .image-preview { margin-top: 15px; width: 100%; max-width: 200px; border-radius: 8px; display: none; box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
 
-        .btn-submit { background: var(--primary); color: white; border: none; padding: 14px 20px; border-radius: 8px; cursor: pointer; width: 100%; font-weight: 600; font-size: 15px; margin-top: 25px; transition: 0.2s; }
+        .btn-submit { background: var(--primary); color: white; border: none; padding: 14px 20px; border-radius: 8px; cursor: pointer; width: 100%; font-weight: 600; font-size: 15px; margin-top: 15px; transition: 0.2s; }
         .btn-submit:hover { background: var(--primary-hover); }
         .status-msg { margin-top: 15px; font-weight: 600; text-align: center; font-size: 14px; padding: 10px; border-radius: 6px; }
 
@@ -130,8 +130,7 @@
         .folder-subtitle { font-size: 11px; color: var(--text-muted); font-weight: 500; }
 
         /* ====================================================
-           REVISI TOTAL: MEDIA CARD VERTIKAL (TIDAK TERPOTONG)
-           Menggunakan aspect-ratio vertikal 3/4 agar halaman manga tampil penuh
+           REVISI MEDIA CARD: MURNI VERTIKAL (TIDAK GEPENG/TERPOTONG)
         ==================================================== */
         .media-card { background: var(--white); border-radius: 8px; border: 1px solid var(--border); overflow: hidden; display: flex; flex-direction: column; transition: 0.2s; position: relative; height: 100%; }
         .media-card:hover { box-shadow: 0 5px 15px rgba(0,0,0,0.08); transform: translateY(-3px); border-color: #cbd5e1; }
@@ -139,9 +138,9 @@
         
         .media-thumb { 
             width: 100%; 
-            aspect-ratio: 3/4; /* Proporsi vertikal standar komik/manga */
+            aspect-ratio: 1/1.4; /* Sempurna untuk Halaman Komik agar panjang ke bawah */
             position: relative; 
-            background: #1e293b; /* Latar gelap profesional agar manga terlihat jelas */
+            background: #0f172a; 
             border-bottom: 1px solid var(--border); 
             cursor: pointer; 
             overflow: hidden; 
@@ -152,7 +151,7 @@
         .media-thumb img, .media-thumb video { 
             width: 100%; 
             height: 100%; 
-            object-fit: contain; /* Memastikan seluruh gambar komik tampil utuh tanpa ada yang terpotong */
+            object-fit: contain; /* Tidak akan terpotong */
         }
         
         .check-circle { position: absolute; top: 10px; left: 10px; width: 26px; height: 26px; border-radius: 50%; border: 2px solid var(--white); background: rgba(0,0,0,0.5); display: flex; align-items: center; justify-content: center; color: transparent; font-weight: bold; font-size: 12px; transition: 0.2s; z-index: 5; box-shadow: 0 2px 4px rgba(0,0,0,0.2); }
@@ -264,9 +263,9 @@
             <div class="sidebar-header"><i class="fa-solid fa-bolt"></i> MangaPanel</div>
             <ul class="sidebar-menu">
                 <li><a onclick="switchView('view-dashboard', this)"><i class="fa-solid fa-chart-pie"></i> Dashboard</a></li>
-                <li><a onclick="switchView('view-tambah', this)" class="active"><i class="fa-solid fa-square-plus"></i> Tambah Komik</a></li>
+                <li><a onclick="switchView('view-tambah', this)"><i class="fa-solid fa-square-plus"></i> Tambah Komik</a></li>
                 <li><a onclick="switchView('view-daftar', this)"><i class="fa-solid fa-list"></i> Daftar Komik</a></li>
-                <li><a onclick="switchView('view-chapter', this)"><i class="fa-solid fa-layer-group"></i> Kelola Chapter</a></li>
+                <li><a onclick="switchView('view-chapter', this)" class="active"><i class="fa-solid fa-layer-group"></i> Kelola Chapter</a></li>
                 <li><a onclick="switchView('view-kategori', this)"><i class="fa-solid fa-tags"></i> Kategori & Genre</a></li>
                 <li><a onclick="switchView('view-pengaturan', this)"><i class="fa-solid fa-gear"></i> Pengaturan</a></li>
             </ul>
@@ -284,7 +283,7 @@
             <div class="content-area">
                 
                 <!-- VIEW 1: TAMBAH KOMIK -->
-                <div id="view-tambah" class="admin-view active">
+                <div id="view-tambah" class="admin-view">
                     <h1 class="page-title">Tambah Komik Baru</h1>
                     <div class="card">
                         <form id="uploadForm">
@@ -377,13 +376,14 @@
                 </div>
 
                 <!-- VIEW 3: KELOLA CHAPTER -->
-                <div id="view-chapter" class="admin-view">
+                <div id="view-chapter" class="admin-view active">
                     <h1 class="page-title">Kelola Chapter Komik & Film</h1>
                     
                     <!-- Form Tambah Chapter -->
                     <div class="card" style="margin-bottom: 25px;">
                         <form id="uploadChapterForm">
-                            <div class="form-grid">
+                            <!-- LANGKAH 1: IDENTITAS CHAPTER -->
+                            <div class="form-grid" style="margin-bottom: 10px;">
                                 <div class="form-group full-width">
                                     <label>Pilih Komik / Folder *</label>
                                     <div class="search-select">
@@ -404,19 +404,33 @@
                                     <label>Tanggal Update Komik *</label>
                                     <input type="date" id="chapterUpdateDate" required>
                                 </div>
-                                
+                            </div>
+                            
+                            <!-- TOMBOL SIMPAN & BUAT FOLDER (LANGKAH 1) -->
+                            <div style="margin-bottom: 25px; padding-bottom: 20px; border-bottom: 2px dashed var(--border);">
+                                <button type="button" class="btn-success-sm" style="width: 100%; justify-content: center; padding: 12px; font-size: 15px;" onclick="window.saveChapterFolder()">
+                                    <i class="fa-solid fa-folder-plus"></i> Langkah 1: Simpan & Buat Folder Chapter
+                                </button>
+                                <div class="help-text" style="text-align:center; margin-top:8px;">Klik ini dulu untuk menyimpan identitas chapter dan membuat foldernya secara otomatis.</div>
+                                <div id="saveFolderStatus" class="status-msg" style="display:none; margin-top:10px;"></div>
+                            </div>
+
+                            <!-- LANGKAH 2: FILE MANAGER & UPLOAD MEDIA -->
+                            <div class="form-grid">
                                 <div class="form-group full-width">
-                                    <label>Media Chapter (Pilih urutan gambar / video dari Cloud)</label>
-                                    <button type="button" class="btn-upload-cloud" style="width:100%; justify-content:center; padding:15px; font-size:15px;" onclick="openMediaGallery()">
-                                        <i class="fa-solid fa-folder-tree"></i> Buka File Manager & Galeri Cloud
+                                    <label>Media Chapter (Pilih urutan gambar dari Cloud)</label>
+                                    <button type="button" class="btn-upload-cloud" style="width:100%; justify-content:center; padding:15px; font-size:15px; background: var(--sidebar-bg);" onclick="openMediaGallery()">
+                                        <i class="fa-solid fa-folder-tree"></i> Langkah 2: Buka File Manager & Upload Media
                                     </button>
-                                    <div class="help-text" style="text-align:center; margin-top:8px;">Masuk ke folder komik & buat/pilih folder chapter spesifik untuk mengelola gambar dengan rapi.</div>
+                                    <div class="help-text" style="text-align:center; margin-top:8px;">Masuk ke folder komik & buka folder chapter yang baru dibuat untuk upload gambar.</div>
                                     
                                     <!-- Tempat Munculnya Preview Urutan Media yang dipilih -->
                                     <div id="selectedMediaPreview" class="selected-media-preview"></div>
                                 </div>
                             </div>
-                            <button type="submit" class="btn-submit" id="btnSubmitChapter"><i class="fa-solid fa-paper-plane"></i> Publikasikan Chapter Ini</button>
+                            
+                            <!-- TOMBOL FINAL PUBLIKASI -->
+                            <button type="submit" class="btn-submit" id="btnSubmitChapter"><i class="fa-solid fa-paper-plane"></i> Selesai & Publikasikan Chapter Ini</button>
                         </form>
                         <div id="chapterUploadStatus" class="status-msg"></div>
                     </div>
@@ -575,6 +589,7 @@
         const secretKeyInput = document.getElementById('secretKey');
         
         window.allComicsList = [];
+        window.galleryState = { level: 'root', comicId: null, comicName: '', chapterFolderId: null, chapterFolderName: '', currentChapterImages: [] };
 
         if (localStorage.getItem('workerSecretKey') && secretKeyInput) {
             secretKeyInput.value = localStorage.getItem('workerSecretKey');
@@ -800,40 +815,64 @@
         });
 
         /* =========================================
-           LOGIKA FILE MANAGER BERBASIS FOLDER & CHAPTER SPESIFIK
+           LANGKAH 1: SIMPAN DATA & BUAT FOLDER CHAPTER
            ========================================= */
-        window.galleryState = { level: 'root', comicId: null, comicName: '', chapterFolderId: null, chapterFolderName: '' };
-        
-        function formatBytes(bytes) {
-            if (bytes === 0) return '0 Bytes';
-            const k = 1024, dm = 2, sizes = ['Bytes', 'KB', 'MB', 'GB'], i = Math.floor(Math.log(bytes) / Math.log(k));
-            return parseFloat((bytes / Math.pow(k, i)).toFixed(dm)) + ' ' + sizes[i];
-        }
+        window.saveChapterFolder = async function() {
+            const comicId = document.getElementById('chapterComicId').value;
+            const chapterNum = document.getElementById('chapterNumber').value;
+            const chapterTitle = document.getElementById('chapterTitle').value;
+            const updateDate = document.getElementById('chapterUpdateDate').value;
+            const statusEl = document.getElementById('saveFolderStatus');
 
-        // Fungsi Buat Folder Chapter Baru di dalam File Manager
-        window.createNewChapterFolderPrompt = async function() {
-            const chNum = prompt("Masukkan Nomor Chapter Baru (Contoh: 1 atau 1.5):");
-            if(!chNum) return;
-            const chTitle = prompt("Masukkan Judul Chapter (Opsional):") || "";
-            const chDate = document.getElementById('chapterUpdateDate').value || new Date().toISOString().split('T')[0];
+            if(!comicId) { alert("Pilih Komik terlebih dahulu dari daftar!"); return; }
+            if(!chapterNum) { alert("Nomor Chapter wajib diisi!"); return; }
+            if(!updateDate) { alert("Tanggal Update wajib diisi!"); return; }
+
+            statusEl.style.display = 'block';
+            statusEl.style.background = "#eff6ff";
+            statusEl.style.color = "var(--primary)";
+            statusEl.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Menyimpan folder chapter ke database...';
 
             try {
-                const chaptersRef = collection(db, "comics", window.galleryState.comicId, "chapters");
-                const newDocRef = await addDoc(chaptersRef, {
-                    chapterNumber: parseFloat(chNum),
-                    title: chTitle,
-                    updateDate: chDate,
-                    images: [],
-                    createdAt: serverTimestamp()
-                });
-                alert("Folder Chapter berhasil dibuat!");
-                window.navGalleryToComic(window.galleryState.comicId, window.galleryState.comicName);
+                const chaptersRef = collection(db, "comics", comicId, "chapters");
+                // Cek apakah chapter dengan nomor yang sama sudah pernah dibuat
+                const q = query(chaptersRef, where("chapterNumber", "==", parseFloat(chapterNum)));
+                const snapshot = await getDocs(q);
+
+                if (!snapshot.empty) {
+                    // Update data folder yang sudah ada
+                    const docSnap = snapshot.docs[0];
+                    await updateDoc(doc(db, "comics", comicId, "chapters", docSnap.id), {
+                        title: chapterTitle,
+                        updateDate: updateDate
+                    });
+                    statusEl.innerHTML = "✅ Folder Chapter ini sudah ada dan datanya berhasil diupdate!<br>Silakan lanjut Buka File Manager di bawah.";
+                } else {
+                    // Buat folder baru (dokumen baru)
+                    await addDoc(chaptersRef, {
+                        chapterNumber: parseFloat(chapterNum),
+                        title: chapterTitle,
+                        updateDate: updateDate,
+                        images: [],
+                        createdAt: serverTimestamp()
+                    });
+                    statusEl.innerHTML = "✅ Folder Chapter berhasil dibuat dan tersimpan!<br>Silakan lanjut Buka File Manager di bawah untuk mulai upload gambar.";
+                }
+                statusEl.style.color = "var(--success)"; statusEl.style.background = "#ecfdf5";
+                
+                // Refresh list chapter yang ada di bawah
+                if(document.getElementById('filterChapterId').value === comicId) {
+                    window.loadChaptersList();
+                }
             } catch(e) {
-                alert("Gagal membuat folder chapter: " + e.message);
+                statusEl.innerHTML = "❌ Error saat membuat folder: " + e.message;
+                statusEl.style.color = "var(--danger)"; statusEl.style.background = "#fef2f2";
             }
         }
 
-        // Upload file langsung terarah ke Folder Chapter spesifik
+        /* =========================================
+           LANGKAH 2: LOGIKA FILE MANAGER & UPLOAD
+           ========================================= */
         window.processCloudUpload = async function(inputElement) {
             const files = inputElement.files;
             if(files.length === 0) return;
@@ -882,6 +921,32 @@
             }
         }
 
+        // FUNGSI MENGHAPUS GAMBAR DARI FILE MANAGER
+        window.deleteImageFromChapter = async function(index, url) {
+            if(!confirm("Yakin ingin menghapus gambar ini secara permanen dari folder chapter?")) return;
+            const comicId = window.galleryState.comicId;
+            const chapterId = window.galleryState.chapterFolderId;
+
+            try {
+                // Hapus URL dari array image state
+                window.galleryState.currentChapterImages.splice(index, 1);
+                
+                // Hapus dari state pilihan form (jika sebelumnya sedang dipilih)
+                const selIndex = window.selectedMediaGallery.findIndex(m => m.url === url);
+                if(selIndex !== -1) window.selectedMediaGallery.splice(selIndex, 1);
+
+                // Update Array di Firestore Database
+                const chapterDocRef = doc(db, "comics", comicId, "chapters", chapterId);
+                await updateDoc(chapterDocRef, { images: window.galleryState.currentChapterImages });
+
+                // Refresh Gallery dan Preview Form
+                window.loadCloudGallery();
+                window.updateFormPreviewImages();
+            } catch(e) {
+                alert("Gagal menghapus gambar: " + e.message);
+            }
+        };
+
         window.loadCloudGallery = async function() {
             const grid = document.getElementById('cloudGalleryGrid');
             const breadcrumb = document.getElementById('galleryBreadcrumb');
@@ -926,13 +991,7 @@
                 }
                 // LEVEL 1: DALAM FOLDER KOMIK (Daftar Folder Chapter)
                 else if (window.galleryState.level === 'comic_folder') {
-                    grid.innerHTML = `
-                        <div class="folder-card" onclick="window.createNewChapterFolderPrompt()" style="border: 2px dashed var(--primary); background: var(--light-blue);">
-                            <i class="fa-solid fa-folder-plus folder-icon" style="color: var(--primary);"></i>
-                            <div class="folder-title">Buat Folder Chapter Baru</div>
-                            <div class="folder-subtitle">Atur Episode & Tanggal Update</div>
-                        </div>
-                    `;
+                    grid.innerHTML = ''; // Kita hapus tombol "buat manual" dari sini karena dibuat via Form Utama
 
                     const chaptersRef = collection(db, "comics", window.galleryState.comicId, "chapters");
                     const snapshot = await getDocs(chaptersRef);
@@ -940,26 +999,30 @@
                     snapshot.forEach(doc => chapters.push({ id: doc.id, ...doc.data() }));
                     chapters.sort((a, b) => b.chapterNumber - a.chapterNumber);
 
-                    chapters.forEach(ch => {
-                        const date = ch.updateDate || (ch.createdAt ? ch.createdAt.toDate().toLocaleDateString('id-ID') : '-');
-                        const totalMedia = ch.images ? ch.images.length : 0;
-                        const safeTitle = (ch.title || '').replace(/'/g, "\\'");
-                        const folderLabel = `Chapter ${ch.chapterNumber}`;
-                        
-                        grid.innerHTML += `
-                            <div class="folder-card" onclick="window.navGalleryToChapterFolder('${ch.id}', '${folderLabel}', window.encodeImgs('${encodeURIComponent(JSON.stringify(ch.images || []))}') )">
-                                <i class="fa-solid fa-folder-open folder-icon" style="color: #fbbf24;"></i>
-                                <div class="folder-title">${folderLabel}</div>
-                                <div class="folder-subtitle">${safeTitle}<br>${totalMedia} Halaman • ${date}</div>
-                            </div>
-                        `;
-                    });
+                    if (chapters.length === 0) {
+                        grid.innerHTML = `<div style="grid-column: 1/-1; text-align:center; padding:40px; color:var(--text-muted);">Belum ada folder chapter dibuat.<br>Tutup file manager dan klik tombol "Simpan & Buat Folder" di form utama terlebih dahulu.</div>`;
+                    } else {
+                        chapters.forEach(ch => {
+                            const date = ch.updateDate || (ch.createdAt ? ch.createdAt.toDate().toLocaleDateString('id-ID') : '-');
+                            const totalMedia = ch.images ? ch.images.length : 0;
+                            const safeTitle = (ch.title || '').replace(/'/g, "\\'");
+                            const folderLabel = `Chapter ${ch.chapterNumber}`;
+                            
+                            grid.innerHTML += `
+                                <div class="folder-card" onclick="window.navGalleryToChapterFolder('${ch.id}', '${folderLabel}', window.encodeImgs('${encodeURIComponent(JSON.stringify(ch.images || []))}') )">
+                                    <i class="fa-solid fa-folder-open folder-icon" style="color: #fbbf24;"></i>
+                                    <div class="folder-title">${folderLabel}</div>
+                                    <div class="folder-subtitle">${safeTitle}<br>${totalMedia} Halaman • ${date}</div>
+                                </div>
+                            `;
+                        });
+                    }
                 }
                 // LEVEL 2: DALAM FOLDER CHAPTER (Isi gambar komik spesifik chapter tersebut)
                 else if (window.galleryState.level === 'chapter_folder') {
                     grid.innerHTML = '';
                     if (!window.galleryState.currentChapterImages || window.galleryState.currentChapterImages.length === 0) {
-                        grid.innerHTML = '<div style="grid-column: 1/-1; text-align:center; padding:40px; color:var(--text-muted);"><i class="fa-solid fa-images" style="font-size:40px; margin-bottom:15px; color:#cbd5e1; display:block;"></i>Folder chapter ini masih kosong. Klik tombol "Upload ke Folder Chapter Ini" di atas.</div>';
+                        grid.innerHTML = '<div style="grid-column: 1/-1; text-align:center; padding:40px; color:var(--text-muted);"><i class="fa-solid fa-images" style="font-size:40px; margin-bottom:15px; color:#cbd5e1; display:block;"></i>Folder chapter ini masih kosong.<br>Silakan klik tombol "Upload ke Folder Chapter Ini" di kanan atas.</div>';
                         return;
                     }
 
@@ -979,6 +1042,7 @@
                                         ${isSelected ? '<i class="fa-solid fa-check"></i> Terpilih' : 'Pilih'}
                                     </button>
                                     <button class="btn-icon-outline" onclick="openLightboxPreview('${url}')" title="Preview Penuh"><i class="fa-solid fa-eye"></i></button>
+                                    <button class="btn-icon-outline text-danger" onclick="window.deleteImageFromChapter('${index}', '${url}')" title="Hapus Permanen"><i class="fa-solid fa-trash-can"></i></button>
                                 </div>
                             </div>
                         `;
@@ -1026,6 +1090,11 @@
         }
 
         window.confirmGallerySelection = function() {
+            window.updateFormPreviewImages();
+            closeMediaGallery();
+        }
+
+        window.updateFormPreviewImages = function() {
             const previewContainer = document.getElementById('selectedMediaPreview');
             previewContainer.innerHTML = '';
             
@@ -1041,11 +1110,10 @@
                     `;
                 });
             }
-            closeMediaGallery();
         }
 
         /* =========================================
-           PUBLIKASI CHAPTER
+           PUBLIKASI FINAL CHAPTER
            ========================================= */
         document.getElementById('uploadChapterForm').addEventListener('submit', async (e) => {
             e.preventDefault();
@@ -1055,28 +1123,35 @@
             const updateDate = document.getElementById('chapterUpdateDate').value;
             const statusEl = document.getElementById('chapterUploadStatus');
             
-            if(!comicId) { alert("Pilih Komik terlebih dahulu dari daftar pencarian!"); return; }
-            if(window.selectedMediaGallery.length === 0) { alert("Buka File Manager dan pilih halaman komik dari folder chapter!"); return; }
+            if(!comicId) { alert("Pilih Komik terlebih dahulu!"); return; }
+            if(window.selectedMediaGallery.length === 0) { 
+                alert("Buka File Manager, masuk ke Folder Chapter yang telah dibuat, Upload dan PILIH urutan halamannya terlebih dahulu!"); 
+                return; 
+            }
 
             const btnSubmit = document.getElementById('btnSubmitChapter');
-            btnSubmit.innerHTML = "Menyimpan..."; btnSubmit.disabled = true;
+            btnSubmit.innerHTML = "Memfinalisasi..."; btnSubmit.disabled = true;
             statusEl.style.display = "block"; statusEl.style.background = "#eff6ff"; statusEl.style.color = "var(--primary)";
-            statusEl.innerText = "Menerbitkan chapter ke Database Firebase...";
+            statusEl.innerText = "Menerbitkan chapter ke Database...";
 
             try {
+                // Ambil daftar gambar yang dipilih dari Gallery
                 const finalUrls = window.selectedMediaGallery.map(m => m.url);
                 
-                // Jika user sudah memilih dari folder chapter spesifik, update chapter tersebut, atau buat baru jika belum ada
-                if (window.galleryState.chapterFolderId) {
-                    const chapterDocRef = doc(db, "comics", comicId, "chapters", window.galleryState.chapterFolderId);
-                    await updateDoc(chapterDocRef, {
-                        chapterNumber: parseFloat(chapterNum),
+                const chaptersRef = collection(db, "comics", comicId, "chapters");
+                const q = query(chaptersRef, where("chapterNumber", "==", parseFloat(chapterNum)));
+                const snapshot = await getDocs(q);
+                
+                // Cari folder chapter ini yang sebelumnya sudah disave melalui langkah 1
+                if (!snapshot.empty) {
+                    const docSnap = snapshot.docs[0];
+                    await updateDoc(doc(db, "comics", comicId, "chapters", docSnap.id), {
                         title: chapterTitle,
                         updateDate: updateDate,
-                        images: finalUrls
+                        images: finalUrls // Mengupdate urutan gambar terpilih
                     });
                 } else {
-                    const chaptersRef = collection(db, "comics", comicId, "chapters");
+                    // Berjaga-jaga jika terlewat melakukan Langkah 1
                     await addDoc(chaptersRef, {
                         chapterNumber: parseFloat(chapterNum),
                         title: chapterTitle,
@@ -1086,13 +1161,16 @@
                     });
                 }
 
-                statusEl.innerText = "✅ Chapter Berhasil Diterbitkan!";
+                statusEl.innerText = "✅ Selesai! Chapter Berhasil Dipublikasikan!";
                 statusEl.style.color = "var(--success)"; statusEl.style.background = "#ecfdf5";
                 
+                // Reset form utama
                 document.getElementById('uploadChapterForm').reset();
                 document.getElementById('chapterComicSearch').value = '';
                 document.getElementById('chapterComicId').value = '';
                 document.getElementById('selectedMediaPreview').innerHTML = '';
+                document.getElementById('saveFolderStatus').style.display = 'none';
+                
                 window.selectedMediaGallery = []; 
                 document.getElementById('gallerySelCount').innerText = "0";
                 
@@ -1102,7 +1180,7 @@
                 statusEl.innerText = "❌ Error: " + error.message;
                 statusEl.style.color = "var(--danger)"; statusEl.style.background = "#fef2f2";
             }
-            btnSubmit.innerHTML = '<i class="fa-solid fa-paper-plane"></i> Publikasikan Chapter Ini'; btnSubmit.disabled = false;
+            btnSubmit.innerHTML = '<i class="fa-solid fa-paper-plane"></i> Selesai & Publikasikan Chapter Ini'; btnSubmit.disabled = false;
         });
 
         // Muat Daftar Chapter Table
@@ -1201,11 +1279,11 @@
 
         /* Navigasi Folder & Chapter di Modal */
         window.navGalleryToRoot = function() { 
-            window.galleryState = { level: 'root', comicId: null, comicName: '', chapterFolderId: null, chapterFolderName: '' }; 
+            window.galleryState = { level: 'root', comicId: null, comicName: '', chapterFolderId: null, chapterFolderName: '', currentChapterImages: [] }; 
             window.loadCloudGallery(); 
         }
         window.navGalleryToComic = function(comicId, comicTitle) { 
-            window.galleryState = { level: 'comic_folder', comicId: comicId, comicName: comicTitle, chapterFolderId: null, chapterFolderName: '' }; 
+            window.galleryState = { level: 'comic_folder', comicId: comicId, comicName: comicTitle, chapterFolderId: null, chapterFolderName: '', currentChapterImages: [] }; 
             window.loadCloudGallery(); 
         }
         window.navGalleryToChapterFolder = function(chapterId, chapterName, encodedImgsJson) { 
@@ -1222,10 +1300,11 @@
             const selectedComicId = document.getElementById('chapterComicId').value;
             const selectedComicName = document.getElementById('chapterComicSearch').value;
             
+            // Logika cerdas: Jika user sudah pilih komik di form, modal langsung masuk ke folder komik tersebut
             if (selectedComicId) {
-                window.galleryState = { level: 'comic_folder', comicId: selectedComicId, comicName: selectedComicName, chapterFolderId: null, chapterFolderName: '' };
+                window.galleryState = { level: 'comic_folder', comicId: selectedComicId, comicName: selectedComicName, chapterFolderId: null, chapterFolderName: '', currentChapterImages: [] };
             } else {
-                window.galleryState = { level: 'root', comicId: null, comicName: '', chapterFolderId: null, chapterFolderName: '' };
+                window.galleryState = { level: 'root', comicId: null, comicName: '', chapterFolderId: null, chapterFolderName: '', currentChapterImages: [] };
             }
             window.loadCloudGallery();
         }

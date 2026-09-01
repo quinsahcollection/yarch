@@ -139,28 +139,29 @@
         .btn-delete-folder { position: absolute; top: 10px; right: 10px; background: rgba(239, 68, 68, 0.1); color: var(--danger); border: none; width: 30px; height: 30px; border-radius: 6px; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: 0.2s; z-index: 10; }
         .btn-delete-folder:hover { background: var(--danger); color: white; transform: scale(1.1); }
 
-        /* REVISI MEDIA CARD: Gambar Tidak Boleh Ketarik (Stretched) */
-        .media-card { background: var(--white); border-radius: 8px; border: 1px solid var(--border); overflow: hidden; display: flex; flex-direction: column; transition: 0.2s; position: relative; height: 100%; }
+        /* ====================================================
+           REVISI MEDIA CARD: Trik Padding Absolut (Anti Ketarik/Hilang)
+        ==================================================== */
+        .media-card { background: var(--white); border-radius: 8px; border: 1px solid var(--border); overflow: hidden; display: flex; flex-direction: column; transition: 0.2s; position: relative; height: max-content; }
         .media-card:hover { box-shadow: 0 5px 15px rgba(0,0,0,0.08); transform: translateY(-3px); border-color: #cbd5e1; }
         .media-card.selected { border-color: var(--primary); border-width: 2px; }
         
         .media-thumb { 
             width: 100%; 
-            aspect-ratio: 1 / 1.4; /* Rasio cover natural */
+            padding-top: 145%; /* Trik rasio murni: menjamin tinggi elemen tidak akan pernah susut jadi 0 walau diload ratusan foto */
             position: relative; 
-            background: #f8fafc; /* Background terang bersih */
+            background: #f8fafc; 
             border-bottom: 1px solid var(--border); 
             cursor: pointer; 
             overflow: hidden; 
-            display: flex;
-            align-items: center;
-            justify-content: center;
+            display: block; 
         }
         .media-thumb img, .media-thumb video { 
-            width: 100%; 
-            height: 100%; 
-            object-fit: cover; /* Agar mengisi seluruh area thumbnail tanpa ketarik */
-            object-position: top; /* Menampilkan porsi atas halaman komik */
+            position: absolute;
+            top: 0; left: 0;
+            width: 100%; height: 100%; 
+            object-fit: cover; 
+            object-position: top; 
         }
         
         .check-circle { position: absolute; top: 10px; left: 10px; width: 26px; height: 26px; border-radius: 50%; border: 2px solid var(--white); background: rgba(0,0,0,0.5); display: flex; align-items: center; justify-content: center; color: transparent; font-weight: bold; font-size: 12px; transition: 0.2s; z-index: 5; box-shadow: 0 2px 4px rgba(0,0,0,0.2); }
@@ -225,7 +226,6 @@
             .content-area { padding: 20px 15px; } 
             .comic-table { display: block; overflow-x: auto; white-space: nowrap; } 
             
-            /* Penyesuaian grid di mobile agar thumbnail tidak terlalu gepeng/kecil */
             .gallery-grid { grid-template-columns: repeat(auto-fill, minmax(135px, 1fr)); gap: 12px; padding: 15px; }
             .folder-card { min-height: 130px; padding: 15px 10px; }
             .folder-icon { font-size: 35px; }
@@ -430,7 +430,6 @@
                                     <div class="help-text" style="text-align:center; margin-top:8px;">Buka file manager dan masuk ke folder chapter untuk mulai mengunggah gambar.</div>
                                 </div>
                             </div>
-                            <!-- (TOMBOL PUBLISH LUAR DIHAPUS, langsung publikasi di dalam file manager) -->
                         </form>
                         <div id="chapterUploadStatus" class="status-msg"></div>
                     </div>
@@ -523,13 +522,12 @@
         </main>
     </div>
 
-    <!-- ==================== MODAL GALERI CLOUD & FILE MANAGER (CHAPTER-BASED) ==================== -->
+    <!-- ==================== MODAL GALERI CLOUD & FILE MANAGER ==================== -->
     <div id="cloudGalleryModal" class="modal-overlay hidden">
         <div class="modal-container">
             <div class="modal-header">
                 <h3><i class="fa-solid fa-folder-tree"></i> File Manager Chapter</h3>
                 <div class="modal-actions">
-                    <!-- Tombol Publish di Header Modal -->
                     <button class="btn-success-sm" id="btnConfirmGallery" onclick="window.confirmAndPublishChapter()" style="display: none;">
                         <i class="fa-solid fa-paper-plane"></i> Publikasikan
                     </button>
@@ -540,7 +538,6 @@
             <div class="modal-toolbar">
                 <div id="galleryBreadcrumb" class="breadcrumb" style="flex-grow: 1; margin-bottom: 0;"></div>
                 
-                <!-- Kolom Search Folder Komik di File Manager -->
                 <div id="gallerySearchContainer" class="gallery-search">
                     <i class="fa-solid fa-search"></i>
                     <input type="text" id="gallerySearchInput" placeholder="Cari folder komik..." onkeyup="window.filterGalleryFolders()">
@@ -560,7 +557,6 @@
 
             <div class="gallery-grid" id="cloudGalleryGrid"></div>
             
-            <!-- Tombol Publish Tambahan di Bawah Grid Folder -->
             <div id="modalFooterPublish" style="display:none; padding: 15px 25px; border-top: 1px solid var(--border); background: var(--white); text-align: right;">
                 <button class="btn-success-sm" style="display: inline-flex; padding: 12px 20px; font-size: 15px;" onclick="window.confirmAndPublishChapter()">
                     <i class="fa-solid fa-paper-plane"></i> Simpan & Publikasikan Chapter Ini
@@ -931,7 +927,6 @@
             }
         }
 
-        // FUNGSI MENGHAPUS GAMBAR DARI FILE MANAGER
         window.deleteImageFromChapter = async function(index, url) {
             if(!confirm("Yakin ingin menghapus gambar ini secara permanen dari folder chapter?")) return;
             const comicId = window.galleryState.comicId;
@@ -1207,6 +1202,24 @@
             }
         }
 
+        /* Hapus Folder Chapter di File Manager - Harus di dalam Module agar bisa memanggil deleteDoc Firestore */
+        window.deleteChapterFolder = async function(comicId, chapterId) {
+            if(!confirm("⚠️ Yakin ingin menghapus FOLDER INI beserta seluruh isinya secara permanen?")) return;
+            
+            try {
+                await deleteDoc(doc(db, "comics", comicId, "chapters", chapterId));
+                window.loadCloudGallery(); // Refresh UI
+                if(document.getElementById('filterChapterId').value === comicId) {
+                    window.loadChaptersList(); // Refresh table background
+                }
+            } catch(e) { 
+                alert("Gagal menghapus folder: " + e.message); 
+            }
+        }
+    </script>
+
+    <!-- SCRIPT TAMBAHAN (SEARCH & UI) -->
+    <script>
         /* Filter Search di File Manager */
         window.filterGalleryFolders = function() {
             const search = document.getElementById('gallerySearchInput').value.toLowerCase();
@@ -1216,25 +1229,7 @@
                 card.style.display = title.includes(search) ? 'flex' : 'none';
             });
         }
-
-        /* Hapus Folder Chapter di File Manager - PINDAH KE DALAM MODULE AGAR BISA AKSES DELETEDOC */
-        window.deleteChapterFolder = async function(comicId, chapterId) {
-            if(!confirm("⚠️ Yakin ingin menghapus FOLDER INI beserta seluruh isinya secara permanen?")) return;
-            
-            try {
-                await deleteDoc(doc(db, "comics", comicId, "chapters", chapterId));
-                window.loadCloudGallery(); // Refresh UI File Manager
-                if(document.getElementById('filterChapterId').value === comicId) {
-                    window.loadChaptersList(); // Refresh tabel chapter di belakang
-                }
-            } catch(e) { 
-                alert("Gagal menghapus folder: " + e.message); 
-            }
-        }
-    </script>
-
-    <!-- SCRIPT INTERAKSI UI -->
-    <script>
+        
         function switchView(viewId, element) {
             document.querySelectorAll('.sidebar-menu a').forEach(el => el.classList.remove('active'));
             if(element) element.classList.add('active');

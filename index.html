@@ -39,7 +39,7 @@
         .slide { flex: 0 0 100%; height: 100%; background-size: cover; background-position: center; position: relative; }
         .slide::before { content: ''; position: absolute; top: 0; left: 0; right: 0; bottom: 0; background: linear-gradient(to bottom, rgba(0,0,0,0.1) 40%, rgba(0,0,0,0.9) 95%); z-index: 1; }
         .hero-content { position: absolute; bottom: 25px; left: 0; width: 100%; padding: 24px 16px; z-index: 2; color: white; display: flex; flex-direction: column; justify-content: flex-end; }
-        .korea-badge { position: absolute; top: -260px; right: 16px; background: rgba(255, 255, 255, 0.95); border-radius: 50%; width: 26px; height: 26px; display: flex; align-items: center; justify-content: center; font-size: 14px; box-shadow: 0 2px 8px rgba(0,0,0,0.3); color: #333; }
+        .korea-badge { position: absolute; top: 15px; right: 16px; background: rgba(255, 255, 255, 0.95); border-radius: 50%; width: 26px; height: 26px; display: flex; align-items: center; justify-content: center; font-size: 14px; box-shadow: 0 2px 8px rgba(0,0,0,0.3); color: #333; }
         .hero-title { font-size: 24px; font-weight: 700; line-height: 1.2; margin-bottom: 6px; text-shadow: 1px 1px 4px rgba(0,0,0,0.8); }
         .hero-chapter { font-size: 14px; color: #e0e0e0; margin-bottom: 16px; font-weight: 500; }
         .hero-stats { display: flex; align-items: center; justify-content: space-between; }
@@ -135,21 +135,28 @@
         .reader-images { display: flex; flex-direction: column; align-items: center; width: 100%; padding-top: 55px; }
         .reader-images img { width: 100%; height: auto; display: block; margin: 0; }
         
-        /* AUTH & PROFILE PAGE */
-        .profile-header { background: var(--primary-blue); padding: 40px 20px 20px; color: white; text-align: center; border-bottom-left-radius: 20px; border-bottom-right-radius: 20px; }
-        .profile-avatar { width: 80px; height: 80px; background: rgba(255,255,255,0.2); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 35px; margin: 0 auto 15px; }
-        .auth-form { padding: 30px 20px; }
-        .auth-form input { width: 100%; padding: 14px 16px; border: 1px solid #ddd; border-radius: 8px; margin-bottom: 15px; font-size: 14px; outline: none; }
-        .auth-form input:focus { border-color: var(--primary-blue); }
-        .auth-btn { width: 100%; background: var(--primary-blue); color: white; border: none; padding: 14px; border-radius: 8px; font-weight: 600; font-size: 15px; cursor: pointer; margin-bottom: 15px; }
-        .auth-switch { text-align: center; font-size: 13px; color: #666; cursor: pointer; }
-        .auth-switch span { color: var(--primary-blue); font-weight: 600; }
+        /* AUTH & DETAILED PROFILE PAGE */
+        .profile-hero { background: linear-gradient(135deg, var(--primary-blue), var(--dark-blue)); padding: 35px 20px 25px; color: white; text-align: center; border-bottom-left-radius: 24px; border-bottom-right-radius: 24px; }
+        .profile-avatar-lg { width: 75px; height: 75px; background: rgba(255,255,255,0.25); border: 2px solid white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 32px; margin: 0 auto 12px; box-shadow: 0 4px 10px rgba(0,0,0,0.15); }
+        .profile-stats-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; padding: 20px 16px 10px; }
+        .stat-card { background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 12px; padding: 12px 8px; text-align: center; }
+        .stat-card .number { font-size: 18px; font-weight: 700; color: var(--primary-blue); margin-bottom: 2px; }
+        .stat-card .label { font-size: 11px; color: #64748b; font-weight: 500; }
+
+        .auth-form-card { padding: 30px 20px; }
+        .auth-form-card input { width: 100%; padding: 14px 16px; border: 1px solid #cbd5e1; border-radius: 8px; margin-bottom: 15px; font-size: 14px; outline: none; background: #f8fafc; }
+        .auth-form-card input:focus { border-color: var(--primary-blue); background: white; }
+        .auth-main-btn { width: 100%; background: var(--primary-blue); color: white; border: none; padding: 14px; border-radius: 8px; font-weight: 600; font-size: 15px; cursor: pointer; margin-bottom: 15px; box-shadow: 0 4px 10px rgba(0,122,255,0.2); }
+        .auth-toggle-link { text-align: center; font-size: 13px; color: #64748b; cursor: pointer; }
+        .auth-toggle-link span { color: var(--primary-blue); font-weight: 600; }
         
-        .user-menu { padding: 20px; list-style: none; }
-        .user-menu li { padding: 15px; border-bottom: 1px solid #eee; display: flex; align-items: center; gap: 15px; font-size: 14px; font-weight: 500; cursor: pointer; }
-        .user-menu li i { color: #888; font-size: 18px; width: 20px; text-align: center; }
-        .btn-logout { color: #e11d48 !important; }
-        .btn-logout i { color: #e11d48 !important; }
+        .user-menu-list { padding: 10px 16px 20px; list-style: none; }
+        .user-menu-list li { padding: 14px 16px; background: #f8fafc; margin-bottom: 8px; border: 1px solid #e2e8f0; border-radius: 10px; display: flex; align-items: center; justify-content: space-between; font-size: 14px; font-weight: 500; cursor: pointer; transition: 0.2s; }
+        .user-menu-list li:hover { background: #f1f5f9; }
+        .user-menu-list li .left-info { display: flex; align-items: center; gap: 12px; }
+        .user-menu-list li i { color: var(--primary-blue); font-size: 16px; width: 20px; text-align: center; }
+        .user-menu-list li.logout-item { background: #fef2f2; border-color: #fecaca; color: #e11d48; }
+        .user-menu-list li.logout-item i { color: #e11d48; }
         
         /* BOOKMARK PAGE */
         .page-header { padding: 15px 20px; background: white; border-bottom: 1px solid #eee; position: sticky; top: 0; z-index: 10; font-weight: 700; font-size: 16px; display: flex; align-items: center; gap: 15px; }
@@ -170,6 +177,8 @@
                 <div class="header-icons">
                     <i class="fa-solid fa-filter"></i>
                     <i class="fa-solid fa-arrow-down-a-z"></i>
+                    <i class="fa-solid fa-bag-shopping"></i>
+                    <i class="fa-solid fa-chart-simple"></i>
                 </div>
             </header>
 
@@ -181,13 +190,34 @@
                             <div class="hero-content">
                                 <div class="korea-badge">🇰🇷</div>
                                 <h1 class="hero-title">Lord Baby Runs A Romance Fantasy</h1>
-                                <div class="hero-chapter">Update Tercepat</div>
+                                <div class="hero-chapter">Chapter 128 • Update Tercepat</div>
                                 <div class="hero-stats">
-                                    <div class="stats-left"><div class="rating"><i class="fa-solid fa-star"></i> 9.5</div></div>
-                                    <button class="btn-read">Jelajahi</button>
+                                    <div class="stats-left">
+                                        <span class="view-count"><i class="fa-regular fa-eye"></i> 1,3M views</span>
+                                        <div class="rating"><i class="fa-solid fa-star"></i> 9.5</div>
+                                    </div>
+                                    <button class="btn-read" onclick="switchNav('discovery')">Jelajahi</button>
                                 </div>
                             </div>
                         </div>
+                        <div class="slide" style="background-image: url('https://images.unsplash.com/photo-1578632767115-351597cf2477?auto=format&fit=crop&q=80&w=600');">
+                            <div class="hero-content">
+                                <div class="korea-badge">🇯🇵</div>
+                                <h1 class="hero-title">The World's Best Kunlun Tavern</h1>
+                                <div class="hero-chapter">Chapter 123 • Spesial</div>
+                                <div class="hero-stats">
+                                    <div class="stats-left">
+                                        <span class="view-count"><i class="fa-regular fa-eye"></i> 890K views</span>
+                                        <div class="rating"><i class="fa-solid fa-star"></i> 9.1</div>
+                                    </div>
+                                    <button class="btn-read" onclick="switchNav('discovery')">Jelajahi</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="slider-indicators">
+                        <span class="dot active" onclick="currentSlide(0)"></span>
+                        <span class="dot" onclick="currentSlide(1)"></span>
                     </div>
                 </section>
 
@@ -202,21 +232,77 @@
                     </div>
                 </section>
 
-                <!-- Update Terbaru -->
+                <!-- Jadwal Hari Ini Section -->
+                <section class="section-container">
+                    <div class="section-header">
+                        <div class="section-title-wrapper">
+                            <i class="fa-regular fa-calendar-days" style="color: var(--primary-blue); font-size: 16px;"></i>
+                            <h2 class="section-title">Jadwal Hari Ini</h2>
+                        </div>
+                        <a class="see-all">Lihat Semua</a>
+                    </div>
+                    <div class="horizontal-scroll" id="firebase-jadwal">
+                        <div class="loading-text"><i class="fa-solid fa-spinner fa-spin"></i> Memuat Jadwal...</div>
+                    </div>
+                </section>
+
+                <!-- Manga Section -->
+                <section class="section-container">
+                    <div class="section-header">
+                        <div class="section-title-wrapper">
+                            <span style="color: var(--primary-blue); font-size: 10px;">●</span>
+                            <h2 class="section-title">Manga</h2>
+                        </div>
+                        <a class="see-all">Lihat Semua</a>
+                    </div>
+                    <div class="horizontal-scroll" id="firebase-manga">
+                        <div class="loading-text"><i class="fa-solid fa-spinner fa-spin"></i> Memuat Manga...</div>
+                    </div>
+                </section>
+
+                <!-- Manhwa Section -->
+                <section class="section-container">
+                    <div class="section-header">
+                        <div class="section-title-wrapper"><span>🇰🇷</span><h2 class="section-title">Manhwa</h2></div>
+                        <a class="see-all">Lihat Semua</a>
+                    </div>
+                    <div class="horizontal-scroll" id="firebase-manhwa">
+                        <div class="loading-text"><i class="fa-solid fa-spinner fa-spin"></i> Memuat Manhwa...</div>
+                    </div>
+                </section>
+
+                <!-- Manhua Section -->
+                <section class="section-container">
+                    <div class="section-header">
+                        <div class="section-title-wrapper"><span>🇨🇳</span><h2 class="section-title">Manhua</h2></div>
+                        <a class="see-all">Lihat Semua</a>
+                    </div>
+                    <div class="horizontal-scroll" id="firebase-manhua">
+                        <div class="loading-text"><i class="fa-solid fa-spinner fa-spin"></i> Memuat Manhua...</div>
+                    </div>
+                </section>
+
+                <!-- Report Banner -->
+                <div class="report-banner">
+                    <div class="report-text">Ada gambar rusak? Report di salah satu Sosial Media Kami.</div>
+                    <div class="report-icons">
+                        <i class="fa-brands fa-tiktok"></i>
+                        <i class="fa-brands fa-instagram"></i>
+                        <i class="fa-brands fa-telegram"></i>
+                        <i class="fa-solid fa-envelope"></i>
+                    </div>
+                </div>
+
+                <!-- Update Terbaru Section -->
                 <section class="section-container" style="padding-bottom: 30px;">
                     <div class="section-header">
-                        <div class="section-title-wrapper"><h2 class="section-title">Update Terbaru</h2></div>
-                        <a class="see-all" onclick="switchNav('discovery')">Lihat Semua</a>
+                        <div class="section-title-wrapper"><h2 class="section-title">Semua Update Terbaru</h2></div>
+                        <a class="see-all">Lihat Semua</a>
                     </div>
                     <div class="horizontal-scroll" id="firebase-updates">
                         <div class="loading-text"><i class="fa-solid fa-spinner fa-spin"></i> Memuat Update...</div>
                     </div>
                 </section>
-                
-                <!-- Manga, Manhwa, Manhua Sections -->
-                <section class="section-container"><div class="section-header"><div class="section-title-wrapper"><h2 class="section-title">Manga 🇯🇵</h2></div></div><div class="horizontal-scroll" id="firebase-manga"><div class="loading-text"><i class="fa-solid fa-spinner fa-spin"></i> Memuat...</div></div></section>
-                <section class="section-container"><div class="section-header"><div class="section-title-wrapper"><h2 class="section-title">Manhwa 🇰🇷</h2></div></div><div class="horizontal-scroll" id="firebase-manhwa"><div class="loading-text"><i class="fa-solid fa-spinner fa-spin"></i> Memuat...</div></div></section>
-                <section class="section-container"><div class="section-header"><div class="section-title-wrapper"><h2 class="section-title">Manhua 🇨🇳</h2></div></div><div class="horizontal-scroll" id="firebase-manhua"><div class="loading-text"><i class="fa-solid fa-spinner fa-spin"></i> Memuat...</div></div></section>
             </main>
         </div>
 
@@ -295,36 +381,70 @@
             </div>
         </div>
 
-        <!-- ================= HALAMAN PROFIL / LOGIN ================= -->
+        <!-- ================= HALAMAN PROFIL & AKUN (DIKERJAKAN LEBIH DETAIL) ================= -->
         <div id="profile-page">
             <!-- Tampilan jika belum login -->
             <div id="authSection">
-                <div class="profile-header">
-                    <div class="profile-avatar"><i class="fa-solid fa-user-lock"></i></div>
-                    <h2>Masuk ke Akun</h2>
-                    <p style="font-size: 13px; opacity: 0.8; margin-top: 5px;">Simpan histori & bookmark di Cloud</p>
+                <div class="profile-hero">
+                    <div class="profile-avatar-lg"><i class="fa-solid fa-user-lock"></i></div>
+                    <h2>Selamat Datang</h2>
+                    <p style="font-size: 13px; opacity: 0.85; margin-top: 4px;">Masuk untuk akses penuh Cloud & Bookmark</p>
                 </div>
-                <div class="auth-form" id="loginFormUI">
-                    <input type="email" id="authEmail" placeholder="Email Anda">
-                    <input type="password" id="authPass" placeholder="Password">
-                    <div id="authError" style="color:red; font-size:12px; margin-bottom:10px; text-align:center;"></div>
-                    <button class="auth-btn" onclick="doLogin()">Masuk</button>
-                    <div class="auth-switch">Belum punya akun? <span onclick="toggleAuthMode()">Daftar Disini</span></div>
+                <div class="auth-form-card" id="loginFormUI">
+                    <input type="email" id="authEmail" placeholder="Alamat Email">
+                    <input type="password" id="authPass" placeholder="Kata Sandi (Password)">
+                    <div id="authError" style="color:#ef4444; font-size:12px; margin-bottom:12px; text-align:center; font-weight:600;"></div>
+                    <button class="auth-main-btn" onclick="doLogin()">Masuk Akun</button>
+                    <div class="auth-toggle-link">Belum punya akun? <span onclick="toggleAuthMode()">Daftar Disini</span></div>
                 </div>
             </div>
 
-            <!-- Tampilan jika sudah login -->
+            <!-- Tampilan jika sudah login (Profil Detail & Berfungsi) -->
             <div id="userSection" style="display:none;">
-                <div class="profile-header">
-                    <div class="profile-avatar"><i class="fa-solid fa-user-astronaut"></i></div>
-                    <h2 id="userNameDisplay">User</h2>
-                    <p id="userEmailDisplay" style="font-size: 13px; opacity: 0.8; margin-top: 5px;">user@email.com</p>
+                <div class="profile-hero">
+                    <div class="profile-avatar-lg"><i class="fa-solid fa-user-astronaut"></i></div>
+                    <h2 id="userNameDisplay">Member Utama</h2>
+                    <p id="userEmailDisplay" style="font-size: 13px; opacity: 0.9; margin-top: 4px;">user@email.com</p>
                 </div>
-                <ul class="user-menu">
-                    <li onclick="switchNav('bookmark')"><i class="fa-solid fa-bookmark"></i> Bookmark Tersimpan</li>
-                    <li><i class="fa-solid fa-clock-rotate-left"></i> Riwayat Bacaan</li>
-                    <li><i class="fa-solid fa-gear"></i> Pengaturan Aplikasi</li>
-                    <li class="btn-logout" onclick="doLogout()"><i class="fa-solid fa-right-from-bracket"></i> Keluar Akun</li>
+
+                <!-- Statistik Akun -->
+                <div class="profile-stats-grid">
+                    <div class="stat-card">
+                        <div class="number" id="statBookmarkCount">0</div>
+                        <div class="label">Bookmark</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="number" id="statHistoryCount">0</div>
+                        <div class="label">Riwayat Baca</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="number">VIP</div>
+                        <div class="label">Status Akun</div>
+                    </div>
+                </div>
+
+                <!-- Menu Aksi Pengguna yang Berfungsi -->
+                <ul class="user-menu-list" style="margin-top: 15px;">
+                    <li onclick="switchNav('bookmark')">
+                        <div class="left-info"><i class="fa-solid fa-bookmark"></i> Kelola Bookmark Komik</div>
+                        <i class="fa-solid fa-chevron-right" style="font-size: 12px; color: #94a3b8;"></i>
+                    </li>
+                    <li onclick="alert('Sinkronisasi cloud aktif otomatis.')">
+                        <div class="left-info"><i class="fa-solid fa-cloud-arrow-up"></i> Sinkronisasi Data Cloud</div>
+                        <i class="fa-solid fa-chevron-right" style="font-size: 12px; color: #94a3b8;"></i>
+                    </li>
+                    <li onclick="alert('Versi Aplikasi: v2.5.0 Pro - Terhubung ke Firebase Database.')">
+                        <div class="left-info"><i class="fa-solid fa-circle-info"></i> Informasi Sistem & Aplikasi</div>
+                        <i class="fa-solid fa-chevron-right" style="font-size: 12px; color: #94a3b8;"></i>
+                    </li>
+                    <li onclick="copyUserId()">
+                        <div class="left-info"><i class="fa-solid fa-id-badge"></i> Salin ID Unik Pengguna</div>
+                        <i class="fa-solid fa-copy" style="font-size: 12px; color: #94a3b8;"></i>
+                    </li>
+                    <li class="logout-item" onclick="doLogout()">
+                        <div class="left-info"><i class="fa-solid fa-right-from-bracket"></i> Keluar (Logout Akun)</div>
+                        <i class="fa-solid fa-arrow-right-from-bracket" style="font-size: 12px;"></i>
+                    </li>
                 </ul>
             </div>
         </div>
@@ -367,36 +487,36 @@
         window.userBookmarks = [];
         window.isAuthModeLogin = true;
 
-        // ================= SISTEM AUTENTIKASI =================
+        // ================= SISTEM AUTENTIKASI & PROFIL DETAIL =================
         onAuthStateChanged(auth, async (user) => {
             if (user) {
                 document.getElementById('authSection').style.display = 'none';
                 document.getElementById('userSection').style.display = 'block';
                 document.getElementById('userEmailDisplay').innerText = user.email;
-                document.getElementById('userNameDisplay').innerText = user.email.split('@')[0];
+                document.getElementById('userNameDisplay').innerText = user.email.split('@')[0].toUpperCase();
                 await syncUserData(user.uid);
             } else {
                 document.getElementById('authSection').style.display = 'block';
                 document.getElementById('userSection').style.display = 'none';
                 window.userBookmarks = [];
                 renderBookmarks();
-                renderReadingHistory(); // fallback local
+                renderReadingHistory();
             }
         });
 
         window.toggleAuthMode = function() {
             window.isAuthModeLogin = !window.isAuthModeLogin;
-            const btn = document.querySelector('.auth-btn');
-            const switchTxt = document.querySelector('.auth-switch');
-            const title = document.querySelector('.profile-header h2');
+            const btn = document.querySelector('.auth-main-btn');
+            const switchTxt = document.querySelector('.auth-toggle-link');
+            const title = document.querySelector('.profile-hero h2');
             
             if(window.isAuthModeLogin) {
-                title.innerText = "Masuk ke Akun";
-                btn.innerText = "Masuk";
+                title.innerText = "Selamat Datang";
+                btn.innerText = "Masuk Akun";
                 switchTxt.innerHTML = 'Belum punya akun? <span onclick="toggleAuthMode()">Daftar Disini</span>';
             } else {
                 title.innerText = "Daftar Akun Baru";
-                btn.innerText = "Daftar";
+                btn.innerText = "Daftar Sekarang";
                 switchTxt.innerHTML = 'Sudah punya akun? <span onclick="toggleAuthMode()">Masuk Disini</span>';
             }
         }
@@ -417,31 +537,36 @@
                 document.getElementById('authEmail').value = "";
                 document.getElementById('authPass').value = "";
             } catch(e) {
-                errEl.innerText = "Error: Email atau Password salah/tidak valid.";
+                errEl.innerText = "Gagal: Periksa kembali email & password anda.";
             }
         }
 
-        window.doLogout = function() { signOut(auth); }
+        window.doLogout = function() { 
+            signOut(auth); 
+            alert("Berhasil keluar dari akun.");
+        }
 
-        // ================= SYNC USER DATA (Firebase) =================
+        window.copyUserId = function() {
+            if(auth.currentUser) {
+                navigator.clipboard.writeText(auth.currentUser.uid);
+                alert("ID Pengguna berhasil disalin ke clipboard!");
+            }
+        }
+
+        // ================= SYNC USER DATA =================
         async function syncUserData(uid) {
-            // Tarik Bookmarks
             const bmRef = collection(db, "users", uid, "bookmarks");
             const bmSnap = await getDocs(bmRef);
             window.userBookmarks = [];
             bmSnap.forEach(doc => window.userBookmarks.push(doc.id));
             renderBookmarks();
+            document.getElementById('statBookmarkCount').innerText = window.userBookmarks.length;
 
-            // Tarik History (Overwrite LocalStorage dengan Cloud)
             const histRef = collection(db, "users", uid, "history");
-            const q = query(histRef, orderBy("timestamp", "desc"), limit(10));
-            const histSnap = await getDocs(q);
-            let cloudHist = [];
-            histSnap.forEach(doc => cloudHist.push(doc.id));
-            if(cloudHist.length > 0) {
-                localStorage.setItem('comicHistory', JSON.stringify(cloudHist));
-            }
-            renderReadingHistory();
+            const histSnap = await getDocs(histRef);
+            let countHist = 0;
+            histSnap.forEach(() => countHist++);
+            document.getElementById('statHistoryCount').innerText = countHist || (JSON.parse(localStorage.getItem('comicHistory')) || []).length;
         }
 
         // ================= FETCH DATA KOMIK =================
@@ -459,7 +584,7 @@
                 const q = query(collection(db, "comics"), orderBy("createdAt", "desc"), limit(30));
                 const querySnapshot = await getDocs(q);
                 
-                let htmlUpdates = ''; let htmlManga = ''; let htmlManhwa = ''; let htmlManhua = '';
+                let htmlUpdates = ''; let htmlJadwal = ''; let htmlManga = ''; let htmlManhwa = ''; let htmlManhua = '';
                 
                 querySnapshot.forEach((doc) => {
                     const data = doc.data();
@@ -467,6 +592,8 @@
                     const cardHTML = generateComicCard(doc.id, data);
                     
                     htmlUpdates += cardHTML;
+                    if(Math.random() > 0.4) htmlJadwal += cardHTML;
+
                     const type = (data.type || "").toLowerCase();
                     if (type.includes("manga")) htmlManga += cardHTML;
                     if (type.includes("manhwa")) htmlManhwa += cardHTML;
@@ -474,6 +601,7 @@
                 });
 
                 document.getElementById('firebase-updates').innerHTML = htmlUpdates || '<div class="empty-history">Kosong</div>';
+                document.getElementById('firebase-jadwal').innerHTML = htmlJadwal || '<div class="empty-history">Kosong</div>';
                 document.getElementById('firebase-manga').innerHTML = htmlManga || '<div class="empty-history">Kosong</div>';
                 document.getElementById('firebase-manhwa').innerHTML = htmlManhwa || '<div class="empty-history">Kosong</div>';
                 document.getElementById('firebase-manhua').innerHTML = htmlManhua || '<div class="empty-history">Kosong</div>';
@@ -484,7 +612,7 @@
         }
         fetchAllComics();
 
-        // ================= FITUR HISTORY (LANJUTKAN BACA) =================
+        // ================= FITUR HISTORY =================
         window.saveToHistory = async function(comicId) {
             let history = JSON.parse(localStorage.getItem('comicHistory')) || [];
             history = history.filter(id => id !== comicId);
@@ -492,13 +620,9 @@
             if(history.length > 10) history.pop();
             localStorage.setItem('comicHistory', JSON.stringify(history));
             
-            // Backup ke cloud jika login
             if(auth.currentUser) {
                 try {
-                    await setDoc(doc(db, "users", auth.currentUser.uid, "history", comicId), {
-                        comicId: comicId,
-                        timestamp: new Date()
-                    });
+                    await setDoc(doc(db, "users", auth.currentUser.uid, "history", comicId), { comicId: comicId, timestamp: new Date() });
                 } catch(e){}
             }
             renderReadingHistory();
@@ -532,7 +656,7 @@
         }
 
         window.clearHistory = function() {
-            if(confirm("Bersihkan semua riwayat bacaan di HP ini?")) {
+            if(confirm("Bersihkan semua riwayat bacaan di perangkat ini?")) {
                 localStorage.removeItem('comicHistory');
                 renderReadingHistory();
             }
@@ -540,7 +664,7 @@
 
         // ================= FITUR BOOKMARK & LIKE =================
         window.toggleBookmark = async function() {
-            if(!auth.currentUser) { alert("Silakan Login di menu Profil untuk menyimpan Bookmark!"); return; }
+            if(!auth.currentUser) { alert("Silakan Login terlebih dahulu di menu Profil untuk menyimpan Bookmark!"); return; }
             if(!window.currentActiveComicId) return;
             
             const cid = window.currentActiveComicId;
@@ -560,6 +684,7 @@
                     btn.classList.add('fa-solid', 'bookmark-active');
                 }
                 renderBookmarks();
+                document.getElementById('statBookmarkCount').innerText = window.userBookmarks.length;
             } catch(e) { console.error("Gagal simpan bookmark", e); }
         }
         
@@ -577,7 +702,7 @@
         function renderBookmarks() {
             const container = document.getElementById('bookmarkContainer');
             if(!auth.currentUser) {
-                container.innerHTML = '<div class="empty-history" style="grid-column:1/-1;">Harap masuk (Login) untuk melihat bookmark.</div>';
+                container.innerHTML = '<div class="empty-history" style="grid-column:1/-1;">Harap masuk (Login) untuk melihat bookmark tersimpan.</div>';
                 return;
             }
             if(window.userBookmarks.length === 0) {
@@ -599,36 +724,33 @@
             container.innerHTML = bmHTML;
         }
 
-        // ================= HALAMAN DETAIL & BACA KOMIK =================
+        // ================= HALAMAN DETAIL & BACA =================
         window.openDetail = async function(comicId) {
             window.currentActiveComicId = comicId;
-            document.querySelectorAll('.app-container > div').forEach(el => { if(el.id!=='bottom-nav') el.style.display = 'none'; });
+            document.querySelectorAll('.app-container > div').forEach(el => { if(el.id!=='mainBottomNav') el.style.display = 'none'; });
             document.getElementById('detail-page').style.display = 'block';
-            document.getElementById('mainBottomNav').style.display = 'none'; // Sembunyikan bottom nav
+            document.getElementById('mainBottomNav').style.display = 'none';
             window.scrollTo(0, 0);
             switchTab('detail');
 
             if (comicId && window.comicsData[comicId]) {
                 const data = window.comicsData[comicId];
                 
-                // Real-time View Increment di Firebase
                 try {
                     const comicRef = doc(db, "comics", comicId);
                     await updateDoc(comicRef, { views: increment(1) });
-                    window.comicsData[comicId].views = (data.views || 0) + 1; // update lokal sementara
+                    window.comicsData[comicId].views = (data.views || 0) + 1;
                 } catch(e) {}
 
                 window.saveToHistory(comicId);
                 fetchChapters(comicId);
 
-                // Set Data UI
                 document.getElementById('detailTitle').innerText = data.title;
                 document.getElementById('detailAltTitle').innerText = data.altTitle || "-";
                 document.getElementById('detailStatus').innerText = data.status || "Ongoing";
                 document.getElementById('detailSynopsis').innerText = data.synopsis || "Belum ada sinopsis.";
-                document.getElementById('detailViews').innerText = window.comicsData[comicId].views;
+                document.getElementById('detailViews').innerText = window.comicsData[comicId].views || 1;
                 
-                // Extra Detail Data
                 document.getElementById('detailAuthor').innerText = data.author || "Tidak diketahui";
                 document.getElementById('detailType').innerText = data.type || "Manga";
                 document.getElementById('detailRelease').innerText = data.releaseDate || "-";
@@ -644,7 +766,6 @@
                 if(data.type) tagsContainer.innerHTML += `<span class="tag">${data.type}</span>`;
                 if(data.genres) data.genres.forEach(g => tagsContainer.innerHTML += `<span class="tag">${g}</span>`);
                 
-                // Cek status bookmark
                 const btnBm = document.getElementById('btnBookmark');
                 if(window.userBookmarks.includes(comicId)) {
                     btnBm.classList.replace('fa-regular', 'fa-solid');
@@ -706,7 +827,7 @@
             } catch(e) { container.innerHTML = '<div class="loading-text">Gagal memuat chapter.</div>'; }
         }
 
-        // ================= READER VIEW (BACA KOMIK) =================
+        // ================= READER VIEW =================
         window.openReader = async function(comicId, chapterId, chapterNum) {
             document.getElementById('detail-page').style.display = 'none';
             document.getElementById('reader-page').style.display = 'block';
@@ -748,8 +869,7 @@
         }
 
         window.toggleReaderNav = function() {
-            const header = document.getElementById('readerHeader');
-            header.classList.toggle('hidden');
+            document.getElementById('readerHeader').classList.toggle('hidden');
         }
 
         // ================= NAVIGASI HALAMAN BAWAH =================
@@ -763,7 +883,6 @@
                 document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
                 element.classList.add('active');
             } else {
-                // Manual update nav bar style if navigated via link inside page
                 document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
                 if(pageId === 'home') document.querySelectorAll('.nav-item')[0].classList.add('active');
                 if(pageId === 'bookmark') document.querySelectorAll('.nav-item')[1].classList.add('active');
@@ -772,12 +891,26 @@
             window.scrollTo(0,0);
         }
 
-        window.onscroll = function() {
-            if(document.getElementById('detail-page').style.display === 'block') {
-                const nav = document.getElementById('detailNav');
-                nav.style.background = (window.scrollY > 50) ? 'rgba(0, 122, 255, 0.95)' : 'rgba(0, 0, 0, 0.2)';
+        // Slider otomatis Home
+        let slideIndex = 0;
+        const slides = document.getElementById('hero-slider');
+        const dots = document.querySelectorAll('.dot');
+        
+        window.currentSlide = function(index) {
+            slideIndex = index;
+            if(slides && dots.length > 0) {
+                slides.style.transform = `translateX(-${slideIndex * 100}%)`;
+                dots.forEach(dot => dot.classList.remove('active'));
+                dots[slideIndex].classList.add('active');
             }
-        };
+        }
+
+        if(slides && dots.length > 0) {
+            setInterval(() => {
+                slideIndex = (slideIndex + 1) % dots.length;
+                window.currentSlide(slideIndex);
+            }, 4000);
+        }
     </script>
 </body>
 </html>

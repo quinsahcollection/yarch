@@ -4,7 +4,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Aplikasi Web Manga - Full UI & Detail</title>
+    <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <!-- Google Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     
     <style>
@@ -61,7 +63,7 @@
         .manga-card-simple img { border-bottom: 1px solid #eeeeee; height: 150px; width: 100%; object-fit: cover; }
         .manga-card-simple .info-container, .manga-card-history .info { padding: 8px; flex-grow: 1; display: flex; flex-direction: column; }
         .manga-card-simple .title, .manga-card-history .title { font-size: 12px; font-weight: 600; color: #222; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
-        .manga-card-history .chapter { font-size: 11px; color: #777; margin-top: 4px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .manga-card-history .chapter { font-size: 11px; color: var(--primary-blue); font-weight: 600; margin-top: 4px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 
         /* REPORT BANNER */
         .report-banner { margin: 15px 16px; background-color: var(--light-blue); border: 1px solid #cce5ff; border-radius: 8px; padding: 12px 16px; display: flex; justify-content: space-between; align-items: center; }
@@ -82,9 +84,11 @@
 
         /* DETAIL PAGE */
         .detail-top-nav { position: fixed; top: 0; width: 100%; max-width: 480px; display: flex; justify-content: space-between; align-items: center; padding: 15px 20px; z-index: 200; background: rgba(0, 0, 0, 0.2); backdrop-filter: blur(10px); color: white; transition: background 0.3s; }
-        .detail-top-nav i { font-size: 20px; cursor: pointer; text-shadow: 0 1px 3px rgba(0,0,0,0.5); }
-        .detail-top-nav .right-icons { display: flex; gap: 20px; }
-        .bookmark-active { color: #ffc107 !important; }
+        
+        /* DIPERBESAR AREA SENTUH IKON (Penting untuk HP) */
+        .detail-top-nav i { font-size: 20px; cursor: pointer; text-shadow: 0 1px 3px rgba(0,0,0,0.5); padding: 8px; }
+        .detail-top-nav .right-icons { display: flex; gap: 10px; align-items: center; }
+        .bookmark-active { color: #ffc107 !important; text-shadow: 0 0 5px rgba(255, 193, 7, 0.6) !important; }
 
         .detail-header { position: relative; padding: 80px 20px 30px 20px; background-size: cover; background-position: center; color: white; transition: background-image 0.3s ease;}
         .detail-header::before { content: ''; position: absolute; top: 0; left: 0; right: 0; bottom: 0; background: linear-gradient(to bottom, rgba(0,0,0,0.4) 0%, rgba(0,0,0,0.85) 100%); z-index: 1; }
@@ -121,6 +125,7 @@
         /* RATING STARS */
         .rating-section { margin-top: 15px; padding-top: 15px; border-top: 1px dashed #cbd5e1; display: flex; align-items: center; justify-content: space-between; }
         .star-rater { display: flex; gap: 5px; font-size: 22px; color: #ccc; cursor: pointer; }
+        .star-rater i { padding: 5px; } /* Hit area untuk bintang */
         .star-rater i.active { color: #ffc107; }
 
         /* CHAPTER LIST */
@@ -131,7 +136,7 @@
         .chapter-date { font-size: 11px; color: #999; }
         .chapter-action { color: var(--primary-blue); font-size: 12px; font-weight: 700; background: var(--light-blue); padding: 6px 12px; border-radius: 16px; }
 
-        /* COMMENT UI (IG STYLE) */
+        /* COMMENT UI */
         .comment-wrapper { display: flex; flex-direction: column; height: 100%; min-height: 50vh; position: relative;}
         .comment-list { flex: 1; display: flex; flex-direction: column; gap: 18px; padding-bottom: 20px; }
         .comment-item { display: flex; gap: 12px; }
@@ -187,6 +192,7 @@
 
     <div class="app-container">
         
+        <!-- ================= 1. HALAMAN HOME ================= -->
         <div id="home-page">
             <header class="header">
                 <div class="search-container">
@@ -202,6 +208,7 @@
             </header>
 
             <main>
+                <!-- Hero Slider -->
                 <section class="slider-container">
                     <div class="slides-wrapper" id="hero-slider">
                         <div class="slide" style="background-image: url('https://images.unsplash.com/photo-1541562232579-512a21360020?auto=format&fit=crop&q=80&w=600');">
@@ -220,7 +227,7 @@
                         </div>
                         <div class="slide" style="background-image: url('https://images.unsplash.com/photo-1578632767115-351597cf2477?auto=format&fit=crop&q=80&w=600');">
                             <div class="hero-content">
-                                <div class="korea-badge">🇯🇵</div>
+                                <div class="korea-badge">🇯 ঐতি</div>
                                 <h1 class="hero-title">The World's Best Kunlun Tavern</h1>
                                 <div class="hero-chapter">Chapter 123 • Spesial</div>
                                 <div class="hero-stats">
@@ -239,6 +246,7 @@
                     </div>
                 </section>
 
+                <!-- Lanjutkan Membaca -->
                 <section class="section-container">
                     <div class="section-header">
                         <div class="section-title-wrapper"><h2 class="section-title">Lanjutkan Membaca</h2></div>
@@ -249,6 +257,7 @@
                     </div>
                 </section>
 
+                <!-- Jadwal Hari Ini -->
                 <section class="section-container">
                     <div class="section-header">
                         <div class="section-title-wrapper">
@@ -262,6 +271,7 @@
                     </div>
                 </section>
 
+                <!-- Manga, Manhwa, Manhua -->
                 <section class="section-container">
                     <div class="section-header">
                         <div class="section-title-wrapper"><span style="color: var(--primary-blue); font-size: 10px;">●</span><h2 class="section-title">Manga</h2></div>
@@ -286,6 +296,7 @@
                     <div class="horizontal-scroll" id="firebase-manhua"><div class="loading-text"><i class="fa-solid fa-spinner fa-spin"></i> Memuat...</div></div>
                 </section>
 
+                <!-- Update Terbaru -->
                 <section class="section-container" style="padding-bottom: 30px;">
                     <div class="section-header">
                         <div class="section-title-wrapper"><h2 class="section-title">Semua Update Terbaru</h2></div>
@@ -298,11 +309,13 @@
             </main>
         </div>
 
+        <!-- ================= 2. HALAMAN DETAIL ================= -->
         <div id="detail-page">
             <div class="detail-top-nav" id="detailNav">
                 <i class="fa-solid fa-arrow-left" onclick="closeDetail()"></i>
                 <div class="right-icons">
-                    <i class="fa-regular fa-bookmark" id="btnBookmark" onclick="toggleBookmark()"></i>
+                    <!-- Event onclick untuk HP telah diperkuat -->
+                    <i class="fa-regular fa-bookmark" id="btnBookmark" onclick="toggleBookmark(event)"></i>
                 </div>
             </div>
 
@@ -332,6 +345,7 @@
                     <div class="tab-btn" onclick="switchTab('comment')">Komentar <span id="commentBadge" style="font-size:10px; background:var(--primary-blue); color:white; padding:2px 6px; border-radius:10px; margin-left:4px; display:none;">0</span></div>
                 </div>
 
+                <!-- TAB: DETAIL -->
                 <div class="tab-content active" id="tab-detail">
                     <h3 class="synopsis-title">Sinopsis</h3>
                     <p class="synopsis-text" id="detailSynopsis">Memuat sinopsis...</p>
@@ -342,6 +356,7 @@
                         <div class="detail-info-row"><span class="label">Tanggal Rilis</span><span class="val" id="detailRelease">-</span></div>
                     </div>
 
+                    <!-- Sistem Rating Bintang -->
                     <div class="rating-section">
                         <div style="font-size: 13px; font-weight: 600; color: var(--text-dark);">Beri Rating:</div>
                         <div class="star-rater" id="userStarRater">
@@ -354,23 +369,27 @@
                     </div>
                 </div>
 
+                <!-- TAB: CHAPTER -->
                 <div class="tab-content" id="tab-chapter">
                     <ul class="chapter-list" id="chapterListContainer">
                         <div class="loading-text"><i class="fa-solid fa-spinner fa-spin"></i><br>Mencari chapter...</div>
                     </ul>
                 </div>
 
+                <!-- TAB: KOMENTAR -->
                 <div class="tab-content" id="tab-comment">
                     <div class="comment-wrapper">
                         <div class="comment-list" id="commentListContainer">
                             <div class="loading-text"><i class="fa-solid fa-spinner fa-spin"></i><br>Memuat komentar...</div>
                         </div>
                         
+                        <!-- Input Komentar (Hanya Tampil Jika Login) -->
                         <div class="comment-input-area" id="commentInputArea" style="display:none;">
                             <input type="text" id="newCommentText" placeholder="Tambahkan komentar..." autocomplete="off">
                             <button class="btn-send-comment" onclick="postComment()">Kirim</button>
                         </div>
                         
+                        <!-- Prompt Peringatan Belum Login -->
                         <div class="login-prompt" id="commentLoginPrompt">
                             Silakan <span style="color:var(--primary-blue); font-weight:600; cursor:pointer;" onclick="switchNav('profile')">Login</span> terlebih dahulu untuk berkomentar.
                         </div>
@@ -379,6 +398,7 @@
             </main>
         </div>
 
+        <!-- ================= 3. HALAMAN BACA (READER) ================= -->
         <div id="reader-page">
             <div class="reader-header" id="readerHeader">
                 <i class="fa-solid fa-arrow-left" onclick="closeReader()" style="font-size: 20px; cursor: pointer;"></i>
@@ -390,6 +410,7 @@
             <div id="readerLoading" class="loading-text" style="padding-top:100px;"><i class="fa-solid fa-spinner fa-spin" style="font-size:30px;"></i><br><br>Memuat gambar...</div>
         </div>
 
+        <!-- ================= 4. HALAMAN BOOKMARK ================= -->
         <div id="bookmark-page">
             <div class="page-header">Bookmark Saya</div>
             <div class="bookmark-grid" id="bookmarkContainer">
@@ -397,7 +418,9 @@
             </div>
         </div>
 
+        <!-- ================= 5. HALAMAN PROFIL & AKUN ================= -->
         <div id="profile-page">
+            <!-- Tampilan Belum Login -->
             <div id="authSection">
                 <div class="profile-hero">
                     <div class="profile-avatar-lg"><i class="fa-solid fa-user-lock"></i></div>
@@ -413,6 +436,7 @@
                 </div>
             </div>
 
+            <!-- Tampilan Sudah Login -->
             <div id="userSection" style="display:none;">
                 <div class="profile-hero">
                     <div class="profile-avatar-lg"><i class="fa-solid fa-user-astronaut"></i></div>
@@ -448,6 +472,7 @@
             </div>
         </div>
 
+        <!-- ================= BOTTOM NAVIGATION ================= -->
         <nav class="bottom-nav" id="mainBottomNav">
             <a class="nav-item active" onclick="switchNav('home', this)">
                 <div class="icon-bg"><i class="fa-solid fa-house"></i></div><span>Home</span>
@@ -461,6 +486,7 @@
         </nav>
     </div>
 
+    <!-- SCRIPT FIREBASE & LOGIKA UTAMA -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
         import { getFirestore, collection, getDocs, getDoc, doc, query, orderBy, limit, updateDoc, increment, setDoc, deleteDoc, addDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
@@ -481,8 +507,11 @@
 
         window.comicsData = {};
         window.currentActiveComicId = null;
+        window.currentActiveChapterId = null;
+        window.currentActiveChapterNum = null;
         window.userBookmarks = [];
         window.isAuthModeLogin = true;
+        let readerScrollListener = null;
 
         // ================= SISTEM AUTENTIKASI =================
         onAuthStateChanged(auth, async (user) => {
@@ -492,7 +521,6 @@
                 document.getElementById('userEmailDisplay').innerText = user.email;
                 document.getElementById('userNameDisplay').innerText = user.email.split('@')[0].toUpperCase();
                 
-                // Buka Kunci Fitur Komentar
                 document.getElementById('commentLoginPrompt').style.display = 'none';
                 document.getElementById('commentInputArea').style.display = 'flex';
 
@@ -501,7 +529,6 @@
                 document.getElementById('authSection').style.display = 'block';
                 document.getElementById('userSection').style.display = 'none';
                 
-                // Kunci Fitur Komentar
                 document.getElementById('commentLoginPrompt').style.display = 'block';
                 document.getElementById('commentInputArea').style.display = 'none';
 
@@ -554,24 +581,24 @@
             alert("Berhasil keluar dari akun.");
         }
 
-        // ================= SINKRONISASI DATA PENGGUNA CLOUD =================
+        // ================= SINKRONISASI DATA PENGGUNA =================
         async function syncUserData(uid) {
-            const bmRef = collection(db, "users", uid, "bookmarks");
-            const bmSnap = await getDocs(bmRef);
-            window.userBookmarks = [];
-            bmSnap.forEach(doc => window.userBookmarks.push(doc.id));
-            renderBookmarks();
-            document.getElementById('statBookmarkCount').innerText = window.userBookmarks.length;
+            try {
+                const bmRef = collection(db, "users", uid, "bookmarks");
+                const bmSnap = await getDocs(bmRef);
+                window.userBookmarks = [];
+                bmSnap.forEach(doc => window.userBookmarks.push(doc.id));
+                renderBookmarks();
+                document.getElementById('statBookmarkCount').innerText = window.userBookmarks.length;
 
-            const histRef = collection(db, "users", uid, "history");
-            const histSnap = await getDocs(histRef);
-            let countHist = 0;
-            histSnap.forEach(() => countHist++);
-            document.getElementById('statHistoryCount').innerText = countHist || (JSON.parse(localStorage.getItem('comicHistory')) || []).length;
-            
-            if(window.currentActiveComicId) {
-                checkBookmarkStatus(window.currentActiveComicId);
-                loadUserRating(window.currentActiveComicId);
+                renderReadingHistory();
+                
+                if(window.currentActiveComicId) {
+                    checkBookmarkStatus(window.currentActiveComicId);
+                    loadUserRating(window.currentActiveComicId);
+                }
+            } catch(e) {
+                console.error("Gagal sinkronisasi pengguna", e);
             }
         }
 
@@ -612,62 +639,124 @@
                 document.getElementById('firebase-manhwa').innerHTML = htmlManhwa || '<div class="empty-history">Kosong</div>';
                 document.getElementById('firebase-manhua').innerHTML = htmlManhua || '<div class="empty-history">Kosong</div>';
 
-                if(!auth.currentUser) renderReadingHistory();
+                renderReadingHistory();
                 renderBookmarks();
             } catch (error) {}
         }
         fetchAllComics();
 
-        // ================= FITUR HISTORY / LANJUT BACA =================
-        window.saveToHistory = async function(comicId) {
-            let history = JSON.parse(localStorage.getItem('comicHistory')) || [];
-            history = history.filter(id => id !== comicId);
-            history.unshift(comicId);
-            if(history.length > 10) history.pop();
-            localStorage.setItem('comicHistory', JSON.stringify(history));
-            
-            if(auth.currentUser) {
-                try { await setDoc(doc(db, "users", auth.currentUser.uid, "history", comicId), { comicId: comicId, timestamp: new Date() }); } catch(e){}
+        // ================= FITUR HISTORY & LANJUT BACA =================
+        window.saveReadingProgress = async function(comicId, chapterId, chapterNum, pageIndex = 1) {
+            if (!comicId) return;
+            const comicData = window.comicsData[comicId] || {};
+            const title = comicData.title || "Komik";
+            const coverUrl = comicData.coverUrl || "";
+
+            const historyItem = {
+                comicId: comicId,
+                comicTitle: title,
+                coverUrl: coverUrl,
+                chapterId: chapterId || "",
+                chapterNumber: chapterNum || "1",
+                pageIndex: pageIndex || 1,
+                updatedAt: new Date().getTime()
+            };
+
+            let localHist = JSON.parse(localStorage.getItem('comicHistoryDetail')) || {};
+            localHist[comicId] = historyItem;
+            localStorage.setItem('comicHistoryDetail', JSON.stringify(localHist));
+
+            if (auth.currentUser) {
+                try {
+                    await setDoc(doc(db, "users", auth.currentUser.uid, "history", comicId), {
+                        ...historyItem,
+                        updatedAt: serverTimestamp()
+                    });
+                } catch(e) {}
             }
+
             renderReadingHistory();
         }
 
-        function renderReadingHistory() {
-            const historyIds = JSON.parse(localStorage.getItem('comicHistory')) || [];
+        async function renderReadingHistory() {
             const container = document.getElementById('history-container');
-            
-            if(historyIds.length === 0) {
+            if (!container) return;
+
+            let historyList = [];
+
+            if (auth.currentUser) {
+                try {
+                    const histRef = collection(db, "users", auth.currentUser.uid, "history");
+                    const q = query(histRef, orderBy("updatedAt", "desc"), limit(10));
+                    const snap = await getDocs(q);
+                    snap.forEach(d => {
+                        historyList.push(d.data());
+                    });
+                } catch(e) {}
+            }
+
+            if (historyList.length === 0) {
+                const localHist = JSON.parse(localStorage.getItem('comicHistoryDetail')) || {};
+                historyList = Object.values(localHist).sort((a,b) => (b.updatedAt || 0) - (a.updatedAt || 0));
+            }
+
+            const statHistEl = document.getElementById('statHistoryCount');
+            if(statHistEl) statHistEl.innerText = historyList.length;
+
+            if (historyList.length === 0) {
                 container.innerHTML = '<div class="empty-history">Belum ada histori bacaan.</div>';
                 return;
             }
 
-            let historyHTML = '';
-            historyIds.forEach(id => {
-                if(window.comicsData[id]) {
-                    const data = window.comicsData[id];
-                    historyHTML += `
-                        <div class="manga-card-history" onclick="openDetail('${id}')">
-                            <img src="${data.coverUrl}" onerror="this.src='https://placehold.co/130x170?text=No+Cover'">
-                            <div class="info">
-                                <div class="title">${data.title}</div>
-                                <div class="chapter">${data.type || 'Manga'}</div>
-                            </div>
+            let html = '';
+            historyList.forEach(item => {
+                const cover = item.coverUrl || (window.comicsData[item.comicId] ? window.comicsData[item.comicId].coverUrl : '');
+                const title = item.comicTitle || (window.comicsData[item.comicId] ? window.comicsData[item.comicId].title : 'Komik');
+                const chInfo = item.chapterNumber ? `Ch. ${item.chapterNumber}` : '';
+                const pgInfo = item.pageIndex ? ` • Hal. ${item.pageIndex}` : '';
+
+                html += `
+                    <div class="manga-card-history" onclick="continueReading('${item.comicId}', '${item.chapterId}', '${item.chapterNumber}', ${item.pageIndex || 1})">
+                        <img src="${cover}" onerror="this.src='https://placehold.co/130x170?text=No+Cover'">
+                        <div class="info">
+                            <div class="title">${title}</div>
+                            <div class="chapter">${chInfo}${pgInfo}</div>
                         </div>
-                    `;
-                }
+                    </div>
+                `;
             });
-            container.innerHTML = historyHTML || '<div class="empty-history">Belum ada histori bacaan.</div>';
+
+            container.innerHTML = html;
         }
 
-        window.clearHistory = function() {
+        window.continueReading = function(comicId, chapterId, chapterNum, pageIndex) {
+            if (chapterId && chapterId !== 'undefined' && chapterId !== '') {
+                openReader(comicId, chapterId, chapterNum, pageIndex);
+            } else {
+                openDetail(comicId);
+            }
+        }
+
+        window.clearHistory = async function() {
             if(confirm("Bersihkan semua riwayat bacaan?")) {
-                localStorage.removeItem('comicHistory');
+                localStorage.removeItem('comicHistoryDetail');
+                if(auth.currentUser) {
+                    try {
+                        const snap = await getDocs(collection(db, "users", auth.currentUser.uid, "history"));
+                        snap.forEach(async (d) => {
+                            await deleteDoc(doc(db, "users", auth.currentUser.uid, "history", d.id));
+                        });
+                    } catch(e) {}
+                }
                 renderReadingHistory();
             }
         }
 
         // ================= FITUR BOOKMARK =================
-        window.toggleBookmark = async function() {
+        window.toggleBookmark = async function(e) {
+            // e.preventDefault mencegah event tembus ke layar bawah di HP
+            if(e) e.preventDefault(); 
+            
             if(!auth.currentUser) { 
                 alert("Silakan Login terlebih dahulu di menu Profil untuk menyimpan Bookmark!"); 
                 switchNav('profile');
@@ -682,24 +771,28 @@
                 if(isBookmarked) {
                     await deleteDoc(doc(db, "users", auth.currentUser.uid, "bookmarks", cid));
                     window.userBookmarks = window.userBookmarks.filter(id => id !== cid);
+                    alert("Komik dihapus dari Bookmark!");
                 } else {
-                    await setDoc(doc(db, "users", auth.currentUser.uid, "bookmarks", cid), { addedAt: new Date() });
+                    await setDoc(doc(db, "users", auth.currentUser.uid, "bookmarks", cid), { comicId: cid, addedAt: new Date() });
                     window.userBookmarks.push(cid);
+                    alert("Komik berhasil ditambahkan ke Bookmark!");
                 }
                 checkBookmarkStatus(cid);
                 renderBookmarks();
                 document.getElementById('statBookmarkCount').innerText = window.userBookmarks.length;
-            } catch(e) {}
+            } catch(error) {
+                console.error("Error simpan bookmark", error);
+                alert("Koneksi gagal. Tidak dapat memproses Bookmark.");
+            }
         }
 
         function checkBookmarkStatus(comicId) {
             const btnBm = document.getElementById('btnBookmark');
+            if(!btnBm) return;
             if(window.userBookmarks.includes(comicId)) {
-                btnBm.classList.replace('fa-regular', 'fa-solid');
-                btnBm.classList.add('bookmark-active');
+                btnBm.className = "fa-solid fa-bookmark bookmark-active";
             } else {
-                btnBm.classList.replace('fa-solid', 'fa-regular');
-                btnBm.classList.remove('bookmark-active');
+                btnBm.className = "fa-regular fa-bookmark";
             }
         }
 
@@ -728,7 +821,7 @@
             container.innerHTML = bmHTML;
         }
 
-        // ================= FITUR KOMENTAR (IG STYLE) =================
+        // ================= FITUR KOMENTAR =================
         async function fetchComments(comicId) {
             const container = document.getElementById('commentListContainer');
             const badge = document.getElementById('commentBadge');
@@ -787,24 +880,23 @@
 
                 textInput.value = "";
                 btn.innerText = "Kirim"; btn.disabled = false;
-                fetchComments(comicId); // Refresh komentar
+                fetchComments(comicId);
             } catch (e) { alert("Gagal mengirim komentar."); }
         }
 
         // ================= FITUR RATING BINTANG =================
         async function loadUserRating(comicId) {
             const stars = document.querySelectorAll('#userStarRater i');
-            stars.forEach(s => { s.classList.remove('fa-solid', 'active'); s.classList.add('fa-regular'); });
+            stars.forEach(s => { s.className = 'fa-regular fa-star'; });
 
             if(auth.currentUser) {
                 try {
                     const ratingDoc = await getDoc(doc(db, "comics", comicId, "ratings", auth.currentUser.uid));
                     if(ratingDoc.exists()) {
                         const val = ratingDoc.data().rating;
-                        for(let i=0; i<val; i++) {
-                            stars[i].classList.replace('fa-regular', 'fa-solid');
-                            stars[i].classList.add('active');
-                        }
+                        stars.forEach((s, idx) => {
+                            if(idx < val) { s.className = 'fa-solid fa-star active'; }
+                        });
                     }
                 } catch(e) {}
             }
@@ -817,17 +909,19 @@
                 return; 
             }
             const comicId = window.currentActiveComicId;
+            if(!comicId) return;
             
             try {
-                // Update UI Lokal Cepat
                 const stars = document.querySelectorAll('#userStarRater i');
                 stars.forEach((s, idx) => {
-                    if(idx < starValue) { s.classList.replace('fa-regular', 'fa-solid'); s.classList.add('active'); }
-                    else { s.classList.replace('fa-solid', 'fa-regular'); s.classList.remove('active'); }
+                    if(idx < starValue) { s.className = 'fa-solid fa-star active'; }
+                    else { s.className = 'fa-regular fa-star'; }
                 });
 
-                // Simpan ke DB
-                await setDoc(doc(db, "comics", comicId, "ratings", auth.currentUser.uid), { rating: starValue });
+                await setDoc(doc(db, "comics", comicId, "ratings", auth.currentUser.uid), { 
+                    rating: starValue,
+                    updatedAt: serverTimestamp()
+                });
                 
                 const comicRef = doc(db, "comics", comicId);
                 const cSnap = await getDoc(comicRef);
@@ -835,12 +929,17 @@
                     let rCount = cSnap.data().ratingCount || 0;
                     let rTotal = cSnap.data().ratingTotal || 0;
                     
-                    await updateDoc(comicRef, { ratingCount: increment(1), ratingTotal: increment(starValue) });
+                    await updateDoc(comicRef, { 
+                        ratingCount: increment(1), 
+                        ratingTotal: increment(starValue) 
+                    });
                     
                     const newCount = rCount + 1;
                     const newAvg = ((rTotal + starValue) / newCount).toFixed(1);
                     document.getElementById('detailAvgRating').innerText = newAvg;
                     document.getElementById('detailCountRating').innerText = `(${newCount})`;
+                    
+                    alert(`Berhasil! Kamu memberikan rating ${starValue} bintang.`);
                 }
             } catch(e) { alert("Gagal menyimpan rating."); }
         }
@@ -863,15 +962,11 @@
                     window.comicsData[comicId].views = (data.views || 0) + 1;
                 } catch(e) {}
 
-                window.saveToHistory(comicId);
-                
-                // Tarik sub-data
                 fetchChapters(comicId);
                 fetchComments(comicId);
                 loadUserRating(comicId);
                 checkBookmarkStatus(comicId);
 
-                // Taruh UI Info
                 document.getElementById('detailTitle').innerText = data.title;
                 document.getElementById('detailAltTitle').innerText = data.altTitle || "-";
                 document.getElementById('detailStatus').innerText = data.status || "Ongoing";
@@ -934,7 +1029,7 @@
                     const date = ch.updateDate || "Baru";
                     const title = ch.title ? `- ${ch.title}` : '';
                     chapterHTML += `
-                        <li class="chapter-item" onclick="openReader('${comicId}', '${doc.id}', '${ch.chapterNumber}')">
+                        <li class="chapter-item" onclick="openReader('${comicId}', '${doc.id}', '${ch.chapterNumber}', 1)">
                             <div class="chapter-info">
                                 <span class="chapter-title">Chapter ${ch.chapterNumber} ${title}</span>
                                 <span class="chapter-date">${date}</span>
@@ -951,11 +1046,15 @@
             } catch(e) { container.innerHTML = '<div class="loading-text">Gagal memuat chapter.</div>'; }
         }
 
-        // ================= READER VIEW BACA KOMIK =================
-        window.openReader = async function(comicId, chapterId, chapterNum) {
-            document.getElementById('detail-page').style.display = 'none';
+        // ================= READER VIEW BACA =================
+        window.openReader = async function(comicId, chapterId, chapterNum, targetPageIndex = 1) {
+            window.currentActiveComicId = comicId;
+            window.currentActiveChapterId = chapterId;
+            window.currentActiveChapterNum = chapterNum;
+
+            document.querySelectorAll('.app-container > div').forEach(el => { if(el.id!=='mainBottomNav') el.style.display = 'none'; });
             document.getElementById('reader-page').style.display = 'block';
-            document.getElementById('readerTitle').innerText = `Chapter ${chapterNum}`;
+            document.getElementById('readerTitle').innerText = `Chapter ${chapterNum} • Hal. ${targetPageIndex}`;
             document.getElementById('readerHeader').classList.remove('hidden');
             
             const imgContainer = document.getElementById('readerImagesContainer');
@@ -972,7 +1071,38 @@
                     if(images.length === 0) {
                         imgContainer.innerHTML = '<div class="loading-text">Gambar kosong. Admin belum mengupload.</div>';
                     } else {
-                        images.forEach(url => { imgContainer.innerHTML += `<img src="${url}" loading="lazy">`; });
+                        images.forEach((url, idx) => { 
+                            imgContainer.innerHTML += `<img src="${url}" loading="lazy" data-page="${idx + 1}" alt="Page ${idx + 1}">`; 
+                        });
+
+                        setTimeout(() => {
+                            const targetImg = imgContainer.querySelector(`img[data-page="${targetPageIndex}"]`);
+                            if (targetImg) {
+                                targetImg.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                            }
+                        }, 300);
+
+                        saveReadingProgress(comicId, chapterId, chapterNum, targetPageIndex);
+
+                        if (readerScrollListener) window.removeEventListener('scroll', readerScrollListener);
+
+                        let lastSavedPage = targetPageIndex;
+                        readerScrollListener = function() {
+                            const imgs = imgContainer.querySelectorAll('img[data-page]');
+                            let currentVisiblePage = 1;
+                            imgs.forEach(img => {
+                                const rect = img.getBoundingClientRect();
+                                if (rect.top <= window.innerHeight / 2 && rect.bottom >= 0) {
+                                    currentVisiblePage = parseInt(img.getAttribute('data-page')) || 1;
+                                }
+                            });
+                            if (currentVisiblePage !== lastSavedPage) {
+                                lastSavedPage = currentVisiblePage;
+                                document.getElementById('readerTitle').innerText = `Chapter ${chapterNum} • Hal. ${currentVisiblePage}`;
+                                saveReadingProgress(comicId, chapterId, chapterNum, currentVisiblePage);
+                            }
+                        };
+                        window.addEventListener('scroll', readerScrollListener);
                     }
                 } else {
                     loader.style.display = 'none';
@@ -985,9 +1115,15 @@
         }
 
         window.closeReader = function() {
+            if (readerScrollListener) window.removeEventListener('scroll', readerScrollListener);
             document.getElementById('reader-page').style.display = 'none';
             document.getElementById('readerImagesContainer').innerHTML = '';
-            document.getElementById('detail-page').style.display = 'block';
+            if (window.currentActiveComicId) {
+                document.getElementById('detail-page').style.display = 'block';
+            } else {
+                document.getElementById('home-page').style.display = 'block';
+                document.getElementById('mainBottomNav').style.display = 'flex';
+            }
         }
 
         window.toggleReaderNav = function() { document.getElementById('readerHeader').classList.toggle('hidden'); }
@@ -1011,7 +1147,7 @@
             window.scrollTo(0,0);
         }
 
-        // Slider otomatis Home
+        // Slider Otomatis Home
         let slideIndex = 0;
         const slides = document.getElementById('hero-slider');
         const dots = document.querySelectorAll('.dot');

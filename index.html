@@ -26,10 +26,20 @@
 
         /* HEADER & SEARCH */
         .header { display: flex; align-items: center; padding: 12px 16px; gap: 12px; background-color: #ffffff; position: sticky; top: 0; z-index: 100; border-bottom: 1px solid #f0f0f0; }
-        .search-container { flex: 1; display: flex; align-items: center; background-color: #f5f6f8; padding: 10px 16px; border-radius: 24px; border: 1px solid #eef0f2; }
+        .search-container { flex: 1; display: flex; align-items: center; background-color: #f5f6f8; padding: 10px 16px; border-radius: 24px; border: 1px solid #eef0f2; position: relative; }
         .search-container i { color: var(--primary-blue); margin-right: 8px; font-size: 14px; }
         .search-container input { border: none; background: transparent; outline: none; width: 100%; font-size: 14px; color: #111; }
         .header-icons { display: flex; gap: 14px; color: var(--primary-blue); font-size: 18px; align-items: center; }
+
+        /* SEARCH DROPDOWN */
+        .search-results-dropdown { position: absolute; top: 58px; left: 16px; right: 16px; background: white; border-radius: 8px; box-shadow: 0 5px 15px rgba(0,0,0,0.2); max-height: 300px; overflow-y: auto; z-index: 200; display: none; }
+        .search-item { display: flex; align-items: center; padding: 12px; border-bottom: 1px solid #f0f0f0; cursor: pointer; transition: background 0.2s; }
+        .search-item:hover { background: #f8fafc; }
+        .search-item:last-child { border-bottom: none; }
+        .search-item img { width: 45px; height: 60px; object-fit: cover; border-radius: 4px; margin-right: 12px; border: 1px solid #eee; }
+        .search-item-info { display: flex; flex-direction: column; flex: 1; overflow: hidden; }
+        .search-item-title { font-size: 13px; font-weight: 600; color: #111; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .search-item-chapter { font-size: 11px; color: var(--primary-blue); font-weight: 600; margin-top: 4px; }
 
         /* HERO SLIDER */
         .slider-container { position: relative; width: 100%; height: 380px; overflow: hidden; background-color: #1a1a1a; }
@@ -84,7 +94,6 @@
 
         /* DETAIL PAGE */
         .detail-top-nav { position: fixed; top: 0; width: 100%; max-width: 480px; display: flex; justify-content: space-between; align-items: center; padding: 15px 20px; z-index: 200; background: rgba(0, 0, 0, 0.2); backdrop-filter: blur(10px); color: white; transition: background 0.3s; }
-        
         .detail-top-nav i { font-size: 20px; cursor: pointer; text-shadow: 0 1px 3px rgba(0,0,0,0.5); padding: 8px; }
         .detail-top-nav .right-icons { display: flex; gap: 10px; align-items: center; }
         .bookmark-active { color: #ffc107 !important; text-shadow: 0 0 5px rgba(255, 193, 7, 0.6) !important; }
@@ -196,7 +205,7 @@
             <header class="header">
                 <div class="search-container">
                     <i class="fa-solid fa-magnifying-glass"></i>
-                    <input type="text" placeholder="Cari komik...">
+                    <input type="text" id="searchInput" placeholder="Cari komik...">
                 </div>
                 <div class="header-icons">
                     <i class="fa-solid fa-filter"></i>
@@ -205,43 +214,17 @@
                     <i class="fa-solid fa-chart-simple"></i>
                 </div>
             </header>
+            
+            <!-- Tempat Munculnya Hasil Pencarian (Dropdown) -->
+            <div id="searchResults" class="search-results-dropdown"></div>
 
             <main>
-                <!-- Hero Slider -->
+                <!-- Hero Slider (Sekarang Otomatis dari Firebase) -->
                 <section class="slider-container">
                     <div class="slides-wrapper" id="hero-slider">
-                        <div class="slide" style="background-image: url('https://images.unsplash.com/photo-1541562232579-512a21360020?auto=format&fit=crop&q=80&w=600');">
-                            <div class="hero-content">
-                                <div class="korea-badge">🇰🇷</div>
-                                <h1 class="hero-title">Lord Baby Runs A Romance Fantasy</h1>
-                                <div class="hero-chapter">Chapter 128 • Update Tercepat</div>
-                                <div class="hero-stats">
-                                    <div class="stats-left">
-                                        <span class="view-count"><i class="fa-regular fa-eye"></i> 1,3M views</span>
-                                        <div class="rating"><i class="fa-solid fa-star"></i> 9.5</div>
-                                    </div>
-                                    <button class="btn-read">Jelajahi</button>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="slide" style="background-image: url('https://images.unsplash.com/photo-1578632767115-351597cf2477?auto=format&fit=crop&q=80&w=600');">
-                            <div class="hero-content">
-                                <div class="korea-badge">🇯🇵</div>
-                                <h1 class="hero-title">The World's Best Kunlun Tavern</h1>
-                                <div class="hero-chapter">Chapter 123 • Spesial</div>
-                                <div class="hero-stats">
-                                    <div class="stats-left">
-                                        <span class="view-count"><i class="fa-regular fa-eye"></i> 890K views</span>
-                                        <div class="rating"><i class="fa-solid fa-star"></i> 9.1</div>
-                                    </div>
-                                    <button class="btn-read">Jelajahi</button>
-                                </div>
-                            </div>
-                        </div>
+                        <div class="loading-text" style="color: white; margin: auto;">Memuat komik terbaru...</div>
                     </div>
-                    <div class="slider-indicators">
-                        <span class="dot active" onclick="currentSlide(0)"></span>
-                        <span class="dot" onclick="currentSlide(1)"></span>
+                    <div class="slider-indicators" id="slider-dots">
                     </div>
                 </section>
 
@@ -313,7 +296,6 @@
             <div class="detail-top-nav" id="detailNav">
                 <i class="fa-solid fa-arrow-left" onclick="closeDetail()"></i>
                 <div class="right-icons">
-                    <!-- Event onclick untuk HP -->
                     <i class="fa-regular fa-bookmark" id="btnBookmark" onclick="toggleBookmark(event)"></i>
                 </div>
             </div>
@@ -510,7 +492,63 @@
         window.currentActiveChapterNum = null;
         window.userBookmarks = [];
         window.isAuthModeLogin = true;
-        window.readerObserver = null; // Menampung IntersectionObserver
+        window.readerObserver = null; 
+        window.sliderInterval = null;
+
+        // ================= FITUR PENCARIAN (SEARCH) DINAMIS =================
+        const searchInput = document.getElementById('searchInput');
+        const searchResults = document.getElementById('searchResults');
+
+        searchInput.addEventListener('input', function(e) {
+            const queryText = e.target.value.toLowerCase().trim();
+            if(queryText === '') {
+                searchResults.style.display = 'none';
+                return;
+            }
+            
+            let html = '';
+            let count = 0;
+            
+            for(let id in window.comicsData) {
+                const comic = window.comicsData[id];
+                if(comic.title.toLowerCase().includes(queryText)) {
+                    // Cari info chapter terakhir atau pakai default
+                    const latestCh = comic.latestChapter ? `Chapter ${comic.latestChapter}` : "Update Terbaru";
+                    
+                    html += `
+                        <div class="search-item" onclick="selectSearchResult('${id}')">
+                            <img src="${comic.coverUrl}" onerror="this.src='https://placehold.co/45x60?text=No+Cover'">
+                            <div class="search-item-info">
+                                <div class="search-item-title">${comic.title}</div>
+                                <div class="search-item-chapter">${latestCh}</div>
+                            </div>
+                        </div>
+                    `;
+                    count++;
+                }
+            }
+            
+            if(count > 0) {
+                searchResults.innerHTML = html;
+                searchResults.style.display = 'block';
+            } else {
+                searchResults.innerHTML = '<div style="padding:20px; text-align:center; font-size:13px; color:#888;">Komik tidak ditemukan.</div>';
+                searchResults.style.display = 'block';
+            }
+        });
+
+        // Tutup search box saat klik di luar
+        document.addEventListener('click', function(e) {
+            if(!e.target.closest('.search-container') && !e.target.closest('#searchResults')) {
+                searchResults.style.display = 'none';
+            }
+        });
+
+        window.selectSearchResult = function(comicId) {
+            searchResults.style.display = 'none';
+            searchInput.value = ''; // Bersihkan kolom input
+            openDetail(comicId);
+        }
 
         // ================= SISTEM AUTENTIKASI =================
         onAuthStateChanged(auth, async (user) => {
@@ -580,22 +618,18 @@
             alert("Berhasil keluar dari akun.");
         }
 
-        // ================= SINKRONISASI DATA PENGGUNA (Dengan Fallback Local) =================
+        // ================= SINKRONISASI DATA PENGGUNA =================
         async function syncUserData(uid) {
-            // Coba muat dari LocalStorage dulu
             const localBms = JSON.parse(localStorage.getItem('localBookmarks_' + uid)) || [];
             window.userBookmarks = localBms;
             
             try {
-                // Coba muat dari Cloud (Bisa error kalau Rules Firebase belum diubah)
                 const bmRef = collection(db, "users", uid, "bookmarks");
                 const bmSnap = await getDocs(bmRef);
                 window.userBookmarks = [];
                 bmSnap.forEach(doc => window.userBookmarks.push(doc.id));
                 localStorage.setItem('localBookmarks_' + uid, JSON.stringify(window.userBookmarks));
-            } catch(e) {
-                console.warn("Gagal ambil dari Cloud (Rules tertutup), menggunakan data lokal.", e);
-            }
+            } catch(e) { }
             
             renderBookmarks();
             if(document.getElementById('statBookmarkCount')) {
@@ -609,7 +643,7 @@
             }
         }
 
-        // ================= FETCH DATA KOMIK HOME =================
+        // ================= FETCH DATA KOMIK & BUILD SLIDER DINAMIS =================
         function generateComicCard(docId, data) {
             return `
                 <div class="manga-card-simple" onclick="openDetail('${docId}')">
@@ -626,11 +660,47 @@
                 
                 let htmlUpdates = ''; let htmlJadwal = ''; let htmlManga = ''; let htmlManhwa = ''; let htmlManhua = '';
                 
+                let countSlider = 0;
+                let sliderHtml = '';
+                let sliderDots = '';
+                
                 querySnapshot.forEach((doc) => {
                     const data = doc.data();
                     window.comicsData[doc.id] = data; 
-                    const cardHTML = generateComicCard(doc.id, data);
                     
+                    // PEMBUATAN HERO SLIDER (Maks 5 Komik Teratas)
+                    if(countSlider < 5) {
+                        const views = data.views || 0;
+                        const typeStr = (data.type || "").toLowerCase();
+                        let flag = "🇯🇵"; // Default Manga
+                        if(typeStr.includes("manhwa")) flag = "🇰🇷";
+                        if(typeStr.includes("manhua")) flag = "🇨🇳";
+                        
+                        const rating = data.ratingCount ? (data.ratingTotal / data.ratingCount).toFixed(1) : "0.0";
+                        const latestCh = data.latestChapter ? `Chapter ${data.latestChapter} • Terupdate` : "Update Terbaru";
+                        
+                        sliderHtml += `
+                            <div class="slide" style="background-image: url('${data.coverUrl}');">
+                                <div class="hero-content">
+                                    <div class="korea-badge">${flag}</div>
+                                    <h1 class="hero-title">${data.title}</h1>
+                                    <div class="hero-chapter">${latestCh}</div>
+                                    <div class="hero-stats">
+                                        <div class="stats-left">
+                                            <span class="view-count"><i class="fa-regular fa-eye"></i> ${views} views</span>
+                                            <div class="rating"><i class="fa-solid fa-star"></i> ${rating}</div>
+                                        </div>
+                                        <button class="btn-read" onclick="openDetail('${doc.id}')">Jelajahi</button>
+                                    </div>
+                                </div>
+                            </div>
+                        `;
+                        sliderDots += `<span class="dot ${countSlider === 0 ? 'active' : ''}" onclick="currentSlide(${countSlider})"></span>`;
+                        countSlider++;
+                    }
+
+                    // Pembuatan Card Home Biasa
+                    const cardHTML = generateComicCard(doc.id, data);
                     htmlUpdates += cardHTML;
                     if(Math.random() > 0.4) htmlJadwal += cardHTML;
 
@@ -639,6 +709,15 @@
                     if (type.includes("manhwa")) htmlManhwa += cardHTML;
                     if (type.includes("manhua")) htmlManhua += cardHTML;
                 });
+                
+                // Inject Slider ke HTML
+                if (sliderHtml !== '') {
+                    document.getElementById('hero-slider').innerHTML = sliderHtml;
+                    document.getElementById('slider-dots').innerHTML = sliderDots;
+                    initHeroSlider(); // Restart Animasi Slider
+                } else {
+                    document.getElementById('hero-slider').innerHTML = '<div class="loading-text" style="color:white; margin:auto;">Belum ada komik diupload.</div>';
+                }
 
                 document.getElementById('firebase-updates').innerHTML = htmlUpdates || '<div class="empty-history">Kosong</div>';
                 document.getElementById('firebase-jadwal').innerHTML = htmlJadwal || '<div class="empty-history">Kosong</div>';
@@ -654,7 +733,32 @@
         }
         fetchAllComics();
 
-        // ================= FITUR HISTORY & LANJUT BACA (Dengan Fallback Local) =================
+        // ================= HERO SLIDER LOGIC =================
+        let slideIndex = 0;
+        window.currentSlide = function(index) {
+            slideIndex = index;
+            const slides = document.getElementById('hero-slider');
+            const dots = document.querySelectorAll('.dot');
+            if(slides && dots.length > 0) {
+                slides.style.transform = `translateX(-${slideIndex * 100}%)`;
+                dots.forEach(dot => dot.classList.remove('active'));
+                dots[slideIndex].classList.add('active');
+            }
+        }
+        function initHeroSlider() {
+            if(window.sliderInterval) clearInterval(window.sliderInterval);
+            slideIndex = 0;
+            window.currentSlide(0);
+            window.sliderInterval = setInterval(() => { 
+                const dots = document.querySelectorAll('.dot');
+                if(dots.length > 0) {
+                    slideIndex = (slideIndex + 1) % dots.length; 
+                    window.currentSlide(slideIndex); 
+                }
+            }, 4000);
+        }
+
+        // ================= FITUR HISTORY & LANJUT BACA =================
         window.saveReadingProgress = async function(comicId, chapterId, chapterNum, pageIndex = 1) {
             if (!comicId) return;
             const comicData = window.comicsData[comicId] || {};
@@ -671,23 +775,18 @@
                 updatedAt: new Date().getTime()
             };
 
-            // Selalu simpan di LocalStorage sebagai Backup/Utama
             let localHist = JSON.parse(localStorage.getItem('comicHistoryDetail')) || {};
             localHist[comicId] = historyItem;
             localStorage.setItem('comicHistoryDetail', JSON.stringify(localHist));
 
-            // Jika login, coba simpan ke Cloud
             if (auth.currentUser) {
                 try {
                     await setDoc(doc(db, "users", auth.currentUser.uid, "history", comicId), {
                         ...historyItem,
                         updatedAt: serverTimestamp()
                     });
-                } catch(e) {
-                    console.warn("Gagal simpan History ke Firebase (Rules tertutup). Disimpan Lokal.");
-                }
+                } catch(e) { }
             }
-
             renderReadingHistory();
         }
 
@@ -697,7 +796,6 @@
 
             let historyList = [];
 
-            // Jika login, coba ambil dari cloud
             if (auth.currentUser) {
                 try {
                     const histRef = collection(db, "users", auth.currentUser.uid, "history");
@@ -706,12 +804,9 @@
                     snap.forEach(d => {
                         historyList.push(d.data());
                     });
-                } catch(e) {
-                    console.warn("Gagal load History dari Cloud.");
-                }
+                } catch(e) { }
             }
 
-            // Jika kosong dari cloud atau belum login, load dari LocalStorage
             if (historyList.length === 0) {
                 const localHist = JSON.parse(localStorage.getItem('comicHistoryDetail')) || {};
                 historyList = Object.values(localHist).sort((a,b) => (b.updatedAt || 0) - (a.updatedAt || 0));
@@ -769,7 +864,7 @@
             }
         }
 
-        // ================= FITUR BOOKMARK (Dengan Fallback Local UI) =================
+        // ================= FITUR BOOKMARK =================
         window.toggleBookmark = async function(e) {
             if(e) e.preventDefault(); 
             
@@ -783,30 +878,18 @@
             const cid = window.currentActiveComicId;
             const isBookmarked = window.userBookmarks.includes(cid);
             
-            // UI Feedback langsung agar tidak nunggu loading
             if(isBookmarked) {
                 window.userBookmarks = window.userBookmarks.filter(id => id !== cid);
                 checkBookmarkStatus(cid);
                 alert("Komik dihapus dari Bookmark!");
-                
-                try {
-                    await deleteDoc(doc(db, "users", auth.currentUser.uid, "bookmarks", cid));
-                } catch(err) {
-                    console.warn("Gagal hapus dari Cloud, disimpan di LocalStorage.");
-                }
+                try { await deleteDoc(doc(db, "users", auth.currentUser.uid, "bookmarks", cid)); } catch(err) { }
             } else {
                 window.userBookmarks.push(cid);
                 checkBookmarkStatus(cid);
                 alert("Komik berhasil ditambahkan ke Bookmark!");
-                
-                try {
-                    await setDoc(doc(db, "users", auth.currentUser.uid, "bookmarks", cid), { comicId: cid, addedAt: new Date() });
-                } catch(err) {
-                    console.warn("Gagal simpan ke Cloud, disimpan di LocalStorage.");
-                }
+                try { await setDoc(doc(db, "users", auth.currentUser.uid, "bookmarks", cid), { comicId: cid, addedAt: new Date() }); } catch(err) { }
             }
             
-            // Backup ke localStorage
             localStorage.setItem('localBookmarks_' + auth.currentUser.uid, JSON.stringify(window.userBookmarks));
             renderBookmarks();
             if(document.getElementById('statBookmarkCount')){
@@ -1074,7 +1157,7 @@
             } catch(e) { container.innerHTML = '<div class="loading-text">Gagal memuat chapter.</div>'; }
         }
 
-        // ================= READER VIEW BACA (Menggunakan IntersectionObserver untuk Akurasi Halaman HP) =================
+        // ================= READER VIEW BACA =================
         window.openReader = async function(comicId, chapterId, chapterNum, targetPageIndex = 1) {
             window.currentActiveComicId = comicId;
             window.currentActiveChapterId = chapterId;
@@ -1112,12 +1195,9 @@
 
                         saveReadingProgress(comicId, chapterId, chapterNum, targetPageIndex);
 
-                        // Disconnect observer lama jika ada
                         if (window.readerObserver) window.readerObserver.disconnect();
-
                         let lastSavedPage = targetPageIndex;
                         
-                        // Gunakan IntersectionObserver untuk deteksi halaman di HP dengan sangat akurat
                         window.readerObserver = new IntersectionObserver((entries) => {
                             entries.forEach(entry => {
                                 if(entry.isIntersecting) {
@@ -1129,9 +1209,8 @@
                                     }
                                 }
                             });
-                        }, { threshold: 0.5 }); // Target gambar terdeteksi jika terlihat minimal 50% di layar
+                        }, { threshold: 0.5 });
 
-                        // Amati semua gambar
                         const imgs = imgContainer.querySelectorAll('img[data-page]');
                         imgs.forEach(img => window.readerObserver.observe(img));
                     }
@@ -1178,19 +1257,6 @@
             window.scrollTo(0,0);
         }
 
-        // Slider Otomatis Home
-        let slideIndex = 0;
-        const slides = document.getElementById('hero-slider');
-        const dots = document.querySelectorAll('.dot');
-        window.currentSlide = function(index) {
-            slideIndex = index;
-            if(slides && dots.length > 0) {
-                slides.style.transform = `translateX(-${slideIndex * 100}%)`;
-                dots.forEach(dot => dot.classList.remove('active'));
-                dots[slideIndex].classList.add('active');
-            }
-        }
-        if(slides && dots.length > 0) setInterval(() => { slideIndex = (slideIndex + 1) % dots.length; window.currentSlide(slideIndex); }, 4000);
     </script>
 </body>
 </html>

@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Aplikasi Web Manga - Full UI & Detail</title>
     <!-- Font Awesome -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" integrity="sha512-DTOQO9RWCH3ppGqcWaEA1BIZOC6xxalwEsw9c2QQeAIftl+Vegovlnee1c9QX4TctnWMn13TZye+giMm8e2LwA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <!-- Google Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     
@@ -18,6 +18,7 @@
             --bg-gray: #e5e5e5;
             --text-dark: #111111;
             --text-gray: #777777;
+            --border-color: #eeeeee;
         }
 
         /* Reset & Base Styles */
@@ -136,73 +137,22 @@
         /* =========================================
            STYLE HALAMAN DETAIL KOMIK
            ========================================= */
-        #detail-page {
-            display: none;
-            background-color: #ffffff;
-            min-height: 100vh;
-            animation: fadeIn 0.3s ease-in-out;
-        }
+        #detail-page { display: none; background-color: #ffffff; min-height: 100vh; animation: fadeIn 0.3s ease-in-out; }
 
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 
-        .detail-top-nav {
-            position: fixed;
-            top: 0;
-            width: 100%;
-            max-width: 480px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 15px 20px;
-            z-index: 200;
-            background: rgba(0, 0, 0, 0.2);
-            backdrop-filter: blur(10px);
-            -webkit-backdrop-filter: blur(10px);
-            color: white;
-            transition: background 0.3s;
-        }
+        .detail-top-nav { position: fixed; top: 0; width: 100%; max-width: 480px; display: flex; justify-content: space-between; align-items: center; padding: 15px 20px; z-index: 200; background: rgba(0, 0, 0, 0.2); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); color: white; transition: background 0.3s; }
         .detail-top-nav i { font-size: 20px; cursor: pointer; text-shadow: 0 1px 3px rgba(0,0,0,0.5); }
         .detail-top-nav .right-icons { display: flex; gap: 20px; }
 
-        .detail-header {
-            position: relative;
-            padding: 80px 20px 30px 20px;
-            background-image: url('https://images.unsplash.com/photo-1528360983277-13d401cdc186?auto=format&fit=crop&q=80&w=600');
-            background-size: cover;
-            background-position: center;
-            color: white;
-        }
-        .detail-header::before {
-            content: '';
-            position: absolute;
-            top: 0; left: 0; right: 0; bottom: 0;
-            background: linear-gradient(to bottom, rgba(0,0,0,0.4) 0%, rgba(0,0,0,0.85) 100%);
-            z-index: 1;
-        }
+        .detail-header { position: relative; padding: 80px 20px 30px 20px; background-image: url('https://images.unsplash.com/photo-1528360983277-13d401cdc186?auto=format&fit=crop&q=80&w=600'); background-size: cover; background-position: center; color: white; transition: background-image 0.3s ease;}
+        .detail-header::before { content: ''; position: absolute; top: 0; left: 0; right: 0; bottom: 0; background: linear-gradient(to bottom, rgba(0,0,0,0.4) 0%, rgba(0,0,0,0.85) 100%); z-index: 1; }
 
-        .comic-info-layout {
-            position: relative;
-            z-index: 2;
-            display: flex;
-            gap: 15px;
-            align-items: flex-end;
-        }
-
+        .comic-info-layout { position: relative; z-index: 2; display: flex; gap: 15px; align-items: flex-end; }
         .comic-cover-wrapper { position: relative; width: 110px; flex-shrink: 0; }
         .comic-cover { width: 100%; border-radius: 8px; box-shadow: 0 5px 15px rgba(0,0,0,0.5); border: 1px solid rgba(255,255,255,0.2); }
         
-        .age-rating {
-            background: linear-gradient(135deg, #ff9800, #ff5722);
-            color: white;
-            text-align: center;
-            padding: 4px 0;
-            border-bottom-left-radius: 8px;
-            border-bottom-right-radius: 8px;
-            font-size: 11px;
-            font-weight: 700;
-            margin-top: -4px;
-            position: relative;
-        }
+        .age-rating { background: linear-gradient(135deg, #ff9800, #ff5722); color: white; text-align: center; padding: 4px 0; border-bottom-left-radius: 8px; border-bottom-right-radius: 8px; font-size: 11px; font-weight: 700; margin-top: -4px; position: relative; }
         .age-rating span { font-size: 14px; display: block; }
 
         .comic-meta { flex-grow: 1; padding-bottom: 5px;}
@@ -215,40 +165,12 @@
         .status-badge { background-color: #28a745; color: white; padding: 2px 8px; border-radius: 12px; font-size: 10px; font-weight: 600; }
 
         .genre-tags { display: flex; flex-wrap: wrap; gap: 6px; }
-        .genre-tags .tag {
-            border: 1px solid rgba(255, 255, 255, 0.4);
-            padding: 3px 10px;
-            border-radius: 14px;
-            font-size: 10px;
-            color: #ffffff;
-            background: rgba(255, 255, 255, 0.1);
-            backdrop-filter: blur(4px);
-        }
+        .genre-tags .tag { border: 1px solid rgba(255, 255, 255, 0.4); padding: 3px 10px; border-radius: 14px; font-size: 10px; color: #ffffff; background: rgba(255, 255, 255, 0.1); backdrop-filter: blur(4px); }
 
         /* Detail Tabs */
-        .detail-tabs {
-            display: flex;
-            border-bottom: 1px solid #eeeeee;
-            background: #ffffff;
-            position: sticky;
-            top: 50px;
-            z-index: 99;
-        }
-        .tab-btn {
-            flex: 1;
-            text-align: center;
-            padding: 15px 0;
-            font-size: 14px;
-            font-weight: 600;
-            color: var(--text-gray);
-            cursor: pointer;
-            border-bottom: 2px solid transparent;
-            transition: all 0.3s;
-        }
-        .tab-btn.active {
-            color: var(--primary-blue);
-            border-bottom: 2px solid var(--primary-blue);
-        }
+        .detail-tabs { display: flex; border-bottom: 1px solid var(--border-color); background: #ffffff; position: sticky; top: 50px; z-index: 99; }
+        .tab-btn { flex: 1; text-align: center; padding: 15px 0; font-size: 14px; font-weight: 600; color: var(--text-gray); cursor: pointer; border-bottom: 2px solid transparent; transition: all 0.3s; }
+        .tab-btn.active { color: var(--primary-blue); border-bottom: 2px solid var(--primary-blue); }
 
         /* Tab Content Area */
         .tab-content { padding: 20px; display: none; }
@@ -257,9 +179,20 @@
         .synopsis-title { font-size: 16px; font-weight: 700; margin-bottom: 10px; color: var(--text-dark); }
         .synopsis-text { font-size: 13px; color: #444; line-height: 1.6; text-align: justify; }
 
+        /* Chapter List Styles */
+        .chapter-list { list-style: none; padding: 0; margin: 0; }
+        .chapter-item { display: flex; justify-content: space-between; align-items: center; padding: 14px 0; border-bottom: 1px solid var(--border-color); cursor: pointer; transition: 0.2s; }
+        .chapter-item:active { opacity: 0.6; }
+        .chapter-info { display: flex; flex-direction: column; gap: 4px; }
+        .chapter-title { font-size: 14px; font-weight: 600; color: var(--text-dark); }
+        .chapter-date { font-size: 11px; color: #999; }
+        .chapter-action { color: var(--primary-blue); font-size: 12px; font-weight: 700; background: var(--light-blue); padding: 6px 12px; border-radius: 16px; }
+
         .placeholder-text { text-align: center; color: var(--text-gray); padding: 40px 0; font-size: 14px; }
         .placeholder-text i { font-size: 30px; margin-bottom: 10px; color: #ccc; }
 
+        .loading-text { text-align: center; padding: 20px; color: #888; font-size: 13px; width: 100%; }
+        .empty-history { text-align: center; padding: 15px; color: #888; font-size: 13px; width: 100%; background: #f9f9f9; border-radius: 8px; }
     </style>
 </head>
 <body>
@@ -321,27 +254,14 @@
                     </div>
                 </section>
 
-                <!-- Lanjutkan Membaca Section -->
+                <!-- Lanjutkan Membaca Section (Local History) -->
                 <section class="section-container">
                     <div class="section-header">
                         <div class="section-title-wrapper"><h2 class="section-title">Lanjutkan Membaca</h2></div>
-                        <a href="#" class="see-all">Lihat Semua</a>
+                        <a href="#" class="see-all" onclick="clearHistory(event)">Bersihkan</a>
                     </div>
-                    <div class="horizontal-scroll">
-                        <div class="manga-card-history">
-                            <img src="https://images.unsplash.com/photo-1614583224978-f05ce51ef5fa?auto=format&fit=crop&q=80&w=300" alt="The Great Master">
-                            <div class="info">
-                                <div class="title">The Great Master</div>
-                                <div class="chapter">Chapter 150 • 2026-...</div>
-                            </div>
-                        </div>
-                        <div class="manga-card-history">
-                            <img src="https://images.unsplash.com/photo-1613376023733-2240b9e1c1db?auto=format&fit=crop&q=80&w=300" alt="Hunter x Hunter">
-                            <div class="info">
-                                <div class="title">Hunter x Hunter</div>
-                                <div class="chapter">Chapter 416 • 2026-...</div>
-                            </div>
-                        </div>
+                    <div class="horizontal-scroll" id="history-container">
+                        <div class="empty-history">Belum ada histori bacaan.</div>
                     </div>
                 </section>
 
@@ -354,19 +274,8 @@
                         </div>
                         <a href="#" class="see-all">Lihat Semua</a>
                     </div>
-                    <div class="horizontal-scroll">
-                        <div class="manga-card-simple" onclick="openDetail()">
-                            <img src="https://images.unsplash.com/photo-1528360983277-13d401cdc186?auto=format&fit=crop&q=80&w=300" alt="Cover 1">
-                            <div class="info-container"><div class="title">A Martial Master Wakes Up as a C...</div></div>
-                        </div>
-                        <div class="manga-card-simple">
-                            <img src="https://images.unsplash.com/photo-1618519764620-7403abdbdf9c?auto=format&fit=crop&q=80&w=300" alt="Cover 2">
-                            <div class="info-container"><div class="title">One Day, Suddenly, Seoul Is</div></div>
-                        </div>
-                        <div class="manga-card-simple">
-                            <img src="https://images.unsplash.com/photo-1578632767115-351597cf2477?auto=format&fit=crop&q=80&w=300" alt="Cover 3">
-                            <div class="info-container"><div class="title">Moonrise by the Cliff</div></div>
-                        </div>
+                    <div class="horizontal-scroll" id="firebase-jadwal">
+                        <div class="loading-text"><i class="fa-solid fa-spinner fa-spin"></i> Memuat Jadwal...</div>
                     </div>
                 </section>
 
@@ -379,9 +288,8 @@
                         </div>
                         <a href="#" class="see-all">Lihat Semua</a>
                     </div>
-                    <div class="horizontal-scroll">
-                        <div class="manga-card-simple"><img src="https://images.unsplash.com/photo-1607604276583-eef5d076aa5f?auto=format&fit=crop&q=80&w=300"><div class="info-container"><div class="title">Kenja no Deshi</div></div></div>
-                        <div class="manga-card-simple"><img src="https://images.unsplash.com/photo-1541562232579-512a21360020?auto=format&fit=crop&q=80&w=300"><div class="info-container"><div class="title">The Calamity Prince</div></div></div>
+                    <div class="horizontal-scroll" id="firebase-manga">
+                        <div class="loading-text"><i class="fa-solid fa-spinner fa-spin"></i> Memuat Manga...</div>
                     </div>
                 </section>
 
@@ -391,9 +299,8 @@
                         <div class="section-title-wrapper"><span>🇰🇷</span><h2 class="section-title">Manhwa</h2></div>
                         <a href="#" class="see-all">Lihat Semua</a>
                     </div>
-                    <div class="horizontal-scroll">
-                        <div class="manga-card-simple"><img src="https://images.unsplash.com/photo-1618519764620-7403abdbdf9c?auto=format&fit=crop&q=80&w=300"><div class="info-container"><div class="title">Max Level Player</div></div></div>
-                        <div class="manga-card-simple"><img src="https://images.unsplash.com/photo-1528360983277-13d401cdc186?auto=format&fit=crop&q=80&w=300"><div class="info-container"><div class="title">Have a Good Day</div></div></div>
+                    <div class="horizontal-scroll" id="firebase-manhwa">
+                        <div class="loading-text"><i class="fa-solid fa-spinner fa-spin"></i> Memuat Manhwa...</div>
                     </div>
                 </section>
 
@@ -403,9 +310,8 @@
                         <div class="section-title-wrapper"><span>🇨🇳</span><h2 class="section-title">Manhua</h2></div>
                         <a href="#" class="see-all">Lihat Semua</a>
                     </div>
-                    <div class="horizontal-scroll">
-                        <div class="manga-card-simple"><img src="https://images.unsplash.com/photo-1541562232579-512a21360020?auto=format&fit=crop&q=80&w=300"><div class="info-container"><div class="title">With a No-Cooldown</div></div></div>
-                        <div class="manga-card-simple"><img src="https://images.unsplash.com/photo-1613376023733-2240b9e1c1db?auto=format&fit=crop&q=80&w=300"><div class="info-container"><div class="title">After Breaking off</div></div></div>
+                    <div class="horizontal-scroll" id="firebase-manhua">
+                        <div class="loading-text"><i class="fa-solid fa-spinner fa-spin"></i> Memuat Manhua...</div>
                     </div>
                 </section>
 
@@ -423,13 +329,11 @@
                 <!-- Update Terbaru Section -->
                 <section class="section-container" style="padding-bottom: 30px;">
                     <div class="section-header">
-                        <div class="section-title-wrapper"><h2 class="section-title">Update Terbaru</h2></div>
+                        <div class="section-title-wrapper"><h2 class="section-title">Semua Update Terbaru</h2></div>
                         <a href="#" class="see-all">Lihat Semua</a>
                     </div>
-                    <!-- Kontainer horizontal scroll ini akan ditimpa dengan data Firebase -->
                     <div class="horizontal-scroll" id="firebase-updates">
-                        <!-- Data statis sementara sebelum API selesai load -->
-                        <div class="manga-card-simple"><img src="https://images.unsplash.com/photo-1528360983277-13d401cdc186?auto=format&fit=crop&q=80&w=300"><div class="info-container"><div class="title">Memuat data...</div></div></div>
+                        <div class="loading-text"><i class="fa-solid fa-spinner fa-spin"></i> Memuat Update...</div>
                     </div>
                 </section>
             </main>
@@ -449,30 +353,24 @@
             </div>
 
             <main>
-                <!-- Header / Banner Cover Blur -->
-                <div class="detail-header">
+                <div class="detail-header" id="detailHeaderBg">
                     <div class="comic-info-layout">
                         <div class="comic-cover-wrapper">
-                            <img src="https://images.unsplash.com/photo-1528360983277-13d401cdc186?auto=format&fit=crop&q=80&w=300" alt="Cover" class="comic-cover" id="detailCoverImage">
-                            <div class="age-rating">Remaja<span>16+</span></div>
+                            <img src="" alt="Cover" class="comic-cover" id="detailCoverImage">
+                            <div class="age-rating" id="detailAgeRating">Remaja<span>13+</span></div>
                         </div>
                         
                         <div class="comic-meta">
-                            <h1 class="comic-detail-title" id="detailTitle">A Martial Master Wakes Up as a Concubine</h1>
-                            <div class="comic-alt-title" id="detailAltTitle">A Martial Master, Who Woke Up as a Concubine, Gosu...</div>
-                            <div style="font-size: 11px; color: #ddd; margin-bottom: 8px;">Chapter 97</div>
+                            <h1 class="comic-detail-title" id="detailTitle">Memuat...</h1>
+                            <div class="comic-alt-title" id="detailAltTitle">...</div>
                             
                             <div class="comic-stats-row">
-                                <span><i class="fa-regular fa-eye"></i> 39,4K views</span>
-                                <span class="stat-rating"><i class="fa-solid fa-star"></i> 9.2 <span>(39)</span></span>
+                                <span><i class="fa-regular fa-eye"></i> <span id="detailViews">0</span> views</span>
+                                <span class="stat-rating"><i class="fa-solid fa-star"></i> 9.2</span>
                                 <span class="status-badge" id="detailStatus">Ongoing</span>
                             </div>
 
-                            <div class="genre-tags" id="detailTags">
-                                <span class="tag">Manhwa</span>
-                                <span class="tag">Comedy</span>
-                                <span class="tag">Drama</span>
-                            </div>
+                            <div class="genre-tags" id="detailTags"></div>
                         </div>
                     </div>
                 </div>
@@ -480,24 +378,21 @@
                 <!-- Tabs Menu -->
                 <div class="detail-tabs">
                     <div class="tab-btn active" onclick="switchTab('detail')">Detail</div>
-                    <div class="tab-btn" onclick="switchTab('chapter')">Chapter <span style="font-size:10px; background:var(--primary-blue); color:white; padding:2px 6px; border-radius:10px; margin-left:4px;">97</span></div>
-                    <div class="tab-btn" onclick="switchTab('comment')">Comment</div>
+                    <div class="tab-btn" onclick="switchTab('chapter')">Chapters <span id="chapterBadge" style="font-size:10px; background:var(--primary-blue); color:white; padding:2px 6px; border-radius:10px; margin-left:4px; display:none;">0</span></div>
+                    <div class="tab-btn" onclick="switchTab('comment')">Komentar</div>
                 </div>
 
                 <!-- Tab Content: DETAIL -->
                 <div class="tab-content active" id="tab-detail">
-                    <h3 class="synopsis-title">Synopsis</h3>
-                    <p class="synopsis-text" id="detailSynopsis">
-                        Cheon Nyeon Bi, seorang ahli terkuat bela diri mati karena memakan buah naga beracun yang diberikan oleh kekasihnya...
-                    </p>
+                    <h3 class="synopsis-title">Sinopsis</h3>
+                    <p class="synopsis-text" id="detailSynopsis">Memuat sinopsis...</p>
                 </div>
 
                 <!-- Tab Content: CHAPTER -->
                 <div class="tab-content" id="tab-chapter">
-                    <div class="placeholder-text">
-                        <i class="fa-solid fa-list-ol"></i>
-                        <br>Daftar Chapter komik tersedia di sini.
-                    </div>
+                    <ul class="chapter-list" id="chapterListContainer">
+                        <div class="placeholder-text"><i class="fa-solid fa-spinner fa-spin"></i><br>Mencari chapter...</div>
+                    </ul>
                 </div>
 
                 <!-- Tab Content: COMMENT -->
@@ -529,7 +424,7 @@
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
         import { getFirestore, collection, getDocs, query, orderBy, limit } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
-        // 1. Inisialisasi Konfigurasi Firebase (Menyesuaikan dengan konfigurasi Admin Anda)
+        // Konfigurasi Firebase
         const firebaseConfig = {
             apiKey: "AIzaSyAt1V2Ogx0P8rSLSNz9_zZpYt00cCN5JL0",
             authDomain: "yarch-b63d8.firebaseapp.com",
@@ -542,45 +437,176 @@
         const app = initializeApp(firebaseConfig);
         const db = getFirestore(app);
 
-        // Data komik mentah yang siap diolah
-        let comicsData = [];
+        // State Penyimpanan Data Komik
+        let comicsData = {};
 
-        // 2. Logika Pengambilan Data (Fetch)
-        async function fetchComics() {
+        // Helper untuk membuat HTML Card Komik
+        function generateComicCard(docId, data) {
+            return `
+                <div class="manga-card-simple" onclick="openDetail('${docId}')">
+                    <img src="${data.coverUrl}" alt="${data.title}" onerror="this.src='https://placehold.co/120x150?text=No+Cover'">
+                    <div class="info-container">
+                        <div class="title">${data.title}</div>
+                    </div>
+                </div>
+            `;
+        }
+
+        // Fungsi Utama Penarikan & Distribusi Data
+        async function fetchAllComics() {
             try {
-                const q = query(collection(db, "comics"), orderBy("createdAt", "desc"), limit(10));
+                // Ambil 25 komik terbaru untuk dipilah ke berbagai kategori
+                const q = query(collection(db, "comics"), orderBy("createdAt", "desc"), limit(25));
                 const querySnapshot = await getDocs(q);
                 
-                const updateContainer = document.getElementById('firebase-updates');
-                let updateHTML = '';
+                let htmlUpdates = '';
+                let htmlJadwal = '';
+                let htmlManga = '';
+                let htmlManhwa = '';
+                let htmlManhua = '';
                 
                 querySnapshot.forEach((doc) => {
                     const data = doc.data();
-                    comicsData[doc.id] = data; // Simpan data di local caching array
+                    comicsData[doc.id] = data; 
                     
-                    // Membuat element card yang akan membuka fungsi openDetail saat diklik
-                    updateHTML += `
-                        <div class="manga-card-simple" onclick="openDetail('${doc.id}')">
-                            <img src="${data.coverUrl}" alt="${data.title}">
-                            <div class="info-container">
-                                <div class="title">${data.title}</div>
-                            </div>
-                        </div>
-                    `;
+                    const cardHTML = generateComicCard(doc.id, data);
+                    
+                    // 1. Masuk ke Semua Update Terbaru
+                    htmlUpdates += cardHTML;
+                    
+                    // 2. Jadwal (Simulasi acak / atau berdasarkan tgl rilis jika ada)
+                    if(Math.random() > 0.5) htmlJadwal += cardHTML;
+
+                    // 3. Filter Kategori Type
+                    const type = (data.type || "").toLowerCase();
+                    if (type.includes("manga")) htmlManga += cardHTML;
+                    if (type.includes("manhwa")) htmlManhwa += cardHTML;
+                    if (type.includes("manhua")) htmlManhua += cardHTML;
                 });
 
-                if(updateHTML && updateContainer) {
-                    updateContainer.innerHTML = updateHTML; // Mengganti data statis dengan data Firestore dinamis
-                }
+                // Terapkan ke UI (Fallback kosong jika tidak ada data)
+                document.getElementById('firebase-updates').innerHTML = htmlUpdates || '<div class="empty-history">Belum ada komik.</div>';
+                document.getElementById('firebase-jadwal').innerHTML = htmlJadwal || '<div class="empty-history">Tidak ada jadwal rilis hari ini.</div>';
+                document.getElementById('firebase-manga').innerHTML = htmlManga || '<div class="empty-history">Belum ada manga.</div>';
+                document.getElementById('firebase-manhwa').innerHTML = htmlManhwa || '<div class="empty-history">Belum ada manhwa.</div>';
+                document.getElementById('firebase-manhua').innerHTML = htmlManhua || '<div class="empty-history">Belum ada manhua.</div>';
+
+                // Render History dari LocalStorage setelah data ditarik
+                renderReadingHistory();
+
             } catch (error) {
-                console.error("Gagal menarik data dari Database Firebase:", error);
+                console.error("Error Fetching Data:", error);
             }
         }
         
-        // Panggil fungsi secara otomatis ketika halaman diakses
-        fetchComics();
+        fetchAllComics();
 
-        // 3. Logika Navigasi dan Halaman UI (Mengekspos ke window object)
+        // ----------------------------------------------------
+        // FITUR CHAPTERS & DETAIL KOMIK
+        // ----------------------------------------------------
+        async function fetchChapters(comicId) {
+            const container = document.getElementById('chapterListContainer');
+            const badge = document.getElementById('chapterBadge');
+            
+            container.innerHTML = '<div class="placeholder-text"><i class="fa-solid fa-spinner fa-spin"></i><br>Mencari chapter...</div>';
+            badge.style.display = 'none';
+
+            try {
+                const chaptersRef = collection(db, "comics", comicId, "chapters");
+                const q = query(chaptersRef, orderBy("chapterNumber", "desc"));
+                const snapshot = await getDocs(q);
+                
+                let chapterHTML = '';
+                let totalChapters = 0;
+
+                snapshot.forEach(doc => {
+                    const ch = doc.data();
+                    totalChapters++;
+                    const date = ch.updateDate || (ch.createdAt ? ch.createdAt.toDate().toLocaleDateString('id-ID', {day:'numeric', month:'short', year:'numeric'}) : 'Baru');
+                    const chapterTitle = ch.title ? `- ${ch.title}` : '';
+                    
+                    chapterHTML += `
+                        <li class="chapter-item" onclick="readChapter('${comicId}', '${ch.chapterNumber}')">
+                            <div class="chapter-info">
+                                <span class="chapter-title">Chapter ${ch.chapterNumber} ${chapterTitle}</span>
+                                <span class="chapter-date">${date}</span>
+                            </div>
+                            <div class="chapter-action">Baca</div>
+                        </li>
+                    `;
+                });
+
+                if(totalChapters > 0) {
+                    container.innerHTML = chapterHTML;
+                    badge.innerText = totalChapters;
+                    badge.style.display = 'inline-block';
+                } else {
+                    container.innerHTML = '<div class="placeholder-text"><i class="fa-solid fa-face-frown-open"></i><br>Belum ada chapter yang dirilis.</div>';
+                }
+            } catch(e) {
+                console.error(e);
+                container.innerHTML = '<div class="placeholder-text"><i class="fa-solid fa-triangle-exclamation"></i><br>Gagal memuat chapter.</div>';
+            }
+        }
+
+        window.readChapter = function(comicId, chapterNum) {
+            alert(`Fitur membaca (Reader View) untuk Chapter ${chapterNum} akan segera hadir!`);
+            // Disini logika menuju halaman bacaan per halaman nantinya.
+        }
+
+        // ----------------------------------------------------
+        // FITUR HISTORY (LANJUTKAN MEMBACA)
+        // ----------------------------------------------------
+        function saveToHistory(comicId) {
+            let history = JSON.parse(localStorage.getItem('comicHistory')) || [];
+            // Buang id jika sudah ada (agar pindah ke depan)
+            history = history.filter(id => id !== comicId);
+            history.unshift(comicId);
+            // Simpan max 10 histori
+            if(history.length > 10) history.pop();
+            localStorage.setItem('comicHistory', JSON.stringify(history));
+            renderReadingHistory();
+        }
+
+        function renderReadingHistory() {
+            const historyIds = JSON.parse(localStorage.getItem('comicHistory')) || [];
+            const container = document.getElementById('history-container');
+            
+            if(historyIds.length === 0) {
+                container.innerHTML = '<div class="empty-history">Belum ada histori bacaan.</div>';
+                return;
+            }
+
+            let historyHTML = '';
+            historyIds.forEach(id => {
+                if(comicsData[id]) {
+                    const data = comicsData[id];
+                    historyHTML += `
+                        <div class="manga-card-history" onclick="openDetail('${id}')">
+                            <img src="${data.coverUrl}" onerror="this.src='https://placehold.co/130x170?text=No+Cover'">
+                            <div class="info">
+                                <div class="title">${data.title}</div>
+                                <div class="chapter">${data.type || 'Manga'}</div>
+                            </div>
+                        </div>
+                    `;
+                }
+            });
+            container.innerHTML = historyHTML || '<div class="empty-history">Belum ada histori bacaan.</div>';
+        }
+
+        window.clearHistory = function(e) {
+            e.preventDefault();
+            if(confirm("Bersihkan semua riwayat bacaan?")) {
+                localStorage.removeItem('comicHistory');
+                renderReadingHistory();
+            }
+        }
+
+
+        // ----------------------------------------------------
+        // NAVIGASI & UI
+        // ----------------------------------------------------
         const homePage = document.getElementById('home-page');
         const detailPage = document.getElementById('detail-page');
 
@@ -589,17 +615,37 @@
             detailPage.style.display = 'block';
             window.scrollTo(0, 0);
 
-            // Jika ID komik tersedia (dari Firebase), ganti isi pada halaman detail komiknya
+            // Set Ulang Tabs ke Detail
+            switchTab('detail');
+
             if (comicId && comicsData[comicId]) {
                 const data = comicsData[comicId];
-                document.getElementById('detailTitle').innerText = data.title;
-                document.getElementById('detailAltTitle').innerText = data.altTitle || "-";
-                document.getElementById('detailStatus').innerText = data.status || "Ongoing";
-                document.getElementById('detailSynopsis').innerText = data.synopsis || "Belum ada sinopsis.";
-                document.getElementById('detailCoverImage').src = data.coverUrl;
+                
+                // Simpan ke local history
+                saveToHistory(comicId);
 
+                // Tarik Chapter
+                fetchChapters(comicId);
+
+                // Isi Data UI
+                document.getElementById('detailTitle').innerText = data.title;
+                document.getElementById('detailAltTitle').innerText = data.altTitle || "";
+                document.getElementById('detailStatus').innerText = data.status || "Ongoing";
+                document.getElementById('detailSynopsis').innerText = data.synopsis || "Belum ada sinopsis untuk komik ini.";
+                document.getElementById('detailViews').innerText = data.views || "0";
+                
+                // Header & Gambar Cover
+                document.getElementById('detailCoverImage').src = data.coverUrl;
+                document.getElementById('detailHeaderBg').style.backgroundImage = `url('${data.coverUrl}')`;
+
+                // Umur Rating
+                const ageHtml = data.ageRating ? `<span>${data.ageRating}</span>` : '<span>SU</span>';
+                document.getElementById('detailAgeRating').innerHTML = `Rating${ageHtml}`;
+
+                // Tags
                 const tagsContainer = document.getElementById('detailTags');
-                tagsContainer.innerHTML = `<span class="tag">${data.type}</span>`;
+                tagsContainer.innerHTML = '';
+                if(data.type) tagsContainer.innerHTML += `<span class="tag">${data.type}</span>`;
                 if(data.genres && Array.isArray(data.genres)) {
                     data.genres.forEach(genre => {
                         tagsContainer.innerHTML += `<span class="tag">${genre}</span>`;
@@ -618,7 +664,7 @@
             if(detailPage.style.display === 'block') {
                 const nav = document.getElementById('detailNav');
                 if (window.scrollY > 50) {
-                    nav.style.background = 'rgba(0, 91, 181, 0.9)';
+                    nav.style.background = 'rgba(0, 122, 255, 0.95)';
                 } else {
                     nav.style.background = 'rgba(0, 0, 0, 0.2)';
                 }
@@ -628,11 +674,17 @@
         window.switchTab = function(tabName) {
             document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
             document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
-            event.currentTarget.classList.add('active');
+            
+            // Temukan tab yang diklik berdasar fungsi
+            const buttons = document.querySelectorAll('.tab-btn');
+            if(tabName === 'detail') buttons[0].classList.add('active');
+            if(tabName === 'chapter') buttons[1].classList.add('active');
+            if(tabName === 'comment') buttons[2].classList.add('active');
+            
             document.getElementById('tab-' + tabName).classList.add('active');
         }
 
-        // Slider otomatis Home
+        // Hero Slider
         let slideIndex = 0;
         const slides = document.getElementById('hero-slider');
         const dots = document.querySelectorAll('.dot');
@@ -650,7 +702,7 @@
             setInterval(() => {
                 slideIndex = (slideIndex + 1) % dots.length;
                 window.currentSlide(slideIndex);
-            }, 3000);
+            }, 4000);
         }
     </script>
 </body>

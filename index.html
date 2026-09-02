@@ -85,7 +85,6 @@
         /* DETAIL PAGE */
         .detail-top-nav { position: fixed; top: 0; width: 100%; max-width: 480px; display: flex; justify-content: space-between; align-items: center; padding: 15px 20px; z-index: 200; background: rgba(0, 0, 0, 0.2); backdrop-filter: blur(10px); color: white; transition: background 0.3s; }
         
-        /* DIPERBESAR AREA SENTUH IKON (Penting untuk HP) */
         .detail-top-nav i { font-size: 20px; cursor: pointer; text-shadow: 0 1px 3px rgba(0,0,0,0.5); padding: 8px; }
         .detail-top-nav .right-icons { display: flex; gap: 10px; align-items: center; }
         .bookmark-active { color: #ffc107 !important; text-shadow: 0 0 5px rgba(255, 193, 7, 0.6) !important; }
@@ -227,7 +226,7 @@
                         </div>
                         <div class="slide" style="background-image: url('https://images.unsplash.com/photo-1578632767115-351597cf2477?auto=format&fit=crop&q=80&w=600');">
                             <div class="hero-content">
-                                <div class="korea-badge">🇯 ঐতি</div>
+                                <div class="korea-badge">🇯🇵</div>
                                 <h1 class="hero-title">The World's Best Kunlun Tavern</h1>
                                 <div class="hero-chapter">Chapter 123 • Spesial</div>
                                 <div class="hero-stats">
@@ -314,7 +313,7 @@
             <div class="detail-top-nav" id="detailNav">
                 <i class="fa-solid fa-arrow-left" onclick="closeDetail()"></i>
                 <div class="right-icons">
-                    <!-- Event onclick untuk HP telah diperkuat -->
+                    <!-- Event onclick untuk HP -->
                     <i class="fa-regular fa-bookmark" id="btnBookmark" onclick="toggleBookmark(event)"></i>
                 </div>
             </div>
@@ -383,7 +382,7 @@
                             <div class="loading-text"><i class="fa-solid fa-spinner fa-spin"></i><br>Memuat komentar...</div>
                         </div>
                         
-                        <!-- Input Komentar (Hanya Tampil Jika Login) -->
+                        <!-- Input Komentar -->
                         <div class="comment-input-area" id="commentInputArea" style="display:none;">
                             <input type="text" id="newCommentText" placeholder="Tambahkan komentar..." autocomplete="off">
                             <button class="btn-send-comment" onclick="postComment()">Kirim</button>
@@ -511,7 +510,7 @@
         window.currentActiveChapterNum = null;
         window.userBookmarks = [];
         window.isAuthModeLogin = true;
-        let readerScrollListener = null;
+        window.readerObserver = null; // Menampung IntersectionObserver
 
         // ================= SISTEM AUTENTIKASI =================
         onAuthStateChanged(auth, async (user) => {
@@ -581,24 +580,32 @@
             alert("Berhasil keluar dari akun.");
         }
 
-        // ================= SINKRONISASI DATA PENGGUNA =================
+        // ================= SINKRONISASI DATA PENGGUNA (Dengan Fallback Local) =================
         async function syncUserData(uid) {
+            // Coba muat dari LocalStorage dulu
+            const localBms = JSON.parse(localStorage.getItem('localBookmarks_' + uid)) || [];
+            window.userBookmarks = localBms;
+            
             try {
+                // Coba muat dari Cloud (Bisa error kalau Rules Firebase belum diubah)
                 const bmRef = collection(db, "users", uid, "bookmarks");
                 const bmSnap = await getDocs(bmRef);
                 window.userBookmarks = [];
                 bmSnap.forEach(doc => window.userBookmarks.push(doc.id));
-                renderBookmarks();
-                document.getElementById('statBookmarkCount').innerText = window.userBookmarks.length;
-
-                renderReadingHistory();
-                
-                if(window.currentActiveComicId) {
-                    checkBookmarkStatus(window.currentActiveComicId);
-                    loadUserRating(window.currentActiveComicId);
-                }
+                localStorage.setItem('localBookmarks_' + uid, JSON.stringify(window.userBookmarks));
             } catch(e) {
-                console.error("Gagal sinkronisasi pengguna", e);
+                console.warn("Gagal ambil dari Cloud (Rules tertutup), menggunakan data lokal.", e);
+            }
+            
+            renderBookmarks();
+            if(document.getElementById('statBookmarkCount')) {
+                document.getElementById('statBookmarkCount').innerText = window.userBookmarks.length;
+            }
+            renderReadingHistory();
+            
+            if(window.currentActiveComicId) {
+                checkBookmarkStatus(window.currentActiveComicId);
+                loadUserRating(window.currentActiveComicId);
             }
         }
 
@@ -641,11 +648,13 @@
 
                 renderReadingHistory();
                 renderBookmarks();
-            } catch (error) {}
+            } catch (error) {
+                console.error("Gagal load komik:", error);
+            }
         }
         fetchAllComics();
 
-        // ================= FITUR HISTORY & LANJUT BACA =================
+        // ================= FITUR HISTORY & LANJUT BACA (Dengan Fallback Local) =================
         window.saveReadingProgress = async function(comicId, chapterId, chapterNum, pageIndex = 1) {
             if (!comicId) return;
             const comicData = window.comicsData[comicId] || {};
@@ -662,17 +671,21 @@
                 updatedAt: new Date().getTime()
             };
 
+            // Selalu simpan di LocalStorage sebagai Backup/Utama
             let localHist = JSON.parse(localStorage.getItem('comicHistoryDetail')) || {};
             localHist[comicId] = historyItem;
             localStorage.setItem('comicHistoryDetail', JSON.stringify(localHist));
 
+            // Jika login, coba simpan ke Cloud
             if (auth.currentUser) {
                 try {
                     await setDoc(doc(db, "users", auth.currentUser.uid, "history", comicId), {
                         ...historyItem,
                         updatedAt: serverTimestamp()
                     });
-                } catch(e) {}
+                } catch(e) {
+                    console.warn("Gagal simpan History ke Firebase (Rules tertutup). Disimpan Lokal.");
+                }
             }
 
             renderReadingHistory();
@@ -684,6 +697,7 @@
 
             let historyList = [];
 
+            // Jika login, coba ambil dari cloud
             if (auth.currentUser) {
                 try {
                     const histRef = collection(db, "users", auth.currentUser.uid, "history");
@@ -692,9 +706,12 @@
                     snap.forEach(d => {
                         historyList.push(d.data());
                     });
-                } catch(e) {}
+                } catch(e) {
+                    console.warn("Gagal load History dari Cloud.");
+                }
             }
 
+            // Jika kosong dari cloud atau belum login, load dari LocalStorage
             if (historyList.length === 0) {
                 const localHist = JSON.parse(localStorage.getItem('comicHistoryDetail')) || {};
                 historyList = Object.values(localHist).sort((a,b) => (b.updatedAt || 0) - (a.updatedAt || 0));
@@ -752,9 +769,8 @@
             }
         }
 
-        // ================= FITUR BOOKMARK =================
+        // ================= FITUR BOOKMARK (Dengan Fallback Local UI) =================
         window.toggleBookmark = async function(e) {
-            // e.preventDefault mencegah event tembus ke layar bawah di HP
             if(e) e.preventDefault(); 
             
             if(!auth.currentUser) { 
@@ -767,22 +783,34 @@
             const cid = window.currentActiveComicId;
             const isBookmarked = window.userBookmarks.includes(cid);
             
-            try {
-                if(isBookmarked) {
-                    await deleteDoc(doc(db, "users", auth.currentUser.uid, "bookmarks", cid));
-                    window.userBookmarks = window.userBookmarks.filter(id => id !== cid);
-                    alert("Komik dihapus dari Bookmark!");
-                } else {
-                    await setDoc(doc(db, "users", auth.currentUser.uid, "bookmarks", cid), { comicId: cid, addedAt: new Date() });
-                    window.userBookmarks.push(cid);
-                    alert("Komik berhasil ditambahkan ke Bookmark!");
-                }
+            // UI Feedback langsung agar tidak nunggu loading
+            if(isBookmarked) {
+                window.userBookmarks = window.userBookmarks.filter(id => id !== cid);
                 checkBookmarkStatus(cid);
-                renderBookmarks();
+                alert("Komik dihapus dari Bookmark!");
+                
+                try {
+                    await deleteDoc(doc(db, "users", auth.currentUser.uid, "bookmarks", cid));
+                } catch(err) {
+                    console.warn("Gagal hapus dari Cloud, disimpan di LocalStorage.");
+                }
+            } else {
+                window.userBookmarks.push(cid);
+                checkBookmarkStatus(cid);
+                alert("Komik berhasil ditambahkan ke Bookmark!");
+                
+                try {
+                    await setDoc(doc(db, "users", auth.currentUser.uid, "bookmarks", cid), { comicId: cid, addedAt: new Date() });
+                } catch(err) {
+                    console.warn("Gagal simpan ke Cloud, disimpan di LocalStorage.");
+                }
+            }
+            
+            // Backup ke localStorage
+            localStorage.setItem('localBookmarks_' + auth.currentUser.uid, JSON.stringify(window.userBookmarks));
+            renderBookmarks();
+            if(document.getElementById('statBookmarkCount')){
                 document.getElementById('statBookmarkCount').innerText = window.userBookmarks.length;
-            } catch(error) {
-                console.error("Error simpan bookmark", error);
-                alert("Koneksi gagal. Tidak dapat memproses Bookmark.");
             }
         }
 
@@ -857,7 +885,7 @@
                 } else {
                     container.innerHTML = '<div class="empty-history" style="background:none;">Jadilah yang pertama berkomentar!</div>';
                 }
-            } catch(e) { container.innerHTML = '<div class="loading-text">Gagal memuat komentar.</div>'; }
+            } catch(e) { container.innerHTML = '<div class="loading-text">Gagal memuat komentar. Cek Rules Firebase.</div>'; }
         }
 
         window.postComment = async function() {
@@ -881,7 +909,7 @@
                 textInput.value = "";
                 btn.innerText = "Kirim"; btn.disabled = false;
                 fetchComments(comicId);
-            } catch (e) { alert("Gagal mengirim komentar."); }
+            } catch (e) { alert("Gagal mengirim komentar. Pastikan Rules Firebase sudah diizinkan (write)."); }
         }
 
         // ================= FITUR RATING BINTANG =================
@@ -941,7 +969,7 @@
                     
                     alert(`Berhasil! Kamu memberikan rating ${starValue} bintang.`);
                 }
-            } catch(e) { alert("Gagal menyimpan rating."); }
+            } catch(e) { alert("Gagal menyimpan rating. Cek Rules Firebase."); }
         }
 
         // ================= HALAMAN DETAIL UTAMA =================
@@ -1046,7 +1074,7 @@
             } catch(e) { container.innerHTML = '<div class="loading-text">Gagal memuat chapter.</div>'; }
         }
 
-        // ================= READER VIEW BACA =================
+        // ================= READER VIEW BACA (Menggunakan IntersectionObserver untuk Akurasi Halaman HP) =================
         window.openReader = async function(comicId, chapterId, chapterNum, targetPageIndex = 1) {
             window.currentActiveComicId = comicId;
             window.currentActiveChapterId = chapterId;
@@ -1084,25 +1112,28 @@
 
                         saveReadingProgress(comicId, chapterId, chapterNum, targetPageIndex);
 
-                        if (readerScrollListener) window.removeEventListener('scroll', readerScrollListener);
+                        // Disconnect observer lama jika ada
+                        if (window.readerObserver) window.readerObserver.disconnect();
 
                         let lastSavedPage = targetPageIndex;
-                        readerScrollListener = function() {
-                            const imgs = imgContainer.querySelectorAll('img[data-page]');
-                            let currentVisiblePage = 1;
-                            imgs.forEach(img => {
-                                const rect = img.getBoundingClientRect();
-                                if (rect.top <= window.innerHeight / 2 && rect.bottom >= 0) {
-                                    currentVisiblePage = parseInt(img.getAttribute('data-page')) || 1;
+                        
+                        // Gunakan IntersectionObserver untuk deteksi halaman di HP dengan sangat akurat
+                        window.readerObserver = new IntersectionObserver((entries) => {
+                            entries.forEach(entry => {
+                                if(entry.isIntersecting) {
+                                    const visiblePage = parseInt(entry.target.getAttribute('data-page'));
+                                    if(visiblePage !== lastSavedPage) {
+                                        lastSavedPage = visiblePage;
+                                        document.getElementById('readerTitle').innerText = `Chapter ${chapterNum} • Hal. ${visiblePage}`;
+                                        saveReadingProgress(comicId, chapterId, chapterNum, visiblePage);
+                                    }
                                 }
                             });
-                            if (currentVisiblePage !== lastSavedPage) {
-                                lastSavedPage = currentVisiblePage;
-                                document.getElementById('readerTitle').innerText = `Chapter ${chapterNum} • Hal. ${currentVisiblePage}`;
-                                saveReadingProgress(comicId, chapterId, chapterNum, currentVisiblePage);
-                            }
-                        };
-                        window.addEventListener('scroll', readerScrollListener);
+                        }, { threshold: 0.5 }); // Target gambar terdeteksi jika terlihat minimal 50% di layar
+
+                        // Amati semua gambar
+                        const imgs = imgContainer.querySelectorAll('img[data-page]');
+                        imgs.forEach(img => window.readerObserver.observe(img));
                     }
                 } else {
                     loader.style.display = 'none';
@@ -1115,7 +1146,7 @@
         }
 
         window.closeReader = function() {
-            if (readerScrollListener) window.removeEventListener('scroll', readerScrollListener);
+            if (window.readerObserver) window.readerObserver.disconnect();
             document.getElementById('reader-page').style.display = 'none';
             document.getElementById('readerImagesContainer').innerHTML = '';
             if (window.currentActiveComicId) {

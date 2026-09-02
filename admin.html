@@ -2,574 +2,469 @@
 <html lang="id">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Admin Panel - Manga App</title>
-    <!-- Google Fonts -->
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <!-- Font Awesome -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Aplikasi Web Manga - Full UI & Detail</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     
     <style>
         :root {
-            --primary: #2563eb;
-            --primary-hover: #1d4ed8;
-            --sidebar-bg: #1e1e2d;
-            --sidebar-hover: #2b2b40;
-            --bg-light: #f5f6fa;
-            --text-dark: #2b2b2b;
-            --text-muted: #64748b;
-            --border: #e2e8f0;
-            --white: #ffffff;
-            --danger: #ef4444;
-            --success: #10b981;
-            --light-blue: #eff6ff;
+            --primary-blue: #007aff;
+            --light-blue: #e5f1ff;
+            --dark-blue: #005bb5;
+            --bg-gray: #e5e5e5;
+            --text-dark: #111111;
+            --text-gray: #777777;
+            --border-color: #eeeeee;
         }
 
-        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; }
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; -webkit-tap-highlight-color: transparent; }
+        body { background-color: var(--bg-gray); color: var(--text-dark); display: flex; justify-content: center; }
+        .app-container { width: 100%; max-width: 480px; background-color: #ffffff; min-height: 100vh; position: relative; padding-bottom: 65px; box-shadow: 0 0 20px rgba(0,0,0,0.15); overflow-x: hidden; }
+
+        /* HEADER & SEARCH */
+        .header { display: flex; align-items: center; padding: 12px 16px; gap: 12px; background-color: #ffffff; position: sticky; top: 0; z-index: 100; border-bottom: 1px solid #f0f0f0; }
+        .search-container { flex: 1; display: flex; align-items: center; background-color: #f5f6f8; padding: 10px 16px; border-radius: 24px; border: 1px solid #eef0f2; }
+        .search-container i { color: var(--primary-blue); margin-right: 8px; font-size: 14px; }
+        .search-container input { border: none; background: transparent; outline: none; width: 100%; font-size: 14px; color: #111; }
+        .header-icons { display: flex; gap: 14px; color: var(--primary-blue); font-size: 18px; align-items: center; }
+
+        /* HERO SLIDER */
+        .slider-container { position: relative; width: 100%; height: 380px; overflow: hidden; background-color: #1a1a1a; }
+        .slides-wrapper { display: flex; width: 100%; height: 100%; transition: transform 0.5s ease-in-out; }
+        .slide { flex: 0 0 100%; height: 100%; background-size: cover; background-position: center; position: relative; }
+        .slide::before { content: ''; position: absolute; top: 0; left: 0; right: 0; bottom: 0; background: linear-gradient(to bottom, rgba(0,0,0,0.1) 40%, rgba(0,0,0,0.9) 95%); z-index: 1; }
+        .hero-content { position: absolute; bottom: 25px; left: 0; width: 100%; padding: 24px 16px; z-index: 2; color: white; display: flex; flex-direction: column; justify-content: flex-end; }
+        .korea-badge { position: absolute; top: 15px; right: 16px; background: rgba(255, 255, 255, 0.95); border-radius: 50%; width: 26px; height: 26px; display: flex; align-items: center; justify-content: center; font-size: 14px; box-shadow: 0 2px 8px rgba(0,0,0,0.3); color: #333; }
+        .hero-title { font-size: 24px; font-weight: 700; line-height: 1.2; margin-bottom: 6px; text-shadow: 1px 1px 4px rgba(0,0,0,0.8); }
+        .hero-chapter { font-size: 14px; color: #e0e0e0; margin-bottom: 16px; font-weight: 500; }
+        .hero-stats { display: flex; align-items: center; justify-content: space-between; }
+        .stats-left { display: flex; align-items: center; gap: 12px; font-size: 13px; font-weight: 500; }
+        .rating { background-color: #ffc107; color: #000; padding: 3px 8px; border-radius: 12px; font-weight: 700; font-size: 12px; display: flex; align-items: center; gap: 4px; }
+        .btn-read { background-color: var(--primary-blue); color: #ffffff; border: none; padding: 10px 20px; border-radius: 24px; font-weight: 700; font-size: 14px; cursor: pointer; box-shadow: 0 4px 10px rgba(0, 122, 255, 0.4); }
+        .slider-indicators { position: absolute; bottom: 15px; left: 50%; transform: translateX(-50%); display: flex; gap: 8px; z-index: 3; }
+        .dot { width: 8px; height: 8px; background-color: rgba(255, 255, 255, 0.4); border-radius: 50%; cursor: pointer; transition: all 0.3s ease; }
+        .dot.active { width: 20px; border-radius: 4px; background-color: var(--primary-blue); }
+
+        /* SECTIONS & CARDS */
+        .section-container { padding: 20px 16px 10px 16px; background: white; }
+        .section-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; }
+        .section-title-wrapper { display: flex; align-items: center; gap: 8px; }
+        .section-title { font-size: 16px; font-weight: 700; color: #111; }
+        .see-all { color: var(--primary-blue); font-size: 13px; text-decoration: none; font-weight: 600; cursor: pointer;}
+        .horizontal-scroll { display: flex; gap: 6px; overflow-x: auto; padding-bottom: 8px; scrollbar-width: none; }
+        .horizontal-scroll::-webkit-scrollbar { display: none; }
         
-        body { background-color: var(--bg-light); color: var(--text-dark); overflow-x: hidden; }
+        .manga-card-history, .manga-card-simple { min-width: 120px; width: 120px; background: #ffffff; border-radius: 6px; overflow: hidden; border: 1px solid #e0e0e0; display: flex; flex-direction: column; cursor: pointer; }
+        .manga-card-history { min-width: 130px; width: 130px; }
+        .manga-card-history img { border-bottom: 3px solid var(--primary-blue); height: 170px; width: 100%; object-fit: cover; }
+        .manga-card-simple img { border-bottom: 1px solid #eeeeee; height: 150px; width: 100%; object-fit: cover; }
+        .manga-card-simple .info-container, .manga-card-history .info { padding: 8px; flex-grow: 1; display: flex; flex-direction: column; }
+        .manga-card-simple .title, .manga-card-history .title { font-size: 12px; font-weight: 600; color: #222; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+        .manga-card-history .chapter { font-size: 11px; color: var(--primary-blue); font-weight: 600; margin-top: 4px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 
-        .hidden { display: none !important; }
+        /* REPORT BANNER */
+        .report-banner { margin: 15px 16px; background-color: var(--light-blue); border: 1px solid #cce5ff; border-radius: 8px; padding: 12px 16px; display: flex; justify-content: space-between; align-items: center; }
+        .report-text { font-size: 12px; color: #004085; max-width: 60%; line-height: 1.4; font-weight: 500; }
+        .report-icons { display: flex; gap: 12px; color: var(--primary-blue); font-size: 18px; }
 
-        /* ==================== LOGIN SCREEN ==================== */
-        .login-wrapper { height: 100vh; display: flex; align-items: center; justify-content: center; background: linear-gradient(135deg, rgba(37, 99, 235, 0.1) 0%, rgba(37, 99, 235, 0.05) 100%); }
-        .login-card { background: var(--white); padding: 40px; border-radius: 16px; box-shadow: 0 10px 30px rgba(0,0,0,0.05); width: 100%; max-width: 400px; }
-        .login-card h2 { text-align: center; margin-bottom: 25px; color: var(--sidebar-bg); }
-        .login-card .fa-book-open { display: block; text-align: center; font-size: 40px; color: var(--primary); margin-bottom: 10px; }
+        /* BOTTOM NAV */
+        .bottom-nav { position: fixed; bottom: 0; width: 100%; max-width: 480px; background-color: #ffffff; display: flex; justify-content: space-around; padding: 8px 10px 12px 10px; border-top: 1px solid #eaeaea; z-index: 100; }
+        .nav-item { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px; color: #999999; font-size: 10px; text-decoration: none; font-weight: 600; flex: 1; cursor: pointer;}
+        .nav-item i { font-size: 20px; margin-bottom: 2px; }
+        .nav-item.active { color: var(--primary-blue); }
+        .nav-item.active .icon-bg { background-color: var(--light-blue); width: 48px; height: 28px; display: flex; align-items: center; justify-content: center; border-radius: 14px; }
+        .nav-item.active i { margin-bottom: 0; }
 
-        /* ==================== DASHBOARD LAYOUT ==================== */
-        .dashboard-container { display: flex; min-height: 100vh; }
-
-        .sidebar { width: 260px; background: var(--sidebar-bg); color: var(--white); display: flex; flex-direction: column; transition: all 0.3s ease; position: fixed; height: 100vh; z-index: 1000; }
-        .sidebar-header { padding: 20px; font-size: 20px; font-weight: 700; border-bottom: 1px solid rgba(255,255,255,0.05); display: flex; align-items: center; gap: 10px; }
-        .sidebar-header i { color: #38bdf8; }
-        .sidebar-menu { list-style: none; padding: 20px 0; flex-grow: 1; }
-        .sidebar-menu li { padding: 0 15px; margin-bottom: 5px; }
-        .sidebar-menu a { display: flex; align-items: center; gap: 12px; padding: 12px 15px; color: #a0a5b1; text-decoration: none; border-radius: 8px; font-weight: 500; transition: all 0.2s; cursor: pointer; }
-        .sidebar-menu a:hover, .sidebar-menu a.active { background: var(--sidebar-hover); color: var(--white); }
-        .sidebar-menu a.active i { color: #38bdf8; }
-
-        .main-content { flex-grow: 1; margin-left: 260px; display: flex; flex-direction: column; transition: all 0.3s ease; width: calc(100% - 260px); }
-
-        .topbar { background: var(--white); padding: 15px 25px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 2px 10px rgba(0,0,0,0.02); position: sticky; top: 0; z-index: 100; }
-        .toggle-btn { font-size: 20px; cursor: pointer; color: var(--text-dark); background: none; border: none; }
-        .admin-profile { display: flex; align-items: center; gap: 10px; font-weight: 600; font-size: 14px; }
-        .btn-logout { background: var(--danger); color: white; border: none; padding: 8px 16px; border-radius: 6px; cursor: pointer; font-weight: 600; font-size: 13px; transition: 0.2s; }
-
-        .content-area { padding: 30px; }
-        .page-title { margin-bottom: 20px; font-size: 22px; font-weight: 700; color: var(--sidebar-bg); }
-        
-        .admin-view { display: none; animation: fadeIn 0.3s; }
-        .admin-view.active { display: block; }
+        /* PAGE CONTROL */
+        #detail-page, #profile-page, #reader-page, #bookmark-page { display: none; background-color: #ffffff; min-height: 100vh; animation: fadeIn 0.3s ease-in-out; padding-bottom: 65px; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 
-        /* General Forms & Cards */
-        .card { background: var(--white); border-radius: 12px; padding: 25px; box-shadow: 0 4px 15px rgba(0,0,0,0.03); }
-        .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
-        .form-group.full-width { grid-column: 1 / -1; }
-        
-        label { display: block; font-weight: 600; margin-bottom: 8px; font-size: 13px; color: #444; }
-        input[type="text"], input[type="number"], input[type="email"], input[type="password"], input[type="date"], select, textarea { width: 100%; padding: 12px 15px; border: 1px solid var(--border); border-radius: 8px; font-size: 14px; background: #f8fafc; outline: none; transition: 0.2s; }
-        input:focus, select:focus, textarea:focus { border-color: var(--primary); box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1); background: var(--white); }
-        textarea { resize: vertical; min-height: 100px; }
-        
-        .help-text { font-size: 11px; color: var(--text-muted); margin-top: 5px; display: block; }
-        
-        .genre-list { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 5px; }
-        .genre-list label { display: flex; align-items: center; gap: 5px; font-weight: 400; cursor: pointer; background: var(--bg-light); padding: 6px 12px; border-radius: 20px; border: 1px solid var(--border); }
-        .genre-list input { cursor: pointer; }
+        /* DETAIL PAGE */
+        .detail-top-nav { position: fixed; top: 0; width: 100%; max-width: 480px; display: flex; justify-content: space-between; align-items: center; padding: 15px 20px; z-index: 200; background: rgba(0, 0, 0, 0.2); backdrop-filter: blur(10px); color: white; transition: background 0.3s; }
+        .detail-top-nav i { font-size: 20px; cursor: pointer; text-shadow: 0 1px 3px rgba(0,0,0,0.5); }
+        .detail-top-nav .right-icons { display: flex; gap: 20px; }
+        .bookmark-active { color: #ffc107 !important; text-shadow: 0 0 5px rgba(255, 193, 7, 0.6); }
 
-        .upload-area { border: 2px dashed var(--border); border-radius: 8px; padding: 20px; text-align: center; background: #f8fafc; cursor: pointer; position: relative;}
-        .upload-area input { position: absolute; width: 100%; height: 100%; top: 0; left: 0; opacity: 0; cursor: pointer; }
-        .upload-area i { font-size: 30px; color: var(--text-muted); margin-bottom: 10px; }
-        .image-preview { margin-top: 15px; width: 100%; max-width: 200px; border-radius: 8px; display: none; box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
+        .detail-header { position: relative; padding: 80px 20px 30px 20px; background-size: cover; background-position: center; color: white; transition: background-image 0.3s ease;}
+        .detail-header::before { content: ''; position: absolute; top: 0; left: 0; right: 0; bottom: 0; background: linear-gradient(to bottom, rgba(0,0,0,0.4) 0%, rgba(0,0,0,0.85) 100%); z-index: 1; }
+        .comic-info-layout { position: relative; z-index: 2; display: flex; gap: 15px; align-items: flex-end; }
+        .comic-cover-wrapper { position: relative; width: 110px; flex-shrink: 0; }
+        .comic-cover { width: 100%; border-radius: 8px; box-shadow: 0 5px 15px rgba(0,0,0,0.5); border: 1px solid rgba(255,255,255,0.2); }
+        .age-rating { background: linear-gradient(135deg, #ff9800, #ff5722); color: white; text-align: center; padding: 4px 0; border-bottom-left-radius: 8px; border-bottom-right-radius: 8px; font-size: 11px; font-weight: 700; margin-top: -4px; position: relative; }
 
-        .btn-submit { background: var(--primary); color: white; border: none; padding: 14px 20px; border-radius: 8px; cursor: pointer; width: 100%; font-weight: 600; font-size: 15px; margin-top: 15px; transition: 0.2s; }
-        .btn-submit:hover { background: var(--primary-hover); }
-        .status-msg { margin-top: 15px; font-weight: 600; text-align: center; font-size: 14px; padding: 10px; border-radius: 6px; }
+        .comic-meta { flex-grow: 1; padding-bottom: 5px;}
+        .comic-detail-title { font-size: 20px; font-weight: 700; line-height: 1.2; margin-bottom: 4px; text-shadow: 0 2px 4px rgba(0,0,0,0.5); }
+        .comic-alt-title { font-size: 11px; color: #cccccc; margin-bottom: 8px; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; font-style: italic; }
+        .comic-stats-row { display: flex; align-items: center; gap: 10px; font-size: 12px; color: #eeeeee; margin-bottom: 12px; flex-wrap: wrap;}
+        .comic-stats-row .stat-rating { color: #ffc107; font-weight: 700; }
+        .comic-stats-row .stat-rating span { font-weight: 400; color: #ccc; font-size: 10px; }
+        .status-badge { background-color: #28a745; color: white; padding: 2px 8px; border-radius: 12px; font-size: 10px; font-weight: 600; }
+        .genre-tags { display: flex; flex-wrap: wrap; gap: 6px; }
+        .genre-tags .tag { border: 1px solid rgba(255, 255, 255, 0.4); padding: 3px 10px; border-radius: 14px; font-size: 10px; color: #ffffff; background: rgba(255, 255, 255, 0.1); backdrop-filter: blur(4px); }
 
-        /* ==================== SEARCHABLE DROPDOWN ==================== */
-        .search-select { position: relative; width: 100%; }
-        .search-select input { width: 100%; padding: 12px 15px; border: 1px solid var(--border); border-radius: 8px; font-size: 14px; background: #f8fafc; outline: none; cursor: pointer; }
-        .search-options { position: absolute; top: 100%; left: 0; right: 0; background: var(--white); border: 1px solid var(--border); border-radius: 8px; max-height: 250px; overflow-y: auto; z-index: 10; display: none; box-shadow: 0 10px 25px rgba(0,0,0,0.1); margin-top: 5px; }
-        .search-options.show { display: block; }
-        .search-options div { padding: 12px 15px; cursor: pointer; border-bottom: 1px solid #f1f1f1; font-size: 14px; }
-        .search-options div:hover { background: var(--light-blue); color: var(--primary); font-weight: 600; }
+        .detail-tabs { display: flex; border-bottom: 1px solid var(--border-color); background: #ffffff; position: sticky; top: 50px; z-index: 99; }
+        .tab-btn { flex: 1; text-align: center; padding: 15px 0; font-size: 14px; font-weight: 600; color: var(--text-gray); cursor: pointer; border-bottom: 2px solid transparent; transition: all 0.3s; }
+        .tab-btn.active { color: var(--primary-blue); border-bottom: 2px solid var(--primary-blue); }
+        .tab-content { padding: 20px; display: none; }
+        .tab-content.active { display: block; animation: fadeIn 0.3s; }
 
-        /* ==================== CLOUD GALLERY MODAL & FOLDERS ==================== */
-        .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); z-index: 2000; display: flex; align-items: center; justify-content: center; backdrop-filter: blur(4px); }
-        .modal-container { background: var(--bg-light); width: 98%; max-width: 1000px; height: 90vh; border-radius: 16px; display: flex; flex-direction: column; overflow: hidden; box-shadow: 0 15px 40px rgba(0,0,0,0.2); animation: fadeIn 0.3s; }
-        
-        .modal-header { padding: 20px; border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; background: var(--white); }
-        .modal-header h3 { font-size: 18px; color: var(--sidebar-bg); margin: 0; display: flex; align-items: center; gap: 8px; }
-        .modal-actions { display: flex; gap: 10px; align-items: center; }
-        
-        .btn-success-sm { background: var(--success); color: white; border: none; padding: 10px 16px; border-radius: 8px; cursor: pointer; font-weight: 600; font-size: 14px; display: flex; align-items: center; gap: 8px; box-shadow: 0 4px 10px rgba(16, 185, 129, 0.2); transition: 0.2s; }
-        .btn-success-sm:hover { background: #059669; transform: translateY(-1px); }
-        
-        .btn-close { background: none; border: none; font-size: 24px; cursor: pointer; color: var(--text-muted); }
-        
-        .modal-toolbar { padding: 15px 20px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border); background: var(--white); flex-wrap: wrap; gap: 15px; }
-        
-        .breadcrumb { display: flex; gap: 8px; align-items: center; font-size: 14px; font-weight: 600; color: var(--text-muted); }
-        .breadcrumb span { cursor: pointer; transition: 0.2s; padding: 4px 8px; border-radius: 6px; }
-        .breadcrumb span:hover { color: var(--primary); background: var(--light-blue); }
-        .breadcrumb .active { color: var(--primary); pointer-events: none; background: none; }
-        
-        .btn-upload-cloud { background: var(--sidebar-bg); color: white; border: none; padding: 10px 20px; border-radius: 8px; cursor: pointer; font-weight: 600; font-size: 13px; display: flex; align-items: center; gap: 8px; }
-        .btn-upload-cloud:hover { background: var(--sidebar-hover); }
+        .synopsis-title { font-size: 16px; font-weight: 700; margin-bottom: 10px; color: var(--text-dark); }
+        .synopsis-text { font-size: 13px; color: #444; line-height: 1.6; text-align: justify; margin-bottom: 20px; }
 
-        .gallery-grid { flex-grow: 1; padding: 20px; overflow-y: auto; display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 15px; background: var(--bg-light); align-content: start; }
-        
-        .folder-card { background: var(--white); border-radius: 12px; border: 1px solid var(--border); padding: 20px; text-align: center; cursor: pointer; transition: 0.2s; display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 160px; box-shadow: 0 2px 8px rgba(0,0,0,0.03); position: relative; }
-        .folder-card:hover { transform: translateY(-4px); box-shadow: 0 8px 20px rgba(0,0,0,0.08); border-color: var(--primary); }
-        .folder-icon { font-size: 45px; color: #94a3b8; margin-bottom: 12px; }
-        .folder-icon.comic-cover { width: 70px; height: 95px; border-radius: 6px; object-fit: cover; margin-bottom: 12px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
-        .folder-title { font-weight: 700; font-size: 14px; color: var(--text-dark); margin-bottom: 5px; line-height: 1.3; }
-        .folder-subtitle { font-size: 11px; color: var(--text-muted); font-weight: 500; }
+        .detail-info-box { background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px; padding: 15px; font-size: 13px; }
+        .detail-info-row { display: flex; justify-content: space-between; margin-bottom: 8px; padding-bottom: 8px; border-bottom: 1px dashed #cbd5e1; }
+        .detail-info-row:last-child { border-bottom: none; margin-bottom: 0; padding-bottom: 0; }
+        .detail-info-row span.label { font-weight: 600; color: #64748b; }
+        .detail-info-row span.val { font-weight: 500; color: #0f172a; text-align: right; }
 
-        .gallery-search { display: none; width: 100%; max-width: 250px; margin-left: auto; margin-right: 15px; position: relative; }
-        .gallery-search i { position: absolute; left: 10px; top: 10px; color: var(--text-muted); font-size: 14px; }
-        .gallery-search input { width: 100%; padding: 8px 12px 8px 30px; border-radius: 8px; border: 1px solid var(--border); font-size: 13px; outline: none; background: #f8fafc; transition: 0.2s; }
-        .gallery-search input:focus { border-color: var(--primary); background: white; box-shadow: 0 0 0 3px rgba(37,99,235,0.1); }
+        /* RATING STARS */
+        .rating-section { margin-top: 15px; padding-top: 15px; border-top: 1px dashed #cbd5e1; display: flex; align-items: center; justify-content: space-between; }
+        .star-rater { display: flex; gap: 5px; font-size: 22px; color: #ccc; cursor: pointer; }
+        .star-rater i.active { color: #ffc107; }
 
-        .btn-delete-folder { position: absolute; top: 10px; right: 10px; background: rgba(239, 68, 68, 0.1); color: var(--danger); border: none; width: 30px; height: 30px; border-radius: 6px; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: 0.2s; z-index: 10; }
-        .btn-delete-folder:hover { background: var(--danger); color: white; transform: scale(1.1); }
+        /* CHAPTER LIST */
+        .chapter-list { list-style: none; padding: 0; margin: 0; }
+        .chapter-item { display: flex; justify-content: space-between; align-items: center; padding: 14px 0; border-bottom: 1px solid var(--border-color); cursor: pointer; transition: 0.2s; }
+        .chapter-info { display: flex; flex-direction: column; gap: 4px; }
+        .chapter-title { font-size: 14px; font-weight: 600; color: var(--text-dark); }
+        .chapter-date { font-size: 11px; color: #999; }
+        .chapter-action { color: var(--primary-blue); font-size: 12px; font-weight: 700; background: var(--light-blue); padding: 6px 12px; border-radius: 16px; }
 
-        /* Media Card */
-        .media-card { background: var(--white); border-radius: 8px; border: 1px solid var(--border); overflow: hidden; display: flex; flex-direction: column; transition: 0.2s; position: relative; height: max-content; }
-        .media-card:hover { box-shadow: 0 5px 15px rgba(0,0,0,0.08); transform: translateY(-3px); border-color: #cbd5e1; }
-        .media-card.selected { border-color: var(--primary); border-width: 2px; }
-        
-        .media-thumb { width: 100%; padding-top: 145%; position: relative; background: #f8fafc; border-bottom: 1px solid var(--border); cursor: pointer; overflow: hidden; display: block; }
-        .media-thumb img, .media-thumb video { position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover; object-position: top; }
-        
-        .check-circle { position: absolute; top: 10px; left: 10px; width: 26px; height: 26px; border-radius: 50%; border: 2px solid var(--white); background: rgba(0,0,0,0.5); display: flex; align-items: center; justify-content: center; color: transparent; font-weight: bold; font-size: 12px; transition: 0.2s; z-index: 5; box-shadow: 0 2px 4px rgba(0,0,0,0.2); }
-        .media-card.selected .check-circle { background: var(--primary); color: white; border-color: var(--primary); }
-        
-        .media-info { padding: 8px 10px; text-align: center; font-size: 11px; color: var(--text-muted); font-weight: 500; border-bottom: 1px solid #f1f5f9; }
-        .media-actions { padding: 8px; display: flex; gap: 6px; background: #f8fafc; margin-top: auto; }
-        
-        .btn-pilih { flex: 1; background: var(--primary); color: white; border: none; padding: 6px; border-radius: 6px; font-weight: 600; font-size: 12px; cursor: pointer; transition: 0.2s; }
-        .btn-pilih:hover { background: var(--primary-hover); }
-        .media-card.selected .btn-pilih { background: var(--success); }
-        
-        .btn-icon-outline { background: var(--white); border: 1px solid var(--border); border-radius: 6px; width: 30px; height: 30px; display: flex; align-items: center; justify-content: center; cursor: pointer; color: var(--text-muted); transition: 0.2s; font-size: 13px; }
-        .btn-icon-outline:hover { background: #f1f5f9; color: var(--text-dark); }
-        .btn-icon-outline.text-danger { color: var(--danger); border-color: #fecaca; }
-        .btn-icon-outline.text-danger:hover { background: #fee2e2; color: #b91c1c; }
+        /* COMMENT UI */
+        .comment-wrapper { display: flex; flex-direction: column; height: 100%; min-height: 50vh; position: relative;}
+        .comment-list { flex: 1; display: flex; flex-direction: column; gap: 18px; padding-bottom: 20px; }
+        .comment-item { display: flex; gap: 12px; }
+        .comment-avatar { width: 36px; height: 36px; border-radius: 50%; background: linear-gradient(135deg, var(--primary-blue), #8b5cf6); display: flex; align-items: center; justify-content: center; font-size: 14px; font-weight: bold; color: white; flex-shrink: 0;}
+        .comment-content { flex: 1; }
+        .comment-user { font-weight: 700; font-size: 13px; color: #262626; margin-bottom: 3px; display:flex; gap:6px; align-items:center; }
+        .comment-time { font-size: 11px; color: #8e8e8e; font-weight: 400; }
+        .comment-text { font-size: 13px; color: #262626; line-height: 1.4; }
 
-        /* Lightbox Modal */
-        .lightbox-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); z-index: 3000; display: flex; align-items: center; justify-content: center; backdrop-filter: blur(5px); opacity: 0; visibility: hidden; transition: 0.3s ease; }
-        .lightbox-overlay.show { opacity: 1; visibility: visible; }
-        .lightbox-content { position: relative; max-width: 90%; max-height: 90vh; }
-        .lightbox-content img { max-width: 100%; max-height: 90vh; border-radius: 8px; box-shadow: 0 10px 40px rgba(0,0,0,0.5); object-fit: contain; }
-        .lightbox-close { position: absolute; top: -15px; right: -15px; background: var(--danger); color: white; border: 2px solid white; border-radius: 50%; width: 34px; height: 34px; display: flex; align-items: center; justify-content: center; cursor: pointer; font-size: 16px; box-shadow: 0 4px 10px rgba(0,0,0,0.3); transition: 0.2s; }
-        .lightbox-close:hover { transform: scale(1.1); }
+        .comment-input-area { position: sticky; bottom: -20px; background: white; padding: 10px 0; border-top: 1px solid #eee; display: flex; gap: 10px; align-items: center; z-index: 10; margin-top: 10px;}
+        .comment-input-area input { flex: 1; padding: 10px 15px; border-radius: 20px; border: 1px solid #ddd; outline: none; font-size: 13px; background: #fafafa; }
+        .btn-send-comment { background: none; border: none; color: var(--primary-blue); font-weight: 600; font-size: 14px; cursor: pointer; padding: 5px 10px; }
+        .login-prompt { background: #f8fafc; padding: 15px; border-radius: 8px; text-align: center; font-size: 13px; color: #666; border: 1px dashed #cbd5e1; margin-top: 10px; }
+        .loading-text, .empty-history { text-align: center; padding: 20px; color: #888; font-size: 13px; width: 100%; }
 
-        /* ==================== MASTER DATA UI & MOBILE TABS ==================== */
-        .master-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 20px; }
-        .master-card { background: var(--white); border-radius: 12px; padding: 20px; border: 1px solid var(--border); }
-        .master-card h3 { font-size: 15px; margin-bottom: 15px; color: var(--sidebar-bg); display: flex; align-items: center; gap: 8px; border-bottom: 1px solid var(--border); padding-bottom: 10px; }
-        .master-card h3 i { color: var(--primary); }
-        .master-input-group { display: flex; gap: 8px; margin-bottom: 15px; }
-        .master-input-group input { padding: 10px; flex: 1; }
-        .btn-add { background: var(--primary); color: white; border: none; padding: 0 15px; border-radius: 8px; cursor: pointer; font-weight: 600; }
+        /* READER PAGE */
+        #reader-page { background: #111; color: white; padding-bottom: 0; min-height: 100vh; position: absolute; top: 0; left: 0; width: 100%; z-index: 500;}
+        .reader-header { position: fixed; top: 0; width: 100%; max-width: 480px; background: rgba(17, 17, 17, 0.95); padding: 15px 20px; display: flex; justify-content: space-between; align-items: center; z-index: 501; transition: transform 0.3s; }
+        .reader-header.hidden { transform: translateY(-100%); }
+        .reader-title { font-weight: 600; font-size: 14px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 70%; }
+        .reader-images { display: flex; flex-direction: column; align-items: center; width: 100%; padding-top: 55px; }
+        .reader-images img { width: 100%; height: auto; display: block; margin: 0; }
+
+        /* AUTH & DETAILED PROFILE PAGE */
+        .profile-hero { background: linear-gradient(135deg, var(--primary-blue), var(--dark-blue)); padding: 35px 20px 25px; color: white; text-align: center; border-bottom-left-radius: 24px; border-bottom-right-radius: 24px; }
+        .profile-avatar-lg { width: 75px; height: 75px; background: rgba(255,255,255,0.25); border: 2px solid white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 32px; margin: 0 auto 12px; box-shadow: 0 4px 10px rgba(0,0,0,0.15); }
+        .profile-stats-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; padding: 20px 16px 10px; }
+        .stat-card { background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 12px; padding: 12px 8px; text-align: center; }
+        .stat-card .number { font-size: 18px; font-weight: 700; color: var(--primary-blue); margin-bottom: 2px; }
+        .stat-card .label { font-size: 11px; color: #64748b; font-weight: 500; }
+
+        .auth-form-card { padding: 30px 20px; }
+        .auth-form-card input { width: 100%; padding: 14px 16px; border: 1px solid #cbd5e1; border-radius: 8px; margin-bottom: 15px; font-size: 14px; outline: none; background: #f8fafc; }
+        .auth-form-card input:focus { border-color: var(--primary-blue); background: white; }
+        .auth-main-btn { width: 100%; background: var(--primary-blue); color: white; border: none; padding: 14px; border-radius: 8px; font-weight: 600; font-size: 15px; cursor: pointer; margin-bottom: 15px; box-shadow: 0 4px 10px rgba(0,122,255,0.2); }
+        .auth-toggle-link { text-align: center; font-size: 13px; color: #64748b; cursor: pointer; }
+        .auth-toggle-link span { color: var(--primary-blue); font-weight: 600; }
         
-        .master-list { list-style: none; max-height: 250px; overflow-y: auto; padding-right: 5px; }
-        .master-list li { display: flex; justify-content: space-between; align-items: center; padding: 10px 12px; background: #f8fafc; margin-bottom: 8px; border-radius: 6px; border: 1px solid var(--border); font-size: 13px; font-weight: 500; }
-        .btn-delete { color: var(--danger); background: none; border: none; cursor: pointer; font-size: 14px; padding: 4px; }
-
-        .master-tabs { display: none; }
-        .master-tab-btn { background: var(--white); border: 1px solid var(--border); padding: 8px 16px; border-radius: 20px; cursor: pointer; font-size: 13px; font-weight: 600; color: var(--text-muted); transition: 0.2s; white-space: nowrap; }
-        .master-tab-btn.active { background: var(--primary); color: white; border-color: var(--primary); }
-
-        /* Tabel Komik */
-        .comic-table { width: 100%; border-collapse: collapse; margin-top: 10px; }
-        .comic-table th, .comic-table td { padding: 15px; text-align: left; border-bottom: 1px solid var(--border); }
-        .comic-table th { background-color: #f8fafc; font-weight: 600; font-size: 13px; color: var(--text-muted); }
-        .comic-table td { font-size: 14px; vertical-align: middle; }
+        .user-menu-list { padding: 10px 16px 20px; list-style: none; }
+        .user-menu-list li { padding: 14px 16px; background: #f8fafc; margin-bottom: 8px; border: 1px solid #e2e8f0; border-radius: 10px; display: flex; align-items: center; justify-content: space-between; font-size: 14px; font-weight: 500; cursor: pointer; transition: 0.2s; }
+        .user-menu-list li:hover { background: #f1f5f9; }
+        .user-menu-list li .left-info { display: flex; align-items: center; gap: 12px; }
+        .user-menu-list li i { color: var(--primary-blue); font-size: 16px; width: 20px; text-align: center; }
+        .user-menu-list li.logout-item { background: #fef2f2; border-color: #fecaca; color: #e11d48; }
+        .user-menu-list li.logout-item i { color: #e11d48; }
         
-        .toggle-switch { position: relative; display: inline-block; width: 44px; height: 24px; }
-        .toggle-switch input { opacity: 0; width: 0; height: 0; }
-        .slider { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: #ccc; transition: .4s; border-radius: 34px; }
-        .slider:before { position: absolute; content: ""; height: 18px; width: 18px; left: 3px; bottom: 3px; background-color: white; transition: .4s; border-radius: 50%; }
-        input:checked + .slider { background-color: var(--success); }
-        input:checked + .slider:before { transform: translateX(20px); }
-
-        @media (max-width: 992px) {
-            .sidebar { transform: translateX(-100%); }
-            .sidebar.active { transform: translateX(0); }
-            .main-content { margin-left: 0; width: 100%; }
-            .sidebar-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 999; }
-            .sidebar-overlay.active { display: block; }
-        }
-        
-        @media (max-width: 768px) { 
-            .form-grid { grid-template-columns: 1fr; } 
-            .content-area { padding: 20px 15px; } 
-            .comic-table { display: block; overflow-x: auto; white-space: nowrap; } 
-            
-            .gallery-grid { grid-template-columns: repeat(auto-fill, minmax(135px, 1fr)); gap: 12px; padding: 15px; }
-            .folder-card { min-height: 130px; padding: 15px 10px; }
-            .folder-icon { font-size: 35px; }
-            
-            .modal-toolbar { flex-direction: column; align-items: flex-start; }
-            .gallery-search { max-width: 100%; margin: 0; }
-            .btn-upload-cloud { width: 100%; justify-content: center; }
-            .modal-actions { gap: 5px; }
-            .btn-success-sm { padding: 8px 12px; font-size: 12px; }
-            
-            .master-tabs { display: flex; overflow-x: auto; gap: 10px; margin-bottom: 15px; padding-bottom: 5px; -webkit-overflow-scrolling: touch; scrollbar-width: none; }
-            .master-tabs::-webkit-scrollbar { display: none; }
-            .master-grid { display: block; }
-            .master-card { display: none; margin-bottom: 15px; }
-            .master-card.active { display: block; }
-            
-            #modalFooterPublish { flex-direction: column; align-items: stretch; gap: 10px; text-align: left !important; }
-        }
+        /* BOOKMARK PAGE */
+        .page-header { padding: 15px 20px; background: white; border-bottom: 1px solid #eee; position: sticky; top: 0; z-index: 10; font-weight: 700; font-size: 16px; display: flex; align-items: center; gap: 15px; }
+        .bookmark-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; padding: 15px; }
     </style>
 </head>
 <body>
 
-    <!-- ==================== SEGMEN LOGIN ==================== -->
-    <div id="loginSection" class="login-wrapper">
-        <div class="login-card">
-            <i class="fa-solid fa-book-open"></i>
-            <h2>Admin Login</h2>
-            <form id="loginForm">
-                <div class="form-group full-width" style="margin-bottom: 15px;">
-                    <label>Email Admin</label>
-                    <input type="email" id="adminEmail" required placeholder="admin@email.com">
+    <div class="app-container">
+        
+        <div id="home-page">
+            <header class="header">
+                <div class="search-container">
+                    <i class="fa-solid fa-magnifying-glass"></i>
+                    <input type="text" placeholder="Cari komik...">
                 </div>
-                <div class="form-group full-width">
-                    <label>Password</label>
-                    <input type="password" id="adminPassword" required placeholder="******">
-                </div>
-                <button type="submit" class="btn-submit">Masuk ke Dashboard</button>
-            </form>
-            <div id="loginStatus" class="status-msg"></div>
-        </div>
-    </div>
-
-    <!-- ==================== SEGMEN DASHBOARD ==================== -->
-    <div id="dashboardSection" class="dashboard-container hidden">
-        <div class="sidebar-overlay" id="sidebarOverlay"></div>
-
-        <aside class="sidebar" id="sidebar">
-            <div class="sidebar-header"><i class="fa-solid fa-bolt"></i> MangaPanel</div>
-            <ul class="sidebar-menu">
-                <li><a onclick="switchView('view-dashboard', this)"><i class="fa-solid fa-chart-pie"></i> Dashboard</a></li>
-                <li><a onclick="switchView('view-tambah', this)"><i class="fa-solid fa-square-plus"></i> Tambah Komik</a></li>
-                <li><a onclick="switchView('view-daftar', this)"><i class="fa-solid fa-list"></i> Daftar Komik</a></li>
-                <li><a onclick="switchView('view-chapter', this)" class="active"><i class="fa-solid fa-layer-group"></i> Kelola Chapter</a></li>
-                <li><a onclick="switchView('view-kategori', this)"><i class="fa-solid fa-tags"></i> Kategori & Genre</a></li>
-                <li><a onclick="switchView('view-pengaturan', this)"><i class="fa-solid fa-gear"></i> Pengaturan</a></li>
-            </ul>
-        </aside>
-
-        <main class="main-content">
-            <header class="topbar">
-                <button class="toggle-btn" id="sidebarToggle"><i class="fa-solid fa-bars"></i></button>
-                <div class="admin-profile">
-                    <span>Admin Master</span>
-                    <button id="logoutBtn" class="btn-logout"><i class="fa-solid fa-arrow-right-from-bracket"></i> Logout</button>
+                <div class="header-icons">
+                    <i class="fa-solid fa-filter"></i>
+                    <i class="fa-solid fa-arrow-down-a-z"></i>
+                    <i class="fa-solid fa-bag-shopping"></i>
+                    <i class="fa-solid fa-chart-simple"></i>
                 </div>
             </header>
 
-            <div class="content-area">
-                
-                <!-- VIEW 1: TAMBAH KOMIK -->
-                <div id="view-tambah" class="admin-view">
-                    <h1 class="page-title">Tambah Komik Baru</h1>
-                    <div class="card">
-                        <form id="uploadForm">
-                            <div class="form-grid">
-                                <div class="form-group full-width">
-                                    <label style="color: var(--primary);"><i class="fa-solid fa-key"></i> Kunci Rahasia Worker (X-Admin-Key)</label>
-                                    <input type="password" id="secretKey" required placeholder="Masukkan Secret Key R2...">
-                                </div>
-                                <div class="form-group full-width"><hr style="border: 0; border-top: 1px solid var(--border);"></div>
-
-                                <div class="form-group full-width">
-                                    <label>Judul Utama Komik *</label>
-                                    <input type="text" id="title" required placeholder="Contoh: One Piece, Solo Leveling...">
-                                </div>
-
-                                <div class="form-group">
-                                    <label>Judul Alternatif</label>
-                                    <input type="text" id="altTitle" placeholder="Contoh: Wan Pisu, Na Honjaman Rebeleop">
-                                </div>
-
-                                <div class="form-group">
-                                    <label>Author / Artist *</label>
-                                    <select id="author" required><option value="">Memuat data...</option></select>
-                                </div>
-                                <div class="form-group">
-                                    <label>Tipe Komik *</label>
-                                    <select id="type" required><option value="">Memuat data...</option></select>
-                                </div>
-                                <div class="form-group">
-                                    <label>Status *</label>
-                                    <select id="status" required><option value="">Memuat data...</option></select>
-                                </div>
-                                <div class="form-group">
-                                <label>Tanggal Rilis Komik</label>
-                                <input type="date" id="releaseDate" required>
-                                </div>
-                                <div class="form-group">
-                                    <label>Rating Usia</label>
-                                    <select id="ageRating"><option value="">Memuat data...</option></select>
-                                </div>
-
-                                <div class="form-group full-width">
-                                    <label>Genre (Pilih yang sesuai)</label>
-                                    <div class="genre-list" id="genreCheckboxContainer">
-                                        <span class="help-text">Memuat data genre...</span>
+            <main>
+                <section class="slider-container">
+                    <div class="slides-wrapper" id="hero-slider">
+                        <div class="slide" style="background-image: url('https://images.unsplash.com/photo-1541562232579-512a21360020?auto=format&fit=crop&q=80&w=600');">
+                            <div class="hero-content">
+                                <div class="korea-badge">🇰🇷</div>
+                                <h1 class="hero-title">Lord Baby Runs A Romance Fantasy</h1>
+                                <div class="hero-chapter">Chapter 128 • Update Tercepat</div>
+                                <div class="hero-stats">
+                                    <div class="stats-left">
+                                        <span class="view-count"><i class="fa-regular fa-eye"></i> 1,3M views</span>
+                                        <div class="rating"><i class="fa-solid fa-star"></i> 9.5</div>
                                     </div>
-                                </div>
-
-                                <div class="form-group full-width">
-                                    <label>Sinopsis / Deskripsi</label>
-                                    <textarea id="synopsis" placeholder="Ceritakan plot komik ini..."></textarea>
-                                </div>
-
-                                <div class="form-group full-width">
-                                    <label>Gambar Cover (Thumbnail) *</label>
-                                    <div class="upload-area">
-                                        <i class="fa-solid fa-cloud-arrow-up"></i>
-                                        <p style="font-size: 14px; font-weight: 500;">Klik atau Tarik gambar ke sini (.jpg, .png)</p>
-                                        <input type="file" id="coverImage" accept="image/*" required onchange="previewImage(event)">
-                                    </div>
-                                    <img id="coverPreview" class="image-preview" alt="Preview Cover">
+                                    <button class="btn-read">Jelajahi</button>
                                 </div>
                             </div>
-                            <button type="submit" class="btn-submit"><i class="fa-solid fa-upload"></i> Publikasikan Komik</button>
-                        </form>
-                        <div id="uploadStatus" class="status-msg"></div>
+                        </div>
+                        <div class="slide" style="background-image: url('https://images.unsplash.com/photo-1578632767115-351597cf2477?auto=format&fit=crop&q=80&w=600');">
+                            <div class="hero-content">
+                                <div class="korea-badge">🇯🇵</div>
+                                <h1 class="hero-title">The World's Best Kunlun Tavern</h1>
+                                <div class="hero-chapter">Chapter 123 • Spesial</div>
+                                <div class="hero-stats">
+                                    <div class="stats-left">
+                                        <span class="view-count"><i class="fa-regular fa-eye"></i> 890K views</span>
+                                        <div class="rating"><i class="fa-solid fa-star"></i> 9.1</div>
+                                    </div>
+                                    <button class="btn-read">Jelajahi</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="slider-indicators">
+                        <span class="dot active" onclick="currentSlide(0)"></span>
+                        <span class="dot" onclick="currentSlide(1)"></span>
+                    </div>
+                </section>
+
+                <section class="section-container">
+                    <div class="section-header">
+                        <div class="section-title-wrapper"><h2 class="section-title">Lanjutkan Membaca</h2></div>
+                        <a class="see-all" onclick="clearHistory()">Bersihkan</a>
+                    </div>
+                    <div class="horizontal-scroll" id="history-container">
+                        <div class="empty-history">Memuat histori...</div>
+                    </div>
+                </section>
+
+                <section class="section-container">
+                    <div class="section-header">
+                        <div class="section-title-wrapper">
+                            <i class="fa-regular fa-calendar-days" style="color: var(--primary-blue); font-size: 16px;"></i>
+                            <h2 class="section-title">Jadwal Hari Ini</h2>
+                        </div>
+                        <a class="see-all">Lihat Semua</a>
+                    </div>
+                    <div class="horizontal-scroll" id="firebase-jadwal">
+                        <div class="loading-text"><i class="fa-solid fa-spinner fa-spin"></i> Memuat...</div>
+                    </div>
+                </section>
+
+                <section class="section-container">
+                    <div class="section-header">
+                        <div class="section-title-wrapper"><span style="color: var(--primary-blue); font-size: 10px;">●</span><h2 class="section-title">Manga</h2></div>
+                        <a class="see-all">Lihat Semua</a>
+                    </div>
+                    <div class="horizontal-scroll" id="firebase-manga"><div class="loading-text"><i class="fa-solid fa-spinner fa-spin"></i> Memuat...</div></div>
+                </section>
+
+                <section class="section-container">
+                    <div class="section-header">
+                        <div class="section-title-wrapper"><span>🇰🇷</span><h2 class="section-title">Manhwa</h2></div>
+                        <a class="see-all">Lihat Semua</a>
+                    </div>
+                    <div class="horizontal-scroll" id="firebase-manhwa"><div class="loading-text"><i class="fa-solid fa-spinner fa-spin"></i> Memuat...</div></div>
+                </section>
+
+                <section class="section-container">
+                    <div class="section-header">
+                        <div class="section-title-wrapper"><span>🇨🇳</span><h2 class="section-title">Manhua</h2></div>
+                        <a class="see-all">Lihat Semua</a>
+                    </div>
+                    <div class="horizontal-scroll" id="firebase-manhua"><div class="loading-text"><i class="fa-solid fa-spinner fa-spin"></i> Memuat...</div></div>
+                </section>
+
+                <section class="section-container" style="padding-bottom: 30px;">
+                    <div class="section-header">
+                        <div class="section-title-wrapper"><h2 class="section-title">Semua Update Terbaru</h2></div>
+                        <a class="see-all">Lihat Semua</a>
+                    </div>
+                    <div class="horizontal-scroll" id="firebase-updates">
+                        <div class="loading-text"><i class="fa-solid fa-spinner fa-spin"></i> Memuat...</div>
+                    </div>
+                </section>
+            </main>
+        </div>
+
+        <div id="detail-page">
+            <div class="detail-top-nav" id="detailNav">
+                <i class="fa-solid fa-arrow-left" onclick="closeDetail()"></i>
+                <div class="right-icons">
+                    <i class="fa-regular fa-bookmark" id="btnBookmark" onclick="toggleBookmark()"></i>
+                </div>
+            </div>
+
+            <main>
+                <div class="detail-header" id="detailHeaderBg">
+                    <div class="comic-info-layout">
+                        <div class="comic-cover-wrapper">
+                            <img src="" alt="Cover" class="comic-cover" id="detailCoverImage">
+                            <div class="age-rating" id="detailAgeRating">Remaja<span>13+</span></div>
+                        </div>
+                        <div class="comic-meta">
+                            <h1 class="comic-detail-title" id="detailTitle">Memuat...</h1>
+                            <div class="comic-alt-title" id="detailAltTitle">...</div>
+                            <div class="comic-stats-row">
+                                <span><i class="fa-regular fa-eye"></i> <span id="detailViews">0</span> views</span>
+                                <span class="stat-rating"><i class="fa-solid fa-star"></i> <span id="detailAvgRating" style="color:#ffc107; font-weight:700; font-size:12px;">0.0</span> <span id="detailCountRating">(0)</span></span>
+                                <span class="status-badge" id="detailStatus">Ongoing</span>
+                            </div>
+                            <div class="genre-tags" id="detailTags"></div>
+                        </div>
                     </div>
                 </div>
 
-                <!-- VIEW 2: DAFTAR KOMIK -->
-                <div id="view-daftar" class="admin-view">
-                    <h1 class="page-title">Daftar Komik</h1>
-                    <div class="card" style="padding: 10px 25px;">
-                        <table class="comic-table">
-                            <thead>
-                                <tr>
-                                    <th width="70">Cover</th>
-                                    <th>Detail Komik</th>
-                                    <th>Author</th>
-                                    <th width="110">Tanggal</th>
-                                    <th width="80">Publish</th>
-                                    <th width="70">Aksi</th>
-                                </tr>
-                            </thead>
-                            <tbody id="comicListTableBody">
-                                <tr><td colspan="6" style="text-align: center;">Memuat data...</td></tr>
-                            </tbody>
-                        </table>
-                    </div>
+                <div class="detail-tabs">
+                    <div class="tab-btn active" onclick="switchTab('detail')">Detail</div>
+                    <div class="tab-btn" onclick="switchTab('chapter')">Chapters <span id="chapterBadge" style="font-size:10px; background:var(--primary-blue); color:white; padding:2px 6px; border-radius:10px; margin-left:4px; display:none;">0</span></div>
+                    <div class="tab-btn" onclick="switchTab('comment')">Komentar <span id="commentBadge" style="font-size:10px; background:var(--primary-blue); color:white; padding:2px 6px; border-radius:10px; margin-left:4px; display:none;">0</span></div>
                 </div>
 
-                <!-- VIEW 3: KELOLA CHAPTER -->
-                <div id="view-chapter" class="admin-view active">
-                    <h1 class="page-title">Kelola Chapter Komik & Film</h1>
+                <div class="tab-content active" id="tab-detail">
+                    <h3 class="synopsis-title">Sinopsis</h3>
+                    <p class="synopsis-text" id="detailSynopsis">Memuat sinopsis...</p>
                     
-                    <div class="card" style="margin-bottom: 25px;">
-                        <form id="uploadChapterForm" onsubmit="event.preventDefault()">
-                            <div class="form-grid" style="margin-bottom: 10px;">
-                                <div class="form-group full-width">
-                                    <label>Pilih Komik / Folder *</label>
-                                    <div class="search-select">
-                                        <input type="text" id="chapterComicSearch" placeholder="Ketik untuk mencari komik..." autocomplete="off" required onkeyup="filterCustomSelect(this, 'chapterComicList')" onclick="toggleCustomSelect('chapterComicList')">
-                                        <input type="hidden" id="chapterComicId" required>
-                                        <div class="search-options" id="chapterComicList"></div>
-                                    </div>
-                                </div>
-                                <div class="form-group">
-                                    <label>Nomor Chapter / Episode *</label>
-                                    <input type="number" step="0.1" id="chapterNumber" required placeholder="Contoh: 1 atau 1.5">
-                                </div>
-                                <div class="form-group">
-                                    <label>Judul Chapter (Opsional)</label>
-                                    <input type="text" id="chapterTitle" placeholder="Contoh: Awal Petualangan">
-                                </div>
-                            </div>
-                            
-                            <div style="margin-bottom: 25px; padding-bottom: 20px; border-bottom: 2px dashed var(--border);">
-                                <button type="button" class="btn-success-sm" style="width: 100%; justify-content: center; padding: 12px; font-size: 15px;" onclick="window.saveChapterFolder()">
-                                    <i class="fa-solid fa-folder-plus"></i> Langkah 1: Simpan & Buat Folder Chapter
-                                </button>
-                                <div class="help-text" style="text-align:center; margin-top:8px;">Klik ini dulu untuk menyimpan identitas chapter dan membuat foldernya secara otomatis.</div>
-                                <div id="saveFolderStatus" class="status-msg" style="display:none; margin-top:10px;"></div>
-                            </div>
-
-                            <div class="form-grid">
-                                <div class="form-group full-width">
-                                    <button type="button" class="btn-upload-cloud" style="width:100%; justify-content:center; padding:15px; font-size:15px; background: var(--sidebar-bg);" onclick="openMediaGallery()">
-                                        <i class="fa-solid fa-folder-tree"></i> Langkah 2: Buka Folder & Upload Media
-                                    </button>
-                                    <div class="help-text" style="text-align:center; margin-top:8px;">Buka file manager dan masuk ke folder chapter untuk mulai mengunggah gambar dan menetapkan tanggal update.</div>
-                                </div>
-                            </div>
-                        </form>
-                        <div id="chapterUploadStatus" class="status-msg"></div>
+                    <div class="detail-info-box">
+                        <div class="detail-info-row"><span class="label">Author / Artist</span><span class="val" id="detailAuthor">-</span></div>
+                        <div class="detail-info-row"><span class="label">Tipe Komik</span><span class="val" id="detailType">-</span></div>
+                        <div class="detail-info-row"><span class="label">Tanggal Rilis</span><span class="val" id="detailRelease">-</span></div>
                     </div>
 
-                    <div class="card" style="padding: 10px 25px;">
-                        <div style="margin: 15px 0;">
-                            <label style="color: var(--primary);">Filter Daftar Chapter berdasarkan Komik:</label>
-                            <div class="search-select" style="max-width: 400px;">
-                                <input type="text" id="filterChapterSearch" placeholder="Ketik untuk mencari komik..." autocomplete="off" onkeyup="filterCustomSelect(this, 'filterChapterList')" onclick="toggleCustomSelect('filterChapterList')">
-                                <input type="hidden" id="filterChapterId" onchange="window.loadChaptersList()">
-                                <div class="search-options" id="filterChapterList"></div>
-                            </div>
+                    <div class="rating-section">
+                        <div style="font-size: 13px; font-weight: 600; color: var(--text-dark);">Beri Rating:</div>
+                        <div class="star-rater" id="userStarRater">
+                            <i class="fa-regular fa-star" data-val="1" onclick="submitRating(1)"></i>
+                            <i class="fa-regular fa-star" data-val="2" onclick="submitRating(2)"></i>
+                            <i class="fa-regular fa-star" data-val="3" onclick="submitRating(3)"></i>
+                            <i class="fa-regular fa-star" data-val="4" onclick="submitRating(4)"></i>
+                            <i class="fa-regular fa-star" data-val="5" onclick="submitRating(5)"></i>
                         </div>
-                        <table class="comic-table">
-                            <thead>
-                                <tr>
-                                    <th width="100">Chapter</th>
-                                    <th>Judul Chapter</th>
-                                    <th width="120">Total Media</th>
-                                    <th width="120">Tgl Update</th>
-                                    <th width="80">Aksi</th>
-                                </tr>
-                            </thead>
-                            <tbody id="chapterListTableBody">
-                                <tr><td colspan="5" style="text-align: center;">Silakan pilih komik di atas...</td></tr>
-                            </tbody>
-                        </table>
                     </div>
                 </div>
 
-                <!-- VIEW 4: KATEGORI & GENRE -->
-                <div id="view-kategori" class="admin-view">
-                    <h1 class="page-title">Kelola Data Master</h1>
-                    <p style="color: var(--text-muted); margin-bottom: 20px; font-size: 14px;">Data yang ditambah akan tersimpan di Firebase dan muncul di form Tambah Komik.</p>
-                    
-                    <div class="master-tabs">
-                        <button class="master-tab-btn active" onclick="window.switchMasterTab('card-author', this)">Author & Artist</button>
-                        <button class="master-tab-btn" onclick="window.switchMasterTab('card-genre', this)">Genre</button>
-                        <button class="master-tab-btn" onclick="window.switchMasterTab('card-type', this)">Tipe Komik</button>
-                        <button class="master-tab-btn" onclick="window.switchMasterTab('card-status', this)">Status</button>
-                        <button class="master-tab-btn" onclick="window.switchMasterTab('card-age', this)">Rating Usia</button>
-                    </div>
+                <div class="tab-content" id="tab-chapter">
+                    <ul class="chapter-list" id="chapterListContainer">
+                        <div class="loading-text"><i class="fa-solid fa-spinner fa-spin"></i><br>Mencari chapter...</div>
+                    </ul>
+                </div>
 
-                    <div class="master-grid">
-                        <div class="master-card active" id="card-author">
-                            <h3><i class="fa-solid fa-user-pen"></i> Author & Artist</h3>
-                            <div class="master-input-group">
-                                <input type="text" id="inputAuthor" placeholder="Tambah nama...">
-                                <button type="button" class="btn-add" onclick="window.addMasterDataFirebase('authors', 'inputAuthor')"><i class="fa-solid fa-plus"></i></button>
-                            </div>
-                            <ul class="master-list" id="listAuthor"></ul>
+                <div class="tab-content" id="tab-comment">
+                    <div class="comment-wrapper">
+                        <div class="comment-list" id="commentListContainer">
+                            <div class="loading-text"><i class="fa-solid fa-spinner fa-spin"></i><br>Memuat komentar...</div>
                         </div>
-
-                        <div class="master-card" id="card-genre">
-                            <h3><i class="fa-solid fa-masks-theater"></i> Genre</h3>
-                            <div class="master-input-group">
-                                <input type="text" id="inputGenre" placeholder="Tambah genre...">
-                                <button type="button" class="btn-add" onclick="window.addMasterDataFirebase('genres', 'inputGenre')"><i class="fa-solid fa-plus"></i></button>
-                            </div>
-                            <ul class="master-list" id="listGenre"></ul>
+                        
+                        <div class="comment-input-area" id="commentInputArea" style="display:none;">
+                            <input type="text" id="newCommentText" placeholder="Tambahkan komentar..." autocomplete="off">
+                            <button class="btn-send-comment" onclick="postComment()">Kirim</button>
                         </div>
-
-                        <div class="master-card" id="card-type">
-                            <h3><i class="fa-solid fa-book-open"></i> Tipe Komik</h3>
-                            <div class="master-input-group">
-                                <input type="text" id="inputType" placeholder="Manga, Manhwa, Film...">
-                                <button type="button" class="btn-add" onclick="window.addMasterDataFirebase('types', 'inputType')"><i class="fa-solid fa-plus"></i></button>
-                            </div>
-                            <ul class="master-list" id="listType"></ul>
-                        </div>
-
-                        <div class="master-card" id="card-status">
-                            <h3><i class="fa-solid fa-signal"></i> Status Terbit</h3>
-                            <div class="master-input-group">
-                                <input type="text" id="inputStatus" placeholder="Ongoing, Tamat...">
-                                <button type="button" class="btn-add" onclick="window.addMasterDataFirebase('statuses', 'inputStatus')"><i class="fa-solid fa-plus"></i></button>
-                            </div>
-                            <ul class="master-list" id="listStatus"></ul>
-                        </div>
-
-                        <div class="master-card" id="card-age">
-                            <h3><i class="fa-solid fa-user-shield"></i> Rating Usia</h3>
-                            <div class="master-input-group">
-                                <input type="text" id="inputAge" placeholder="13+, 18+...">
-                                <button type="button" class="btn-add" onclick="window.addMasterDataFirebase('ageRatings', 'inputAge')"><i class="fa-solid fa-plus"></i></button>
-                            </div>
-                            <ul class="master-list" id="listAge"></ul>
+                        
+                        <div class="login-prompt" id="commentLoginPrompt">
+                            Silakan <span style="color:var(--primary-blue); font-weight:600; cursor:pointer;" onclick="switchNav('profile')">Login</span> terlebih dahulu untuk berkomentar.
                         </div>
                     </div>
                 </div>
-                
-                <div id="view-dashboard" class="admin-view"><h1 class="page-title">Dashboard Analitik</h1><div class="card"><p>Statistik segera hadir.</p></div></div>
-                <div id="view-pengaturan" class="admin-view"><h1 class="page-title">Pengaturan</h1><div class="card"><p>Pengaturan web.</p></div></div>
+            </main>
+        </div>
 
+        <div id="reader-page">
+            <div class="reader-header" id="readerHeader">
+                <i class="fa-solid fa-arrow-left" onclick="closeReader()" style="font-size: 20px; cursor: pointer;"></i>
+                <div class="reader-title" id="readerTitle">Chapter...</div>
+                <i class="fa-solid fa-bars" style="font-size: 20px;"></i>
             </div>
-        </main>
-    </div>
+            <div class="reader-images" id="readerImagesContainer" onclick="toggleReaderNav()">
+            </div>
+            <div id="readerLoading" class="loading-text" style="padding-top:100px;"><i class="fa-solid fa-spinner fa-spin" style="font-size:30px;"></i><br><br>Memuat gambar...</div>
+        </div>
 
-    <!-- ==================== MODAL GALERI CLOUD & FILE MANAGER ==================== -->
-    <div id="cloudGalleryModal" class="modal-overlay hidden">
-        <div class="modal-container">
-            <div class="modal-header">
-                <h3><i class="fa-solid fa-folder-tree"></i> File Manager Chapter</h3>
-                <div class="modal-actions">
-                    <button class="btn-close" onclick="closeMediaGallery()"><i class="fa-solid fa-times"></i></button>
-                </div>
-            </div>
-            
-            <div class="modal-toolbar">
-                <div id="galleryBreadcrumb" class="breadcrumb" style="flex-grow: 1; margin-bottom: 0;"></div>
-                
-                <div id="gallerySearchContainer" class="gallery-search">
-                    <i class="fa-solid fa-search"></i>
-                    <input type="text" id="gallerySearchInput" placeholder="Cari folder komik..." onkeyup="window.filterGalleryFolders()">
-                </div>
-                
-                <div style="display:flex; gap:10px; align-items:center; flex-wrap:wrap;">
-                    <button class="btn-upload-cloud" id="btnUploadCloudTop" onclick="document.getElementById('cloudUploadInput').click()" style="display:none;">
-                        <i class="fa-solid fa-cloud-arrow-up"></i> Upload ke Folder Chapter Ini
-                    </button>
-                    <input type="file" id="cloudUploadInput" class="hidden" multiple accept="image/*,video/*" onchange="window.processCloudUpload(this)">
-                </div>
-            </div>
-            
-            <div id="galleryUploadStatus" style="display:none; padding:12px; background:#eff6ff; color:var(--primary); text-align:center; font-weight:600; font-size:14px; border-bottom: 1px solid #bfdbfe;">
-                <i class="fa-solid fa-spinner fa-spin"></i> Mengunggah file ke Server Cloud...
-            </div>
-
-            <div class="gallery-grid" id="cloudGalleryGrid"></div>
-            
-            <!-- FOOTER PUBLISH AMAN -->
-            <div id="modalFooterPublish" style="display:none; padding: 15px 25px; border-top: 1px solid var(--border); background: var(--white); justify-content: flex-end; align-items: center; gap: 15px; flex-wrap: wrap;">
-                <div style="display: flex; align-items: center; gap: 10px; background: #f8fafc; padding: 8px 12px; border-radius: 8px; border: 1px solid var(--border);">
-                    <label style="font-size: 13px; font-weight: 600; margin:0; color: var(--text-dark);">Tgl Update:</label>
-                    <input type="date" id="modalChapterUpdateDate" style="padding: 6px; border: 1px solid #cbd5e1; border-radius: 6px; font-size: 13px; outline: none; background: white; cursor: pointer;">
-                </div>
-
-                <button class="btn-success-sm" style="display: inline-flex; padding: 12px 20px; font-size: 15px;" onclick="window.confirmAndPublishChapter()">
-                    <i class="fa-solid fa-paper-plane"></i> Simpan & Publikasikan Chapter Ini
-                </button>
+        <div id="bookmark-page">
+            <div class="page-header">Bookmark Saya</div>
+            <div class="bookmark-grid" id="bookmarkContainer">
+                <div class="empty-history">Anda belum login atau belum ada bookmark.</div>
             </div>
         </div>
-    </div>
 
-    <!-- ==================== MODAL LIGHTBOX PREVIEW ==================== -->
-    <div id="lightboxModal" class="lightbox-overlay">
-        <div class="lightbox-content">
-            <button class="lightbox-close" onclick="closeLightboxPreview()"><i class="fa-solid fa-times"></i></button>
-            <img id="lightboxImage" src="" alt="Preview">
+        <div id="profile-page">
+            <div id="authSection">
+                <div class="profile-hero">
+                    <div class="profile-avatar-lg"><i class="fa-solid fa-user-lock"></i></div>
+                    <h2>Selamat Datang</h2>
+                    <p style="font-size: 13px; opacity: 0.85; margin-top: 4px;">Masuk untuk akses penuh Cloud, Komentar & Bookmark</p>
+                </div>
+                <div class="auth-form-card" id="loginFormUI">
+                    <input type="email" id="authEmail" placeholder="Alamat Email">
+                    <input type="password" id="authPass" placeholder="Kata Sandi (Password)">
+                    <div id="authError" style="color:#ef4444; font-size:12px; margin-bottom:12px; text-align:center; font-weight:600;"></div>
+                    <button class="auth-main-btn" onclick="doLogin()">Masuk Akun</button>
+                    <div class="auth-toggle-link">Belum punya akun? <span onclick="toggleAuthMode()">Daftar Disini</span></div>
+                </div>
+            </div>
+
+            <div id="userSection" style="display:none;">
+                <div class="profile-hero">
+                    <div class="profile-avatar-lg"><i class="fa-solid fa-user-astronaut"></i></div>
+                    <h2 id="userNameDisplay">Member Utama</h2>
+                    <p id="userEmailDisplay" style="font-size: 13px; opacity: 0.9; margin-top: 4px;">user@email.com</p>
+                </div>
+
+                <div class="profile-stats-grid">
+                    <div class="stat-card">
+                        <div class="number" id="statBookmarkCount">0</div>
+                        <div class="label">Bookmark</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="number" id="statHistoryCount">0</div>
+                        <div class="label">Riwayat Baca</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="number">VIP</div>
+                        <div class="label">Status Akun</div>
+                    </div>
+                </div>
+
+                <ul class="user-menu-list" style="margin-top: 15px;">
+                    <li onclick="switchNav('bookmark')">
+                        <div class="left-info"><i class="fa-solid fa-bookmark"></i> Kelola Bookmark Komik</div>
+                        <i class="fa-solid fa-chevron-right" style="font-size: 12px; color: #94a3b8;"></i>
+                    </li>
+                    <li class="logout-item" onclick="doLogout()">
+                        <div class="left-info"><i class="fa-solid fa-right-from-bracket"></i> Keluar (Logout Akun)</div>
+                        <i class="fa-solid fa-arrow-right-from-bracket" style="font-size: 12px;"></i>
+                    </li>
+                </ul>
+            </div>
         </div>
+
+        <nav class="bottom-nav" id="mainBottomNav">
+            <a class="nav-item active" onclick="switchNav('home', this)">
+                <div class="icon-bg"><i class="fa-solid fa-house"></i></div><span>Home</span>
+            </a>
+            <a class="nav-item" onclick="switchNav('bookmark', this)">
+                <div class="icon-bg"><i class="fa-solid fa-bookmark"></i></div><span>Bookmark</span>
+            </a>
+            <a class="nav-item" onclick="switchNav('profile', this)">
+                <div class="icon-bg"><i class="fa-solid fa-user"></i></div><span>Profil</span>
+            </a>
+        </nav>
     </div>
 
-    <!-- ==================== SCRIPT FIREBASE LOGIC & UTAMA ==================== -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-        import { getFirestore, collection, addDoc, serverTimestamp, doc, getDoc, setDoc, updateDoc, arrayUnion, arrayRemove, onSnapshot, query, orderBy, getDocs, deleteDoc, where } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
-        import { getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+        import { getFirestore, collection, getDocs, getDoc, doc, query, orderBy, limit, updateDoc, increment, setDoc, deleteDoc, addDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+        import { getAuth, onAuthStateChanged, signInWithEmailAndPassword, createUserWithEmailAndPassword, signOut } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
 
         const firebaseConfig = {
             apiKey: "AIzaSyAt1V2Ogx0P8rSLSNz9_zZpYt00cCN5JL0",
@@ -583,778 +478,650 @@
         const app = initializeApp(firebaseConfig);
         const db = getFirestore(app);
         const auth = getAuth(app);
-        const WORKER_URL = "https://yarch.hrmnkosasi.workers.dev/";
 
-        const loginSection = document.getElementById('loginSection');
-        const dashboardSection = document.getElementById('dashboardSection');
-        const uploadStatus = document.getElementById('uploadStatus');
-        const secretKeyInput = document.getElementById('secretKey');
-        
-        window.allComicsList = [];
-        window.galleryState = { level: 'root', comicId: null, comicName: '', chapterFolderId: null, chapterFolderName: '', currentChapterImages: [] };
+        window.comicsData = {};
+        window.currentActiveComicId = null;
+        window.currentActiveChapterId = null;
+        window.currentActiveChapterNum = null;
+        window.userBookmarks = [];
+        window.isAuthModeLogin = true;
+        let readerScrollListener = null;
 
-        if (localStorage.getItem('workerSecretKey') && secretKeyInput) {
-            secretKeyInput.value = localStorage.getItem('workerSecretKey');
-        }
-
-        onAuthStateChanged(auth, (user) => {
+        // ================= SISTEM AUTENTIKASI =================
+        onAuthStateChanged(auth, async (user) => {
             if (user) {
-                loginSection.classList.add('hidden');
-                dashboardSection.classList.remove('hidden');
-                initMasterData(); 
-                window.loadComicsList(); 
+                document.getElementById('authSection').style.display = 'none';
+                document.getElementById('userSection').style.display = 'block';
+                document.getElementById('userEmailDisplay').innerText = user.email;
+                document.getElementById('userNameDisplay').innerText = user.email.split('@')[0].toUpperCase();
+                
+                document.getElementById('commentLoginPrompt').style.display = 'none';
+                document.getElementById('commentInputArea').style.display = 'flex';
+
+                await syncUserData(user.uid);
             } else {
-                loginSection.classList.remove('hidden');
-                dashboardSection.classList.add('hidden');
+                document.getElementById('authSection').style.display = 'block';
+                document.getElementById('userSection').style.display = 'none';
+                
+                document.getElementById('commentLoginPrompt').style.display = 'block';
+                document.getElementById('commentInputArea').style.display = 'none';
+
+                window.userBookmarks = [];
+                renderBookmarks();
+                renderReadingHistory();
             }
         });
 
-        document.getElementById('loginForm').addEventListener('submit', async (e) => {
-            e.preventDefault();
-            const loginStatus = document.getElementById('loginStatus');
-            loginStatus.innerText = "Memeriksa kredensial...";
-            try {
-                await signInWithEmailAndPassword(auth, document.getElementById('adminEmail').value, document.getElementById('adminPassword').value);
-                loginStatus.innerText = ""; 
-            } catch (error) {
-                loginStatus.innerText = "Login Gagal: Periksa email & password!";
-                loginStatus.style.color = "var(--danger)";
-            }
-        });
-
-        document.getElementById('logoutBtn').addEventListener('click', async () => await signOut(auth));
-
-        /* =========================================
-           LOGIKA MASTER DATA
-           ========================================= */
-        const masterDocRef = doc(db, "settings", "master_data");
-        async function initMasterData() {
-            try {
-                const snap = await getDoc(masterDocRef);
-                if (!snap.exists()) {
-                    await setDoc(masterDocRef, { authors: [], genres: [], types: [], statuses: [], ageRatings: [] });
-                }
-                onSnapshot(masterDocRef, (docSnap) => {
-                    const data = docSnap.data();
-                    if (!data) return;
-
-                    renderMasterList('listAuthor', data.authors, 'authors');
-                    renderMasterList('listGenre', data.genres, 'genres');
-                    renderMasterList('listType', data.types, 'types');
-                    renderMasterList('listStatus', data.statuses, 'statuses');
-                    renderMasterList('listAge', data.ageRatings, 'ageRatings');
-
-                    renderDropdown('author', data.authors, 'Author / Artist');
-                    renderDropdown('type', data.types, 'Tipe Komik');
-                    renderDropdown('status', data.statuses, 'Status');
-                    renderDropdown('ageRating', data.ageRatings, 'Rating Usia');
-                    
-                    const genreContainer = document.getElementById('genreCheckboxContainer');
-                    genreContainer.innerHTML = '';
-                    if(data.genres && data.genres.length > 0) {
-                        data.genres.forEach(genre => { genreContainer.innerHTML += `<label><input type="checkbox" value="${genre}" class="genre-check"> ${genre}</label>`; });
-                    } else { genreContainer.innerHTML = '<span class="help-text">Belum ada data genre.</span>'; }
-                });
-            } catch (error) { console.error(error); }
-        }
-
-        function renderMasterList(id, dataArray, field) {
-            const el = document.getElementById(id);
-            el.innerHTML = '';
-            if(dataArray && dataArray.length > 0) {
-                dataArray.forEach(val => el.innerHTML += `<li>${val} <button type="button" class="btn-delete" onclick="window.removeMasterDataFirebase('${field}', '${val}')"><i class="fa-solid fa-trash-can"></i></button></li>`);
-            } else { el.innerHTML = '<li style="color:#888; justify-content:center; font-size:12px;">Data kosong</li>'; }
-        }
-
-        function renderDropdown(id, dataArray, placeholder) {
-            const el = document.getElementById(id);
-            el.innerHTML = `<option value="">Pilih ${placeholder}...</option>`;
-            if(dataArray) dataArray.forEach(val => el.innerHTML += `<option value="${val}">${val}</option>`);
-        }
-
-        window.addMasterDataFirebase = async function(field, inputId) {
-            const inputEl = document.getElementById(inputId);
-            const val = inputEl.value.trim();
-            if (val === "") return;
-            try { await updateDoc(masterDocRef, { [field]: arrayUnion(val) }); inputEl.value = ""; } catch (error) { alert("Error: " + error.message); }
-        };
-
-        window.removeMasterDataFirebase = async function(field, val) {
-            if(confirm(`Hapus "${val}"?`)) { try { await updateDoc(masterDocRef, { [field]: arrayRemove(val) }); } catch (error) { alert("Error: " + error.message); } }
-        };
-
-        /* =========================================
-           LOGIKA DAFTAR KOMIK
-           ========================================= */
-        window.loadComicsList = async function() {
-            const tbody = document.getElementById('comicListTableBody');
-            try {
-                const q = query(collection(db, "comics"), orderBy("createdAt", "desc"));
-                const snapshot = await getDocs(q);
-                
-                tbody.innerHTML = '';
-                window.allComicsList = []; 
-                
-                if (snapshot.empty) {
-                    tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;">Belum ada komik terpublish.</td></tr>';
-                    renderSearchableOptions('chapterComicList', 'chapterComicId', 'chapterComicSearch', []);
-                    renderSearchableOptions('filterChapterList', 'filterChapterId', 'filterChapterSearch', []);
-                    return;
-                }
-
-                snapshot.forEach(docSnap => {
-                    const data = docSnap.data();
-                    const isPub = data.isPublished !== false; 
-                    const date = data.createdAt ? data.createdAt.toDate().toLocaleDateString('id-ID', {day:'numeric', month:'short', year:'numeric'}) : '-';
-                    const releaseInfo = data.releaseDate ? ` • Rilis: ${data.releaseDate}` : '';
-
-                    window.allComicsList.push({ id: docSnap.id, title: data.title, coverUrl: data.coverUrl });
-
-                    tbody.innerHTML += `
-                        <tr>
-                            <td><img src="${data.coverUrl}" style="width: 50px; height: 70px; object-fit: cover; border-radius: 6px; box-shadow: 0 2px 5px rgba(0,0,0,0.1);" onerror="this.src='https://placehold.co/50x70?text=Error'"></td>
-                            <td>
-                                <strong>${data.title}</strong><br>
-                                <span style="font-size: 11px; color: #888;">${data.type || '-'} • ${data.status || '-'}${releaseInfo}</span>
-                            </td>
-                            <td>${data.author || '-'}</td>
-                            <td><span style="font-size: 13px; font-weight: 500;">${date}</span></td>
-                            <td>
-                                <label class="toggle-switch">
-                                    <input type="checkbox" ${isPub ? 'checked' : ''} onchange="window.togglePublish('${docSnap.id}', this.checked)">
-                                    <span class="slider"></span>
-                                </label>
-                            </td>
-                            <td>
-                                <button type="button" class="btn-delete" onclick="window.deleteComic('${docSnap.id}')" title="Hapus"><i class="fa-solid fa-trash-can"></i></button>
-                            </td>
-                        </tr>
-                    `;
-                });
-                
-                renderSearchableOptions('chapterComicList', 'chapterComicId', 'chapterComicSearch', window.allComicsList);
-                renderSearchableOptions('filterChapterList', 'filterChapterId', 'filterChapterSearch', window.allComicsList);
-
-            } catch (e) { console.error(e); }
-        };
-
-        window.togglePublish = async function(id, status) {
-            try { await updateDoc(doc(db, "comics", id), { isPublished: status }); } catch (e) { alert("Gagal!"); window.loadComicsList(); }
-        };
-        window.deleteComic = async function(id) {
-            if(confirm("Yakin ingin menghapus komik ini permanen beserta seluruh chapternya?")) {
-                try { await deleteDoc(doc(db, "comics", id)); window.loadComicsList(); } catch(e) { alert("Gagal!"); }
-            }
-        };
-
-        function renderSearchableOptions(listId, hiddenId, inputId, listData) {
-            let html = '';
-            listData.forEach(c => {
-                const safeTitle = c.title.replace(/'/g, "\\'").replace(/"/g, '&quot;');
-                html += `<div onclick="window.selectCustomOption('${c.id}', '${safeTitle}', '${hiddenId}', '${inputId}', '${listId}')">${c.title}</div>`;
-            });
-            document.getElementById(listId).innerHTML = html;
-        }
-
-        /* =========================================
-           UPLOAD KOMIK BARU
-           ========================================= */
-        document.getElementById('uploadForm').addEventListener('submit', async (e) => {
-            e.preventDefault();
-            const submitBtn = e.target.querySelector('button[type="submit"]');
-            if (submitBtn) submitBtn.disabled = true;
-
-            uploadStatus.innerText = "Mengunggah cover..."; 
-            uploadStatus.style.display = "block"; uploadStatus.style.background = "#eff6ff"; uploadStatus.style.color = "var(--primary)";
+        window.toggleAuthMode = function() {
+            window.isAuthModeLogin = !window.isAuthModeLogin;
+            const btn = document.querySelector('.auth-main-btn');
+            const switchTxt = document.querySelector('.auth-toggle-link');
+            const title = document.querySelector('.profile-hero h2');
             
-            const currentSecretKey = secretKeyInput.value;
-            const formData = new FormData();
-            formData.append('coverImage', document.getElementById('coverImage').files[0]);
-
-            try {
-                const workerResponse = await fetch(WORKER_URL, { method: 'POST', headers: { 'X-Admin-Key': currentSecretKey }, body: formData });
-                const workerData = await workerResponse.json();
-                if (!workerResponse.ok) throw new Error(workerData.error || "Gagal upload R2");
-
-                localStorage.setItem('workerSecretKey', currentSecretKey);
-                uploadStatus.innerText = "Menyimpan data komik ke Firebase...";
-
-                const genres = [];
-                document.querySelectorAll('.genre-check:checked').forEach(cb => genres.push(cb.value));
-
-                await addDoc(collection(db, "comics"), {
-                    title: document.getElementById('title').value,
-                    altTitle: document.getElementById('altTitle').value,
-                    author: document.getElementById('author').value,
-                    type: document.getElementById('type').value,
-                    status: document.getElementById('status').value,
-                    ageRating: document.getElementById('ageRating').value,
-                    releaseDate: document.getElementById('releaseDate').value,
-                    genres: genres,
-                    synopsis: document.getElementById('synopsis').value,
-                    coverUrl: workerData.url, 
-                    uploader: auth.currentUser.email, 
-                    views: 0, 
-                    isPublished: true, 
-                    createdAt: serverTimestamp()
-                });
-
-                uploadStatus.innerText = "✅ Komik Baru Berhasil Dipublikasikan!"; 
-                uploadStatus.style.color = "var(--success)"; uploadStatus.style.background = "#ecfdf5";
-                
-                document.getElementById('uploadForm').reset(); 
-                document.getElementById('coverPreview').style.display = 'none'; 
-                secretKeyInput.value = currentSecretKey; 
-                
-                window.loadComicsList(); 
-
-            } catch (error) {
-                uploadStatus.innerText = "❌ Error: " + error.message; 
-                uploadStatus.style.color = "var(--danger)"; uploadStatus.style.background = "#fef2f2";
-            } finally {
-                if (submitBtn) submitBtn.disabled = false;
+            if(window.isAuthModeLogin) {
+                title.innerText = "Selamat Datang";
+                btn.innerText = "Masuk Akun";
+                switchTxt.innerHTML = 'Belum punya akun? <span onclick="toggleAuthMode()">Daftar Disini</span>';
+            } else {
+                title.innerText = "Daftar Akun Baru";
+                btn.innerText = "Daftar Sekarang";
+                switchTxt.innerHTML = 'Sudah punya akun? <span onclick="toggleAuthMode()">Masuk Disini</span>';
             }
-        });
+        }
 
-        /* =========================================
-           LANGKAH 1: SIMPAN DATA & BUAT FOLDER CHAPTER
-           ========================================= */
-        window.saveChapterFolder = async function() {
-            const comicId = document.getElementById('chapterComicId').value;
-            const comicName = document.getElementById('chapterComicSearch').value;
-            const chapterNum = document.getElementById('chapterNumber').value;
-            const chapterTitle = document.getElementById('chapterTitle').value;
-            const statusEl = document.getElementById('saveFolderStatus');
-
-            if(!comicId) { alert("Pilih Komik terlebih dahulu dari daftar!"); return; }
-            if(!chapterNum) { alert("Nomor Chapter wajib diisi!"); return; }
-
-            statusEl.style.display = 'block';
-            statusEl.style.background = "#eff6ff";
-            statusEl.style.color = "var(--primary)";
-            statusEl.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Menyimpan folder chapter ke database...';
-
+        window.doLogin = async function() {
+            const email = document.getElementById('authEmail').value;
+            const pass = document.getElementById('authPass').value;
+            const errEl = document.getElementById('authError');
+            errEl.innerText = "Memproses...";
+            
             try {
-                const chaptersRef = collection(db, "comics", comicId, "chapters");
-                const q = query(chaptersRef, where("chapterNumber", "==", parseFloat(chapterNum)));
-                const snapshot = await getDocs(q);
-
-                let targetChapterId = "";
-
-                if (!snapshot.empty) {
-                    const docSnap = snapshot.docs[0];
-                    targetChapterId = docSnap.id;
-                    await updateDoc(doc(db, "comics", comicId, "chapters", targetChapterId), {
-                        title: chapterTitle
-                    });
-                    statusEl.innerHTML = "✅ Folder Chapter ini sudah ada dan datanya berhasil diupdate!<br>Silakan lanjut Buka File Manager di bawah.";
+                if(window.isAuthModeLogin) {
+                    await signInWithEmailAndPassword(auth, email, pass);
                 } else {
-                    const newDocRef = await addDoc(chaptersRef, {
-                        chapterNumber: parseFloat(chapterNum),
-                        title: chapterTitle,
-                        images: [],
-                        createdAt: serverTimestamp()
-                    });
-                    targetChapterId = newDocRef.id;
-                    statusEl.innerHTML = "✅ Folder Chapter berhasil dibuat dan tersimpan!<br>Silakan lanjut Buka File Manager di bawah untuk mulai upload gambar.";
+                    await createUserWithEmailAndPassword(auth, email, pass);
                 }
-                
-                // Simpan ID aktif ke session/localStorage agar aman dari reset
-                localStorage.setItem('activeComicId', comicId);
-                localStorage.setItem('activeComicName', comicName);
-                localStorage.setItem('activeChapterFolderId', targetChapterId);
-
-                statusEl.style.color = "var(--success)"; statusEl.style.background = "#ecfdf5";
-                
-                if(document.getElementById('filterChapterId').value === comicId) {
-                    window.loadChaptersList();
-                }
+                errEl.innerText = "";
+                document.getElementById('authEmail').value = "";
+                document.getElementById('authPass').value = "";
+                if(window.currentActiveComicId) switchNav('home'); 
             } catch(e) {
-                statusEl.innerHTML = "❌ Error saat membuat folder: " + e.message;
-                statusEl.style.color = "var(--danger)"; statusEl.style.background = "#fef2f2";
+                errEl.innerText = "Gagal: Periksa kembali email & password anda.";
             }
         }
 
-        /* =========================================
-           LANGKAH 2: LOGIKA FILE MANAGER & UPLOAD
-           ========================================= */
-        window.processCloudUpload = async function(inputElement) {
-            const files = inputElement.files;
-            if(files.length === 0) return;
+        window.doLogout = function() { 
+            signOut(auth); 
+            alert("Berhasil keluar dari akun.");
+        }
+
+        // ================= SINKRONISASI DATA PENGGUNA =================
+        async function syncUserData(uid) {
+            const bmRef = collection(db, "users", uid, "bookmarks");
+            const bmSnap = await getDocs(bmRef);
+            window.userBookmarks = [];
+            bmSnap.forEach(doc => window.userBookmarks.push(doc.id));
+            renderBookmarks();
+            document.getElementById('statBookmarkCount').innerText = window.userBookmarks.length;
+
+            renderReadingHistory();
             
-            const currentSecretKey = secretKeyInput.value;
-            if(!currentSecretKey) { alert("Isi Kunci Rahasia Worker terlebih dahulu di form Tambah Komik!"); return; }
+            if(window.currentActiveComicId) {
+                checkBookmarkStatus(window.currentActiveComicId);
+                loadUserRating(window.currentActiveComicId);
+            }
+        }
 
-            // Ambil ID dari state aktif atau localStorage cadangan
-            const comicId = window.galleryState.comicId || localStorage.getItem('activeComicId');
-            const chapterId = window.galleryState.chapterFolderId || localStorage.getItem('activeChapterFolderId');
+        // ================= FETCH DATA KOMIK HOME =================
+        function generateComicCard(docId, data) {
+            return `
+                <div class="manga-card-simple" onclick="openDetail('${docId}')">
+                    <img src="${data.coverUrl}" alt="${data.title}" onerror="this.src='https://placehold.co/120x150?text=No+Cover'">
+                    <div class="info-container"><div class="title">${data.title}</div></div>
+                </div>
+            `;
+        }
 
-            if(!comicId || !chapterId) {
-                alert("Pilih komik dan buat folder chapter terlebih dahulu di Langkah 1!");
+        async function fetchAllComics() {
+            try {
+                const q = query(collection(db, "comics"), orderBy("createdAt", "desc"), limit(30));
+                const querySnapshot = await getDocs(q);
+                
+                let htmlUpdates = ''; let htmlJadwal = ''; let htmlManga = ''; let htmlManhwa = ''; let htmlManhua = '';
+                
+                querySnapshot.forEach((doc) => {
+                    const data = doc.data();
+                    window.comicsData[doc.id] = data; 
+                    const cardHTML = generateComicCard(doc.id, data);
+                    
+                    htmlUpdates += cardHTML;
+                    if(Math.random() > 0.4) htmlJadwal += cardHTML;
+
+                    const type = (data.type || "").toLowerCase();
+                    if (type.includes("manga")) htmlManga += cardHTML;
+                    if (type.includes("manhwa")) htmlManhwa += cardHTML;
+                    if (type.includes("manhua")) htmlManhua += cardHTML;
+                });
+
+                document.getElementById('firebase-updates').innerHTML = htmlUpdates || '<div class="empty-history">Kosong</div>';
+                document.getElementById('firebase-jadwal').innerHTML = htmlJadwal || '<div class="empty-history">Kosong</div>';
+                document.getElementById('firebase-manga').innerHTML = htmlManga || '<div class="empty-history">Kosong</div>';
+                document.getElementById('firebase-manhwa').innerHTML = htmlManhwa || '<div class="empty-history">Kosong</div>';
+                document.getElementById('firebase-manhua').innerHTML = htmlManhua || '<div class="empty-history">Kosong</div>';
+
+                renderReadingHistory();
+                renderBookmarks();
+            } catch (error) {}
+        }
+        fetchAllComics();
+
+        // ================= FITUR HISTORY & LANJUT BACA =================
+        window.saveReadingProgress = async function(comicId, chapterId, chapterNum, pageIndex = 1) {
+            if (!comicId) return;
+            const comicData = window.comicsData[comicId] || {};
+            const title = comicData.title || "Komik";
+            const coverUrl = comicData.coverUrl || "";
+
+            const historyItem = {
+                comicId: comicId,
+                comicTitle: title,
+                coverUrl: coverUrl,
+                chapterId: chapterId || "",
+                chapterNumber: chapterNum || "1",
+                pageIndex: pageIndex || 1,
+                updatedAt: new Date().getTime()
+            };
+
+            let localHist = JSON.parse(localStorage.getItem('comicHistoryDetail')) || {};
+            localHist[comicId] = historyItem;
+            localStorage.setItem('comicHistoryDetail', JSON.stringify(localHist));
+
+            if (auth.currentUser) {
+                try {
+                    await setDoc(doc(db, "users", auth.currentUser.uid, "history", comicId), {
+                        ...historyItem,
+                        updatedAt: serverTimestamp()
+                    });
+                } catch(e) {}
+            }
+
+            renderReadingHistory();
+        }
+
+        async function renderReadingHistory() {
+            const container = document.getElementById('history-container');
+            if (!container) return;
+
+            let historyList = [];
+
+            if (auth.currentUser) {
+                try {
+                    const histRef = collection(db, "users", auth.currentUser.uid, "history");
+                    const q = query(histRef, orderBy("updatedAt", "desc"), limit(10));
+                    const snap = await getDocs(q);
+                    snap.forEach(d => {
+                        historyList.push(d.data());
+                    });
+                } catch(e) {}
+            }
+
+            if (historyList.length === 0) {
+                const localHist = JSON.parse(localStorage.getItem('comicHistoryDetail')) || {};
+                historyList = Object.values(localHist).sort((a,b) => (b.updatedAt || 0) - (a.updatedAt || 0));
+            }
+
+            const statHistEl = document.getElementById('statHistoryCount');
+            if(statHistEl) statHistEl.innerText = historyList.length;
+
+            if (historyList.length === 0) {
+                container.innerHTML = '<div class="empty-history">Belum ada histori bacaan.</div>';
                 return;
             }
 
-            const statusEl = document.getElementById('galleryUploadStatus');
-            statusEl.style.display = 'block';
+            let html = '';
+            historyList.forEach(item => {
+                const cover = item.coverUrl || (window.comicsData[item.comicId] ? window.comicsData[item.comicId].coverUrl : '');
+                const title = item.comicTitle || (window.comicsData[item.comicId] ? window.comicsData[item.comicId].title : 'Komik');
+                const chInfo = item.chapterNumber ? `Ch. ${item.chapterNumber}` : '';
+                const pgInfo = item.pageIndex ? ` • Hal. ${item.pageIndex}` : '';
 
-            try {
-                let uploadedUrls = [];
-                for(let i = 0; i < files.length; i++) {
-                    const file = files[i];
-                    statusEl.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i> Mengunggah file ${i+1} dari ${files.length}...`;
-                    
-                    const formData = new FormData();
-                    formData.append('coverImage', file);
+                html += `
+                    <div class="manga-card-history" onclick="continueReading('${item.comicId}', '${item.chapterId}', '${item.chapterNumber}', ${item.pageIndex || 1})">
+                        <img src="${cover}" onerror="this.src='https://placehold.co/130x170?text=No+Cover'">
+                        <div class="info">
+                            <div class="title">${title}</div>
+                            <div class="chapter">${chInfo}${pgInfo}</div>
+                        </div>
+                    </div>
+                `;
+            });
 
-                    const workerResponse = await fetch(WORKER_URL, { method: 'POST', headers: { 'X-Admin-Key': currentSecretKey }, body: formData });
-                    const workerData = await workerResponse.json();
-                    if (!workerResponse.ok) throw new Error(workerData.error || "Gagal upload server.");
-                    
-                    uploadedUrls.push(workerData.url);
-                }
+            container.innerHTML = html;
+        }
 
-                const chapterDocRef = doc(db, "comics", comicId, "chapters", chapterId);
-                const snap = await getDoc(chapterDocRef);
-                if(snap.exists()) {
-                    const existingImages = snap.data().images || [];
-                    const updatedImages = existingImages.concat(uploadedUrls);
-                    await updateDoc(chapterDocRef, { images: updatedImages });
-                    window.galleryState.currentChapterImages = updatedImages;
-                }
-
-                statusEl.style.display = 'none';
-                inputElement.value = ''; 
-                window.loadCloudGallery(); 
-            } catch(e) {
-                statusEl.innerHTML = `❌ Error Upload: ${e.message}`;
-                statusEl.style.color = "var(--danger)";
-                statusEl.style.background = "#fef2f2";
+        window.continueReading = function(comicId, chapterId, chapterNum, pageIndex) {
+            if (chapterId && chapterId !== 'undefined' && chapterId !== '') {
+                openReader(comicId, chapterId, chapterNum, pageIndex);
+            } else {
+                openDetail(comicId);
             }
         }
 
-        window.deleteImageFromChapter = async function(index, url) {
-            if(!confirm("Yakin ingin menghapus gambar ini secara permanen dari folder chapter?")) return;
-            const comicId = window.galleryState.comicId || localStorage.getItem('activeComicId');
-            const chapterId = window.galleryState.chapterFolderId || localStorage.getItem('activeChapterFolderId');
-
-            try {
-                window.galleryState.currentChapterImages.splice(index, 1);
-                
-                const selIndex = window.selectedMediaGallery.findIndex(m => m.url === url);
-                if(selIndex !== -1) window.selectedMediaGallery.splice(selIndex, 1);
-
-                const chapterDocRef = doc(db, "comics", comicId, "chapters", chapterId);
-                await updateDoc(chapterDocRef, { images: window.galleryState.currentChapterImages });
-
-                window.loadCloudGallery();
-            } catch(e) {
-                alert("Gagal menghapus gambar: " + e.message);
-            }
-        };
-
-        window.loadCloudGallery = async function() {
-            const grid = document.getElementById('cloudGalleryGrid');
-            const breadcrumb = document.getElementById('galleryBreadcrumb');
-            const btnUpload = document.getElementById('btnUploadCloudTop');
-            const footerPublish = document.getElementById('modalFooterPublish');
-            const searchContainer = document.getElementById('gallerySearchContainer');
-
-            let bcHtml = `<span onclick="window.navGalleryToRoot()"><i class="fa-solid fa-server"></i> Root</span>`;
-            if(window.galleryState.level !== 'root') {
-                const safeName = window.galleryState.comicName.replace(/'/g, "\\'");
-                bcHtml += ` <i class="fa-solid fa-chevron-right" style="font-size:10px;"></i> <span onclick="window.navGalleryToComic('${window.galleryState.comicId}', '${safeName}')">${window.galleryState.comicName}</span>`;
-            }
-            if(window.galleryState.level === 'chapter_folder') {
-                bcHtml += ` <i class="fa-solid fa-chevron-right" style="font-size:10px;"></i> <span class="active">${window.galleryState.chapterFolderName}</span>`;
-                document.getElementById('modalChapterUpdateDate').value = new Date().toISOString().split('T')[0];
-            }
-            breadcrumb.innerHTML = bcHtml;
-
-            const isInsideFolder = (window.galleryState.level === 'chapter_folder');
-            btnUpload.style.display = isInsideFolder ? 'flex' : 'none';
-            footerPublish.style.display = isInsideFolder ? 'flex' : 'none';
-
-            grid.innerHTML = '<div style="grid-column: 1/-1; text-align:center; padding:30px; font-weight:500;"><i class="fa-solid fa-spinner fa-spin"></i> Memuat folder...</div>';
-
-            try {
-                if (window.galleryState.level === 'root') {
-                    searchContainer.style.display = 'block';
-                    grid.innerHTML = '';
-                    if (window.allComicsList.length === 0) {
-                        grid.innerHTML = '<div style="grid-column: 1/-1; text-align:center; padding:40px; color:var(--text-muted);">Belum ada komik terdaftar.</div>';
-                        return;
-                    }
-                    window.allComicsList.forEach(c => {
-                        const safeTitle = c.title.replace(/'/g, "\\'");
-                        grid.innerHTML += `
-                            <div class="folder-card root-comic-card" onclick="window.navGalleryToComic('${c.id}', '${safeTitle}')">
-                                <img src="${c.coverUrl}" class="folder-icon comic-cover" onerror="this.src='https://placehold.co/60x80?text=Cover'">
-                                <div class="folder-title">${c.title}</div>
-                                <div class="folder-subtitle">Folder Komik</div>
-                            </div>
-                        `;
-                    });
+        window.clearHistory = async function() {
+            if(confirm("Bersihkan semua riwayat bacaan?")) {
+                localStorage.removeItem('comicHistoryDetail');
+                if(auth.currentUser) {
+                    try {
+                        const snap = await getDocs(collection(db, "users", auth.currentUser.uid, "history"));
+                        snap.forEach(async (d) => {
+                            await deleteDoc(doc(db, "users", auth.currentUser.uid, "history", d.id));
+                        });
+                    } catch(e) {}
                 }
-                else if (window.galleryState.level === 'comic_folder') {
-                    searchContainer.style.display = 'none';
-                    grid.innerHTML = ''; 
-                    const chaptersRef = collection(db, "comics", window.galleryState.comicId, "chapters");
-                    const snapshot = await getDocs(chaptersRef);
-                    let chapters = [];
-                    snapshot.forEach(doc => chapters.push({ id: doc.id, ...doc.data() }));
-                    chapters.sort((a, b) => b.chapterNumber - a.chapterNumber);
+                renderReadingHistory();
+            }
+        }
 
-                    if (chapters.length === 0) {
-                        grid.innerHTML = `<div style="grid-column: 1/-1; text-align:center; padding:40px; color:var(--text-muted);">Belum ada folder chapter dibuat.<br>Tutup file manager dan klik tombol "Simpan & Buat Folder" di form utama terlebih dahulu.</div>`;
-                    } else {
-                        chapters.forEach(ch => {
-                            const totalMedia = ch.images ? ch.images.length : 0;
-                            const estimatedSizeMB = (totalMedia * 0.5).toFixed(1);
-                            const safeTitle = (ch.title || '').replace(/'/g, "\\'");
-                            const folderLabel = `Chapter ${ch.chapterNumber}`;
-                            
-                            grid.innerHTML += `
-                                <div class="folder-card" onclick="window.navGalleryToChapterFolder('${ch.id}', '${folderLabel}', window.encodeImgs('${encodeURIComponent(JSON.stringify(ch.images || []))}') )">
-                                    <button class="btn-delete-folder" onclick="event.stopPropagation(); window.deleteChapterFolder('${window.galleryState.comicId}', '${ch.id}')" title="Hapus Folder"><i class="fa-solid fa-trash-can"></i></button>
-                                    <i class="fa-solid fa-folder-open folder-icon" style="color: #fbbf24;"></i>
-                                    <div class="folder-title">${folderLabel}</div>
-                                    <div class="folder-subtitle">${safeTitle}<br>${totalMedia} Halaman • ~${estimatedSizeMB} MB</div>
-                                </div>
-                            `;
+        // ================= FITUR BOOKMARK =================
+        window.toggleBookmark = async function() {
+            if(!auth.currentUser) { 
+                alert("Silakan Login terlebih dahulu di menu Profil untuk menyimpan Bookmark!"); 
+                switchNav('profile');
+                return; 
+            }
+            if(!window.currentActiveComicId) return;
+            
+            const cid = window.currentActiveComicId;
+            const isBookmarked = window.userBookmarks.includes(cid);
+            
+            try {
+                if(isBookmarked) {
+                    await deleteDoc(doc(db, "users", auth.currentUser.uid, "bookmarks", cid));
+                    window.userBookmarks = window.userBookmarks.filter(id => id !== cid);
+                } else {
+                    await setDoc(doc(db, "users", auth.currentUser.uid, "bookmarks", cid), { comicId: cid, addedAt: new Date() });
+                    window.userBookmarks.push(cid);
+                }
+                checkBookmarkStatus(cid);
+                renderBookmarks();
+                document.getElementById('statBookmarkCount').innerText = window.userBookmarks.length;
+            } catch(e) {
+                console.error("Gagal simpan bookmark", e);
+            }
+        }
+
+        function checkBookmarkStatus(comicId) {
+            const btnBm = document.getElementById('btnBookmark');
+            if(!btnBm) return;
+            if(window.userBookmarks.includes(comicId)) {
+                btnBm.className = "fa-solid fa-bookmark bookmark-active";
+            } else {
+                btnBm.className = "fa-regular fa-bookmark";
+            }
+        }
+
+        function renderBookmarks() {
+            const container = document.getElementById('bookmarkContainer');
+            if(!auth.currentUser) {
+                container.innerHTML = '<div class="empty-history" style="grid-column:1/-1;">Harap masuk (Login) untuk melihat bookmark.</div>';
+                return;
+            }
+            if(window.userBookmarks.length === 0) {
+                container.innerHTML = '<div class="empty-history" style="grid-column:1/-1;">Anda belum menyimpan komik apapun.</div>';
+                return;
+            }
+            let bmHTML = '';
+            window.userBookmarks.forEach(id => {
+                if(window.comicsData[id]) {
+                    const data = window.comicsData[id];
+                    bmHTML += `
+                        <div class="manga-card-simple" onclick="openDetail('${id}')" style="width:100%;">
+                            <img src="${data.coverUrl}">
+                            <div class="info-container"><div class="title">${data.title}</div></div>
+                        </div>
+                    `;
+                }
+            });
+            container.innerHTML = bmHTML;
+        }
+
+        // ================= FITUR KOMENTAR =================
+        async function fetchComments(comicId) {
+            const container = document.getElementById('commentListContainer');
+            const badge = document.getElementById('commentBadge');
+            container.innerHTML = '<div class="loading-text"><i class="fa-solid fa-spinner fa-spin"></i><br>Memuat komentar...</div>';
+            badge.style.display = 'none';
+
+            try {
+                const commentRef = collection(db, "comics", comicId, "comments");
+                const q = query(commentRef, orderBy("timestamp", "desc"));
+                const snapshot = await getDocs(q);
+                
+                let commentHTML = ''; let total = 0;
+                snapshot.forEach(doc => {
+                    const c = doc.data(); total++;
+                    const dateObj = c.timestamp ? c.timestamp.toDate() : new Date();
+                    const dateStr = dateObj.toLocaleDateString('id-ID', {day:'numeric', month:'short'}) + ' ' + String(dateObj.getHours()).padStart(2, '0') + ':' + String(dateObj.getMinutes()).padStart(2, '0');
+                    const initial = c.username ? c.username.charAt(0).toUpperCase() : 'U';
+                    
+                    commentHTML += `
+                        <div class="comment-item">
+                            <div class="comment-avatar">${initial}</div>
+                            <div class="comment-content">
+                                <div class="comment-user">${c.username} <span class="comment-time">${dateStr}</span></div>
+                                <div class="comment-text">${c.text}</div>
+                            </div>
+                        </div>
+                    `;
+                });
+                
+                if(total > 0) {
+                    container.innerHTML = commentHTML;
+                    badge.innerText = total; badge.style.display = 'inline-block';
+                } else {
+                    container.innerHTML = '<div class="empty-history" style="background:none;">Jadilah yang pertama berkomentar!</div>';
+                }
+            } catch(e) { container.innerHTML = '<div class="loading-text">Gagal memuat komentar.</div>'; }
+        }
+
+        window.postComment = async function() {
+            if(!auth.currentUser) { alert("Silakan Login terlebih dahulu!"); return; }
+            const textInput = document.getElementById('newCommentText');
+            const text = textInput.value.trim();
+            if(text === "") return;
+            const comicId = window.currentActiveComicId;
+
+            try {
+                const btn = document.querySelector('.btn-send-comment');
+                btn.innerText = "..."; btn.disabled = true;
+
+                await addDoc(collection(db, "comics", comicId, "comments"), {
+                    userId: auth.currentUser.uid,
+                    username: auth.currentUser.email.split('@')[0],
+                    text: text,
+                    timestamp: serverTimestamp()
+                });
+
+                textInput.value = "";
+                btn.innerText = "Kirim"; btn.disabled = false;
+                fetchComments(comicId);
+            } catch (e) { alert("Gagal mengirim komentar."); }
+        }
+
+        // ================= FITUR RATING BINTANG =================
+        async function loadUserRating(comicId) {
+            const stars = document.querySelectorAll('#userStarRater i');
+            stars.forEach(s => { s.className = 'fa-regular fa-star'; });
+
+            if(auth.currentUser) {
+                try {
+                    const ratingDoc = await getDoc(doc(db, "comics", comicId, "ratings", auth.currentUser.uid));
+                    if(ratingDoc.exists()) {
+                        const val = ratingDoc.data().rating;
+                        stars.forEach((s, idx) => {
+                            if(idx < val) { s.className = 'fa-solid fa-star active'; }
                         });
                     }
-                }
-                else if (window.galleryState.level === 'chapter_folder') {
-                    searchContainer.style.display = 'none';
-                    grid.innerHTML = '';
-                    if (!window.galleryState.currentChapterImages || window.galleryState.currentChapterImages.length === 0) {
-                        grid.innerHTML = '<div style="grid-column: 1/-1; text-align:center; padding:40px; color:var(--text-muted);"><i class="fa-solid fa-images" style="font-size:40px; margin-bottom:15px; color:#cbd5e1; display:block;"></i>Folder chapter ini masih kosong.<br>Silakan klik tombol "Upload ke Folder Chapter Ini" di kanan atas.</div>';
-                        return;
-                    }
-
-                    window.galleryState.currentChapterImages.forEach((url, index) => {
-                        const isSelected = window.selectedMediaGallery.findIndex(m => m.url === url) !== -1;
-                        const orderIndex = isSelected ? window.selectedMediaGallery.findIndex(m => m.url === url) + 1 : '';
-                        
-                        grid.innerHTML += `
-                            <div class="media-card ${isSelected ? 'selected' : ''}" id="gal-item-${index}">
-                                <div class="media-thumb" onclick="window.toggleSelectGalleryItem('${index}', '${url}')" title="Pilih halaman">
-                                    <div class="check-circle" id="badge-${index}">${orderIndex}</div>
-                                    <img src="${url}" loading="lazy">
-                                </div>
-                                <div class="media-info">Halaman ${index + 1}</div>
-                                <div class="media-actions">
-                                    <button class="btn-pilih" onclick="window.toggleSelectGalleryItem('${index}', '${url}')">
-                                        ${isSelected ? '<i class="fa-solid fa-check"></i> Terpilih' : 'Pilih'}
-                                    </button>
-                                    <button class="btn-icon-outline" onclick="openLightboxPreview('${url}')" title="Preview Penuh"><i class="fa-solid fa-eye"></i></button>
-                                    <button class="btn-icon-outline text-danger" onclick="window.deleteImageFromChapter('${index}', '${url}')" title="Hapus Permanen"><i class="fa-solid fa-trash-can"></i></button>
-                                </div>
-                            </div>
-                        `;
-                    });
-                }
-            } catch(e) { 
-                console.error(e); 
-                grid.innerHTML = `<div style="grid-column: 1/-1; text-align:center; padding:20px; color:red;">Gagal memuat sistem folder. Pastikan koneksi aman.</div>`; 
+                } catch(e) {}
             }
         }
 
-        window.encodeImgs = function(str) { return str; };
-
-        window.selectedMediaGallery = []; 
-
-        window.toggleSelectGalleryItem = function(indexKey, url) {
-            const index = window.selectedMediaGallery.findIndex(m => m.url === url);
-            if(index !== -1) { window.selectedMediaGallery.splice(index, 1); } 
-            else { window.selectedMediaGallery.push({ url: url, indexKey: indexKey }); }
-            window.refreshGalleryBadges();
-        }
-
-        window.refreshGalleryBadges = function() {
-            document.querySelectorAll('.media-card').forEach(el => {
-                el.classList.remove('selected');
-                const btn = el.querySelector('.btn-pilih');
-                if(btn) btn.innerText = "Pilih";
-                const badge = el.querySelector('.check-circle');
-                if(badge) badge.innerText = "";
-            });
+        window.submitRating = async function(starValue) {
+            if(!auth.currentUser) { 
+                alert("Silakan Login terlebih dahulu di menu Profil untuk memberi rating!"); 
+                switchNav('profile');
+                return; 
+            }
+            const comicId = window.currentActiveComicId;
+            if(!comicId) return;
             
-            window.selectedMediaGallery.forEach((item, index) => {
-                const galItem = document.getElementById(`gal-item-${item.indexKey}`);
-                if(galItem) {
-                    galItem.classList.add('selected');
-                    galItem.querySelector('.btn-pilih').innerHTML = '<i class="fa-solid fa-check"></i> Terpilih';
-                    galItem.querySelector('.check-circle').innerText = index + 1; 
-                }
-            });
-        }
-
-        /* =========================================
-           PUBLIKASI FINAL CHAPTER (DIAMANKAN DENGAN STORAGE)
-           ========================================= */
-        window.confirmAndPublishChapter = async function() {
-            // Ambil ID dari state aktif, form luar, atau memori cadangan
-            const comicId = document.getElementById('chapterComicId').value || window.galleryState.comicId || localStorage.getItem('activeComicId');
-            const chapterId = window.galleryState.chapterFolderId || localStorage.getItem('activeChapterFolderId');
-            const finalUpdateDate = document.getElementById('modalChapterUpdateDate').value; 
-
-            if(!comicId || !chapterId) {
-                alert("Kesalahan sistem: Komik atau folder tidak ditemukan. Silakan pilih komik dan buat folder chapter terlebih dahulu di Langkah 1.");
-                return;
-            }
-            if(!finalUpdateDate) {
-                alert("Mohon isi Tanggal Update terlebih dahulu!");
-                return;
-            }
-
-            let finalUrls = window.selectedMediaGallery.map(m => m.url);
-            if (finalUrls.length === 0) {
-                finalUrls = window.galleryState.currentChapterImages;
-            }
-
-            if(finalUrls.length === 0) {
-                alert("Folder masih kosong! Silakan upload minimal 1 gambar terlebih dahulu sebelum mempublikasikan.");
-                return;
-            }
-
-            const btnTop = document.querySelector('#modalFooterPublish .btn-success-sm');
-            const originalText = btnTop.innerHTML;
-            btnTop.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Menyimpan...';
-            btnTop.disabled = true;
-
             try {
-                const chapterDocRef = doc(db, "comics", comicId, "chapters", chapterId);
-                const title = document.getElementById('chapterTitle').value;
-
-                await updateDoc(chapterDocRef, {
-                    images: finalUrls,
-                    title: title,
-                    updateDate: finalUpdateDate 
+                const stars = document.querySelectorAll('#userStarRater i');
+                stars.forEach((s, idx) => {
+                    if(idx < starValue) { s.className = 'fa-solid fa-star active'; }
+                    else { s.className = 'fa-regular fa-star'; }
                 });
 
-                closeMediaGallery();
-
-                const statusEl = document.getElementById('chapterUploadStatus');
-                statusEl.style.display = "block";
-                statusEl.innerText = "✅ Selesai! Chapter Berhasil Dipublikasikan!";
-                statusEl.style.color = "var(--success)";
-                statusEl.style.background = "#ecfdf5";
-
-                document.getElementById('uploadChapterForm').reset();
-                document.getElementById('chapterComicSearch').value = '';
-                document.getElementById('chapterComicId').value = '';
-                document.getElementById('saveFolderStatus').style.display = 'none';
-
-                window.selectedMediaGallery = [];
-                localStorage.removeItem('activeComicId');
-                localStorage.removeItem('activeComicName');
-                localStorage.removeItem('activeChapterFolderId');
-
-                if(document.getElementById('filterChapterId').value === comicId) {
-                    window.loadChaptersList();
+                await setDoc(doc(db, "comics", comicId, "ratings", auth.currentUser.uid), { 
+                    rating: starValue,
+                    updatedAt: serverTimestamp()
+                });
+                
+                const comicRef = doc(db, "comics", comicId);
+                const cSnap = await getDoc(comicRef);
+                if(cSnap.exists()) {
+                    let rCount = cSnap.data().ratingCount || 0;
+                    let rTotal = cSnap.data().ratingTotal || 0;
+                    
+                    await updateDoc(comicRef, { 
+                        ratingCount: increment(1), 
+                        ratingTotal: increment(starValue) 
+                    });
+                    
+                    const newCount = rCount + 1;
+                    const newAvg = ((rTotal + starValue) / newCount).toFixed(1);
+                    document.getElementById('detailAvgRating').innerText = newAvg;
+                    document.getElementById('detailCountRating').innerText = `(${newCount})`;
                 }
-
-            } catch(e) {
-                alert("Error Publikasi: " + e.message);
-            }
-
-            btnTop.innerHTML = originalText;
-            btnTop.disabled = false;
+            } catch(e) { alert("Gagal menyimpan rating."); }
         }
 
-        window.loadChaptersList = async function() {
-            const comicId = document.getElementById('filterChapterId').value;
-            const tbody = document.getElementById('chapterListTableBody');
-            
-            if(!comicId) { tbody.innerHTML = '<tr><td colspan="5" style="text-align: center;">Silakan pilih komik di atas...</td></tr>'; return; }
-            
-            tbody.innerHTML = '<tr><td colspan="5" style="text-align: center;">Memuat chapter...</td></tr>';
-            
+        // ================= HALAMAN DETAIL UTAMA =================
+        window.openDetail = async function(comicId) {
+            window.currentActiveComicId = comicId;
+            document.querySelectorAll('.app-container > div').forEach(el => { if(el.id!=='mainBottomNav') el.style.display = 'none'; });
+            document.getElementById('detail-page').style.display = 'block';
+            document.getElementById('mainBottomNav').style.display = 'none';
+            window.scrollTo(0, 0);
+            switchTab('detail');
+
+            if (comicId && window.comicsData[comicId]) {
+                const data = window.comicsData[comicId];
+                
+                try {
+                    const comicRef = doc(db, "comics", comicId);
+                    await updateDoc(comicRef, { views: increment(1) });
+                    window.comicsData[comicId].views = (data.views || 0) + 1;
+                } catch(e) {}
+
+                fetchChapters(comicId);
+                fetchComments(comicId);
+                loadUserRating(comicId);
+                checkBookmarkStatus(comicId);
+
+                document.getElementById('detailTitle').innerText = data.title;
+                document.getElementById('detailAltTitle').innerText = data.altTitle || "-";
+                document.getElementById('detailStatus').innerText = data.status || "Ongoing";
+                document.getElementById('detailSynopsis').innerText = data.synopsis || "Belum ada sinopsis.";
+                document.getElementById('detailViews').innerText = window.comicsData[comicId].views || 1;
+                
+                const avg = data.ratingCount ? (data.ratingTotal / data.ratingCount).toFixed(1) : "0.0";
+                const count = data.ratingCount || 0;
+                document.getElementById('detailAvgRating').innerText = avg;
+                document.getElementById('detailCountRating').innerText = `(${count})`;
+                
+                document.getElementById('detailAuthor').innerText = data.author || "Tidak diketahui";
+                document.getElementById('detailType').innerText = data.type || "Manga";
+                document.getElementById('detailRelease').innerText = data.releaseDate || "-";
+
+                document.getElementById('detailCoverImage').src = data.coverUrl;
+                document.getElementById('detailHeaderBg').style.backgroundImage = `url('${data.coverUrl}')`;
+
+                const ageHtml = data.ageRating ? `<span>${data.ageRating}</span>` : '<span>SU</span>';
+                document.getElementById('detailAgeRating').innerHTML = `Rating${ageHtml}`;
+
+                const tagsContainer = document.getElementById('detailTags');
+                tagsContainer.innerHTML = '';
+                if(data.type) tagsContainer.innerHTML += `<span class="tag">${data.type}</span>`;
+                if(data.genres) data.genres.forEach(g => tagsContainer.innerHTML += `<span class="tag">${g}</span>`);
+            }
+        }
+
+        window.closeDetail = function() {
+            document.getElementById('detail-page').style.display = 'none';
+            document.getElementById('home-page').style.display = 'block';
+            document.getElementById('mainBottomNav').style.display = 'flex';
+            window.currentActiveComicId = null;
+        }
+
+        window.switchTab = function(tabName) {
+            document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+            document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
+            const buttons = document.querySelectorAll('.tab-btn');
+            if(tabName === 'detail') buttons[0].classList.add('active');
+            if(tabName === 'chapter') buttons[1].classList.add('active');
+            if(tabName === 'comment') buttons[2].classList.add('active');
+            document.getElementById('tab-' + tabName).classList.add('active');
+        }
+
+        async function fetchChapters(comicId) {
+            const container = document.getElementById('chapterListContainer');
+            const badge = document.getElementById('chapterBadge');
+            container.innerHTML = '<div class="loading-text"><i class="fa-solid fa-spinner fa-spin"></i><br>Mencari chapter...</div>';
+            badge.style.display = 'none';
+
             try {
                 const chaptersRef = collection(db, "comics", comicId, "chapters");
-                const snapshot = await getDocs(chaptersRef);
-                let chapters = [];
-                snapshot.forEach(doc => chapters.push({ id: doc.id, ...doc.data() }));
+                const q = query(chaptersRef, orderBy("chapterNumber", "desc"));
+                const snapshot = await getDocs(q);
                 
-                chapters.sort((a, b) => b.chapterNumber - a.chapterNumber);
-                
-                tbody.innerHTML = '';
-                if(chapters.length === 0) { tbody.innerHTML = '<tr><td colspan="5" style="text-align: center;">Belum ada chapter terpublish.</td></tr>'; return; }
-                
-                chapters.forEach(ch => {
-                    const date = ch.updateDate || (ch.createdAt ? ch.createdAt.toDate().toLocaleDateString('id-ID', {day:'numeric', month:'short', year:'numeric'}) : '-');
-                    tbody.innerHTML += `
-                        <tr>
-                            <td><strong>Chapter ${ch.chapterNumber}</strong></td>
-                            <td>${ch.title || '-'}</td>
-                            <td>${ch.images ? ch.images.length : 0} Media</td>
-                            <td><span style="font-size: 13px;">${date}</span></td>
-                            <td>
-                                <button type="button" class="btn-delete" onclick="window.deleteChapter('${comicId}', '${ch.id}')" title="Hapus"><i class="fa-solid fa-trash-can"></i></button>
-                            </td>
-                        </tr>
-                    `;
+                let chapterHTML = ''; let total = 0;
+                snapshot.forEach(doc => {
+                    const ch = doc.data(); total++;
+                    const date = ch.updateDate || "Baru";
+                    const title = ch.title ? `- ${ch.title}` : '';
+                    chapterHTML += `
+                        <li class="chapter-item" onclick="openReader('${comicId}', '${doc.id}', '${ch.chapterNumber}', 1)">
+                            <div class="chapter-info">
+                                <span class="chapter-title">Chapter ${ch.chapterNumber} ${title}</span>
+                                <span class="chapter-date">${date}</span>
+                            </div>
+                            <div class="chapter-action">Baca</div>
+                        </li>`;
                 });
-            } catch(e) { console.error(e); }
-        }
-
-        window.deleteChapter = async function(comicId, chapterId) {
-            if(confirm("Yakin ingin menghapus chapter ini secara permanen?")) {
-                try { await deleteDoc(doc(db, "comics", comicId, "chapters", chapterId)); window.loadChaptersList(); } catch(e) { alert("Gagal!"); }
-            }
-        }
-
-        window.deleteChapterFolder = async function(comicId, chapterId) {
-            if(!confirm("⚠️ Yakin ingin menghapus FOLDER INI beserta seluruh isinya secara permanen?")) return;
-            
-            try {
-                await deleteDoc(doc(db, "comics", comicId, "chapters", chapterId));
-                window.loadCloudGallery(); 
-                if(document.getElementById('filterChapterId').value === comicId) {
-                    window.loadChaptersList(); 
+                if(total > 0) {
+                    container.innerHTML = chapterHTML;
+                    badge.innerText = total; badge.style.display = 'inline-block';
+                } else {
+                    container.innerHTML = '<div class="loading-text">Belum ada chapter dirilis.</div>';
                 }
-            } catch(e) { 
-                alert("Gagal menghapus folder: " + e.message); 
-            }
+            } catch(e) { container.innerHTML = '<div class="loading-text">Gagal memuat chapter.</div>'; }
         }
-    </script>
 
-    <!-- SCRIPT TAMBAHAN (SEARCH & UI) -->
-    <script>
-        window.switchMasterTab = function(cardId, btnElement) {
-            document.querySelectorAll('.master-tab-btn').forEach(btn => btn.classList.remove('active'));
-            btnElement.classList.add('active');
+        // ================= READER VIEW (BACA KOMIK) =================
+        window.openReader = async function(comicId, chapterId, chapterNum, targetPageIndex = 1) {
+            window.currentActiveComicId = comicId;
+            window.currentActiveChapterId = chapterId;
+            window.currentActiveChapterNum = chapterNum;
+
+            document.querySelectorAll('.app-container > div').forEach(el => { if(el.id!=='mainBottomNav') el.style.display = 'none'; });
+            document.getElementById('reader-page').style.display = 'block';
+            document.getElementById('readerTitle').innerText = `Chapter ${chapterNum} • Hal. ${targetPageIndex}`;
+            document.getElementById('readerHeader').classList.remove('hidden');
             
-            document.querySelectorAll('.master-card').forEach(card => card.classList.remove('active'));
-            document.getElementById(cardId).classList.add('active');
-        };
+            const imgContainer = document.getElementById('readerImagesContainer');
+            const loader = document.getElementById('readerLoading');
+            imgContainer.innerHTML = '';
+            loader.style.display = 'block';
+            window.scrollTo(0, 0);
 
-        window.filterGalleryFolders = function() {
-            const search = document.getElementById('gallerySearchInput').value.toLowerCase();
-            const cards = document.querySelectorAll('#cloudGalleryGrid .root-comic-card');
-            cards.forEach(card => {
-                const title = card.querySelector('.folder-title').innerText.toLowerCase();
-                card.style.display = title.includes(search) ? 'flex' : 'none';
-            });
-        }
-        
-        function switchView(viewId, element) {
-            document.querySelectorAll('.sidebar-menu a').forEach(el => el.classList.remove('active'));
-            if(element) element.classList.add('active');
-            document.querySelectorAll('.admin-view').forEach(view => view.classList.remove('active'));
-            document.getElementById(viewId).classList.add('active');
-            if(window.innerWidth <= 992) toggleSidebar();
-            if(viewId === 'view-daftar' && typeof window.loadComicsList === 'function') { window.loadComicsList(); }
-        }
+            try {
+                const snap = await getDoc(doc(db, "comics", comicId, "chapters", chapterId));
+                if(snap.exists() && snap.data().images) {
+                    const images = snap.data().images;
+                    loader.style.display = 'none';
+                    if(images.length === 0) {
+                        imgContainer.innerHTML = '<div class="loading-text">Gambar kosong. Admin belum mengupload.</div>';
+                    } else {
+                        images.forEach((url, idx) => { 
+                            imgContainer.innerHTML += `<img src="${url}" loading="lazy" data-page="${idx + 1}" alt="Page ${idx + 1}">`; 
+                        });
 
-        const sidebar = document.getElementById('sidebar');
-        const overlay = document.getElementById('sidebarOverlay');
-        function toggleSidebar() { sidebar.classList.toggle('active'); overlay.classList.toggle('active'); }
-        document.getElementById('sidebarToggle').addEventListener('click', toggleSidebar);
-        overlay.addEventListener('click', toggleSidebar);
+                        setTimeout(() => {
+                            const targetImg = imgContainer.querySelector(`img[data-page="${targetPageIndex}"]`);
+                            if (targetImg) {
+                                targetImg.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                            }
+                        }, 300);
 
-        function previewImage(event) {
-            const reader = new FileReader();
-            reader.onload = function(){ document.getElementById('coverPreview').src = reader.result; document.getElementById('coverPreview').style.display = 'block'; };
-            if(event.target.files[0]) reader.readAsDataURL(event.target.files[0]);
-        }
+                        saveReadingProgress(comicId, chapterId, chapterNum, targetPageIndex);
 
-        function toggleCustomSelect(listId) {
-            document.getElementById(listId).classList.toggle('show');
-        }
-        function filterCustomSelect(inputElement, listId) {
-            let filter = inputElement.value.toUpperCase();
-            let divs = document.getElementById(listId).getElementsByTagName('div');
-            for (let i = 0; i < divs.length; i++) {
-                let txtValue = divs[i].textContent || divs[i].innerText;
-                divs[i].style.display = txtValue.toUpperCase().indexOf(filter) > -1 ? "" : "none";
-            }
-        }
-        window.selectCustomOption = function(id, title, hiddenId, inputId, listId) {
-            document.getElementById(hiddenId).value = id;
-            document.getElementById(inputId).value = title;
-            document.getElementById(listId).classList.remove('show');
-            
-            // Simpan cache pilihan komik secara instan
-            if(hiddenId === 'chapterComicId') {
-                localStorage.setItem('activeComicId', id);
-                localStorage.setItem('activeComicName', title);
-            }
-            
-            if(hiddenId === 'filterChapterId' && typeof window.loadChaptersList === 'function') {
-                window.loadChaptersList();
-            }
-        };
+                        if (readerScrollListener) window.removeEventListener('scroll', readerScrollListener);
 
-        window.onclick = function(event) {
-            if (!event.target.matches('.search-select input')) {
-                document.querySelectorAll('.search-options.show').forEach(el => el.classList.remove('show'));
+                        let lastSavedPage = targetPageIndex;
+                        readerScrollListener = function() {
+                            const imgs = imgContainer.querySelectorAll('img[data-page]');
+                            let currentVisiblePage = 1;
+                            imgs.forEach(img => {
+                                const rect = img.getBoundingClientRect();
+                                if (rect.top <= window.innerHeight / 2 && rect.bottom >= 0) {
+                                    currentVisiblePage = parseInt(img.getAttribute('data-page')) || 1;
+                                }
+                            });
+                            if (currentVisiblePage !== lastSavedPage) {
+                                lastSavedPage = currentVisiblePage;
+                                document.getElementById('readerTitle').innerText = `Chapter ${chapterNum} • Hal. ${currentVisiblePage}`;
+                                saveReadingProgress(comicId, chapterId, chapterNum, currentVisiblePage);
+                            }
+                        };
+                        window.addEventListener('scroll', readerScrollListener);
+                    }
+                } else {
+                    loader.style.display = 'none';
+                    imgContainer.innerHTML = '<div class="loading-text">Chapter rusak atau terhapus.</div>';
+                }
+            } catch(e) {
+                loader.style.display = 'none';
+                imgContainer.innerHTML = '<div class="loading-text">Koneksi Error saat memuat gambar.</div>';
             }
         }
 
-        window.navGalleryToRoot = function() { 
-            window.galleryState = { level: 'root', comicId: null, comicName: '', chapterFolderId: null, chapterFolderName: '', currentChapterImages: [] }; 
-            window.loadCloudGallery(); 
-        }
-        window.navGalleryToComic = function(comicId, comicTitle) { 
-            window.galleryState = { level: 'comic_folder', comicId: comicId, comicName: comicTitle, chapterFolderId: null, chapterFolderName: '', currentChapterImages: [] }; 
-            localStorage.setItem('activeComicId', comicId);
-            localStorage.setItem('activeComicName', comicTitle);
-            window.loadCloudGallery(); 
-        }
-        window.navGalleryToChapterFolder = function(chapterId, chapterName, encodedImgsJson) { 
-            const images = JSON.parse(decodeURIComponent(encodedImgsJson));
-            window.galleryState.level = 'chapter_folder'; 
-            window.galleryState.chapterFolderId = chapterId; 
-            window.galleryState.chapterFolderName = chapterName; 
-            window.galleryState.currentChapterImages = images;
-            localStorage.setItem('activeChapterFolderId', chapterId);
-            window.loadCloudGallery(); 
-        }
-
-        function openMediaGallery() {
-            document.getElementById('cloudGalleryModal').classList.remove('hidden');
-            
-            // Ambil data dari input form luar jika ada
-            const formComicId = document.getElementById('chapterComicId').value;
-            const formComicName = document.getElementById('chapterComicSearch').value;
-            
-            if (formComicId) {
-                window.galleryState = { level: 'comic_folder', comicId: formComicId, comicName: formComicName, chapterFolderId: null, chapterFolderName: '', currentChapterImages: [] };
-                localStorage.setItem('activeComicId', formComicId);
-                localStorage.setItem('activeComicName', formComicName);
-            } else if (localStorage.getItem('activeComicId')) {
-                window.galleryState = { 
-                    level: 'comic_folder', 
-                    comicId: localStorage.getItem('activeComicId'), 
-                    comicName: localStorage.getItem('activeComicName') || 'Komik', 
-                    chapterFolderId: null, 
-                    chapterFolderName: '', 
-                    currentChapterImages: [] 
-                };
+        window.closeReader = function() {
+            if (readerScrollListener) window.removeEventListener('scroll', readerScrollListener);
+            document.getElementById('reader-page').style.display = 'none';
+            document.getElementById('readerImagesContainer').innerHTML = '';
+            if (window.currentActiveComicId) {
+                document.getElementById('detail-page').style.display = 'block';
             } else {
-                window.galleryState = { level: 'root', comicId: null, comicName: '', chapterFolderId: null, chapterFolderName: '', currentChapterImages: [] };
+                document.getElementById('home-page').style.display = 'block';
+                document.getElementById('mainBottomNav').style.display = 'flex';
             }
-            
-            if(document.getElementById('gallerySearchInput')) {
-                document.getElementById('gallerySearchInput').value = ''; 
-            }
-            window.loadCloudGallery();
-        }
-        
-        function closeMediaGallery() {
-            document.getElementById('cloudGalleryModal').classList.add('hidden');
         }
 
-        window.openLightboxPreview = function(url) {
-            document.getElementById('lightboxImage').src = url;
-            document.getElementById('lightboxModal').classList.add('show');
+        window.toggleReaderNav = function() { document.getElementById('readerHeader').classList.toggle('hidden'); }
+
+        // ================= PENGENDALI MENU BAWAH =================
+        window.switchNav = function(pageId, element = null) {
+            document.querySelectorAll('.app-container > div').forEach(el => {
+                if(el.id !== 'mainBottomNav') el.style.display = 'none';
+            });
+            document.getElementById(pageId + '-page').style.display = 'block';
+            
+            if(element) {
+                document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
+                element.classList.add('active');
+            } else {
+                document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
+                if(pageId === 'home') document.querySelectorAll('.nav-item')[0].classList.add('active');
+                if(pageId === 'bookmark') document.querySelectorAll('.nav-item')[1].classList.add('active');
+                if(pageId === 'profile') document.querySelectorAll('.nav-item')[2].classList.add('active');
+            }
+            window.scrollTo(0,0);
         }
-        window.closeLightboxPreview = function() {
-            document.getElementById('lightboxModal').classList.remove('show');
-            setTimeout(() => { document.getElementById('lightboxImage').src = ''; }, 300);
+
+        // Slider Otomatis Home
+        let slideIndex = 0;
+        const slides = document.getElementById('hero-slider');
+        const dots = document.querySelectorAll('.dot');
+        window.currentSlide = function(index) {
+            slideIndex = index;
+            if(slides && dots.length > 0) {
+                slides.style.transform = `translateX(-${slideIndex * 100}%)`;
+                dots.forEach(dot => dot.classList.remove('active'));
+                dots[slideIndex].classList.add('active');
+            }
         }
+        if(slides && dots.length > 0) setInterval(() => { slideIndex = (slideIndex + 1) % dots.length; window.currentSlide(slideIndex); }, 4000);
     </script>
 </body>
 </html>

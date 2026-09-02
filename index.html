@@ -19,9 +19,7 @@
         }
 
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; -webkit-tap-highlight-color: transparent; }
-
         body { background-color: var(--bg-gray); color: var(--text-dark); display: flex; justify-content: center; }
-
         .app-container { width: 100%; max-width: 480px; background-color: #ffffff; min-height: 100vh; position: relative; padding-bottom: 65px; box-shadow: 0 0 20px rgba(0,0,0,0.15); overflow-x: hidden; }
 
         /* HEADER & SEARCH */
@@ -78,10 +76,11 @@
         .nav-item.active .icon-bg { background-color: var(--light-blue); width: 48px; height: 28px; display: flex; align-items: center; justify-content: center; border-radius: 14px; }
         .nav-item.active i { margin-bottom: 0; }
 
-        /* ================= DETAIL PAGE ================= */
+        /* PAGE CONTROL */
         #detail-page, #profile-page, #reader-page, #bookmark-page { display: none; background-color: #ffffff; min-height: 100vh; animation: fadeIn 0.3s ease-in-out; padding-bottom: 65px; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 
+        /* DETAIL PAGE */
         .detail-top-nav { position: fixed; top: 0; width: 100%; max-width: 480px; display: flex; justify-content: space-between; align-items: center; padding: 15px 20px; z-index: 200; background: rgba(0, 0, 0, 0.2); backdrop-filter: blur(10px); color: white; transition: background 0.3s; }
         .detail-top-nav i { font-size: 20px; cursor: pointer; text-shadow: 0 1px 3px rgba(0,0,0,0.5); }
         .detail-top-nav .right-icons { display: flex; gap: 20px; }
@@ -93,7 +92,7 @@
         .comic-cover-wrapper { position: relative; width: 110px; flex-shrink: 0; }
         .comic-cover { width: 100%; border-radius: 8px; box-shadow: 0 5px 15px rgba(0,0,0,0.5); border: 1px solid rgba(255,255,255,0.2); }
         .age-rating { background: linear-gradient(135deg, #ff9800, #ff5722); color: white; text-align: center; padding: 4px 0; border-bottom-left-radius: 8px; border-bottom-right-radius: 8px; font-size: 11px; font-weight: 700; margin-top: -4px; position: relative; }
-        
+
         .comic-meta { flex-grow: 1; padding-bottom: 5px;}
         .comic-detail-title { font-size: 20px; font-weight: 700; line-height: 1.2; margin-bottom: 4px; text-shadow: 0 2px 4px rgba(0,0,0,0.5); }
         .comic-alt-title { font-size: 11px; color: #cccccc; margin-bottom: 8px; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; font-style: italic; }
@@ -112,18 +111,18 @@
 
         .synopsis-title { font-size: 16px; font-weight: 700; margin-bottom: 10px; color: var(--text-dark); }
         .synopsis-text { font-size: 13px; color: #444; line-height: 1.6; text-align: justify; margin-bottom: 20px; }
-        
+
         .detail-info-box { background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px; padding: 15px; font-size: 13px; }
         .detail-info-row { display: flex; justify-content: space-between; margin-bottom: 8px; padding-bottom: 8px; border-bottom: 1px dashed #cbd5e1; }
         .detail-info-row:last-child { border-bottom: none; margin-bottom: 0; padding-bottom: 0; }
         .detail-info-row span.label { font-weight: 600; color: #64748b; }
         .detail-info-row span.val { font-weight: 500; color: #0f172a; text-align: right; }
 
-        /* RATING STARS (Baru) */
+        /* RATING STARS */
         .rating-section { margin-top: 15px; padding-top: 15px; border-top: 1px dashed #cbd5e1; display: flex; align-items: center; justify-content: space-between; }
         .star-rater { display: flex; gap: 5px; font-size: 22px; color: #ccc; cursor: pointer; }
         .star-rater i.active { color: #ffc107; }
-        
+
         /* CHAPTER LIST */
         .chapter-list { list-style: none; padding: 0; margin: 0; }
         .chapter-item { display: flex; justify-content: space-between; align-items: center; padding: 14px 0; border-bottom: 1px solid var(--border-color); cursor: pointer; transition: 0.2s; }
@@ -131,9 +130,9 @@
         .chapter-title { font-size: 14px; font-weight: 600; color: var(--text-dark); }
         .chapter-date { font-size: 11px; color: #999; }
         .chapter-action { color: var(--primary-blue); font-size: 12px; font-weight: 700; background: var(--light-blue); padding: 6px 12px; border-radius: 16px; }
-        
+
         /* COMMENT UI (IG STYLE) */
-        .comment-wrapper { display: flex; flex-direction: column; height: 100%; min-height: 60vh; position: relative;}
+        .comment-wrapper { display: flex; flex-direction: column; height: 100%; min-height: 50vh; position: relative;}
         .comment-list { flex: 1; display: flex; flex-direction: column; gap: 18px; padding-bottom: 20px; }
         .comment-item { display: flex; gap: 12px; }
         .comment-avatar { width: 36px; height: 36px; border-radius: 50%; background: linear-gradient(135deg, var(--primary-blue), #8b5cf6); display: flex; align-items: center; justify-content: center; font-size: 14px; font-weight: bold; color: white; flex-shrink: 0;}
@@ -141,14 +140,11 @@
         .comment-user { font-weight: 700; font-size: 13px; color: #262626; margin-bottom: 3px; display:flex; gap:6px; align-items:center; }
         .comment-time { font-size: 11px; color: #8e8e8e; font-weight: 400; }
         .comment-text { font-size: 13px; color: #262626; line-height: 1.4; }
-        
-        /* Comment Input (Sticky) */
+
         .comment-input-area { position: sticky; bottom: -20px; background: white; padding: 10px 0; border-top: 1px solid #eee; display: flex; gap: 10px; align-items: center; z-index: 10; margin-top: 10px;}
         .comment-input-area input { flex: 1; padding: 10px 15px; border-radius: 20px; border: 1px solid #ddd; outline: none; font-size: 13px; background: #fafafa; }
         .btn-send-comment { background: none; border: none; color: var(--primary-blue); font-weight: 600; font-size: 14px; cursor: pointer; padding: 5px 10px; }
-        
         .login-prompt { background: #f8fafc; padding: 15px; border-radius: 8px; text-align: center; font-size: 13px; color: #666; border: 1px dashed #cbd5e1; margin-top: 10px; }
-        
         .loading-text, .empty-history { text-align: center; padding: 20px; color: #888; font-size: 13px; width: 100%; }
 
         /* READER PAGE */
@@ -158,7 +154,7 @@
         .reader-title { font-weight: 600; font-size: 14px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 70%; }
         .reader-images { display: flex; flex-direction: column; align-items: center; width: 100%; padding-top: 55px; }
         .reader-images img { width: 100%; height: auto; display: block; margin: 0; }
-        
+
         /* AUTH & DETAILED PROFILE PAGE */
         .profile-hero { background: linear-gradient(135deg, var(--primary-blue), var(--dark-blue)); padding: 35px 20px 25px; color: white; text-align: center; border-bottom-left-radius: 24px; border-bottom-right-radius: 24px; }
         .profile-avatar-lg { width: 75px; height: 75px; background: rgba(255,255,255,0.25); border: 2px solid white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 32px; margin: 0 auto 12px; box-shadow: 0 4px 10px rgba(0,0,0,0.15); }
@@ -218,7 +214,7 @@
                                         <span class="view-count"><i class="fa-regular fa-eye"></i> 1,3M views</span>
                                         <div class="rating"><i class="fa-solid fa-star"></i> 9.5</div>
                                     </div>
-                                    <button class="btn-read" onclick="switchNav('discovery')">Jelajahi</button>
+                                    <button class="btn-read">Jelajahi</button>
                                 </div>
                             </div>
                         </div>
@@ -232,7 +228,7 @@
                                         <span class="view-count"><i class="fa-regular fa-eye"></i> 890K views</span>
                                         <div class="rating"><i class="fa-solid fa-star"></i> 9.1</div>
                                     </div>
-                                    <button class="btn-read" onclick="switchNav('discovery')">Jelajahi</button>
+                                    <button class="btn-read">Jelajahi</button>
                                 </div>
                             </div>
                         </div>
@@ -262,21 +258,16 @@
                         <a class="see-all">Lihat Semua</a>
                     </div>
                     <div class="horizontal-scroll" id="firebase-jadwal">
-                        <div class="loading-text"><i class="fa-solid fa-spinner fa-spin"></i> Memuat Jadwal...</div>
+                        <div class="loading-text"><i class="fa-solid fa-spinner fa-spin"></i> Memuat...</div>
                     </div>
                 </section>
 
                 <section class="section-container">
                     <div class="section-header">
-                        <div class="section-title-wrapper">
-                            <span style="color: var(--primary-blue); font-size: 10px;">●</span>
-                            <h2 class="section-title">Manga</h2>
-                        </div>
+                        <div class="section-title-wrapper"><span style="color: var(--primary-blue); font-size: 10px;">●</span><h2 class="section-title">Manga</h2></div>
                         <a class="see-all">Lihat Semua</a>
                     </div>
-                    <div class="horizontal-scroll" id="firebase-manga">
-                        <div class="loading-text"><i class="fa-solid fa-spinner fa-spin"></i> Memuat Manga...</div>
-                    </div>
+                    <div class="horizontal-scroll" id="firebase-manga"><div class="loading-text"><i class="fa-solid fa-spinner fa-spin"></i> Memuat...</div></div>
                 </section>
 
                 <section class="section-container">
@@ -284,9 +275,7 @@
                         <div class="section-title-wrapper"><span>🇰🇷</span><h2 class="section-title">Manhwa</h2></div>
                         <a class="see-all">Lihat Semua</a>
                     </div>
-                    <div class="horizontal-scroll" id="firebase-manhwa">
-                        <div class="loading-text"><i class="fa-solid fa-spinner fa-spin"></i> Memuat Manhwa...</div>
-                    </div>
+                    <div class="horizontal-scroll" id="firebase-manhwa"><div class="loading-text"><i class="fa-solid fa-spinner fa-spin"></i> Memuat...</div></div>
                 </section>
 
                 <section class="section-container">
@@ -294,20 +283,8 @@
                         <div class="section-title-wrapper"><span>🇨🇳</span><h2 class="section-title">Manhua</h2></div>
                         <a class="see-all">Lihat Semua</a>
                     </div>
-                    <div class="horizontal-scroll" id="firebase-manhua">
-                        <div class="loading-text"><i class="fa-solid fa-spinner fa-spin"></i> Memuat Manhua...</div>
-                    </div>
+                    <div class="horizontal-scroll" id="firebase-manhua"><div class="loading-text"><i class="fa-solid fa-spinner fa-spin"></i> Memuat...</div></div>
                 </section>
-
-                <div class="report-banner">
-                    <div class="report-text">Ada gambar rusak? Report di salah satu Sosial Media Kami.</div>
-                    <div class="report-icons">
-                        <i class="fa-brands fa-tiktok"></i>
-                        <i class="fa-brands fa-instagram"></i>
-                        <i class="fa-brands fa-telegram"></i>
-                        <i class="fa-solid fa-envelope"></i>
-                    </div>
-                </div>
 
                 <section class="section-container" style="padding-bottom: 30px;">
                     <div class="section-header">
@@ -315,7 +292,7 @@
                         <a class="see-all">Lihat Semua</a>
                     </div>
                     <div class="horizontal-scroll" id="firebase-updates">
-                        <div class="loading-text"><i class="fa-solid fa-spinner fa-spin"></i> Memuat Update...</div>
+                        <div class="loading-text"><i class="fa-solid fa-spinner fa-spin"></i> Memuat...</div>
                     </div>
                 </section>
             </main>
@@ -409,7 +386,7 @@
                 <i class="fa-solid fa-bars" style="font-size: 20px;"></i>
             </div>
             <div class="reader-images" id="readerImagesContainer" onclick="toggleReaderNav()">
-                </div>
+            </div>
             <div id="readerLoading" class="loading-text" style="padding-top:100px;"><i class="fa-solid fa-spinner fa-spin" style="font-size:30px;"></i><br><br>Memuat gambar...</div>
         </div>
 
@@ -463,18 +440,6 @@
                         <div class="left-info"><i class="fa-solid fa-bookmark"></i> Kelola Bookmark Komik</div>
                         <i class="fa-solid fa-chevron-right" style="font-size: 12px; color: #94a3b8;"></i>
                     </li>
-                    <li onclick="alert('Sinkronisasi cloud aktif otomatis.')">
-                        <div class="left-info"><i class="fa-solid fa-cloud-arrow-up"></i> Sinkronisasi Data Cloud</div>
-                        <i class="fa-solid fa-chevron-right" style="font-size: 12px; color: #94a3b8;"></i>
-                    </li>
-                    <li onclick="alert('Versi Aplikasi: v2.6.0 Pro - Terhubung ke Firebase Database.')">
-                        <div class="left-info"><i class="fa-solid fa-circle-info"></i> Informasi Sistem & Aplikasi</div>
-                        <i class="fa-solid fa-chevron-right" style="font-size: 12px; color: #94a3b8;"></i>
-                    </li>
-                    <li onclick="copyUserId()">
-                        <div class="left-info"><i class="fa-solid fa-id-badge"></i> Salin ID Unik Pengguna</div>
-                        <i class="fa-solid fa-copy" style="font-size: 12px; color: #94a3b8;"></i>
-                    </li>
                     <li class="logout-item" onclick="doLogout()">
                         <div class="left-info"><i class="fa-solid fa-right-from-bracket"></i> Keluar (Logout Akun)</div>
                         <i class="fa-solid fa-arrow-right-from-bracket" style="font-size: 12px;"></i>
@@ -527,7 +492,7 @@
                 document.getElementById('userEmailDisplay').innerText = user.email;
                 document.getElementById('userNameDisplay').innerText = user.email.split('@')[0].toUpperCase();
                 
-                // Comment Input Tampil
+                // Buka Kunci Fitur Komentar
                 document.getElementById('commentLoginPrompt').style.display = 'none';
                 document.getElementById('commentInputArea').style.display = 'flex';
 
@@ -536,7 +501,7 @@
                 document.getElementById('authSection').style.display = 'block';
                 document.getElementById('userSection').style.display = 'none';
                 
-                // Comment Input Hilang
+                // Kunci Fitur Komentar
                 document.getElementById('commentLoginPrompt').style.display = 'block';
                 document.getElementById('commentInputArea').style.display = 'none';
 
@@ -578,8 +543,7 @@
                 errEl.innerText = "";
                 document.getElementById('authEmail').value = "";
                 document.getElementById('authPass').value = "";
-                // Jika dari comment kembali ke detail
-                if(window.currentActiveComicId) switchNav('home'); // balik ke home/detail terdekat
+                if(window.currentActiveComicId) switchNav('home'); 
             } catch(e) {
                 errEl.innerText = "Gagal: Periksa kembali email & password anda.";
             }
@@ -590,16 +554,8 @@
             alert("Berhasil keluar dari akun.");
         }
 
-        window.copyUserId = function() {
-            if(auth.currentUser) {
-                navigator.clipboard.writeText(auth.currentUser.uid);
-                alert("ID Pengguna berhasil disalin ke clipboard!");
-            }
-        }
-
-        // ================= SYNC USER DATA =================
+        // ================= SINKRONISASI DATA PENGGUNA CLOUD =================
         async function syncUserData(uid) {
-            // Tarik Bookmark
             const bmRef = collection(db, "users", uid, "bookmarks");
             const bmSnap = await getDocs(bmRef);
             window.userBookmarks = [];
@@ -607,21 +563,19 @@
             renderBookmarks();
             document.getElementById('statBookmarkCount').innerText = window.userBookmarks.length;
 
-            // Tarik History
             const histRef = collection(db, "users", uid, "history");
             const histSnap = await getDocs(histRef);
             let countHist = 0;
             histSnap.forEach(() => countHist++);
             document.getElementById('statHistoryCount').innerText = countHist || (JSON.parse(localStorage.getItem('comicHistory')) || []).length;
             
-            // Re-render status rating & bookmark di detail page jika terbuka
             if(window.currentActiveComicId) {
                 checkBookmarkStatus(window.currentActiveComicId);
                 loadUserRating(window.currentActiveComicId);
             }
         }
 
-        // ================= FETCH DATA KOMIK (HOME) =================
+        // ================= FETCH DATA KOMIK HOME =================
         function generateComicCard(docId, data) {
             return `
                 <div class="manga-card-simple" onclick="openDetail('${docId}')">
@@ -660,11 +614,11 @@
 
                 if(!auth.currentUser) renderReadingHistory();
                 renderBookmarks();
-            } catch (error) { console.error("Error Fetching Data:", error); }
+            } catch (error) {}
         }
         fetchAllComics();
 
-        // ================= FITUR HISTORY =================
+        // ================= FITUR HISTORY / LANJUT BACA =================
         window.saveToHistory = async function(comicId) {
             let history = JSON.parse(localStorage.getItem('comicHistory')) || [];
             history = history.filter(id => id !== comicId);
@@ -673,9 +627,7 @@
             localStorage.setItem('comicHistory', JSON.stringify(history));
             
             if(auth.currentUser) {
-                try {
-                    await setDoc(doc(db, "users", auth.currentUser.uid, "history", comicId), { comicId: comicId, timestamp: new Date() });
-                } catch(e){}
+                try { await setDoc(doc(db, "users", auth.currentUser.uid, "history", comicId), { comicId: comicId, timestamp: new Date() }); } catch(e){}
             }
             renderReadingHistory();
         }
@@ -708,7 +660,7 @@
         }
 
         window.clearHistory = function() {
-            if(confirm("Bersihkan semua riwayat bacaan di perangkat ini?")) {
+            if(confirm("Bersihkan semua riwayat bacaan?")) {
                 localStorage.removeItem('comicHistory');
                 renderReadingHistory();
             }
@@ -737,7 +689,7 @@
                 checkBookmarkStatus(cid);
                 renderBookmarks();
                 document.getElementById('statBookmarkCount').innerText = window.userBookmarks.length;
-            } catch(e) { console.error("Gagal simpan bookmark", e); }
+            } catch(e) {}
         }
 
         function checkBookmarkStatus(comicId) {
@@ -754,7 +706,7 @@
         function renderBookmarks() {
             const container = document.getElementById('bookmarkContainer');
             if(!auth.currentUser) {
-                container.innerHTML = '<div class="empty-history" style="grid-column:1/-1;">Harap masuk (Login) untuk melihat bookmark tersimpan.</div>';
+                container.innerHTML = '<div class="empty-history" style="grid-column:1/-1;">Harap masuk (Login) untuk melihat bookmark.</div>';
                 return;
             }
             if(window.userBookmarks.length === 0) {
@@ -792,7 +744,7 @@
                 snapshot.forEach(doc => {
                     const c = doc.data(); total++;
                     const dateObj = c.timestamp ? c.timestamp.toDate() : new Date();
-                    const dateStr = dateObj.toLocaleDateString('id-ID', {day:'numeric', month:'short'}) + ' ' + dateObj.getHours() + ':' + String(dateObj.getMinutes()).padStart(2, '0');
+                    const dateStr = dateObj.toLocaleDateString('id-ID', {day:'numeric', month:'short'}) + ' ' + String(dateObj.getHours()).padStart(2, '0') + ':' + String(dateObj.getMinutes()).padStart(2, '0');
                     const initial = c.username ? c.username.charAt(0).toUpperCase() : 'U';
                     
                     commentHTML += `
@@ -836,14 +788,11 @@
                 textInput.value = "";
                 btn.innerText = "Kirim"; btn.disabled = false;
                 fetchComments(comicId); // Refresh komentar
-            } catch (e) {
-                alert("Gagal mengirim komentar.");
-            }
+            } catch (e) { alert("Gagal mengirim komentar."); }
         }
 
         // ================= FITUR RATING BINTANG =================
         async function loadUserRating(comicId) {
-            // Reset Bintang UI
             const stars = document.querySelectorAll('#userStarRater i');
             stars.forEach(s => { s.classList.remove('fa-solid', 'active'); s.classList.add('fa-regular'); });
 
@@ -870,28 +819,23 @@
             const comicId = window.currentActiveComicId;
             
             try {
-                // Update UI Sementara
+                // Update UI Lokal Cepat
                 const stars = document.querySelectorAll('#userStarRater i');
                 stars.forEach((s, idx) => {
                     if(idx < starValue) { s.classList.replace('fa-regular', 'fa-solid'); s.classList.add('active'); }
                     else { s.classList.replace('fa-solid', 'fa-regular'); s.classList.remove('active'); }
                 });
 
-                // Simpan ke Firebase koleksi "ratings"
+                // Simpan ke DB
                 await setDoc(doc(db, "comics", comicId, "ratings", auth.currentUser.uid), { rating: starValue });
                 
-                // (Opsional/Sederhana): Update Rata-rata Rating secara lokal/cepat
-                // Pada praktek sesungguhnya butuh Cloud Function, tapi kita buat simulasi update cepat
                 const comicRef = doc(db, "comics", comicId);
                 const cSnap = await getDoc(comicRef);
                 if(cSnap.exists()) {
                     let rCount = cSnap.data().ratingCount || 0;
                     let rTotal = cSnap.data().ratingTotal || 0;
-                    // asumsi penambahan rating baru (tidak akurat 100% bila user update rating lama, tapi cukup sbg visual)
-                    await updateDoc(comicRef, { 
-                        ratingCount: increment(1),
-                        ratingTotal: increment(starValue)
-                    });
+                    
+                    await updateDoc(comicRef, { ratingCount: increment(1), ratingTotal: increment(starValue) });
                     
                     const newCount = rCount + 1;
                     const newAvg = ((rTotal + starValue) / newCount).toFixed(1);
@@ -901,7 +845,7 @@
             } catch(e) { alert("Gagal menyimpan rating."); }
         }
 
-        // ================= HALAMAN DETAIL & BACA =================
+        // ================= HALAMAN DETAIL UTAMA =================
         window.openDetail = async function(comicId) {
             window.currentActiveComicId = comicId;
             document.querySelectorAll('.app-container > div').forEach(el => { if(el.id!=='mainBottomNav') el.style.display = 'none'; });
@@ -913,7 +857,6 @@
             if (comicId && window.comicsData[comicId]) {
                 const data = window.comicsData[comicId];
                 
-                // Tambah Views
                 try {
                     const comicRef = doc(db, "comics", comicId);
                     await updateDoc(comicRef, { views: increment(1) });
@@ -922,20 +865,19 @@
 
                 window.saveToHistory(comicId);
                 
-                // Tarik Data Tab
+                // Tarik sub-data
                 fetchChapters(comicId);
                 fetchComments(comicId);
                 loadUserRating(comicId);
                 checkBookmarkStatus(comicId);
 
-                // Set Data UI
+                // Taruh UI Info
                 document.getElementById('detailTitle').innerText = data.title;
                 document.getElementById('detailAltTitle').innerText = data.altTitle || "-";
                 document.getElementById('detailStatus').innerText = data.status || "Ongoing";
                 document.getElementById('detailSynopsis').innerText = data.synopsis || "Belum ada sinopsis.";
                 document.getElementById('detailViews').innerText = window.comicsData[comicId].views || 1;
                 
-                // Rating Angka
                 const avg = data.ratingCount ? (data.ratingTotal / data.ratingCount).toFixed(1) : "0.0";
                 const count = data.ratingCount || 0;
                 document.getElementById('detailAvgRating').innerText = avg;
@@ -975,7 +917,41 @@
             document.getElementById('tab-' + tabName).classList.add('active');
         }
 
-        // ================= READER VIEW =================
+        async function fetchChapters(comicId) {
+            const container = document.getElementById('chapterListContainer');
+            const badge = document.getElementById('chapterBadge');
+            container.innerHTML = '<div class="loading-text"><i class="fa-solid fa-spinner fa-spin"></i><br>Mencari chapter...</div>';
+            badge.style.display = 'none';
+
+            try {
+                const chaptersRef = collection(db, "comics", comicId, "chapters");
+                const q = query(chaptersRef, orderBy("chapterNumber", "desc"));
+                const snapshot = await getDocs(q);
+                
+                let chapterHTML = ''; let total = 0;
+                snapshot.forEach(doc => {
+                    const ch = doc.data(); total++;
+                    const date = ch.updateDate || "Baru";
+                    const title = ch.title ? `- ${ch.title}` : '';
+                    chapterHTML += `
+                        <li class="chapter-item" onclick="openReader('${comicId}', '${doc.id}', '${ch.chapterNumber}')">
+                            <div class="chapter-info">
+                                <span class="chapter-title">Chapter ${ch.chapterNumber} ${title}</span>
+                                <span class="chapter-date">${date}</span>
+                            </div>
+                            <div class="chapter-action">Baca</div>
+                        </li>`;
+                });
+                if(total > 0) {
+                    container.innerHTML = chapterHTML;
+                    badge.innerText = total; badge.style.display = 'inline-block';
+                } else {
+                    container.innerHTML = '<div class="loading-text">Belum ada chapter dirilis.</div>';
+                }
+            } catch(e) { container.innerHTML = '<div class="loading-text">Gagal memuat chapter.</div>'; }
+        }
+
+        // ================= READER VIEW BACA KOMIK =================
         window.openReader = async function(comicId, chapterId, chapterNum) {
             document.getElementById('detail-page').style.display = 'none';
             document.getElementById('reader-page').style.display = 'block';
@@ -996,9 +972,7 @@
                     if(images.length === 0) {
                         imgContainer.innerHTML = '<div class="loading-text">Gambar kosong. Admin belum mengupload.</div>';
                     } else {
-                        images.forEach(url => {
-                            imgContainer.innerHTML += `<img src="${url}" loading="lazy" alt="Page">`;
-                        });
+                        images.forEach(url => { imgContainer.innerHTML += `<img src="${url}" loading="lazy">`; });
                     }
                 } else {
                     loader.style.display = 'none';
@@ -1016,11 +990,9 @@
             document.getElementById('detail-page').style.display = 'block';
         }
 
-        window.toggleReaderNav = function() {
-            document.getElementById('readerHeader').classList.toggle('hidden');
-        }
+        window.toggleReaderNav = function() { document.getElementById('readerHeader').classList.toggle('hidden'); }
 
-        // ================= NAVIGASI HALAMAN BAWAH =================
+        // ================= PENGENDALI MENU BAWAH =================
         window.switchNav = function(pageId, element = null) {
             document.querySelectorAll('.app-container > div').forEach(el => {
                 if(el.id !== 'mainBottomNav') el.style.display = 'none';
@@ -1043,7 +1015,6 @@
         let slideIndex = 0;
         const slides = document.getElementById('hero-slider');
         const dots = document.querySelectorAll('.dot');
-        
         window.currentSlide = function(index) {
             slideIndex = index;
             if(slides && dots.length > 0) {
@@ -1052,13 +1023,7 @@
                 dots[slideIndex].classList.add('active');
             }
         }
-
-        if(slides && dots.length > 0) {
-            setInterval(() => {
-                slideIndex = (slideIndex + 1) % dots.length;
-                window.currentSlide(slideIndex);
-            }, 4000);
-        }
+        if(slides && dots.length > 0) setInterval(() => { slideIndex = (slideIndex + 1) % dots.length; window.currentSlide(slideIndex); }, 4000);
     </script>
 </body>
 </html>

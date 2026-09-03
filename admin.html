@@ -79,21 +79,31 @@
         .genre-list label { display: flex; align-items: center; gap: 5px; font-weight: 400; cursor: pointer; background: var(--bg-light); padding: 6px 12px; border-radius: 20px; border: 1px solid var(--border); }
         .genre-list input { cursor: pointer; }
 
+        .btn-quick-add { background: var(--light-blue); color: var(--primary); border: 1px solid #bfdbfe; border-radius: 8px; width: 44px; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: 0.2s; flex-shrink: 0; }
+        .btn-quick-add:hover { background: var(--primary); color: white; border-color: var(--primary); }
+
         .upload-area { border: 2px dashed var(--border); border-radius: 8px; padding: 20px; text-align: center; background: #f8fafc; cursor: pointer; position: relative;}
         .upload-area input { position: absolute; width: 100%; height: 100%; top: 0; left: 0; opacity: 0; cursor: pointer; }
         .upload-area i { font-size: 30px; color: var(--text-muted); margin-bottom: 10px; }
         .image-preview { margin-top: 15px; width: 100%; max-width: 200px; border-radius: 8px; display: none; box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
 
-        .btn-submit { background: var(--primary); color: white; border: none; padding: 14px 20px; border-radius: 8px; cursor: pointer; width: 100%; font-weight: 600; font-size: 15px; margin-top: 15px; transition: 0.2s; }
+        .btn-submit { background: var(--primary); color: white; border: none; padding: 14px 20px; border-radius: 8px; cursor: pointer; width: 100%; font-weight: 600; font-size: 15px; margin-top: 15px; transition: 0.2s; display: flex; align-items: center; justify-content: center; gap: 8px;}
         .btn-submit:hover { background: var(--primary-hover); }
+        .btn-cancel { background: var(--white); color: var(--text-dark); border: 1px solid var(--border); padding: 14px 20px; border-radius: 8px; cursor: pointer; font-weight: 600; font-size: 15px; margin-top: 15px; transition: 0.2s; text-align: center;}
+        .btn-cancel:hover { background: var(--bg-light); }
+        
         .status-msg { margin-top: 15px; font-weight: 600; text-align: center; font-size: 14px; padding: 10px; border-radius: 6px; }
 
         /* ==================== SEARCHABLE DROPDOWN ==================== */
         .search-select { position: relative; width: 100%; }
-        .search-select input { width: 100%; padding: 12px 15px; border: 1px solid var(--border); border-radius: 8px; font-size: 14px; background: #f8fafc; outline: none; cursor: pointer; }
-        .search-options { position: absolute; top: 100%; left: 0; right: 0; background: var(--white); border: 1px solid var(--border); border-radius: 8px; max-height: 250px; overflow-y: auto; z-index: 10; display: none; box-shadow: 0 10px 25px rgba(0,0,0,0.1); margin-top: 5px; }
+        .search-select-wrapper { position: relative; display: flex; align-items: center; }
+        .search-select-wrapper i { position: absolute; left: 15px; color: var(--text-muted); font-size: 15px; pointer-events: none; }
+        .search-select input { width: 100%; padding: 12px 15px 12px 42px; border: 1px solid var(--border); border-radius: 8px; font-size: 14px; background: var(--white); outline: none; cursor: text; transition: all 0.3s; box-shadow: 0 2px 5px rgba(0,0,0,0.02); }
+        .search-select input:focus { border-color: var(--primary); box-shadow: 0 0 0 4px rgba(37,99,235,0.1); }
+        .search-options { position: absolute; top: 100%; left: 0; right: 0; background: var(--white); border: 1px solid var(--border); border-radius: 12px; max-height: 250px; overflow-y: auto; z-index: 10; display: none; box-shadow: 0 10px 30px rgba(0,0,0,0.1); margin-top: 8px; padding: 5px; }
         .search-options.show { display: block; }
-        .search-options div { padding: 12px 15px; cursor: pointer; border-bottom: 1px solid #f1f1f1; font-size: 14px; }
+        .search-options div { padding: 10px 15px; cursor: pointer; border-radius: 8px; font-size: 14px; margin-bottom: 2px; transition: 0.1s;}
+        .search-options div:last-child { margin-bottom: 0; }
         .search-options div:hover { background: var(--light-blue); color: var(--primary); font-weight: 600; }
 
         /* ==================== CLOUD GALLERY MODAL & FOLDERS ==================== */
@@ -279,9 +289,9 @@
 
             <div class="content-area">
                 
-                <!-- VIEW 1: TAMBAH KOMIK -->
+                <!-- VIEW 1: TAMBAH / EDIT KOMIK -->
                 <div id="view-tambah" class="admin-view">
-                    <h1 class="page-title">Tambah Komik Baru</h1>
+                    <h1 class="page-title" id="formTitle">Tambah Komik Baru</h1>
                     <div class="card">
                         <form id="uploadForm">
                             <div class="form-grid">
@@ -303,15 +313,24 @@
 
                                 <div class="form-group">
                                     <label>Author / Artist *</label>
-                                    <select id="author" required><option value="">Memuat data...</option></select>
+                                    <div style="display: flex; gap: 8px;">
+                                        <select id="author" required style="flex-grow: 1;"><option value="">Memuat data...</option></select>
+                                        <button type="button" class="btn-quick-add" onclick="quickAddMasterData('authors', 'Author')" title="Tambah Author Baru"><i class="fa-solid fa-plus"></i></button>
+                                    </div>
                                 </div>
                                 <div class="form-group">
                                     <label>Tipe Komik *</label>
-                                    <select id="type" required><option value="">Memuat data...</option></select>
+                                    <div style="display: flex; gap: 8px;">
+                                        <select id="type" required style="flex-grow: 1;"><option value="">Memuat data...</option></select>
+                                        <button type="button" class="btn-quick-add" onclick="quickAddMasterData('types', 'Tipe Komik')" title="Tambah Tipe Baru"><i class="fa-solid fa-plus"></i></button>
+                                    </div>
                                 </div>
                                 <div class="form-group">
                                     <label>Status *</label>
-                                    <select id="status" required><option value="">Memuat data...</option></select>
+                                    <div style="display: flex; gap: 8px;">
+                                        <select id="status" required style="flex-grow: 1;"><option value="">Memuat data...</option></select>
+                                        <button type="button" class="btn-quick-add" onclick="quickAddMasterData('statuses', 'Status')" title="Tambah Status Baru"><i class="fa-solid fa-plus"></i></button>
+                                    </div>
                                 </div>
                                 <div class="form-group">
                                 <label>Tanggal Rilis Komik</label>
@@ -319,11 +338,17 @@
                                 </div>
                                 <div class="form-group">
                                     <label>Rating Usia</label>
-                                    <select id="ageRating"><option value="">Memuat data...</option></select>
+                                    <div style="display: flex; gap: 8px;">
+                                        <select id="ageRating" style="flex-grow: 1;"><option value="">Memuat data...</option></select>
+                                        <button type="button" class="btn-quick-add" onclick="quickAddMasterData('ageRatings', 'Rating Usia')" title="Tambah Rating Usia"><i class="fa-solid fa-plus"></i></button>
+                                    </div>
                                 </div>
 
                                 <div class="form-group full-width">
-                                    <label>Genre (Pilih yang sesuai)</label>
+                                    <label style="display:flex; justify-content:space-between; align-items:center;">
+                                        Genre (Pilih yang sesuai)
+                                        <button type="button" class="btn-quick-add" style="width:auto; padding:4px 10px; height:auto; font-size:12px; border-radius:6px;" onclick="quickAddMasterData('genres', 'Genre')" title="Tambah Genre Baru"><i class="fa-solid fa-plus"></i> Tambah Genre Baru</button>
+                                    </label>
                                     <div class="genre-list" id="genreCheckboxContainer">
                                         <span class="help-text">Memuat data genre...</span>
                                     </div>
@@ -335,7 +360,7 @@
                                 </div>
 
                                 <div class="form-group full-width">
-                                    <label>Gambar Cover (Thumbnail) *</label>
+                                    <label>Gambar Cover (Thumbnail) * <span id="coverHelpText" style="font-weight:normal; font-size:11px; color:var(--text-muted);">(Biarkan kosong jika tidak ingin mengubah cover saat edit)</span></label>
                                     <div class="upload-area">
                                         <i class="fa-solid fa-cloud-arrow-up"></i>
                                         <p style="font-size: 14px; font-weight: 500;">Klik atau Tarik gambar ke sini (.jpg, .png)</p>
@@ -344,7 +369,10 @@
                                     <img id="coverPreview" class="image-preview" alt="Preview Cover">
                                 </div>
                             </div>
-                            <button type="submit" class="btn-submit"><i class="fa-solid fa-upload"></i> Publikasikan Komik</button>
+                            <div style="display: flex; gap: 10px;">
+                                <button type="button" id="cancelEditBtn" class="btn-cancel" style="display:none;" onclick="cancelEditComic()"><i class="fa-solid fa-xmark"></i> Batal Edit</button>
+                                <button type="submit" id="btnSubmitComic" class="btn-submit" style="flex-grow:1;"><i class="fa-solid fa-upload"></i> Publikasikan Komik</button>
+                            </div>
                         </form>
                         <div id="uploadStatus" class="status-msg"></div>
                     </div>
@@ -362,7 +390,7 @@
                                     <th>Author</th>
                                     <th width="110">Tanggal</th>
                                     <th width="80">Publish</th>
-                                    <th width="70">Aksi</th>
+                                    <th width="90">Aksi</th>
                                 </tr>
                             </thead>
                             <tbody id="comicListTableBody">
@@ -382,7 +410,10 @@
                                 <div class="form-group full-width">
                                     <label>Pilih Komik / Folder *</label>
                                     <div class="search-select">
-                                        <input type="text" id="chapterComicSearch" placeholder="Ketik untuk mencari komik..." autocomplete="off" required onkeyup="filterCustomSelect(this, 'chapterComicList')" onclick="toggleCustomSelect('chapterComicList')">
+                                        <div class="search-select-wrapper">
+                                            <i class="fa-solid fa-magnifying-glass"></i>
+                                            <input type="text" id="chapterComicSearch" placeholder="Ketik untuk mencari komik..." autocomplete="off" required onkeyup="filterCustomSelect(this, 'chapterComicList')" onclick="toggleCustomSelect('chapterComicList')">
+                                        </div>
                                         <input type="hidden" id="chapterComicId" required>
                                         <div class="search-options" id="chapterComicList"></div>
                                     </div>
@@ -421,7 +452,10 @@
                         <div style="margin: 15px 0;">
                             <label style="color: var(--primary);">Filter Daftar Chapter berdasarkan Komik:</label>
                             <div class="search-select" style="max-width: 400px;">
-                                <input type="text" id="filterChapterSearch" placeholder="Ketik untuk mencari komik..." autocomplete="off" onkeyup="filterCustomSelect(this, 'filterChapterList')" onclick="toggleCustomSelect('filterChapterList')">
+                                <div class="search-select-wrapper">
+                                    <i class="fa-solid fa-magnifying-glass"></i>
+                                    <input type="text" id="filterChapterSearch" placeholder="Cari komik untuk melihat chapter..." autocomplete="off" onkeyup="filterCustomSelect(this, 'filterChapterList')" onclick="toggleCustomSelect('filterChapterList')">
+                                </div>
                                 <input type="hidden" id="filterChapterId" onchange="window.loadChaptersList()">
                                 <div class="search-options" id="filterChapterList"></div>
                             </div>
@@ -592,6 +626,7 @@
         
         window.allComicsList = [];
         window.galleryState = { level: 'root', comicId: null, comicName: '', chapterFolderId: null, chapterFolderName: '', currentChapterImages: [] };
+        window.editingComicId = null;
 
         if (localStorage.getItem('workerSecretKey') && secretKeyInput) {
             secretKeyInput.value = localStorage.getItem('workerSecretKey');
@@ -625,7 +660,7 @@
         document.getElementById('logoutBtn').addEventListener('click', async () => await signOut(auth));
 
         /* =========================================
-           LOGIKA MASTER DATA
+           LOGIKA MASTER DATA (TERMASUK QUICK ADD)
            ========================================= */
         const masterDocRef = doc(db, "settings", "master_data");
         async function initMasterData() {
@@ -668,8 +703,10 @@
 
         function renderDropdown(id, dataArray, placeholder) {
             const el = document.getElementById(id);
+            const currentVal = el.value; // simpan value terpilih sblm dirender ulang
             el.innerHTML = `<option value="">Pilih ${placeholder}...</option>`;
             if(dataArray) dataArray.forEach(val => el.innerHTML += `<option value="${val}">${val}</option>`);
+            if(currentVal) el.value = currentVal;
         }
 
         window.addMasterDataFirebase = async function(field, inputId) {
@@ -683,8 +720,21 @@
             if(confirm(`Hapus "${val}"?`)) { try { await updateDoc(masterDocRef, { [field]: arrayRemove(val) }); } catch (error) { alert("Error: " + error.message); } }
         };
 
+        // Fungsi Quick Add Baru
+        window.quickAddMasterData = async function(field, label) {
+            const val = prompt(`Masukkan data ${label} baru:`);
+            if (val && val.trim() !== "") {
+                try {
+                    await updateDoc(masterDocRef, { [field]: arrayUnion(val.trim()) });
+                    alert(`${label} berhasil ditambahkan! Silakan pilih dari dropdown.`);
+                } catch (error) {
+                    alert("Gagal menambahkan: " + error.message);
+                }
+            }
+        };
+
         /* =========================================
-           LOGIKA DAFTAR KOMIK
+           LOGIKA DAFTAR KOMIK & EDIT
            ========================================= */
         window.loadComicsList = async function() {
             const tbody = document.getElementById('comicListTableBody');
@@ -726,7 +776,10 @@
                                 </label>
                             </td>
                             <td>
-                                <button type="button" class="btn-delete" onclick="window.deleteComic('${docSnap.id}')" title="Hapus"><i class="fa-solid fa-trash-can"></i></button>
+                                <div style="display:flex; gap:6px;">
+                                    <button type="button" class="btn-icon-outline" style="color:var(--primary); border-color:#bfdbfe; background:#eff6ff;" onclick="window.editComic('${docSnap.id}')" title="Edit Komik"><i class="fa-solid fa-pen-to-square"></i></button>
+                                    <button type="button" class="btn-delete" onclick="window.deleteComic('${docSnap.id}')" title="Hapus"><i class="fa-solid fa-trash-can"></i></button>
+                                </div>
                             </td>
                         </tr>
                     `;
@@ -747,6 +800,54 @@
             }
         };
 
+        window.editComic = async function(id) {
+            try {
+                const docRef = doc(db, "comics", id);
+                const docSnap = await getDoc(docRef);
+                if (docSnap.exists()) {
+                    const data = docSnap.data();
+                    window.editingComicId = id;
+                    
+                    document.getElementById('title').value = data.title || '';
+                    document.getElementById('altTitle').value = data.altTitle || '';
+                    document.getElementById('author').value = data.author || '';
+                    document.getElementById('type').value = data.type || '';
+                    document.getElementById('status').value = data.status || '';
+                    document.getElementById('releaseDate').value = data.releaseDate || '';
+                    document.getElementById('ageRating').value = data.ageRating || '';
+                    document.getElementById('synopsis').value = data.synopsis || '';
+                    
+                    document.querySelectorAll('.genre-check').forEach(cb => {
+                        cb.checked = (data.genres || []).includes(cb.value);
+                    });
+                    
+                    document.getElementById('coverPreview').src = data.coverUrl || '';
+                    document.getElementById('coverPreview').style.display = data.coverUrl ? 'block' : 'none';
+                    
+                    document.getElementById('coverImage').removeAttribute('required'); // tidak wajib saat edit
+                    
+                    document.getElementById('btnSubmitComic').innerHTML = '<i class="fa-solid fa-floppy-disk"></i> Update Data Komik';
+                    document.getElementById('formTitle').innerText = 'Edit Komik: ' + (data.title || '');
+                    document.getElementById('cancelEditBtn').style.display = 'inline-block';
+                    
+                    switchView('view-tambah', document.querySelector('a[onclick="switchView(\'view-tambah\', this)"]'));
+                }
+            } catch (e) {
+                alert("Gagal memuat data komik: " + e.message);
+            }
+        };
+
+        window.cancelEditComic = function() {
+            window.editingComicId = null;
+            document.getElementById('uploadForm').reset();
+            document.getElementById('coverPreview').style.display = 'none';
+            document.getElementById('coverImage').setAttribute('required', 'true');
+            document.getElementById('btnSubmitComic').innerHTML = '<i class="fa-solid fa-upload"></i> Publikasikan Komik';
+            document.getElementById('formTitle').innerText = 'Tambah Komik Baru';
+            document.getElementById('cancelEditBtn').style.display = 'none';
+        };
+
+
         function renderSearchableOptions(listId, hiddenId, inputId, listData) {
             let html = '';
             listData.forEach(c => {
@@ -757,24 +858,31 @@
         }
 
         /* =========================================
-           UPLOAD KOMIK BARU
+           UPLOAD KOMIK BARU ATAU UPDATE
            ========================================= */
         document.getElementById('uploadForm').addEventListener('submit', async (e) => {
             e.preventDefault();
-            const submitBtn = e.target.querySelector('button[type="submit"]');
+            const submitBtn = document.getElementById('btnSubmitComic');
             if (submitBtn) submitBtn.disabled = true;
 
-            uploadStatus.innerText = "Mengunggah cover..."; 
+            uploadStatus.innerText = "Memproses data..."; 
             uploadStatus.style.display = "block"; uploadStatus.style.background = "#eff6ff"; uploadStatus.style.color = "var(--primary)";
             
             const currentSecretKey = secretKeyInput.value;
-            const formData = new FormData();
-            formData.append('coverImage', document.getElementById('coverImage').files[0]);
+            const coverFile = document.getElementById('coverImage').files[0];
+            let finalCoverUrl = document.getElementById('coverPreview').src; // default to existing if editing
 
             try {
-                const workerResponse = await fetch(WORKER_URL, { method: 'POST', headers: { 'X-Admin-Key': currentSecretKey }, body: formData });
-                const workerData = await workerResponse.json();
-                if (!workerResponse.ok) throw new Error(workerData.error || "Gagal upload R2");
+                // If there's a new file selected, upload to R2
+                if (coverFile) {
+                    uploadStatus.innerText = "Mengunggah cover baru ke server...";
+                    const formData = new FormData();
+                    formData.append('coverImage', coverFile);
+                    const workerResponse = await fetch(WORKER_URL, { method: 'POST', headers: { 'X-Admin-Key': currentSecretKey }, body: formData });
+                    const workerData = await workerResponse.json();
+                    if (!workerResponse.ok) throw new Error(workerData.error || "Gagal upload R2");
+                    finalCoverUrl = workerData.url;
+                }
 
                 localStorage.setItem('workerSecretKey', currentSecretKey);
                 uploadStatus.innerText = "Menyimpan data komik ke Firebase...";
@@ -782,7 +890,7 @@
                 const genres = [];
                 document.querySelectorAll('.genre-check:checked').forEach(cb => genres.push(cb.value));
 
-                await addDoc(collection(db, "comics"), {
+                const comicData = {
                     title: document.getElementById('title').value,
                     altTitle: document.getElementById('altTitle').value,
                     author: document.getElementById('author').value,
@@ -792,20 +900,28 @@
                     releaseDate: document.getElementById('releaseDate').value,
                     genres: genres,
                     synopsis: document.getElementById('synopsis').value,
-                    coverUrl: workerData.url, 
-                    uploader: auth.currentUser.email, 
-                    views: 0, 
-                    isPublished: true, 
-                    createdAt: serverTimestamp()
-                });
+                    coverUrl: finalCoverUrl
+                };
 
-                uploadStatus.innerText = "✅ Komik Baru Berhasil Dipublikasikan!"; 
+                if (window.editingComicId) {
+                    // Update Mode
+                    await updateDoc(doc(db, "comics", window.editingComicId), comicData);
+                    uploadStatus.innerText = "✅ Komik Berhasil Diperbarui!"; 
+                } else {
+                    // Create Mode
+                    comicData.uploader = auth.currentUser.email;
+                    comicData.views = 0;
+                    comicData.isPublished = true;
+                    comicData.createdAt = serverTimestamp();
+                    await addDoc(collection(db, "comics"), comicData);
+                    uploadStatus.innerText = "✅ Komik Baru Berhasil Dipublikasikan!"; 
+                }
+
                 uploadStatus.style.color = "var(--success)"; uploadStatus.style.background = "#ecfdf5";
                 
-                document.getElementById('uploadForm').reset(); 
-                document.getElementById('coverPreview').style.display = 'none'; 
+                // Reset to default Tambah mode
+                window.cancelEditComic();
                 secretKeyInput.value = currentSecretKey; 
-                
                 window.loadComicsList(); 
 
             } catch (error) {

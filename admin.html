@@ -190,9 +190,8 @@
         /* Lightbox Modal */
         .lightbox-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); z-index: 3000; display: flex; align-items: center; justify-content: center; backdrop-filter: blur(5px); opacity: 0; visibility: hidden; transition: 0.3s ease; }
         .lightbox-overlay.show { opacity: 1; visibility: visible; }
-        .lightbox-content { position: relative; max-width: 90%; max-height: 90vh; }
-        .lightbox-content img { max-width: 100%; max-height: 90vh; border-radius: 8px; box-shadow: 0 10px 40px rgba(0,0,0,0.5); object-fit: contain; }
-        .lightbox-close { position: absolute; top: -15px; right: -15px; background: var(--danger); color: white; border: 2px solid white; border-radius: 50%; width: 34px; height: 34px; display: flex; align-items: center; justify-content: center; cursor: pointer; font-size: 16px; box-shadow: 0 4px 10px rgba(0,0,0,0.3); transition: 0.2s; }
+        .lightbox-content { position: relative; max-width: 90%; max-height: 90vh; display: flex; justify-content: center; align-items: center; }
+        .lightbox-close { position: absolute; top: -15px; right: -15px; background: var(--danger); color: white; border: 2px solid white; border-radius: 50%; width: 34px; height: 34px; display: flex; align-items: center; justify-content: center; cursor: pointer; font-size: 16px; box-shadow: 0 4px 10px rgba(0,0,0,0.3); transition: 0.2s; z-index: 3001; }
         .lightbox-close:hover { transform: scale(1.1); }
 
         /* ==================== MASTER DATA UI & MOBILE TABS ==================== */
@@ -212,7 +211,7 @@
         .master-tab-btn { background: var(--white); border: 1px solid var(--border); padding: 8px 16px; border-radius: 20px; cursor: pointer; font-size: 13px; font-weight: 600; color: var(--text-muted); transition: 0.2s; white-space: nowrap; }
         .master-tab-btn.active { background: var(--primary); color: white; border-color: var(--primary); }
 
-        /* Tabel Komik */
+        /* Tabel Komik & Toggle Switch Fix */
         .comic-table { width: 100%; border-collapse: collapse; margin-top: 10px; }
         .comic-table th, .comic-table td { padding: 15px; text-align: left; border-bottom: 1px solid var(--border); }
         .comic-table th { background-color: #f8fafc; font-weight: 600; font-size: 13px; color: var(--text-muted); }
@@ -222,8 +221,11 @@
         .toggle-switch input { opacity: 0; width: 0; height: 0; }
         .slider { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: #ccc; transition: .4s; border-radius: 34px; }
         .slider:before { position: absolute; content: ""; height: 18px; width: 18px; left: 3px; bottom: 3px; background-color: white; transition: .4s; border-radius: 50%; }
-        input:checked + .slider { background-color: var(--success); }
-        input:checked + .slider:before { transform: translateX(20px); }
+        .toggle-switch input:checked + .slider { background-color: var(--success); }
+        .toggle-switch input:checked + .slider:before { transform: translateX(20px); }
+
+        /* Fix SweetAlert2 Input Overflow */
+        .swal2-input { width: 100% !important; max-width: 90% !important; box-sizing: border-box !important; margin: 1em auto !important; }
 
         @media (max-width: 992px) {
             .sidebar { transform: translateX(-100%); }
@@ -315,14 +317,14 @@
                         <div class="stat-card">
                             <div class="stat-icon bg-blue"><i class="fa-solid fa-book"></i></div>
                             <div class="stat-info">
-                                <h3>Total Komik</h3>
+                                <h3>Total Komik & Film</h3>
                                 <div class="stat-val" id="dashTotalKomik">0</div>
                             </div>
                         </div>
                         <div class="stat-card">
                             <div class="stat-icon bg-green"><i class="fa-solid fa-layer-group"></i></div>
                             <div class="stat-info">
-                                <h3>Total Chapter (Kira-kira)</h3>
+                                <h3>Total Chapter/Ep</h3>
                                 <div class="stat-val" id="dashTotalChapter">0</div>
                             </div>
                         </div>
@@ -343,12 +345,12 @@
                     </div>
 
                     <div class="card">
-                        <h3 style="font-size: 16px; margin-bottom: 15px; color: var(--sidebar-bg);"><i class="fa-solid fa-clock-rotate-left"></i> 5 Komik Terbaru</h3>
+                        <h3 style="font-size: 16px; margin-bottom: 15px; color: var(--sidebar-bg);"><i class="fa-solid fa-clock-rotate-left"></i> 5 Entri Terbaru</h3>
                         <table class="comic-table">
                             <thead>
                                 <tr>
                                     <th width="70">Cover</th>
-                                    <th>Detail Komik</th>
+                                    <th>Detail Judul</th>
                                     <th width="120">Tanggal Upload</th>
                                 </tr>
                             </thead>
@@ -372,7 +374,7 @@
                                 <div class="form-group full-width"><hr style="border: 0; border-top: 1px solid var(--border);"></div>
 
                                 <div class="form-group full-width">
-                                    <label>Judul Utama Komik *</label>
+                                    <label>Judul Utama *</label>
                                     <input type="text" id="title" required placeholder="Contoh: One Piece, Solo Leveling...">
                                 </div>
 
@@ -382,17 +384,17 @@
                                 </div>
 
                                 <div class="form-group">
-                                    <label>Author / Artist *</label>
+                                    <label>Author / Artist / Studio *</label>
                                     <div style="display: flex; gap: 8px;">
                                         <select id="author" required style="flex-grow: 1;"><option value="">Memuat data...</option></select>
                                         <button type="button" class="btn-quick-add" onclick="quickAddMasterData('authors', 'Author')" title="Tambah Author Baru"><i class="fa-solid fa-plus"></i></button>
                                     </div>
                                 </div>
                                 <div class="form-group">
-                                    <label>Tipe Komik *</label>
+                                    <label>Tipe (Komik / Film) *</label>
                                     <div style="display: flex; gap: 8px;">
                                         <select id="type" required style="flex-grow: 1;"><option value="">Memuat data...</option></select>
-                                        <button type="button" class="btn-quick-add" onclick="quickAddMasterData('types', 'Tipe Komik')" title="Tambah Tipe Baru"><i class="fa-solid fa-plus"></i></button>
+                                        <button type="button" class="btn-quick-add" onclick="quickAddMasterData('types', 'Tipe')" title="Tambah Tipe Baru"><i class="fa-solid fa-plus"></i></button>
                                     </div>
                                 </div>
                                 <div class="form-group">
@@ -403,7 +405,7 @@
                                     </div>
                                 </div>
                                 <div class="form-group">
-                                <label>Tanggal Rilis Komik</label>
+                                <label>Tanggal Rilis</label>
                                 <input type="date" id="releaseDate" required>
                                 </div>
                                 <div class="form-group">
@@ -426,7 +428,7 @@
 
                                 <div class="form-group full-width">
                                     <label>Sinopsis / Deskripsi</label>
-                                    <textarea id="synopsis" placeholder="Ceritakan plot komik ini..."></textarea>
+                                    <textarea id="synopsis" placeholder="Ceritakan plot / sinopsis ini..."></textarea>
                                 </div>
 
                                 <div class="form-group full-width">
@@ -442,7 +444,7 @@
                             
                             <div class="form-actions">
                                 <button type="button" id="cancelEditBtn" class="btn-cancel" style="display:none;" onclick="cancelEditComic()"><i class="fa-solid fa-xmark"></i> Batal Edit</button>
-                                <button type="submit" id="btnSubmitComic" class="btn-submit"><i class="fa-solid fa-upload"></i> Publikasikan Komik</button>
+                                <button type="submit" id="btnSubmitComic" class="btn-submit"><i class="fa-solid fa-upload"></i> Publikasikan</button>
                             </div>
                         </form>
                         <div id="uploadStatus" class="status-msg"></div>
@@ -451,14 +453,14 @@
 
                 <!-- VIEW 2: DAFTAR KOMIK -->
                 <div id="view-daftar" class="admin-view">
-                    <h1 class="page-title">Daftar Komik</h1>
+                    <h1 class="page-title">Daftar Komik & Film</h1>
                     <div class="card" style="padding: 10px 25px;">
                         <table class="comic-table">
                             <thead>
                                 <tr>
                                     <th width="70">Cover</th>
-                                    <th>Detail Komik</th>
-                                    <th>Author</th>
+                                    <th>Detail Judul</th>
+                                    <th>Author/Studio</th>
                                     <th width="110">Tanggal</th>
                                     <th width="80">Publish</th>
                                     <th width="90">Aksi</th>
@@ -479,11 +481,11 @@
                         <form id="uploadChapterForm" onsubmit="event.preventDefault()">
                             <div class="form-grid" style="margin-bottom: 10px;">
                                 <div class="form-group full-width">
-                                    <label>Pilih Komik / Folder *</label>
+                                    <label>Pilih Komik / Film *</label>
                                     <div class="search-select">
                                         <div class="search-select-wrapper">
                                             <i class="fa-solid fa-magnifying-glass"></i>
-                                            <input type="text" id="chapterComicSearch" placeholder="Ketik untuk mencari komik..." autocomplete="off" required onkeyup="filterCustomSelect(this, 'chapterComicList')" onclick="toggleCustomSelect('chapterComicList')">
+                                            <input type="text" id="chapterComicSearch" placeholder="Ketik untuk mencari komik atau film..." autocomplete="off" required onkeyup="filterCustomSelect(this, 'chapterComicList')" onclick="toggleCustomSelect('chapterComicList')">
                                         </div>
                                         <input type="hidden" id="chapterComicId" required>
                                         <div class="search-options" id="chapterComicList"></div>
@@ -494,16 +496,16 @@
                                     <input type="number" step="0.1" id="chapterNumber" required placeholder="Contoh: 1 atau 1.5">
                                 </div>
                                 <div class="form-group">
-                                    <label>Judul Chapter (Opsional)</label>
+                                    <label>Judul Chapter/Episode (Opsional)</label>
                                     <input type="text" id="chapterTitle" placeholder="Contoh: Awal Petualangan">
                                 </div>
                             </div>
                             
                             <div style="margin-bottom: 25px; padding-bottom: 20px; border-bottom: 2px dashed var(--border);">
                                 <button type="button" class="btn-success-sm" style="width: 100%; justify-content: center; padding: 12px; font-size: 15px;" onclick="window.saveChapterFolder()">
-                                    <i class="fa-solid fa-folder-plus"></i> Langkah 1: Simpan & Buat Folder Chapter
+                                    <i class="fa-solid fa-folder-plus"></i> Langkah 1: Simpan & Buat Folder
                                 </button>
-                                <div class="help-text" style="text-align:center; margin-top:8px;">Klik ini dulu untuk menyimpan identitas chapter dan membuat foldernya secara otomatis.</div>
+                                <div class="help-text" style="text-align:center; margin-top:8px;">Klik ini dulu untuk menyimpan identitas dan membuat foldernya secara otomatis.</div>
                                 <div id="saveFolderStatus" class="status-msg" style="display:none; margin-top:10px;"></div>
                             </div>
 
@@ -512,7 +514,7 @@
                                     <button type="button" class="btn-upload-cloud" style="width:100%; justify-content:center; padding:15px; font-size:15px; background: var(--sidebar-bg);" onclick="openMediaGallery()">
                                         <i class="fa-solid fa-folder-tree"></i> Langkah 2: Buka Folder & Upload Media
                                     </button>
-                                    <div class="help-text" style="text-align:center; margin-top:8px;">Buka file manager dan masuk ke folder chapter untuk mulai mengunggah gambar dan menetapkan tanggal update.</div>
+                                    <div class="help-text" style="text-align:center; margin-top:8px;">Buka file manager dan masuk ke folder untuk mulai mengunggah gambar/video dan menetapkan tanggal update.</div>
                                 </div>
                             </div>
                         </form>
@@ -521,11 +523,11 @@
 
                     <div class="card" style="padding: 10px 25px;">
                         <div style="margin: 15px 0;">
-                            <label style="color: var(--primary);">Filter Daftar Chapter berdasarkan Komik:</label>
+                            <label style="color: var(--primary);">Filter Daftar berdasarkan Komik/Film:</label>
                             <div class="search-select" style="max-width: 400px;">
                                 <div class="search-select-wrapper">
                                     <i class="fa-solid fa-magnifying-glass"></i>
-                                    <input type="text" id="filterChapterSearch" placeholder="Cari komik untuk melihat chapter..." autocomplete="off" onkeyup="filterCustomSelect(this, 'filterChapterList')" onclick="toggleCustomSelect('filterChapterList')">
+                                    <input type="text" id="filterChapterSearch" placeholder="Cari judul untuk melihat daftar chapter/ep..." autocomplete="off" onkeyup="filterCustomSelect(this, 'filterChapterList')" onclick="toggleCustomSelect('filterChapterList')">
                                 </div>
                                 <input type="hidden" id="filterChapterId" onchange="window.loadChaptersList()">
                                 <div class="search-options" id="filterChapterList"></div>
@@ -534,15 +536,15 @@
                         <table class="comic-table">
                             <thead>
                                 <tr>
-                                    <th width="100">Chapter</th>
-                                    <th>Judul Chapter</th>
+                                    <th width="120">Chapter / Ep</th>
+                                    <th>Judul Bagian</th>
                                     <th width="120">Total Media</th>
                                     <th width="120">Tgl Update</th>
                                     <th width="80">Aksi</th>
                                 </tr>
                             </thead>
                             <tbody id="chapterListTableBody">
-                                <tr><td colspan="5" style="text-align: center;">Silakan pilih komik di atas...</td></tr>
+                                <tr><td colspan="5" style="text-align: center;">Silakan pilih judul di atas...</td></tr>
                             </tbody>
                         </table>
                     </div>
@@ -551,19 +553,19 @@
                 <!-- VIEW 4: KATEGORI & GENRE -->
                 <div id="view-kategori" class="admin-view">
                     <h1 class="page-title">Kelola Data Master</h1>
-                    <p style="color: var(--text-muted); margin-bottom: 20px; font-size: 14px;">Data yang ditambah akan tersimpan di Firebase dan muncul di form Tambah Komik.</p>
+                    <p style="color: var(--text-muted); margin-bottom: 20px; font-size: 14px;">Data yang ditambah akan tersimpan di Firebase dan muncul di form Tambah Komik/Film.</p>
                     
                     <div class="master-tabs">
                         <button class="master-tab-btn active" onclick="window.switchMasterTab('card-author', this)">Author & Artist</button>
                         <button class="master-tab-btn" onclick="window.switchMasterTab('card-genre', this)">Genre</button>
-                        <button class="master-tab-btn" onclick="window.switchMasterTab('card-type', this)">Tipe Komik</button>
+                        <button class="master-tab-btn" onclick="window.switchMasterTab('card-type', this)">Tipe (Komik/Film)</button>
                         <button class="master-tab-btn" onclick="window.switchMasterTab('card-status', this)">Status</button>
                         <button class="master-tab-btn" onclick="window.switchMasterTab('card-age', this)">Rating Usia</button>
                     </div>
 
                     <div class="master-grid">
                         <div class="master-card active" id="card-author">
-                            <h3><i class="fa-solid fa-user-pen"></i> Author & Artist</h3>
+                            <h3><i class="fa-solid fa-user-pen"></i> Author / Studio</h3>
                             <div class="master-input-group">
                                 <input type="text" id="inputAuthor" placeholder="Tambah nama...">
                                 <button type="button" class="btn-add" onclick="window.addMasterDataFirebase('authors', 'inputAuthor')"><i class="fa-solid fa-plus"></i></button>
@@ -581,9 +583,9 @@
                         </div>
 
                         <div class="master-card" id="card-type">
-                            <h3><i class="fa-solid fa-book-open"></i> Tipe Komik</h3>
+                            <h3><i class="fa-solid fa-book-open"></i> Tipe (Komik/Film)</h3>
                             <div class="master-input-group">
-                                <input type="text" id="inputType" placeholder="Manga, Manhwa, Film...">
+                                <input type="text" id="inputType" placeholder="Manga, Manhwa, Film, Series...">
                                 <button type="button" class="btn-add" onclick="window.addMasterDataFirebase('types', 'inputType')"><i class="fa-solid fa-plus"></i></button>
                             </div>
                             <ul class="master-list" id="listType"></ul>
@@ -619,7 +621,7 @@
     <div id="cloudGalleryModal" class="modal-overlay hidden">
         <div class="modal-container">
             <div class="modal-header">
-                <h3><i class="fa-solid fa-folder-tree"></i> File Manager Chapter</h3>
+                <h3><i class="fa-solid fa-folder-tree"></i> File Manager Media</h3>
                 <div class="modal-actions">
                     <button class="btn-close" onclick="closeMediaGallery()"><i class="fa-solid fa-times"></i></button>
                 </div>
@@ -630,14 +632,15 @@
                 
                 <div id="gallerySearchContainer" class="gallery-search">
                     <i class="fa-solid fa-search"></i>
-                    <input type="text" id="gallerySearchInput" placeholder="Cari folder komik..." onkeyup="window.filterGalleryFolders()">
+                    <input type="text" id="gallerySearchInput" placeholder="Cari folder..." onkeyup="window.filterGalleryFolders()">
                 </div>
                 
                 <div style="display:flex; gap:10px; align-items:center; flex-wrap:wrap;">
                     <button class="btn-upload-cloud" id="btnUploadCloudTop" onclick="document.getElementById('cloudUploadInput').click()" style="display:none;">
-                        <i class="fa-solid fa-cloud-arrow-up"></i> Upload ke Folder Chapter Ini
+                        <i class="fa-solid fa-cloud-arrow-up"></i> Upload ke Folder Ini
                     </button>
-                    <input type="file" id="cloudUploadInput" class="hidden" multiple accept="image/*,video/*" onchange="window.processCloudUpload(this)">
+                    <!-- Ditambahkan dukungan video format umum -->
+                    <input type="file" id="cloudUploadInput" class="hidden" multiple accept="image/*,video/mp4,video/webm,video/ogg" onchange="window.processCloudUpload(this)">
                 </div>
             </div>
             
@@ -655,7 +658,7 @@
                 </div>
 
                 <button class="btn-success-sm" style="display: inline-flex; padding: 12px 20px; font-size: 15px;" onclick="window.confirmAndPublishChapter()">
-                    <i class="fa-solid fa-paper-plane"></i> Simpan & Publikasikan Chapter Ini
+                    <i class="fa-solid fa-paper-plane"></i> Simpan & Publikasikan
                 </button>
             </div>
         </div>
@@ -665,7 +668,8 @@
     <div id="lightboxModal" class="lightbox-overlay">
         <div class="lightbox-content">
             <button class="lightbox-close" onclick="closeLightboxPreview()"><i class="fa-solid fa-times"></i></button>
-            <img id="lightboxImage" src="" alt="Preview">
+            <!-- Kontainer khusus agar bisa render img atau video dinamis -->
+            <div id="lightboxContentArea"></div>
         </div>
     </div>
 
@@ -749,8 +753,8 @@
                     renderMasterList('listStatus', data.statuses, 'statuses');
                     renderMasterList('listAge', data.ageRatings, 'ageRatings');
 
-                    renderDropdown('author', data.authors, 'Author / Artist');
-                    renderDropdown('type', data.types, 'Tipe Komik');
+                    renderDropdown('author', data.authors, 'Author / Artist / Studio');
+                    renderDropdown('type', data.types, 'Tipe (Komik/Film)');
                     renderDropdown('status', data.statuses, 'Status');
                     renderDropdown('ageRating', data.ageRatings, 'Rating Usia');
                     
@@ -861,8 +865,8 @@
                 let totalChaptersEstimasi = 0;
                 
                 if (snapshot.empty) {
-                    tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;">Belum ada komik terpublish.</td></tr>';
-                    dashTbody.innerHTML = '<tr><td colspan="3" style="text-align:center;">Belum ada komik.</td></tr>';
+                    tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;">Belum ada judul terpublish.</td></tr>';
+                    dashTbody.innerHTML = '<tr><td colspan="3" style="text-align:center;">Belum ada judul.</td></tr>';
                     renderSearchableOptions('chapterComicList', 'chapterComicId', 'chapterComicSearch', []);
                     renderSearchableOptions('filterChapterList', 'filterChapterId', 'filterChapterSearch', []);
                     return;
@@ -875,9 +879,10 @@
                     const isPub = data.isPublished !== false; 
                     const date = data.createdAt ? data.createdAt.toDate().toLocaleDateString('id-ID', {day:'numeric', month:'short', year:'numeric'}) : '-';
                     const releaseInfo = data.releaseDate ? ` • Rilis: ${data.releaseDate}` : '';
-
-                    window.allComicsList.push({ id: docSnap.id, title: data.title, coverUrl: data.coverUrl });
-                    totalChaptersEstimasi += (data.chaptersCount || 0); // Asumsi kedepannya
+                    
+                    // Simpan type untuk pengecekan Film/Komik di fungsi lainnya
+                    window.allComicsList.push({ id: docSnap.id, title: data.title, coverUrl: data.coverUrl, type: (data.type || '').toLowerCase() });
+                    totalChaptersEstimasi += (data.chaptersCount || 0);
 
                     const trHtml = `
                         <tr>
@@ -896,7 +901,7 @@
                             </td>
                             <td>
                                 <div style="display:flex; gap:6px;">
-                                    <button type="button" class="btn-icon-outline" style="color:var(--primary); border-color:#bfdbfe; background:#eff6ff;" onclick="window.editComic('${docSnap.id}')" title="Edit Komik"><i class="fa-solid fa-pen-to-square"></i></button>
+                                    <button type="button" class="btn-icon-outline" style="color:var(--primary); border-color:#bfdbfe; background:#eff6ff;" onclick="window.editComic('${docSnap.id}')" title="Edit"><i class="fa-solid fa-pen-to-square"></i></button>
                                     <button type="button" class="btn-delete" onclick="window.deleteComic('${docSnap.id}')" title="Hapus"><i class="fa-solid fa-trash-can"></i></button>
                                 </div>
                             </td>
@@ -917,7 +922,7 @@
                     }
                 });
                 
-                // Update Dashboard Stats for Comics
+                // Update Dashboard Stats
                 document.getElementById('dashTotalKomik').innerText = window.allComicsList.length;
                 document.getElementById('dashTotalChapter').innerText = totalChaptersEstimasi > 0 ? totalChaptersEstimasi : '0+';
 
@@ -933,8 +938,8 @@
         
         window.deleteComic = async function(id) {
             const result = await Swal.fire({
-                title: 'Hapus Komik?',
-                text: "Yakin ingin menghapus komik ini permanen beserta seluruh chapternya?",
+                title: 'Hapus Data?',
+                text: "Yakin ingin menghapus judul ini permanen beserta seluruh chapter/episodenya?",
                 icon: 'warning',
                 showCancelButton: true,
                 confirmButtonColor: '#ef4444',
@@ -946,10 +951,10 @@
             if(result.isConfirmed) {
                 try { 
                     await deleteDoc(doc(db, "comics", id)); 
-                    Swal.fire('Terhapus!', 'Komik berhasil dihapus.', 'success');
+                    Swal.fire('Terhapus!', 'Data berhasil dihapus.', 'success');
                     window.loadComicsList(); 
                 } catch(e) { 
-                    Swal.fire('Error', 'Gagal menghapus komik.', 'error'); 
+                    Swal.fire('Error', 'Gagal menghapus data.', 'error'); 
                 }
             }
         };
@@ -980,14 +985,14 @@
                     
                     document.getElementById('coverImage').removeAttribute('required'); // tidak wajib saat edit
                     
-                    document.getElementById('btnSubmitComic').innerHTML = '<i class="fa-solid fa-floppy-disk"></i> Update Data Komik';
-                    document.getElementById('formTitle').innerText = 'Edit Komik: ' + (data.title || '');
+                    document.getElementById('btnSubmitComic').innerHTML = '<i class="fa-solid fa-floppy-disk"></i> Update Data';
+                    document.getElementById('formTitle').innerText = 'Edit Data: ' + (data.title || '');
                     document.getElementById('cancelEditBtn').style.display = 'flex';
                     
                     switchView('view-tambah', document.querySelector('a[onclick="switchView(\'view-tambah\', this)"]'));
                 }
             } catch (e) {
-                Swal.fire('Error', "Gagal memuat data komik: " + e.message, 'error');
+                Swal.fire('Error', "Gagal memuat data: " + e.message, 'error');
             }
         };
 
@@ -996,7 +1001,7 @@
             document.getElementById('uploadForm').reset();
             document.getElementById('coverPreview').style.display = 'none';
             document.getElementById('coverImage').setAttribute('required', 'true');
-            document.getElementById('btnSubmitComic').innerHTML = '<i class="fa-solid fa-upload"></i> Publikasikan Komik';
+            document.getElementById('btnSubmitComic').innerHTML = '<i class="fa-solid fa-upload"></i> Publikasikan';
             document.getElementById('formTitle').innerText = 'Tambah Komik Baru';
             document.getElementById('cancelEditBtn').style.display = 'none';
         };
@@ -1037,7 +1042,7 @@
                 }
 
                 localStorage.setItem('workerSecretKey', currentSecretKey);
-                uploadStatus.innerText = "Menyimpan data komik ke Firebase...";
+                uploadStatus.innerText = "Menyimpan data ke Firebase...";
 
                 const genres = [];
                 document.querySelectorAll('.genre-check:checked').forEach(cb => genres.push(cb.value));
@@ -1057,15 +1062,15 @@
 
                 if (window.editingComicId) {
                     await updateDoc(doc(db, "comics", window.editingComicId), comicData);
-                    Swal.fire({ title: 'Berhasil!', text: 'Komik berhasil diperbarui.', icon: 'success', timer: 1500, showConfirmButton: false });
+                    Swal.fire({ title: 'Berhasil!', text: 'Data berhasil diperbarui.', icon: 'success', timer: 1500, showConfirmButton: false });
                 } else {
                     comicData.uploader = auth.currentUser.email;
                     comicData.views = 0;
                     comicData.isPublished = true;
                     comicData.createdAt = serverTimestamp();
-                    comicData.chaptersCount = 0; // Initialize chapter count
+                    comicData.chaptersCount = 0; 
                     await addDoc(collection(db, "comics"), comicData);
-                    Swal.fire({ title: 'Berhasil!', text: 'Komik baru dipublikasikan.', icon: 'success', timer: 1500, showConfirmButton: false });
+                    Swal.fire({ title: 'Berhasil!', text: 'Data baru dipublikasikan.', icon: 'success', timer: 1500, showConfirmButton: false });
                 }
 
                 uploadStatus.style.display = "none";
@@ -1091,13 +1096,13 @@
             const chapterTitle = document.getElementById('chapterTitle').value;
             const statusEl = document.getElementById('saveFolderStatus');
 
-            if(!comicId) { Swal.fire('Peringatan', "Pilih Komik terlebih dahulu dari daftar!", 'warning'); return; }
-            if(!chapterNum) { Swal.fire('Peringatan', "Nomor Chapter wajib diisi!", 'warning'); return; }
+            if(!comicId) { Swal.fire('Peringatan', "Pilih judul terlebih dahulu dari daftar!", 'warning'); return; }
+            if(!chapterNum) { Swal.fire('Peringatan', "Nomor Chapter/Episode wajib diisi!", 'warning'); return; }
 
             statusEl.style.display = 'block';
             statusEl.style.background = "#eff6ff";
             statusEl.style.color = "var(--primary)";
-            statusEl.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Menyimpan folder chapter ke database...';
+            statusEl.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Menyimpan folder ke database...';
 
             try {
                 const chaptersRef = collection(db, "comics", comicId, "chapters");
@@ -1112,7 +1117,7 @@
                     await updateDoc(doc(db, "comics", comicId, "chapters", targetChapterId), {
                         title: chapterTitle
                     });
-                    statusEl.innerHTML = "✅ Folder Chapter ini sudah ada dan datanya berhasil diupdate!<br>Silakan lanjut Buka File Manager di bawah.";
+                    statusEl.innerHTML = "✅ Folder ini sudah ada dan datanya berhasil diupdate!<br>Silakan lanjut Buka File Manager di bawah.";
                 } else {
                     const newDocRef = await addDoc(chaptersRef, {
                         chapterNumber: parseFloat(chapterNum),
@@ -1121,8 +1126,7 @@
                         createdAt: serverTimestamp()
                     });
                     targetChapterId = newDocRef.id;
-                    // Update Comic's chapter count logic here if desired
-                    statusEl.innerHTML = "✅ Folder Chapter berhasil dibuat dan tersimpan!<br>Silakan lanjut Buka File Manager di bawah untuk mulai upload gambar.";
+                    statusEl.innerHTML = "✅ Folder berhasil dibuat dan tersimpan!<br>Silakan lanjut Buka File Manager di bawah untuk mulai upload media.";
                 }
                 
                 localStorage.setItem('activeComicId', comicId);
@@ -1148,13 +1152,13 @@
             if(files.length === 0) return;
             
             const currentSecretKey = secretKeyInput.value;
-            if(!currentSecretKey) { Swal.fire('Kunci Diperlukan', "Isi Kunci Rahasia Worker terlebih dahulu di form Tambah Komik!", 'warning'); return; }
+            if(!currentSecretKey) { Swal.fire('Kunci Diperlukan', "Isi Kunci Rahasia Worker terlebih dahulu di form Tambah!", 'warning'); return; }
 
             const comicId = window.galleryState.comicId || localStorage.getItem('activeComicId');
             const chapterId = window.galleryState.chapterFolderId || localStorage.getItem('activeChapterFolderId');
 
             if(!comicId || !chapterId) {
-                Swal.fire('Folder Kosong', "Pilih komik dan buat folder chapter terlebih dahulu di Langkah 1!", 'warning');
+                Swal.fire('Folder Kosong', "Pilih judul dan buat folder terlebih dahulu di Langkah 1!", 'warning');
                 return;
             }
 
@@ -1168,7 +1172,7 @@
                     statusEl.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i> Mengunggah file ${i+1} dari ${files.length}...`;
                     
                     const formData = new FormData();
-                    formData.append('coverImage', file);
+                    formData.append('coverImage', file); // API worker menampung dengan nama field ini
 
                     const workerResponse = await fetch(WORKER_URL, { method: 'POST', headers: { 'X-Admin-Key': currentSecretKey }, body: formData });
                     const workerData = await workerResponse.json();
@@ -1198,8 +1202,8 @@
 
         window.deleteImageFromChapter = async function(index, url) {
             const result = await Swal.fire({
-                title: 'Hapus Gambar?',
-                text: "Yakin ingin menghapus gambar ini secara permanen dari folder chapter?",
+                title: 'Hapus Media?',
+                text: "Yakin ingin menghapus media ini secara permanen dari folder?",
                 icon: 'warning',
                 showCancelButton: true,
                 confirmButtonColor: '#ef4444',
@@ -1224,7 +1228,7 @@
 
                 window.loadCloudGallery();
             } catch(e) {
-                Swal.fire('Error', "Gagal menghapus gambar: " + e.message, 'error');
+                Swal.fire('Error', "Gagal menghapus media: " + e.message, 'error');
             }
         };
 
@@ -1257,7 +1261,7 @@
                     searchContainer.style.display = 'block';
                     grid.innerHTML = '';
                     if (window.allComicsList.length === 0) {
-                        grid.innerHTML = '<div style="grid-column: 1/-1; text-align:center; padding:40px; color:var(--text-muted);">Belum ada komik terdaftar.</div>';
+                        grid.innerHTML = '<div style="grid-column: 1/-1; text-align:center; padding:40px; color:var(--text-muted);">Belum ada data terdaftar.</div>';
                         return;
                     }
                     window.allComicsList.forEach(c => {
@@ -1266,7 +1270,7 @@
                             <div class="folder-card root-comic-card" onclick="window.navGalleryToComic('${c.id}', '${safeTitle}')">
                                 <img src="${c.coverUrl}" class="folder-icon comic-cover" onerror="this.src='https://placehold.co/60x80?text=Cover'">
                                 <div class="folder-title">${c.title}</div>
-                                <div class="folder-subtitle">Folder Komik</div>
+                                <div class="folder-subtitle">Folder Komik / Film</div>
                             </div>
                         `;
                     });
@@ -1274,6 +1278,12 @@
                 else if (window.galleryState.level === 'comic_folder') {
                     searchContainer.style.display = 'none';
                     grid.innerHTML = ''; 
+                    
+                    // Deteksi Film atau Komik untuk penamaan
+                    const activeDoc = window.allComicsList.find(c => c.id === window.galleryState.comicId);
+                    const isFilm = activeDoc && (activeDoc.type.includes('film') || activeDoc.type.includes('movie') || activeDoc.type.includes('series'));
+                    const term = isFilm ? 'Episode' : 'Chapter';
+
                     const chaptersRef = collection(db, "comics", window.galleryState.comicId, "chapters");
                     const snapshot = await getDocs(chaptersRef);
                     let chapters = [];
@@ -1281,20 +1291,20 @@
                     chapters.sort((a, b) => b.chapterNumber - a.chapterNumber);
 
                     if (chapters.length === 0) {
-                        grid.innerHTML = `<div style="grid-column: 1/-1; text-align:center; padding:40px; color:var(--text-muted);">Belum ada folder chapter dibuat.<br>Tutup file manager dan klik tombol "Simpan & Buat Folder" di form utama terlebih dahulu.</div>`;
+                        grid.innerHTML = `<div style="grid-column: 1/-1; text-align:center; padding:40px; color:var(--text-muted);">Belum ada folder ${term.toLowerCase()} dibuat.<br>Tutup file manager dan klik tombol "Simpan & Buat Folder" di form utama terlebih dahulu.</div>`;
                     } else {
                         chapters.forEach(ch => {
                             const totalMedia = ch.images ? ch.images.length : 0;
                             const estimatedSizeMB = (totalMedia * 0.5).toFixed(1);
                             const safeTitle = (ch.title || '').replace(/'/g, "\\'");
-                            const folderLabel = `Chapter ${ch.chapterNumber}`;
+                            const folderLabel = `${term} ${ch.chapterNumber}`;
                             
                             grid.innerHTML += `
                                 <div class="folder-card" onclick="window.navGalleryToChapterFolder('${ch.id}', '${folderLabel}', window.encodeImgs('${encodeURIComponent(JSON.stringify(ch.images || []))}') )">
                                     <button class="btn-delete-folder" onclick="event.stopPropagation(); window.deleteChapterFolder('${window.galleryState.comicId}', '${ch.id}')" title="Hapus Folder"><i class="fa-solid fa-trash-can"></i></button>
                                     <i class="fa-solid fa-folder-open folder-icon" style="color: #fbbf24;"></i>
                                     <div class="folder-title">${folderLabel}</div>
-                                    <div class="folder-subtitle">${safeTitle}<br>${totalMedia} Halaman • ~${estimatedSizeMB} MB</div>
+                                    <div class="folder-subtitle">${safeTitle}<br>${totalMedia} File</div>
                                 </div>
                             `;
                         });
@@ -1304,7 +1314,7 @@
                     searchContainer.style.display = 'none';
                     grid.innerHTML = '';
                     if (!window.galleryState.currentChapterImages || window.galleryState.currentChapterImages.length === 0) {
-                        grid.innerHTML = '<div style="grid-column: 1/-1; text-align:center; padding:40px; color:var(--text-muted);"><i class="fa-solid fa-images" style="font-size:40px; margin-bottom:15px; color:#cbd5e1; display:block;"></i>Folder chapter ini masih kosong.<br>Silakan klik tombol "Upload ke Folder Chapter Ini" di kanan atas.</div>';
+                        grid.innerHTML = '<div style="grid-column: 1/-1; text-align:center; padding:40px; color:var(--text-muted);"><i class="fa-solid fa-photo-film" style="font-size:40px; margin-bottom:15px; color:#cbd5e1; display:block;"></i>Folder ini masih kosong.<br>Silakan klik tombol "Upload ke Folder Ini" di kanan atas.</div>';
                         return;
                     }
 
@@ -1312,13 +1322,19 @@
                         const isSelected = window.selectedMediaGallery.findIndex(m => m.url === url) !== -1;
                         const orderIndex = isSelected ? window.selectedMediaGallery.findIndex(m => m.url === url) + 1 : '';
                         
+                        // Cek ekstensi file video
+                        const isVideo = url.split('?')[0].match(/\.(mp4|webm|ogg|mov|mkv)$/i);
+                        const mediaHtml = isVideo 
+                            ? `<video src="${url}" style="width:100%; height:100%; object-fit:cover;" muted loop onmouseover="this.play()" onmouseout="this.pause()"></video><div style="position:absolute; bottom:5px; right:5px; background:rgba(0,0,0,0.7); color:white; font-size:10px; padding:2px 6px; border-radius:4px;"><i class="fa-solid fa-video"></i></div>`
+                            : `<img src="${url}" loading="lazy">`;
+
                         grid.innerHTML += `
                             <div class="media-card ${isSelected ? 'selected' : ''}" id="gal-item-${index}">
-                                <div class="media-thumb" onclick="window.toggleSelectGalleryItem('${index}', '${url}')" title="Pilih halaman">
+                                <div class="media-thumb" onclick="window.toggleSelectGalleryItem('${index}', '${url}')" title="Pilih File">
                                     <div class="check-circle" id="badge-${index}">${orderIndex}</div>
-                                    <img src="${url}" loading="lazy">
+                                    ${mediaHtml}
                                 </div>
-                                <div class="media-info">Halaman ${index + 1}</div>
+                                <div class="media-info">Media ${index + 1}</div>
                                 <div class="media-actions">
                                     <button class="btn-pilih" onclick="window.toggleSelectGalleryItem('${index}', '${url}')">
                                         ${isSelected ? '<i class="fa-solid fa-check"></i> Terpilih' : 'Pilih'}
@@ -1375,7 +1391,7 @@
             const finalUpdateDate = document.getElementById('modalChapterUpdateDate').value; 
 
             if(!comicId || !chapterId) {
-                Swal.fire('Error', "Kesalahan sistem: Komik atau folder tidak ditemukan. Silakan pilih komik dan buat folder chapter terlebih dahulu di Langkah 1.", 'error');
+                Swal.fire('Error', "Kesalahan sistem: Komik atau folder tidak ditemukan. Silakan pilih judul dan buat folder terlebih dahulu di Langkah 1.", 'error');
                 return;
             }
             if(!finalUpdateDate) {
@@ -1389,7 +1405,7 @@
             }
 
             if(finalUrls.length === 0) {
-                Swal.fire('Info', "Folder masih kosong! Silakan upload minimal 1 gambar terlebih dahulu sebelum mempublikasikan.", 'info');
+                Swal.fire('Info', "Folder masih kosong! Silakan upload minimal 1 media terlebih dahulu sebelum mempublikasikan.", 'info');
                 return;
             }
 
@@ -1410,10 +1426,10 @@
 
                 closeMediaGallery();
 
-                Swal.fire('Selesai!', 'Chapter Berhasil Dipublikasikan!', 'success');
+                Swal.fire('Selesai!', 'Data Berhasil Dipublikasikan!', 'success');
                 const statusEl = document.getElementById('chapterUploadStatus');
                 statusEl.style.display = "block";
-                statusEl.innerText = "✅ Selesai! Chapter Berhasil Dipublikasikan!";
+                statusEl.innerText = "✅ Selesai! Data Berhasil Dipublikasikan!";
                 statusEl.style.color = "var(--success)";
                 statusEl.style.background = "#ecfdf5";
 
@@ -1443,11 +1459,16 @@
             const comicId = document.getElementById('filterChapterId').value;
             const tbody = document.getElementById('chapterListTableBody');
             
-            if(!comicId) { tbody.innerHTML = '<tr><td colspan="5" style="text-align: center;">Silakan pilih komik di atas...</td></tr>'; return; }
+            if(!comicId) { tbody.innerHTML = '<tr><td colspan="5" style="text-align: center;">Silakan pilih judul di atas...</td></tr>'; return; }
             
-            tbody.innerHTML = '<tr><td colspan="5" style="text-align: center;">Memuat chapter...</td></tr>';
+            tbody.innerHTML = '<tr><td colspan="5" style="text-align: center;">Memuat data...</td></tr>';
             
             try {
+                // Penamaan Chapter atau Episode
+                const activeDoc = window.allComicsList.find(c => c.id === comicId);
+                const isFilm = activeDoc && activeDoc.type && (activeDoc.type.toLowerCase().includes('film') || activeDoc.type.toLowerCase().includes('movie') || activeDoc.type.toLowerCase().includes('series'));
+                const term = isFilm ? 'Episode' : 'Chapter';
+
                 const chaptersRef = collection(db, "comics", comicId, "chapters");
                 const snapshot = await getDocs(chaptersRef);
                 let chapters = [];
@@ -1456,13 +1477,13 @@
                 chapters.sort((a, b) => b.chapterNumber - a.chapterNumber);
                 
                 tbody.innerHTML = '';
-                if(chapters.length === 0) { tbody.innerHTML = '<tr><td colspan="5" style="text-align: center;">Belum ada chapter terpublish.</td></tr>'; return; }
+                if(chapters.length === 0) { tbody.innerHTML = '<tr><td colspan="5" style="text-align: center;">Belum ada chapter/episode terpublish.</td></tr>'; return; }
                 
                 chapters.forEach(ch => {
                     const date = ch.updateDate || (ch.createdAt ? ch.createdAt.toDate().toLocaleDateString('id-ID', {day:'numeric', month:'short', year:'numeric'}) : '-');
                     tbody.innerHTML += `
                         <tr>
-                            <td><strong>Chapter ${ch.chapterNumber}</strong></td>
+                            <td><strong>${term} ${ch.chapterNumber}</strong></td>
                             <td>${ch.title || '-'}</td>
                             <td>${ch.images ? ch.images.length : 0} Media</td>
                             <td><span style="font-size: 13px;">${date}</span></td>
@@ -1477,8 +1498,8 @@
 
         window.deleteChapter = async function(comicId, chapterId) {
             const result = await Swal.fire({
-                title: 'Hapus Chapter?',
-                text: "Yakin ingin menghapus chapter ini secara permanen?",
+                title: 'Hapus Data?',
+                text: "Yakin ingin menghapus chapter/episode ini secara permanen?",
                 icon: 'warning',
                 showCancelButton: true,
                 confirmButtonColor: '#ef4444',
@@ -1486,13 +1507,13 @@
                 confirmButtonText: 'Ya, Hapus!'
             });
             if(result.isConfirmed) {
-                try { await deleteDoc(doc(db, "comics", comicId, "chapters", chapterId)); window.loadChaptersList(); } catch(e) { Swal.fire('Error','Gagal menghapus chapter.','error'); }
+                try { await deleteDoc(doc(db, "comics", comicId, "chapters", chapterId)); window.loadChaptersList(); } catch(e) { Swal.fire('Error','Gagal menghapus data.','error'); }
             }
         }
 
         window.deleteChapterFolder = async function(comicId, chapterId) {
             const result = await Swal.fire({
-                title: 'Hapus Folder Chapter?',
+                title: 'Hapus Folder?',
                 text: "⚠️ Yakin ingin menghapus FOLDER INI beserta seluruh isinya secara permanen?",
                 icon: 'warning',
                 showCancelButton: true,
@@ -1620,7 +1641,7 @@
                 window.galleryState = { 
                     level: 'comic_folder', 
                     comicId: localStorage.getItem('activeComicId'), 
-                    comicName: localStorage.getItem('activeComicName') || 'Komik', 
+                    comicName: localStorage.getItem('activeComicName') || 'Judul', 
                     chapterFolderId: null, 
                     chapterFolderName: '', 
                     currentChapterImages: [] 
@@ -1639,13 +1660,22 @@
             document.getElementById('cloudGalleryModal').classList.add('hidden');
         }
 
+        // Preview Lightbox Diperbarui untuk Dukungan Video
         window.openLightboxPreview = function(url) {
-            document.getElementById('lightboxImage').src = url;
+            const isVideo = url.split('?')[0].match(/\.(mp4|webm|ogg|mov|mkv)$/i);
+            const container = document.getElementById('lightboxContentArea');
+            
+            if (isVideo) {
+                container.innerHTML = `<video src="${url}" controls autoplay style="max-width: 100%; max-height: 90vh; border-radius: 8px; box-shadow: 0 10px 40px rgba(0,0,0,0.5);"></video>`;
+            } else {
+                container.innerHTML = `<img src="${url}" alt="Preview" style="max-width: 100%; max-height: 90vh; border-radius: 8px; box-shadow: 0 10px 40px rgba(0,0,0,0.5); object-fit: contain;">`;
+            }
+            
             document.getElementById('lightboxModal').classList.add('show');
         }
         window.closeLightboxPreview = function() {
             document.getElementById('lightboxModal').classList.remove('show');
-            setTimeout(() => { document.getElementById('lightboxImage').src = ''; }, 300);
+            setTimeout(() => { document.getElementById('lightboxContentArea').innerHTML = ''; }, 300);
         }
     </script>
 </body>

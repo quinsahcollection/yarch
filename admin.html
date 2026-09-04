@@ -218,7 +218,7 @@
         .master-list li { display: flex; justify-content: space-between; align-items: center; padding: 10px 12px; background: #f8fafc; margin-bottom: 8px; border-radius: 6px; border: 1px solid var(--border); font-size: 13px; font-weight: 500; }
         .btn-delete { color: var(--danger); background: none; border: none; cursor: pointer; font-size: 14px; padding: 4px; }
 
-        .master-tabs { display: none; }
+        .master-tabs { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 15px; }
         .master-tab-btn { background: var(--white); border: 1px solid var(--border); padding: 8px 16px; border-radius: 20px; cursor: pointer; font-size: 13px; font-weight: 600; color: var(--text-muted); transition: 0.2s; white-space: nowrap; }
         .master-tab-btn.active { background: var(--primary); color: white; border-color: var(--primary); }
 
@@ -349,7 +349,7 @@
                         <div class="stat-card">
                             <div class="stat-icon bg-yellow"><i class="fa-solid fa-user-pen"></i></div>
                             <div class="stat-info">
-                                <h3>Total Studio/Author</h3>
+                                <h3>Total Author/Sutradara</h3>
                                 <div class="stat-val" id="dashTotalAuthor">0</div>
                             </div>
                         </div>
@@ -410,18 +410,31 @@
                                     <input type="text" id="altTitle" placeholder="Contoh: Wan Pisu, Na Honjaman Rebeleop">
                                 </div>
 
-                                <div class="form-group">
+                                <!-- Input Author untuk Komik -->
+                                <div class="form-group" id="groupAuthor">
                                     <label id="lblAuthor">Author / Artist *</label>
                                     <div style="display: flex; gap: 8px;">
                                         <select id="author" required style="flex-grow: 1;"><option value="">Memuat data...</option></select>
-                                        <button type="button" class="btn-quick-add" onclick="quickAddMasterData('authors', document.getElementById('lblAuthor').innerText.replace(' *',''))" title="Tambah Baru"><i class="fa-solid fa-plus"></i></button>
+                                        <button type="button" class="btn-quick-add" onclick="quickAddMasterData('authors', 'Author')" title="Tambah Baru"><i class="fa-solid fa-plus"></i></button>
                                     </div>
                                 </div>
-                                <div class="form-group">
+
+                                <!-- Input Sutradara untuk Film (Checkbox) -->
+                                <div class="form-group full-width" id="groupDirector" style="display: none;">
+                                    <label style="display:flex; justify-content:space-between; align-items:center;">
+                                        Sutradara / Directors (Bisa pilih lebih dari 1) *
+                                        <button type="button" class="btn-quick-add" style="width:auto; padding:4px 10px; height:auto; font-size:12px; border-radius:6px;" onclick="quickAddMasterData('directors', 'Sutradara')" title="Tambah Sutradara Baru"><i class="fa-solid fa-plus"></i> Tambah Sutradara</button>
+                                    </label>
+                                    <div class="genre-list" id="directorCheckboxContainer">
+                                        <span class="help-text">Memuat data sutradara...</span>
+                                    </div>
+                                </div>
+
+                                <div class="form-group" id="groupTipe">
                                     <label id="lblTipe">Tipe Komik *</label>
                                     <div style="display: flex; gap: 8px;">
                                         <select id="type" required style="flex-grow: 1;"><option value="">Memuat data...</option></select>
-                                        <button type="button" class="btn-quick-add" onclick="quickAddMasterData('types', document.getElementById('lblTipe').innerText.replace(' *',''))" title="Tambah Tipe Baru"><i class="fa-solid fa-plus"></i></button>
+                                        <button type="button" class="btn-quick-add" onclick="quickAddMasterData('types', 'Tipe Format')" title="Tambah Tipe Baru"><i class="fa-solid fa-plus"></i></button>
                                     </div>
                                 </div>
                                 <div class="form-group">
@@ -432,8 +445,8 @@
                                     </div>
                                 </div>
                                 <div class="form-group">
-                                <label id="lblTglRilis">Tanggal Rilis Komik</label>
-                                <input type="date" id="releaseDate" required>
+                                    <label id="lblTglRilis">Tanggal Rilis</label>
+                                    <input type="date" id="releaseDate" required>
                                 </div>
                                 <div class="form-group">
                                     <label>Rating Usia</label>
@@ -441,6 +454,12 @@
                                         <select id="ageRating" style="flex-grow: 1;"><option value="">Memuat data...</option></select>
                                         <button type="button" class="btn-quick-add" onclick="quickAddMasterData('ageRatings', 'Rating Usia')" title="Tambah Rating Usia"><i class="fa-solid fa-plus"></i></button>
                                     </div>
+                                </div>
+
+                                <!-- Input Video Trailer untuk Film -->
+                                <div class="form-group full-width" id="groupTrailer" style="display: none;">
+                                    <label>Video Trailer URL (Link YouTube/Video)</label>
+                                    <input type="text" id="trailerUrl" placeholder="Contoh: https://www.youtube.com/watch?v=...">
                                 </div>
 
                                 <div class="form-group full-width">
@@ -451,6 +470,12 @@
                                     <div class="genre-list" id="genreCheckboxContainer">
                                         <span class="help-text">Memuat data genre...</span>
                                     </div>
+                                </div>
+
+                                <!-- Input Cast & Crew untuk Film -->
+                                <div class="form-group full-width" id="groupCast" style="display: none;">
+                                    <label>All Cast & Crew</label>
+                                    <textarea id="castCrew" placeholder="Masukkan daftar pemeran/aktor, staf produksi pendukung, dll..."></textarea>
                                 </div>
 
                                 <div class="form-group full-width">
@@ -488,7 +513,7 @@
                                     <th width="70">Cover</th>
                                     <th>Detail Judul</th>
                                     <th width="100">Kategori</th>
-                                    <th>Author/Studio</th>
+                                    <th>Kreator/Studio</th>
                                     <th width="110">Tanggal</th>
                                     <th width="80">Publish</th>
                                     <th width="90">Aksi</th>
@@ -584,7 +609,8 @@
                     <p style="color: var(--text-muted); margin-bottom: 20px; font-size: 14px;">Data yang ditambah akan tersimpan di Firebase dan muncul di form utama.</p>
                     
                     <div class="master-tabs">
-                        <button class="master-tab-btn active" onclick="window.switchMasterTab('card-author', this)">Author & Studio</button>
+                        <button class="master-tab-btn active" onclick="window.switchMasterTab('card-author', this)">Author Komik</button>
+                        <button class="master-tab-btn" onclick="window.switchMasterTab('card-director', this)">Sutradara Film</button>
                         <button class="master-tab-btn" onclick="window.switchMasterTab('card-genre', this)">Genre</button>
                         <button class="master-tab-btn" onclick="window.switchMasterTab('card-type', this)">Tipe Format</button>
                         <button class="master-tab-btn" onclick="window.switchMasterTab('card-status', this)">Status</button>
@@ -593,12 +619,21 @@
 
                     <div class="master-grid">
                         <div class="master-card active" id="card-author">
-                            <h3><i class="fa-solid fa-user-pen"></i> Author & Studio</h3>
+                            <h3><i class="fa-solid fa-user-pen"></i> Author / Artist</h3>
                             <div class="master-input-group">
                                 <input type="text" id="inputAuthor" placeholder="Tambah nama...">
                                 <button type="button" class="btn-add" onclick="window.addMasterDataFirebase('authors', 'inputAuthor')"><i class="fa-solid fa-plus"></i></button>
                             </div>
                             <ul class="master-list" id="listAuthor"></ul>
+                        </div>
+
+                        <div class="master-card" id="card-director">
+                            <h3><i class="fa-solid fa-clapperboard"></i> Sutradara / Directors</h3>
+                            <div class="master-input-group">
+                                <input type="text" id="inputDirector" placeholder="Tambah sutradara...">
+                                <button type="button" class="btn-add" onclick="window.addMasterDataFirebase('directors', 'inputDirector')"><i class="fa-solid fa-plus"></i></button>
+                            </div>
+                            <ul class="master-list" id="listDirector"></ul>
                         </div>
 
                         <div class="master-card" id="card-genre">
@@ -611,7 +646,7 @@
                         </div>
 
                         <div class="master-card" id="card-type">
-                            <h3><i class="fa-solid fa-book-open"></i> Tipe (Manga/Anime/Series)</h3>
+                            <h3><i class="fa-solid fa-book-open"></i> Tipe Format</h3>
                             <div class="master-input-group">
                                 <input type="text" id="inputType" placeholder="Manga, Manhwa, Film, Series...">
                                 <button type="button" class="btn-add" onclick="window.addMasterDataFirebase('types', 'inputType')"><i class="fa-solid fa-plus"></i></button>
@@ -769,13 +804,14 @@
             try {
                 const snap = await getDoc(masterDocRef);
                 if (!snap.exists()) {
-                    await setDoc(masterDocRef, { authors: [], genres: [], types: [], statuses: [], ageRatings: [] });
+                    await setDoc(masterDocRef, { authors: [], directors: [], genres: [], types: [], statuses: [], ageRatings: [] });
                 }
                 onSnapshot(masterDocRef, (docSnap) => {
                     const data = docSnap.data();
                     if (!data) return;
 
                     renderMasterList('listAuthor', data.authors, 'authors');
+                    renderMasterList('listDirector', data.directors, 'directors');
                     renderMasterList('listGenre', data.genres, 'genres');
                     renderMasterList('listType', data.types, 'types');
                     renderMasterList('listStatus', data.statuses, 'statuses');
@@ -791,10 +827,16 @@
                     if(data.genres && data.genres.length > 0) {
                         data.genres.forEach(genre => { genreContainer.innerHTML += `<label><input type="checkbox" value="${genre}" class="genre-check"> ${genre}</label>`; });
                     } else { genreContainer.innerHTML = '<span class="help-text">Belum ada data genre.</span>'; }
+
+                    const directorContainer = document.getElementById('directorCheckboxContainer');
+                    directorContainer.innerHTML = '';
+                    if(data.directors && data.directors.length > 0) {
+                        data.directors.forEach(dir => { directorContainer.innerHTML += `<label><input type="checkbox" value="${dir}" class="director-check"> ${dir}</label>`; });
+                    } else { directorContainer.innerHTML = '<span class="help-text">Belum ada data sutradara.</span>'; }
                     
                     // Update Dashboard Stats for Master Data
-                    document.getElementById('dashTotalAuthor').innerText = data.authors ? data.authors.length : 0;
-                    document.getElementById('dashTotalGenre').innerText = data.genres ? data.genres.length : 0;
+                    let authorDirTotal = (data.authors ? data.authors.length : 0) + (data.directors ? data.directors.length : 0);
+                    document.getElementById('dashTotalAuthor').innerText = authorDirTotal;
                 });
             } catch (error) { console.error(error); }
         }
@@ -861,7 +903,7 @@
         };
 
         /* =========================================
-           LOGIKA DAFTAR KOMIK & FILM (GABUNGAN TAPI DITAG EKSPLISIT)
+           LOGIKA DAFTAR KOMIK & FILM
            ========================================= */
         window.loadComicsList = async function() {
             const tbody = document.getElementById('comicListTableBody');
@@ -892,15 +934,19 @@
                     const isPub = data.isPublished !== false; 
                     const date = data.createdAt ? data.createdAt.toDate().toLocaleDateString('id-ID', {day:'numeric', month:'short', year:'numeric'}) : '-';
                     const releaseInfo = data.releaseDate ? ` • Rilis: ${data.releaseDate}` : '';
-                    const dbFormat = data.format || 'komik'; // Ambil format eksplisit yang baru disimpan
+                    const dbFormat = data.format || 'komik';
 
                     if(dbFormat === 'film') countFilm++; else countKomik++;
 
-                    // Menyimpan type & format untuk file manager & forms
                     window.allComicsList.push({ id: docSnap.id, title: data.title, coverUrl: data.coverUrl, format: dbFormat });
                     totalChaptersEstimasi += (data.chaptersCount || 0);
 
                     const formatBadge = dbFormat === 'film' ? '<span style="background:var(--purple);color:white;padding:3px 8px;border-radius:4px;font-size:11px;font-weight:600;"><i class="fa-solid fa-film"></i> Film/Series</span>' : '<span style="background:var(--primary);color:white;padding:3px 8px;border-radius:4px;font-size:11px;font-weight:600;"><i class="fa-solid fa-book-open"></i> Komik</span>';
+                    
+                    let creatorDisplay = data.author || '-';
+                    if (dbFormat === 'film' && data.directors && data.directors.length > 0) {
+                        creatorDisplay = data.directors.join(', ');
+                    }
 
                     const trHtml = `
                         <tr>
@@ -910,7 +956,7 @@
                                 <span style="font-size: 11px; color: #888;">${data.type || '-'} • ${data.status || '-'}${releaseInfo}</span>
                             </td>
                             <td>${formatBadge}</td>
-                            <td>${data.author || '-'}</td>
+                            <td>${creatorDisplay}</td>
                             <td><span style="font-size: 13px; font-weight: 500;">${date}</span></td>
                             <td>
                                 <label class="toggle-switch">
@@ -1001,7 +1047,11 @@
                     document.getElementById('ageRating').value = data.ageRating || '';
                     document.getElementById('synopsis').value = data.synopsis || '';
                     
+                    document.getElementById('castCrew').value = data.castCrew || '';
+                    document.getElementById('trailerUrl').value = data.trailerUrl || '';
+
                     document.querySelectorAll('.genre-check').forEach(cb => { cb.checked = (data.genres || []).includes(cb.value); });
+                    document.querySelectorAll('.director-check').forEach(cb => { cb.checked = (data.directors || []).includes(cb.value); });
                     
                     document.getElementById('coverPreview').src = data.coverUrl || '';
                     document.getElementById('coverPreview').style.display = data.coverUrl ? 'block' : 'none';
@@ -1069,12 +1119,15 @@
 
                 const genres = [];
                 document.querySelectorAll('.genre-check:checked').forEach(cb => genres.push(cb.value));
+                
+                const directors = [];
+                document.querySelectorAll('.director-check:checked').forEach(cb => directors.push(cb.value));
+
                 const entryFormat = document.querySelector('input[name="entryFormat"]:checked').value;
 
                 const dbData = {
                     title: document.getElementById('title').value,
                     altTitle: document.getElementById('altTitle').value,
-                    author: document.getElementById('author').value,
                     type: document.getElementById('type').value,
                     status: document.getElementById('status').value,
                     ageRating: document.getElementById('ageRating').value,
@@ -1082,8 +1135,21 @@
                     genres: genres,
                     synopsis: document.getElementById('synopsis').value,
                     coverUrl: finalCoverUrl,
-                    format: entryFormat // EXPLICIT TAGGING FOR COMIC VS FILM
+                    format: entryFormat
                 };
+
+                // Mapping field khusus berdasarkan format yang dipilih
+                if (entryFormat === 'film') {
+                    dbData.directors = directors;
+                    dbData.author = ""; // Kosongkan form komik jika film
+                    dbData.castCrew = document.getElementById('castCrew').value;
+                    dbData.trailerUrl = document.getElementById('trailerUrl').value;
+                } else {
+                    dbData.author = document.getElementById('author').value;
+                    dbData.directors = []; // Kosongkan form film jika komik
+                    dbData.castCrew = "";
+                    dbData.trailerUrl = "";
+                }
 
                 if (window.editingComicId) {
                     await updateDoc(doc(db, "comics", window.editingComicId), dbData);
@@ -1145,7 +1211,7 @@
                     const newDocRef = await addDoc(chaptersRef, {
                         chapterNumber: parseFloat(chapterNum),
                         title: chapterTitle,
-                        images: [], // Can hold both image URLs or video URLs
+                        images: [],
                         createdAt: serverTimestamp()
                     });
                     targetChapterId = newDocRef.id;
@@ -1192,7 +1258,7 @@
                     statusEl.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i> Mengunggah media ${i+1} dari ${files.length}... (Proses file video memakan waktu lebih lama)`;
                     
                     const formData = new FormData();
-                    formData.append('coverImage', file); // Generic worker parameter
+                    formData.append('coverImage', file);
 
                     const workerResponse = await fetch(WORKER_URL, { method: 'POST', headers: { 'X-Admin-Key': currentSecretKey }, body: formData });
                     const workerData = await workerResponse.json();
@@ -1399,7 +1465,7 @@
         }
 
         /* =========================================
-           PUBLIKASI FINAL CHAPTER/EPISODE (DIAMANKAN DENGAN STORAGE)
+           PUBLIKASI FINAL CHAPTER/EPISODE
            ========================================= */
         window.confirmAndPublishChapter = async function() {
             const comicId = document.getElementById('chapterComicId').value || window.galleryState.comicId || localStorage.getItem('activeComicId');
@@ -1510,7 +1576,7 @@
         }
     </script>
 
-    <!-- SCRIPT TAMBAHAN (SEARCH & UI) -->
+    <!-- SCRIPT TAMBAHAN (SEARCH & UI DINAMIS) -->
     <script>
         // Logika Mengubah Form UI Sesuai Pilihan Format (Komik vs Film)
         window.selectFormatEntry = function(tipe) {
@@ -1520,12 +1586,19 @@
             const targetBtn = document.getElementById(isFilm ? 'btnFormatFilm' : 'btnFormatKomik');
             targetBtn.classList.add(isFilm ? 'active-film' : 'active');
 
-            // Merubah Teks UI di Form
+            // Merubah Teks UI dan Visibilitas Elemen
             document.getElementById('lblJudulUtama').innerText = isFilm ? 'Judul Utama Film / Series *' : 'Judul Utama Komik *';
-            document.getElementById('lblAuthor').innerText = isFilm ? 'Studio Animasi / Sutradara *' : 'Author / Artist *';
             document.getElementById('lblTipe').innerText = isFilm ? 'Tipe Rilis Film *' : 'Tipe Rilis Komik *';
             document.getElementById('lblTglRilis').innerText = isFilm ? 'Tanggal Rilis Penayangan' : 'Tanggal Rilis Terbitan';
             document.getElementById('lblSinopsis').innerText = isFilm ? 'Sinopsis Cerita Film' : 'Sinopsis Plot Komik';
+
+            // Menampilkan/Menyembunyikan Kolom Khusus
+            document.getElementById('groupAuthor').style.display = isFilm ? 'none' : 'block';
+            document.getElementById('author').required = !isFilm;
+
+            document.getElementById('groupDirector').style.display = isFilm ? 'block' : 'none';
+            document.getElementById('groupCast').style.display = isFilm ? 'block' : 'none';
+            document.getElementById('groupTrailer').style.display = isFilm ? 'block' : 'none';
         }
 
         window.switchMasterTab = function(cardId, btnElement) {

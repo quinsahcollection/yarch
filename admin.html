@@ -444,6 +444,7 @@
                                         <button type="button" class="btn-quick-add" onclick="quickAddMasterData('statuses', 'Status')" title="Tambah Status Baru"><i class="fa-solid fa-plus"></i></button>
                                     </div>
                                 </div>
+                                
                                 <div class="form-group">
                                     <label id="lblTglRilis">Tanggal Rilis</label>
                                     <input type="date" id="releaseDate" required>
@@ -453,6 +454,15 @@
                                     <div style="display: flex; gap: 8px;">
                                         <select id="ageRating" style="flex-grow: 1;"><option value="">Memuat data...</option></select>
                                         <button type="button" class="btn-quick-add" onclick="quickAddMasterData('ageRatings', 'Rating Usia')" title="Tambah Rating Usia"><i class="fa-solid fa-plus"></i></button>
+                                    </div>
+                                </div>
+
+                                <!-- Input Durasi Jam & Menit untuk Film -->
+                                <div class="form-group full-width" id="groupDuration" style="display: none;">
+                                    <label>Durasi Film</label>
+                                    <div style="display: flex; gap: 15px;">
+                                        <input type="number" id="durationHours" placeholder="Jam (Contoh: 1 atau 2)" min="0" style="flex: 1;">
+                                        <input type="number" id="durationMinutes" placeholder="Menit (Contoh: 45 atau 30)" min="0" max="59" style="flex: 1;">
                                     </div>
                                 </div>
 
@@ -544,6 +554,15 @@
                                         <div class="search-options" id="chapterComicList"></div>
                                     </div>
                                 </div>
+
+                                <!-- Opsi Full Movie (Muncul jika format Film dipilih) -->
+                                <div class="form-group full-width" id="groupFullMovie" style="display: none; background: #eff6ff; padding: 12px 15px; border-radius: 8px; border: 1px solid #bfdbfe; margin-bottom: 5px;">
+                                    <label style="display: flex; align-items: center; gap: 10px; margin: 0; cursor: pointer; color: var(--primary); font-weight: 600;">
+                                        <input type="checkbox" id="chkFullMovie" onchange="toggleFullMovie(this.checked)" style="width: 18px; height: 18px; margin: 0; cursor: pointer;">
+                                        Tandai sebagai Full Movie (Tanpa Episode)
+                                    </label>
+                                </div>
+
                                 <div class="form-group">
                                     <label id="lblChapterNum">Nomor Chapter / Episode *</label>
                                     <input type="number" step="0.1" id="chapterNumber" required placeholder="Contoh: 1 atau 1.5">
@@ -933,7 +952,13 @@
                     const data = docSnap.data();
                     const isPub = data.isPublished !== false; 
                     const date = data.createdAt ? data.createdAt.toDate().toLocaleDateString('id-ID', {day:'numeric', month:'short', year:'numeric'}) : '-';
+                    
+                    let durationInfo = '';
+                    if (data.format === 'film' && (data.durationHours || data.durationMinutes)) {
+                        durationInfo = ` • ${data.durationHours || 0}j ${data.durationMinutes || 0}m`;
+                    }
                     const releaseInfo = data.releaseDate ? ` • Rilis: ${data.releaseDate}` : '';
+                    
                     const dbFormat = data.format || 'komik';
 
                     if(dbFormat === 'film') countFilm++; else countKomik++;
@@ -953,7 +978,7 @@
                             <td><img src="${data.coverUrl}" style="width: 50px; height: 70px; object-fit: cover; border-radius: 6px; box-shadow: 0 2px 5px rgba(0,0,0,0.1);" onerror="this.src='https://placehold.co/50x70?text=Error'"></td>
                             <td>
                                 <strong>${data.title}</strong><br>
-                                <span style="font-size: 11px; color: #888;">${data.type || '-'} • ${data.status || '-'}${releaseInfo}</span>
+                                <span style="font-size: 11px; color: #888;">${data.type || '-'}${durationInfo}${releaseInfo}</span>
                             </td>
                             <td>${formatBadge}</td>
                             <td>${creatorDisplay}</td>
@@ -1047,6 +1072,8 @@
                     document.getElementById('ageRating').value = data.ageRating || '';
                     document.getElementById('synopsis').value = data.synopsis || '';
                     
+                    document.getElementById('durationHours').value = data.durationHours || '';
+                    document.getElementById('durationMinutes').value = data.durationMinutes || '';
                     document.getElementById('castCrew').value = data.castCrew || '';
                     document.getElementById('trailerUrl').value = data.trailerUrl || '';
 
@@ -1142,11 +1169,15 @@
                 if (entryFormat === 'film') {
                     dbData.directors = directors;
                     dbData.author = ""; // Kosongkan form komik jika film
+                    dbData.durationHours = document.getElementById('durationHours').value;
+                    dbData.durationMinutes = document.getElementById('durationMinutes').value;
                     dbData.castCrew = document.getElementById('castCrew').value;
                     dbData.trailerUrl = document.getElementById('trailerUrl').value;
                 } else {
                     dbData.author = document.getElementById('author').value;
                     dbData.directors = []; // Kosongkan form film jika komik
+                    dbData.durationHours = "";
+                    dbData.durationMinutes = "";
                     dbData.castCrew = "";
                     dbData.trailerUrl = "";
                 }
@@ -1382,7 +1413,7 @@
                         chapters.forEach(ch => {
                             const totalMedia = ch.images ? ch.images.length : 0;
                             const safeTitle = (ch.title || '').replace(/'/g, "\\'");
-                            const folderLabel = `${term} ${ch.chapterNumber}`;
+                            const folderLabel = ch.chapterNumber === 1 && ch.title === "Full Movie" ? "Full Movie" : `${term} ${ch.chapterNumber}`;
                             const folderColor = isFilm ? '#8b5cf6' : '#fbbf24';
                             
                             grid.innerHTML += `
@@ -1503,6 +1534,8 @@
                 statusEl.style.background = "#ecfdf5";
 
                 document.getElementById('uploadChapterForm').reset();
+                document.getElementById('chkFullMovie').checked = false;
+                window.toggleFullMovie(false);
                 document.getElementById('chapterComicSearch').value = '';
                 document.getElementById('chapterComicId').value = '';
                 document.getElementById('saveFolderStatus').style.display = 'none';
@@ -1543,9 +1576,11 @@
                 
                 chapters.forEach(ch => {
                     const date = ch.updateDate || (ch.createdAt ? ch.createdAt.toDate().toLocaleDateString('id-ID', {day:'numeric', month:'short', year:'numeric'}) : '-');
+                    const labelPart = ch.chapterNumber === 1 && ch.title === "Full Movie" ? "Full Movie" : `${term} ${ch.chapterNumber}`;
+
                     tbody.innerHTML += `
                         <tr>
-                            <td><strong>${term} ${ch.chapterNumber}</strong></td>
+                            <td><strong>${labelPart}</strong></td>
                             <td>${ch.title || '-'}</td>
                             <td>${ch.images ? ch.images.length : 0} File Media</td>
                             <td><span style="font-size: 13px;">${date}</span></td>
@@ -1597,8 +1632,26 @@
             document.getElementById('author').required = !isFilm;
 
             document.getElementById('groupDirector').style.display = isFilm ? 'block' : 'none';
+            document.getElementById('groupDuration').style.display = isFilm ? 'block' : 'none';
             document.getElementById('groupCast').style.display = isFilm ? 'block' : 'none';
             document.getElementById('groupTrailer').style.display = isFilm ? 'block' : 'none';
+        }
+
+        // Fungsi Otomatis Mengisi "Full Movie"
+        window.toggleFullMovie = function(isChecked) {
+            const numInput = document.getElementById('chapterNumber');
+            const titleInput = document.getElementById('chapterTitle');
+            if (isChecked) {
+                numInput.value = 1;
+                numInput.readOnly = true;
+                titleInput.value = "Full Movie";
+                titleInput.readOnly = true;
+            } else {
+                numInput.value = "";
+                numInput.readOnly = false;
+                titleInput.value = "";
+                titleInput.readOnly = false;
+            }
         }
 
         window.switchMasterTab = function(cardId, btnElement) {
@@ -1649,7 +1702,7 @@
             }
         }
 
-        // Logic memproses perubahan Label Chapter/Episode secara Dinamis
+        // Logic memproses perubahan Form Kelola Chapter secara Dinamis
         window.selectCustomOption = function(id, title, hiddenId, inputId, listId) {
             document.getElementById(hiddenId).value = id;
             document.getElementById(inputId).value = title;
@@ -1659,13 +1712,18 @@
                 localStorage.setItem('activeComicId', id);
                 localStorage.setItem('activeComicName', title);
 
-                // Update teks Chapter vs Episode di form Kelola 
+                // Update UI Kelola Chapter
                 const selectedData = window.allComicsList.find(c => c.id === id);
                 if (selectedData) {
                     const isFilm = selectedData.format === 'film';
                     document.getElementById('lblChapterNum').innerText = isFilm ? 'Nomor Episode *' : 'Nomor Chapter *';
                     document.getElementById('lblChapterTitle').innerText = isFilm ? 'Judul Tambahan Episode (Opsional)' : 'Judul Tambahan Chapter (Opsional)';
-                    document.getElementById('btnSaveFolder').innerHTML = isFilm ? '<i class="fa-solid fa-folder-plus"></i> Langkah 1: Simpan & Buat Folder Episode' : '<i class="fa-solid fa-folder-plus"></i> Langkah 1: Simpan & Buat Folder Chapter';
+                    document.getElementById('btnSaveFolder').innerHTML = isFilm ? '<i class="fa-solid fa-folder-plus"></i> Langkah 1: Simpan & Buat Folder Film' : '<i class="fa-solid fa-folder-plus"></i> Langkah 1: Simpan & Buat Folder Chapter';
+                    
+                    // Tampilkan atau sembunyikan Opsi Full Movie
+                    document.getElementById('groupFullMovie').style.display = isFilm ? 'block' : 'none';
+                    document.getElementById('chkFullMovie').checked = false;
+                    window.toggleFullMovie(false);
                 }
             }
             if(hiddenId === 'filterChapterId' && typeof window.loadChaptersList === 'function') { window.loadChaptersList(); }

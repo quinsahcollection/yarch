@@ -1234,23 +1234,44 @@
                 if(data.genres) data.genres.forEach(g => tagsContainer.innerHTML += `<span class="tag">${g}</span>`);
 
                 // ================= SETUP KHUSUS FILM / ANIME =================
-                const isVideo = data.type && (data.type.toLowerCase().includes('film') || data.type.toLowerCase().includes('anime'));
+                const isVideo = data.format === 'film' || (data.type && (data.type.toLowerCase().includes('film') || data.type.toLowerCase().includes('anime')));
                 const movieExtras = document.querySelectorAll('.movie-extra-info');
                 
                 if (isVideo) {
                     document.getElementById('lblAuthor').innerText = "Studio / Produksi";
-                    document.getElementById('detailAuthor').innerText = data.author || data.studio || "Tidak diketahui";
                     
-                    document.getElementById('detailDuration').innerText = data.duration || "Belum ada info durasi";
-                    document.getElementById('detailDirector').innerText = data.director || data.producer || "Tidak diketahui";
-                    document.getElementById('detailCast').innerText = data.cast || "Belum ada informasi cast & crew yang terdaftar.";
+                    // Tarik sutradara (directors) jika ada, jika tidak pakai author bawaan 
+                    document.getElementById('detailAuthor').innerText = (data.directors && data.directors.length > 0) ? data.directors.join(', ') : (data.author || "Tidak diketahui");
+                    
+                    // Gabungkan Format Durasi Jam dan Menit
+                    let durasiStr = 'Belum ada info durasi';
+                    if (data.durationHours || data.durationMinutes) {
+                        let jam = data.durationHours ? data.durationHours + ' Jam ' : '';
+                        let menit = data.durationMinutes ? data.durationMinutes + ' Menit' : '';
+                        durasiStr = jam + menit;
+                    }
+                    document.getElementById('detailDuration').innerText = durasiStr;
+                    
+                    // Pemetaan Sutradara dari array
+                    document.getElementById('detailDirector').innerText = (data.directors && data.directors.length > 0) ? data.directors.join(', ') : "Tidak diketahui";
+                    
+                    // Pemetaan Cast & Crew
+                    document.getElementById('detailCast').innerText = data.castCrew || "Belum ada informasi cast & crew yang terdaftar.";
                     
                     movieExtras.forEach(el => el.style.display = 'flex');
 
-                    // Setup Trailer
+                    // Merender Trailer YouTube ke bentuk Embed Otomatis
                     if(data.trailerUrl) {
                         document.getElementById('trailerSection').style.display = 'block';
-                        document.getElementById('detailTrailer').src = data.trailerUrl;
+                        
+                        let embedUrl = data.trailerUrl;
+                        if (embedUrl.includes('watch?v=')) {
+                            embedUrl = embedUrl.replace('watch?v=', 'embed/');
+                        } else if (embedUrl.includes('youtu.be/')) {
+                            embedUrl = embedUrl.replace('youtu.be/', 'www.youtube.com/embed/');
+                        }
+                        
+                        document.getElementById('detailTrailer').src = embedUrl;
                     } else {
                         document.getElementById('trailerSection').style.display = 'none';
                         document.getElementById('detailTrailer').src = "";

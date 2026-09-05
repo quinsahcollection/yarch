@@ -216,6 +216,10 @@
         /* BOOKMARK PAGE */
         .page-header { padding: 15px 20px; background: white; border-bottom: 1px solid #eee; position: sticky; top: 0; z-index: 10; font-weight: 700; font-size: 16px; display: flex; align-items: center; gap: 15px; }
         .bookmark-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; padding: 15px; }
+        
+        /* CUSTOM TOAST NOTIFICATION */
+        .toast-notification { position: fixed; bottom: 80px; left: 50%; transform: translateX(-50%); background: rgba(0,0,0,0.85); color: white; padding: 10px 20px; border-radius: 20px; font-size: 13px; z-index: 9999; opacity: 0; pointer-events: none; transition: opacity 0.3s ease; box-shadow: 0 4px 15px rgba(0,0,0,0.3); font-weight: 500;}
+        .toast-notification.show { opacity: 1; }
     </style>
 </head>
 <body>
@@ -274,7 +278,7 @@
                     </div>
                 </section>
 
-                <!-- Film & Anime (BARU) -->
+                <!-- Film & Anime -->
                 <section class="section-container">
                     <div class="section-header">
                         <div class="section-title-wrapper"><span>🎬</span><h2 class="section-title">Film & Anime</h2></div>
@@ -362,9 +366,25 @@
                     <p class="synopsis-text" id="detailSynopsis">Memuat sinopsis...</p>
                     
                     <div class="detail-info-box">
-                        <div class="detail-info-row"><span class="label">Author / Studio</span><span class="val" id="detailAuthor">-</span></div>
+                        <div class="detail-info-row"><span class="label" id="lblAuthor">Author / Studio</span><span class="val" id="detailAuthor">-</span></div>
                         <div class="detail-info-row"><span class="label">Tipe</span><span class="val" id="detailType">-</span></div>
                         <div class="detail-info-row"><span class="label">Tanggal Rilis</span><span class="val" id="detailRelease">-</span></div>
+                        
+                        <!-- Ekstra Row Khusus Film/Anime -->
+                        <div class="detail-info-row movie-extra-info" style="display:none;"><span class="label">Durasi</span><span class="val" id="detailDuration">-</span></div>
+                        <div class="detail-info-row movie-extra-info" style="display:none;"><span class="label" id="lblDirector">Sutradara/Produser</span><span class="val" id="detailDirector">-</span></div>
+                        <div class="detail-info-row movie-extra-info" style="display:none; flex-direction:column; gap:4px; border-bottom:none; margin-bottom:0; padding-bottom:0;">
+                            <span class="label">Cast & Crew</span>
+                            <span class="val" id="detailCast" style="text-align:left; font-size:12px; line-height:1.4; color:#475569; font-weight:500; margin-top:4px;">-</span>
+                        </div>
+                    </div>
+
+                    <!-- Trailer Section Khusus Film/Anime -->
+                    <div id="trailerSection" style="display:none; margin-top:20px; padding-top:15px; border-top:1px dashed #cbd5e1;">
+                        <h3 class="synopsis-title">Trailer Resmi</h3>
+                        <div class="trailer-container" style="position: relative; padding-bottom: 56.25%; height: 0; overflow: hidden; max-width: 100%; background:#111; border-radius:12px; margin-top:10px; box-shadow: 0 4px 10px rgba(0,0,0,0.1);">
+                            <iframe id="detailTrailer" src="" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen style="position: absolute; top: 0; left: 0; width: 100%; height: 100%;"></iframe>
+                        </div>
                     </div>
 
                     <!-- Sistem Rating Bintang -->
@@ -551,6 +571,20 @@
         // Simpan state video resolusi
         window.currentVideoQualities = {};
 
+        // Helper: Toast UI (Untuk notifikasi resolusi)
+        window.showToast = function(msg) {
+            let toast = document.getElementById('appToast');
+            if(!toast) {
+                toast = document.createElement('div');
+                toast.id = 'appToast';
+                toast.className = 'toast-notification';
+                document.body.appendChild(toast);
+            }
+            toast.innerText = msg;
+            toast.classList.add('show');
+            setTimeout(() => toast.classList.remove('show'), 3000);
+        }
+
         // ================= FITUR PENCARIAN (SEARCH) DINAMIS =================
         const searchInput = document.getElementById('searchInput');
         const searchResults = document.getElementById('searchResults');
@@ -569,7 +603,8 @@
                 const comic = window.comicsData[id];
                 if(comic.title.toLowerCase().includes(queryText)) {
                     
-                    const latestCh = comic.latestChapter ? `Ch/Ep ${comic.latestChapter}` : "Baru";
+                    const isVideoType = comic.type && (comic.type.toLowerCase().includes("film") || comic.type.toLowerCase().includes("anime"));
+                    const latestCh = comic.latestChapter ? (isVideoType ? `Ep ${comic.latestChapter}` : `Ch ${comic.latestChapter}`) : "Baru";
                     const updateDate = comic.updateDate || "Baru saja";
                     const typeStr = comic.type ? comic.type : "Manga";
                     const ratingNum = comic.ratingCount ? (comic.ratingTotal / comic.ratingCount).toFixed(1) : "0.0";
@@ -683,7 +718,7 @@
 
         window.doLogout = function() { 
             signOut(auth); 
-            alert("Berhasil keluar dari akun.");
+            window.showToast("Berhasil keluar dari akun.");
         }
 
         // ================= SINKRONISASI DATA PENGGUNA =================
@@ -942,7 +977,7 @@
             if(e) e.preventDefault(); 
             
             if(!auth.currentUser) { 
-                alert("Silakan Login terlebih dahulu di menu Profil untuk menyimpan Bookmark!"); 
+                window.showToast("Silakan Login terlebih dahulu di menu Profil untuk menyimpan Bookmark!"); 
                 switchNav('profile');
                 return; 
             }
@@ -954,12 +989,12 @@
             if(isBookmarked) {
                 window.userBookmarks = window.userBookmarks.filter(id => id !== cid);
                 checkBookmarkStatus(cid);
-                alert("Dihapus dari Bookmark!");
+                window.showToast("Dihapus dari Bookmark!");
                 try { await deleteDoc(doc(db, "users", auth.currentUser.uid, "bookmarks", cid)); } catch(err) { }
             } else {
                 window.userBookmarks.push(cid);
                 checkBookmarkStatus(cid);
-                alert("Berhasil ditambahkan ke Bookmark!");
+                window.showToast("Berhasil ditambahkan ke Bookmark!");
                 try { await setDoc(doc(db, "users", auth.currentUser.uid, "bookmarks", cid), { comicId: cid, addedAt: new Date() }); } catch(err) { }
             }
             
@@ -1067,7 +1102,7 @@
         }
 
         window.postComment = async function() {
-            if(!auth.currentUser) { alert("Silakan Login terlebih dahulu!"); return; }
+            if(!auth.currentUser) { window.showToast("Silakan Login terlebih dahulu!"); return; }
             const textInput = document.getElementById('newCommentText');
             const text = textInput.value.trim();
             if(text === "") return;
@@ -1087,7 +1122,7 @@
                 textInput.value = "";
                 btn.innerText = "Kirim"; btn.disabled = false;
                 fetchComments(comicId);
-            } catch (e) { alert("Gagal mengirim komentar. Pastikan Rules Firebase sudah diizinkan (write)."); }
+            } catch (e) { window.showToast("Gagal mengirim komentar. Pastikan Rules Firebase sudah diizinkan (write)."); }
         }
 
         // ================= FITUR RATING BINTANG =================
@@ -1110,7 +1145,7 @@
 
         window.submitRating = async function(starValue) {
             if(!auth.currentUser) { 
-                alert("Silakan Login terlebih dahulu di menu Profil untuk memberi rating!"); 
+                window.showToast("Silakan Login terlebih dahulu di menu Profil untuk memberi rating!"); 
                 switchNav('profile');
                 return; 
             }
@@ -1145,9 +1180,9 @@
                     document.getElementById('detailAvgRating').innerText = newAvg;
                     document.getElementById('detailCountRating').innerText = `(${newCount})`;
                     
-                    alert(`Berhasil! Kamu memberikan rating ${starValue} bintang.`);
+                    window.showToast(`Berhasil! Kamu memberikan rating ${starValue} bintang.`);
                 }
-            } catch(e) { alert("Gagal menyimpan rating. Cek Rules Firebase."); }
+            } catch(e) { window.showToast("Gagal menyimpan rating. Cek Rules Firebase."); }
         }
 
         // ================= HALAMAN DETAIL UTAMA =================
@@ -1173,20 +1208,19 @@
                 loadUserRating(comicId);
                 checkBookmarkStatus(comicId);
 
+                // Setup General Fields
                 document.getElementById('detailTitle').innerText = data.title;
                 document.getElementById('detailAltTitle').innerText = data.altTitle || "-";
                 document.getElementById('detailStatus').innerText = data.status || "Ongoing";
                 document.getElementById('detailSynopsis').innerText = data.synopsis || "Belum ada sinopsis.";
                 document.getElementById('detailViews').innerText = window.comicsData[comicId].views || 1;
+                document.getElementById('detailType').innerText = data.type || "Manga";
+                document.getElementById('detailRelease').innerText = data.releaseDate || "-";
                 
                 const avg = data.ratingCount ? (data.ratingTotal / data.ratingCount).toFixed(1) : "0.0";
                 const count = data.ratingCount || 0;
                 document.getElementById('detailAvgRating').innerText = avg;
                 document.getElementById('detailCountRating').innerText = `(${count})`;
-                
-                document.getElementById('detailAuthor').innerText = data.author || "Tidak diketahui";
-                document.getElementById('detailType').innerText = data.type || "Manga";
-                document.getElementById('detailRelease').innerText = data.releaseDate || "-";
 
                 document.getElementById('detailCoverImage').src = data.coverUrl;
                 document.getElementById('detailHeaderBg').style.backgroundImage = `url('${data.coverUrl}')`;
@@ -1198,10 +1232,44 @@
                 tagsContainer.innerHTML = '';
                 if(data.type) tagsContainer.innerHTML += `<span class="tag">${data.type}</span>`;
                 if(data.genres) data.genres.forEach(g => tagsContainer.innerHTML += `<span class="tag">${g}</span>`);
+
+                // ================= SETUP KHUSUS FILM / ANIME =================
+                const isVideo = data.type && (data.type.toLowerCase().includes('film') || data.type.toLowerCase().includes('anime'));
+                const movieExtras = document.querySelectorAll('.movie-extra-info');
+                
+                if (isVideo) {
+                    document.getElementById('lblAuthor').innerText = "Studio / Produksi";
+                    document.getElementById('detailAuthor').innerText = data.author || data.studio || "Tidak diketahui";
+                    
+                    document.getElementById('detailDuration').innerText = data.duration || "Belum ada info durasi";
+                    document.getElementById('detailDirector').innerText = data.director || data.producer || "Tidak diketahui";
+                    document.getElementById('detailCast').innerText = data.cast || "Belum ada informasi cast & crew yang terdaftar.";
+                    
+                    movieExtras.forEach(el => el.style.display = 'flex');
+
+                    // Setup Trailer
+                    if(data.trailerUrl) {
+                        document.getElementById('trailerSection').style.display = 'block';
+                        document.getElementById('detailTrailer').src = data.trailerUrl;
+                    } else {
+                        document.getElementById('trailerSection').style.display = 'none';
+                        document.getElementById('detailTrailer').src = "";
+                    }
+                } else {
+                    document.getElementById('lblAuthor').innerText = "Author / Artist";
+                    document.getElementById('detailAuthor').innerText = data.author || "Tidak diketahui";
+                    
+                    movieExtras.forEach(el => el.style.display = 'none');
+                    document.getElementById('trailerSection').style.display = 'none';
+                    document.getElementById('detailTrailer').src = "";
+                }
             }
         }
 
         window.closeDetail = function() {
+            // Hentikan video trailer saat popup ditutup
+            document.getElementById('detailTrailer').src = ""; 
+            
             document.getElementById('detail-page').style.display = 'none';
             document.getElementById('home-page').style.display = 'block';
             document.getElementById('mainBottomNav').style.display = 'flex';
@@ -1260,6 +1328,9 @@
 
         // ================= ROUTER BACA/TONTON =================
         window.handleMediaOpen = function(comicId, chapterId, chapterNum) {
+            // Matikan Trailer jika berjalan lalu berpindah page
+            document.getElementById('detailTrailer').src = document.getElementById('detailTrailer').src;
+
             const type = (window.comicsData[comicId]?.type || "").toLowerCase();
             if(type.includes('film') || type.includes('anime') || type.includes('video')) {
                 openPlayer(comicId, chapterId, chapterNum);
@@ -1362,8 +1433,7 @@
             const videoPlayer = document.getElementById('mainVideoPlayer');
             videoPlayer.pause();
             
-            // Siapkan mock URL (Jika di Firebase belum ada strukturnya, ini akan mencegah error)
-            // Stuktur yang diharapkan di Firebase: videoUrls: { '1080': 'url', '720': 'url', '480': 'url', '360': 'url' }
+            // Dummy default jika Firebase tidak menyediakan data khusus
             window.currentVideoQualities = {
                 '1080': 'https://www.w3schools.com/html/mov_bbb.mp4', 
                 '720': 'https://www.w3schools.com/html/mov_bbb.mp4',
@@ -1393,21 +1463,28 @@
             const isPaused = videoPlayer.paused;
             
             if(!window.currentVideoQualities || !window.currentVideoQualities[quality]) {
-                alert(`Resolusi ${quality}p belum diunggah untuk episode ini.`);
+                window.showToast(`Resolusi ${quality}p belum diunggah untuk episode ini.`);
                 return;
             }
 
-            videoPlayer.src = window.currentVideoQualities[quality];
-            
-            if(!isInitial) {
-                videoPlayer.currentTime = currentTime;
-                if(!isPaused) videoPlayer.play();
-            } else {
-                // Untuk awal load coba di play (Beberapa browser akan memblokir autoplay)
-                videoPlayer.play().catch(e => console.log("Autoplay dicegah browser, harus diklik manual oleh user"));
+            // Cegah loading ulang jika video source yang diklik sama persis (mencegah glitching)
+            if(videoPlayer.src !== window.currentVideoQualities[quality]) {
+                videoPlayer.src = window.currentVideoQualities[quality];
+                
+                if(!isInitial) {
+                    videoPlayer.currentTime = currentTime;
+                    if(!isPaused) {
+                        videoPlayer.play().catch(e => console.log("Autoplay dicegah browser"));
+                    }
+                    window.showToast(`Kualitas video diubah ke ${quality}p`);
+                } else {
+                    videoPlayer.play().catch(e => console.log("Autoplay awal dicegah browser"));
+                }
+            } else if (!isInitial) {
+                window.showToast(`Saat ini sudah menggunakan kualitas ${quality}p`);
             }
 
-            // Update class aktif pada UI
+            // Update class aktif pada UI kualitas
             document.querySelectorAll('.quality-btn').forEach(btn => {
                 btn.classList.remove('active');
                 if(btn.innerText.includes(quality)) btn.classList.add('active');
@@ -1422,6 +1499,11 @@
             document.getElementById('player-page').style.display = 'none';
             if (window.currentActiveComicId) {
                 document.getElementById('detail-page').style.display = 'block';
+                // Refresh Trailer jika kembali
+                if (document.getElementById('detailTrailer').src !== "") {
+                   const oldSrc = document.getElementById('detailTrailer').src;
+                   document.getElementById('detailTrailer').src = oldSrc;
+                }
             } else {
                 document.getElementById('home-page').style.display = 'block';
                 document.getElementById('mainBottomNav').style.display = 'flex';

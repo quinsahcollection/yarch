@@ -47,29 +47,28 @@
         .badge-rating { color: #d97706; display: flex; align-items: center; gap: 2px; }
         .search-item-bottom { font-size: 11px; color: #64748b; display: flex; gap: 8px; align-items: center; }
 
-        /* HERO SLIDER (UPDATED) */
+        /* HERO SLIDER (UI DIPERBARUI KIRI-KANAN) */
         .slider-container { position: relative; width: 100%; height: 280px; overflow: hidden; background-color: #000000; }
         .slides-wrapper { display: flex; width: 100%; height: 100%; transition: transform 0.5s ease-in-out; }
         .slide { flex: 0 0 100%; height: 100%; position: relative; overflow: hidden; }
         
-        /* Blur Background untuk ruang kosong */
         .slide-bg-blur { position: absolute; top: -10%; left: -10%; width: 120%; height: 120%; background-size: cover; background-position: center; filter: blur(15px); opacity: 0.5; z-index: 0; }
-        /* Gambar utama dengan fitur Contain agar tidak terpotong */
         .slide-img { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background-size: contain; background-position: right center; background-repeat: no-repeat; z-index: 1; }
-        /* Gradien hitam pekat di bagian bawah untuk teks */
-        .slide-overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: linear-gradient(to top, rgba(0,0,0,1) 0%, rgba(0,0,0,0.6) 40%, transparent 100%); z-index: 2; }
         
-        /* Box konten di atas gradien */
-        .hero-content { position: absolute; bottom: 0; left: 0; width: 100%; padding: 25px 20px 20px 20px; z-index: 3; display: flex; flex-direction: column; gap: 6px; }
-        .hero-title-row { display: flex; align-items: center; justify-content: space-between; }
-        .hero-title { font-size: 18px; font-weight: 800; color: #ffffff; text-shadow: 0 2px 4px rgba(0,0,0,0.8); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 70%; }
+        /* Gradien hitam dari kiri ke kanan */
+        .slide-overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: linear-gradient(to right, rgba(0,0,0,0.95) 0%, rgba(0,0,0,0.8) 50%, transparent 100%); z-index: 2; }
+        
+        /* Konten ditempatkan di sisi Kiri */
+        .hero-content { position: absolute; top: 50%; left: 0; transform: translateY(-50%); width: 65%; padding: 0 20px; z-index: 3; display: flex; flex-direction: column; gap: 10px; }
+        .hero-title-row { display: flex; flex-direction: column; align-items: flex-start; gap: 6px; }
+        .hero-title { font-size: 17px; font-weight: 800; color: #ffffff; text-shadow: 0 2px 4px rgba(0,0,0,0.8); line-height: 1.2; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
         .hero-chapter-badge { font-size: 11px; color: #fff; font-weight: 700; background: var(--primary-orange); padding: 3px 8px; border-radius: 6px; box-shadow: 0 2px 4px rgba(234, 88, 12, 0.5); }
-        .hero-synopsis { font-size: 12px; color: #cbd5e1; line-height: 1.4; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; font-weight: 400; text-shadow: 0 1px 2px rgba(0,0,0,0.9); margin-bottom: 5px;}
-        .hero-footer-row { display: flex; justify-content: space-between; align-items: center; }
+        .hero-synopsis { font-size: 11px; color: #cbd5e1; line-height: 1.5; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; font-weight: 400; text-shadow: 0 1px 2px rgba(0,0,0,0.9); margin-bottom: 2px;}
+        .hero-footer-row { display: flex; justify-content: space-between; align-items: center; padding-top: 2px; }
         .hero-btn-read { background: #ffffff; color: #111; padding: 8px 18px; border-radius: 20px; font-size: 12px; font-weight: 700; border: none; cursor: pointer; display: flex; align-items: center; gap: 6px; box-shadow: 0 4px 10px rgba(0,0,0,0.3); }
         .hero-rating-badge { display: flex; align-items: center; gap: 4px; font-size: 12px; font-weight: 700; color: #fbbf24; text-shadow: 0 1px 2px rgba(0,0,0,0.8); }
         
-        .slider-indicators { position: absolute; top: 12px; right: 16px; display: flex; gap: 5px; z-index: 4; }
+        .slider-indicators { position: absolute; bottom: 12px; right: 16px; top: auto; display: flex; gap: 5px; z-index: 4; }
         .dot { width: 6px; height: 6px; background-color: rgba(255, 255, 255, 0.4); border-radius: 50%; cursor: pointer; transition: all 0.3s ease; box-shadow: 0 1px 3px rgba(0,0,0,0.5);}
         .dot.active { width: 16px; border-radius: 3px; background-color: var(--primary-orange); }
 
@@ -252,7 +251,7 @@
             <div id="searchResults" class="search-results-dropdown"></div>
 
             <main>
-                <!-- Hero Slider Modern & Minimalis (Diperbarui) -->
+                <!-- Hero Slider Modern & Minimalis -->
                 <section class="slider-container">
                     <div class="slider-indicators" id="slider-dots"></div>
                     <div class="slides-wrapper" id="hero-slider">
@@ -578,7 +577,7 @@
         // Simpan state video resolusi
         window.currentVideoQualities = {};
 
-        // Helper: Toast UI (Untuk notifikasi resolusi)
+        // Helper: Toast UI
         window.showToast = function(msg) {
             let toast = document.getElementById('appToast');
             if(!toast) {
@@ -611,8 +610,20 @@
                 if(comic.title.toLowerCase().includes(queryText)) {
                     
                     const isVideoType = comic.format === 'film' || (comic.type && (comic.type.toLowerCase().includes("film") || comic.type.toLowerCase().includes("anime")));
-                    const latestCh = comic.latestChapter ? (isVideoType ? `Ep ${comic.latestChapter}` : `Ch ${comic.latestChapter}`) : "Baru";
-                    const updateDate = comic.updateDate || "Baru saja";
+                    
+                    // Tarik info data asli dari memori jika sudah di-load secara asinkron
+                    let latestChText = "Belum ada rilis";
+                    if (comic.realLatestChapter) {
+                        if (comic.realLatestChapter === 1 && comic.realLatestTitle === "Full Movie") {
+                            latestChText = "Full Movie";
+                        } else {
+                            const prefix = isVideoType ? 'Ep' : 'Ch';
+                            const titlePart = (comic.realLatestTitle && comic.realLatestTitle !== "Full Movie") ? ` - ${comic.realLatestTitle}` : '';
+                            latestChText = `${prefix} ${comic.realLatestChapter}${titlePart}`;
+                        }
+                    }
+
+                    const updateDateText = comic.realUpdateDate || "Baru";
                     const typeStr = comic.type ? comic.type : "Manga";
                     const ratingNum = comic.ratingCount ? (comic.ratingTotal / comic.ratingCount).toFixed(1) : "0.0";
                     
@@ -628,8 +639,8 @@
                                     </div>
                                 </div>
                                 <div class="search-item-bottom">
-                                    <span style="font-weight:700; color:var(--primary-blue);">${latestCh}</span> • 
-                                    <span>${updateDate}</span>
+                                    <span style="font-weight:700; color:var(--primary-blue); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; max-width:60%;">${latestChText}</span> • 
+                                    <span>${updateDateText}</span>
                                 </div>
                             </div>
                         </div>
@@ -774,18 +785,18 @@
                 let sliderHtml = '';
                 let sliderDots = '';
                 
-                querySnapshot.forEach((doc) => {
-                    const data = doc.data();
-                    window.comicsData[doc.id] = data; 
+                querySnapshot.forEach((docSnap) => {
+                    const data = docSnap.data();
+                    window.comicsData[docSnap.id] = data; 
                     
                     const isVideoType = data.format === 'film' || (data.type && (data.type.toLowerCase().includes("film") || data.type.toLowerCase().includes("anime")));
                     
                     // PEMBUATAN HERO SLIDER DENGAN UI BARU
                     if(countSlider < 5) {
                         const rating = data.ratingCount ? (data.ratingTotal / data.ratingCount).toFixed(1) : "0.0";
-                        const latestCh = data.latestChapter ? (isVideoType ? `Ep ${data.latestChapter}` : `Ch ${data.latestChapter}`) : "Baru";
                         const synopsisText = data.synopsis ? data.synopsis : "Ikuti kisah seru dan petualangan tanpa batas di dalam konten ini.";
                         const actionBtnText = isVideoType ? "Tonton Sekarang" : "Baca Sekarang";
+                        const iconClass = isVideoType ? "fa-play" : "fa-book-open";
                         
                         sliderHtml += `
                             <div class="slide">
@@ -796,11 +807,11 @@
                                 <div class="hero-content">
                                     <div class="hero-title-row">
                                         <h1 class="hero-title">${data.title}</h1>
-                                        <span class="hero-chapter-badge">${latestCh}</span>
+                                        <span class="hero-chapter-badge" id="slider-badge-${docSnap.id}">Memuat...</span>
                                     </div>
                                     <div class="hero-synopsis">${synopsisText}</div>
                                     <div class="hero-footer-row">
-                                        <button class="hero-btn-read" onclick="openDetail('${doc.id}')"><i class="fa-solid fa-play"></i> ${actionBtnText}</button>
+                                        <button class="hero-btn-read" onclick="openDetail('${docSnap.id}')"><i class="fa-solid ${iconClass}"></i> ${actionBtnText}</button>
                                         <div class="hero-rating-badge"><i class="fa-solid fa-star"></i> ${rating}</div>
                                     </div>
                                 </div>
@@ -810,7 +821,7 @@
                         countSlider++;
                     }
 
-                    const cardHTML = generateComicCard(doc.id, data);
+                    const cardHTML = generateComicCard(docSnap.id, data);
                     htmlUpdates += cardHTML;
                     if(Math.random() > 0.4) htmlJadwal += cardHTML;
 
@@ -840,6 +851,37 @@
 
                 renderReadingHistory();
                 renderBookmarks();
+
+                // Fetching Info Chapter terbaru secara asinkron (Di balik layar)
+                Object.keys(window.comicsData).forEach(async (id) => {
+                    try {
+                        const chSnap = await getDocs(query(collection(db, "comics", id, "chapters"), orderBy("chapterNumber", "desc"), limit(1)));
+                        if(!chSnap.empty) {
+                            const chData = chSnap.docs[0].data();
+                            window.comicsData[id].realLatestChapter = chData.chapterNumber;
+                            window.comicsData[id].realLatestTitle = chData.title;
+                            window.comicsData[id].realUpdateDate = chData.updateDate || (chData.createdAt ? chData.createdAt.toDate().toLocaleDateString('id-ID', {day:'numeric', month:'short'}) : '');
+                            
+                            // Memperbarui UI Badge Slider jika judul tersebut ada di Slider
+                            const badgeEl = document.getElementById(`slider-badge-${id}`);
+                            if(badgeEl) {
+                                const isVideo = window.comicsData[id].format === 'film' || (window.comicsData[id].type && window.comicsData[id].type.toLowerCase().includes('film'));
+                                let tText = "";
+                                if (chData.chapterNumber === 1 && chData.title === "Full Movie") {
+                                    tText = "Full Movie";
+                                } else {
+                                    const prefix = isVideo ? 'Ep' : 'Ch';
+                                    tText = `${prefix} ${chData.chapterNumber}`;
+                                }
+                                badgeEl.innerText = tText;
+                            }
+                        } else {
+                            const badgeEl = document.getElementById(`slider-badge-${id}`);
+                            if(badgeEl) badgeEl.innerText = "Baru";
+                        }
+                    } catch(e) { }
+                });
+
             } catch (error) {
                 console.error("Gagal load konten:", error);
             }
@@ -1469,7 +1511,7 @@
             document.querySelectorAll('.app-container > div').forEach(el => { if(el.id!=='mainBottomNav') el.style.display = 'none'; });
             document.getElementById('player-page').style.display = 'flex';
             
-            const titleDisplay = (chapterNum === "1") ? "Full Movie" : `Episode ${chapterNum}`;
+            const titleDisplay = (chapterNum === "1" || chapterNum === 1) ? "Full Movie" : `Episode ${chapterNum}`;
             document.getElementById('playerTitle').innerText = titleDisplay;
             document.getElementById('qualityMenu').style.display = 'none';
             

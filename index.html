@@ -40,14 +40,14 @@
         .search-item:last-child { border-bottom: none; }
         .search-item img { width: 42px; height: 56px; object-fit: cover; border-radius: 6px; margin-right: 12px; border: 1px solid #eee; }
         .search-item-info { display: flex; flex-direction: column; flex: 1; overflow: hidden; justify-content: center; }
-        .search-item-top-row { display: flex; justify-content: space-between; align-items: center; width: 100%; margin-bottom: 6px; /* Spasi diperlebar disini */ }
+        .search-item-top-row { display: flex; justify-content: space-between; align-items: center; width: 100%; margin-bottom: 6px; }
         .search-item-title { font-size: 13px; font-weight: 700; color: #111; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 65%; }
         .search-item-badges { display: flex; align-items: center; gap: 6px; font-size: 10px; font-weight: 600; color: #555; }
         .badge-type { background: #e2e8f0; padding: 1px 6px; border-radius: 4px; color: #334155; }
         .badge-rating { color: #d97706; display: flex; align-items: center; gap: 2px; }
         .search-item-bottom { font-size: 11px; color: #64748b; display: flex; gap: 8px; align-items: center; }
 
-        /* HERO SLIDER (UI DIPERBARUI KIRI-KANAN) */
+        /* HERO SLIDER (PERBAIKAN BATAS TEKS KIRI) */
         .slider-container { position: relative; width: 100%; height: 280px; overflow: hidden; background-color: #000000; }
         .slides-wrapper { display: flex; width: 100%; height: 100%; transition: transform 0.5s ease-in-out; }
         .slide { flex: 0 0 100%; height: 100%; position: relative; overflow: hidden; }
@@ -55,18 +55,16 @@
         .slide-bg-blur { position: absolute; top: -10%; left: -10%; width: 120%; height: 120%; background-size: cover; background-position: center; filter: blur(15px); opacity: 0.5; z-index: 0; }
         .slide-img { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background-size: contain; background-position: right center; background-repeat: no-repeat; z-index: 1; }
         
-        /* Gradien hitam dari kiri ke kanan */
-        .slide-overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: linear-gradient(to right, rgba(0,0,0,0.95) 0%, rgba(0,0,0,0.8) 50%, transparent 100%); z-index: 2; }
+        .slide-overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: linear-gradient(to right, rgba(0,0,0,0.98) 0%, rgba(0,0,0,0.92) 55%, rgba(0,0,0,0.4) 80%, transparent 100%); z-index: 2; }
         
-        /* Konten ditempatkan di sisi Kiri dengan margin 20px */
-        .hero-content { position: absolute; top: 50%; left: 20px; transform: translateY(-50%); width: 65%; z-index: 3; display: flex; flex-direction: column; gap: 10px; }
-        .hero-title-row { display: flex; flex-direction: column; align-items: flex-start; gap: 6px; }
-        .hero-title { font-size: 17px; font-weight: 800; color: #ffffff; text-shadow: 0 2px 4px rgba(0,0,0,0.8); line-height: 1.2; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
-        .hero-chapter-badge { font-size: 11px; color: #fff; font-weight: 700; background: var(--primary-orange); padding: 3px 8px; border-radius: 6px; box-shadow: 0 2px 4px rgba(234, 88, 12, 0.5); }
-        .hero-synopsis { font-size: 11px; color: #cbd5e1; line-height: 1.5; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; font-weight: 400; text-shadow: 0 1px 2px rgba(0,0,0,0.9); margin-bottom: 2px;}
+        .hero-content { position: absolute; top: 50%; left: 16px; transform: translateY(-50%); width: 52%; max-width: 230px; z-index: 3; display: flex; flex-direction: column; gap: 8px; }
+        .hero-title-row { display: flex; flex-direction: column; align-items: flex-start; gap: 5px; }
+        .hero-title { font-size: 16px; font-weight: 800; color: #ffffff; text-shadow: 0 2px 4px rgba(0,0,0,0.8); line-height: 1.25; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+        .hero-chapter-badge { font-size: 10px; color: #fff; font-weight: 700; background: var(--primary-orange); padding: 2px 7px; border-radius: 5px; box-shadow: 0 2px 4px rgba(234, 88, 12, 0.5); }
+        .hero-synopsis { font-size: 11px; color: #cbd5e1; line-height: 1.4; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; font-weight: 400; text-shadow: 0 1px 2px rgba(0,0,0,0.9); }
         .hero-footer-row { display: flex; justify-content: space-between; align-items: center; padding-top: 2px; }
-        .hero-btn-read { background: #ffffff; color: #111; padding: 8px 18px; border-radius: 20px; font-size: 12px; font-weight: 700; border: none; cursor: pointer; display: flex; align-items: center; gap: 6px; box-shadow: 0 4px 10px rgba(0,0,0,0.3); }
-        .hero-rating-badge { display: flex; align-items: center; gap: 4px; font-size: 12px; font-weight: 700; color: #fbbf24; text-shadow: 0 1px 2px rgba(0,0,0,0.8); }
+        .hero-btn-read { background: #ffffff; color: #111; padding: 7px 14px; border-radius: 18px; font-size: 11px; font-weight: 700; border: none; cursor: pointer; display: flex; align-items: center; gap: 5px; box-shadow: 0 4px 10px rgba(0,0,0,0.3); }
+        .hero-rating-badge { display: flex; align-items: center; gap: 4px; font-size: 11px; font-weight: 700; color: #fbbf24; text-shadow: 0 1px 2px rgba(0,0,0,0.8); }
         
         .slider-indicators { position: absolute; bottom: 12px; right: 16px; top: auto; display: flex; gap: 5px; z-index: 4; }
         .dot { width: 6px; height: 6px; background-color: rgba(255, 255, 255, 0.4); border-radius: 50%; cursor: pointer; transition: all 0.3s ease; box-shadow: 0 1px 3px rgba(0,0,0,0.5);}
@@ -89,11 +87,22 @@
         .manga-card-simple .title, .manga-card-history .title { font-size: 12px; font-weight: 600; color: #222; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
         .manga-card-history .chapter { font-size: 11px; color: var(--primary-blue); font-weight: 600; margin-top: 4px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 
+        /* DISCOVERY PAGE GRID STYLES */
+        .discovery-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; padding: 16px; background: #f8fafc; min-height: 80vh; }
+        .discovery-card { background: white; border-radius: 8px; overflow: hidden; border: 1px solid #e2e8f0; display: flex; flex-direction: column; cursor: pointer; box-shadow: 0 2px 5px rgba(0,0,0,0.05); transition: transform 0.2s; }
+        .discovery-card:hover { transform: translateY(-2px); }
+        .discovery-card img { width: 100%; height: 140px; object-fit: cover; border-bottom: 1px solid #eee; }
+        .discovery-info { padding: 8px; display: flex; flex-direction: column; gap: 4px; flex-grow: 1; }
+        .discovery-title { font-size: 11px; font-weight: 700; color: #111; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; line-height: 1.3; }
+        .discovery-stats { display: flex; justify-content: space-between; align-items: center; font-size: 10px; color: #64748b; margin-top: 2px; }
+        .discovery-rating { color: #d97706; font-weight: 700; display: flex; align-items: center; gap: 2px; }
+        .discovery-latest { font-size: 10px; color: var(--primary-blue); font-weight: 600; background: var(--light-blue); padding: 2px 6px; border-radius: 4px; text-align: center; margin-top: 4px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+
         /* TOMBOL DELETE DI BOOKMARK CARD */
         .bookmark-delete-btn { position: absolute; top: 6px; right: 6px; background: rgba(0, 0, 0, 0.6); color: white; border: none; width: 26px; height: 26px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 12px; cursor: pointer; z-index: 5; transition: background 0.2s; }
         .bookmark-delete-btn:hover { background: #ef4444; }
 
-        /* BOTTOM NAV */
+        /* BOTTOM NAV (DITAMBAHKAN MENU DISCOVERY) */
         .bottom-nav { position: fixed; bottom: 0; width: 100%; max-width: 480px; background-color: #ffffff; display: flex; justify-content: space-around; padding: 8px 10px 12px 10px; border-top: 1px solid #eaeaea; z-index: 100; }
         .nav-item { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px; color: #999999; font-size: 10px; text-decoration: none; font-weight: 600; flex: 1; cursor: pointer;}
         .nav-item i { font-size: 20px; margin-bottom: 2px; }
@@ -102,7 +111,7 @@
         .nav-item.active i { margin-bottom: 0; }
 
         /* PAGE CONTROL */
-        #detail-page, #profile-page, #reader-page, #player-page, #bookmark-page { display: none; background-color: #ffffff; min-height: 100vh; animation: fadeIn 0.3s ease-in-out; padding-bottom: 65px; }
+        #detail-page, #profile-page, #reader-page, #player-page, #bookmark-page, #discovery-page { display: none; background-color: #ffffff; min-height: 100vh; animation: fadeIn 0.3s ease-in-out; padding-bottom: 65px; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 
         /* DETAIL PAGE */
@@ -331,7 +340,20 @@
             </main>
         </div>
 
-        <!-- ================= 2. HALAMAN DETAIL ================= -->
+        <!-- ================= 2. HALAMAN DISCOVERY ================= -->
+        <div id="discovery-page">
+            <header class="header">
+                <div class="search-container" style="background:#fff; border:1px solid #ddd;">
+                    <i class="fa-solid fa-compass" style="color:var(--primary-blue)"></i>
+                    <span style="font-size:14px; font-weight:700; color:#111;">Discovery - Semua Konten</span>
+                </div>
+            </header>
+            <div class="discovery-grid" id="discoveryGridContainer">
+                <div class="loading-text" style="grid-column: 1 / -1;"><i class="fa-solid fa-spinner fa-spin"></i> Memuat seluruh konten...</div>
+            </div>
+        </div>
+
+        <!-- ================= 3. HALAMAN DETAIL ================= -->
         <div id="detail-page">
             <div class="detail-top-nav" id="detailNav">
                 <i class="fa-solid fa-arrow-left" onclick="closeDetail()"></i>
@@ -435,7 +457,7 @@
             </main>
         </div>
 
-        <!-- ================= 3. HALAMAN BACA KOMIK (READER) ================= -->
+        <!-- ================= 4. HALAMAN BACA KOMIK (READER) ================= -->
         <div id="reader-page">
             <div class="reader-header" id="readerHeader">
                 <i class="fa-solid fa-arrow-left" onclick="closeReader()" style="font-size: 20px; cursor: pointer;"></i>
@@ -447,7 +469,7 @@
             <div id="readerLoading" class="loading-text" style="padding-top:100px;"><i class="fa-solid fa-spinner fa-spin" style="font-size:30px;"></i><br><br>Memuat gambar...</div>
         </div>
 
-        <!-- ================= 4. HALAMAN VIDEO PLAYER (FILM / ANIME) ================= -->
+        <!-- ================= 5. HALAMAN VIDEO PLAYER (FILM / ANIME) ================= -->
         <div id="player-page">
             <div class="player-header">
                 <i class="fa-solid fa-arrow-left" onclick="closePlayer()" style="font-size: 20px; cursor: pointer;"></i>
@@ -470,7 +492,7 @@
             </div>
         </div>
 
-        <!-- ================= 5. HALAMAN BOOKMARK ================= -->
+        <!-- ================= 6. HALAMAN BOOKMARK ================= -->
         <div id="bookmark-page">
             <div class="page-header">Bookmark Saya</div>
             <div class="bookmark-grid" id="bookmarkContainer">
@@ -478,7 +500,7 @@
             </div>
         </div>
 
-        <!-- ================= 6. HALAMAN PROFIL & AKUN ================= -->
+        <!-- ================= 7. HALAMAN PROFIL & AKUN ================= -->
         <div id="profile-page">
             <!-- Tampilan Belum Login -->
             <div id="authSection">
@@ -532,10 +554,13 @@
             </div>
         </div>
 
-        <!-- ================= BOTTOM NAVIGATION ================= -->
+        <!-- ================= BOTTOM NAVIGATION (DITAMBAHKAN DISCOVERY) ================= -->
         <nav class="bottom-nav" id="mainBottomNav">
             <a class="nav-item active" onclick="switchNav('home', this)">
                 <div class="icon-bg"><i class="fa-solid fa-house"></i></div><span>Home</span>
+            </a>
+            <a class="nav-item" onclick="switchNav('discovery', this)">
+                <div class="icon-bg"><i class="fa-solid fa-compass"></i></div><span>Discovery</span>
             </a>
             <a class="nav-item" onclick="switchNav('bookmark', this)">
                 <div class="icon-bg"><i class="fa-solid fa-bookmark"></i></div><span>Bookmark</span>
@@ -574,10 +599,8 @@
         window.readerObserver = null; 
         window.sliderInterval = null;
         
-        // Simpan state video resolusi
         window.currentVideoQualities = {};
 
-        // Helper: Toast UI
         window.showToast = function(msg) {
             let toast = document.getElementById('appToast');
             if(!toast) {
@@ -611,7 +634,6 @@
                     
                     const isVideoType = comic.format === 'film' || (comic.type && (comic.type.toLowerCase().includes("film") || comic.type.toLowerCase().includes("anime")));
                     
-                    // Tarik info data asli dari memori jika sudah di-load secara asinkron
                     let latestChText = "Belum ada rilis";
                     if (comic.realLatestChapter) {
                         if (comic.realLatestChapter === 1 && comic.realLatestTitle === "Full Movie") {
@@ -658,7 +680,6 @@
             }
         });
 
-        // Tutup search box saat klik di luar
         document.addEventListener('click', function(e) {
             if(!e.target.closest('.search-container') && !e.target.closest('#searchResults')) {
                 searchResults.style.display = 'none';
@@ -739,7 +760,6 @@
             window.showToast("Berhasil keluar dari akun.");
         }
 
-        // ================= SINKRONISASI DATA PENGGUNA =================
         async function syncUserData(uid) {
             const localBms = JSON.parse(localStorage.getItem('localBookmarks_' + uid)) || [];
             window.userBookmarks = localBms;
@@ -764,7 +784,6 @@
             }
         }
 
-        // ================= FETCH DATA KOMIK & FILM =================
         function generateComicCard(docId, data) {
             return `
                 <div class="manga-card-simple" onclick="openDetail('${docId}')">
@@ -776,7 +795,7 @@
 
         async function fetchAllComics() {
             try {
-                const q = query(collection(db, "comics"), orderBy("createdAt", "desc"), limit(30));
+                const q = query(collection(db, "comics"), orderBy("createdAt", "desc"), limit(40));
                 const querySnapshot = await getDocs(q);
                 
                 let htmlUpdates = ''; let htmlJadwal = ''; let htmlManga = ''; let htmlManhwa = ''; let htmlManhua = ''; let htmlFilm = '';
@@ -791,11 +810,10 @@
                     
                     const isVideoType = data.format === 'film' || (data.type && (data.type.toLowerCase().includes("film") || data.type.toLowerCase().includes("anime")));
                     
-                    // PEMBUATAN HERO SLIDER DENGAN UI BARU
                     if(countSlider < 5) {
                         const rating = data.ratingCount ? (data.ratingTotal / data.ratingCount).toFixed(1) : "0.0";
                         const synopsisText = data.synopsis ? data.synopsis : "Ikuti kisah seru dan petualangan tanpa batas di dalam konten ini.";
-                        const actionBtnText = isVideoType ? "Tonton Sekarang" : "Baca Sekarang";
+                        const actionBtnText = isVideoType ? "Tonton" : "Baca";
                         const iconClass = isVideoType ? "fa-play" : "fa-book-open";
                         
                         sliderHtml += `
@@ -851,8 +869,9 @@
 
                 renderReadingHistory();
                 renderBookmarks();
+                renderDiscoveryGrid();
 
-                // Fetching Info Chapter terbaru secara asinkron (Di balik layar)
+                // Fetching Info Chapter terbaru untuk Slider & Discovery di background
                 Object.keys(window.comicsData).forEach(async (id) => {
                     try {
                         const chSnap = await getDocs(query(collection(db, "comics", id, "chapters"), orderBy("chapterNumber", "desc"), limit(1)));
@@ -862,7 +881,6 @@
                             window.comicsData[id].realLatestTitle = chData.title;
                             window.comicsData[id].realUpdateDate = chData.updateDate || (chData.createdAt ? chData.createdAt.toDate().toLocaleDateString('id-ID', {day:'numeric', month:'short'}) : '');
                             
-                            // Memperbarui UI Badge Slider jika judul tersebut ada di Slider
                             const badgeEl = document.getElementById(`slider-badge-${id}`);
                             if(badgeEl) {
                                 const isVideo = window.comicsData[id].format === 'film' || (window.comicsData[id].type && window.comicsData[id].type.toLowerCase().includes('film'));
@@ -879,6 +897,7 @@
                             const badgeEl = document.getElementById(`slider-badge-${id}`);
                             if(badgeEl) badgeEl.innerText = "Baru";
                         }
+                        renderDiscoveryGrid(); 
                     } catch(e) { }
                 });
 
@@ -887,6 +906,47 @@
             }
         }
         fetchAllComics();
+
+        // ================= RENDER HALAMAN DISCOVERY =================
+        function renderDiscoveryGrid() {
+            const container = document.getElementById('discoveryGridContainer');
+            if(!container) return;
+
+            let gridHtml = '';
+            for(let id in window.comicsData) {
+                const comic = window.comicsData[id];
+                const isVideoType = comic.format === 'film' || (comic.type && (comic.type.toLowerCase().includes("film") || comic.type.toLowerCase().includes("anime")));
+                
+                const ratingNum = comic.ratingCount ? (comic.ratingTotal / comic.ratingCount).toFixed(1) : "0.0";
+                const viewsCount = comic.views || 0;
+                
+                let latestText = "Baru rilis";
+                if (comic.realLatestChapter) {
+                    if (comic.realLatestChapter === 1 && comic.realLatestTitle === "Full Movie") {
+                        latestText = "Full Movie";
+                    } else {
+                        const prefix = isVideoType ? 'Ep' : 'Ch';
+                        latestText = `${prefix} ${comic.realLatestChapter}`;
+                    }
+                }
+
+                gridHtml += `
+                    <div class="discovery-card" onclick="openDetail('${id}')">
+                        <img src="${comic.coverUrl}" onerror="this.src='https://placehold.co/120x140?text=No+Cover'">
+                        <div class="discovery-info">
+                            <div class="discovery-title">${comic.title}</div>
+                            <div class="discovery-stats">
+                                <span class="discovery-rating"><i class="fa-solid fa-star"></i> ${ratingNum}</span>
+                                <span><i class="fa-regular fa-eye"></i> ${viewsCount}</span>
+                            </div>
+                            <div class="discovery-latest">${latestText}</div>
+                        </div>
+                    </div>
+                `;
+            }
+
+            container.innerHTML = gridHtml || '<div class="empty-history" style="grid-column:1/-1;">Belum ada konten.</div>';
+        }
 
         // ================= HERO SLIDER LOGIC =================
         let slideIndex = 0;
@@ -1266,7 +1326,6 @@
                 loadUserRating(comicId);
                 checkBookmarkStatus(comicId);
 
-                // Setup General Fields
                 document.getElementById('detailTitle').innerText = data.title;
                 document.getElementById('detailAltTitle').innerText = data.altTitle || "-";
                 document.getElementById('detailStatus').innerText = data.status || "Ongoing";
@@ -1291,15 +1350,12 @@
                 if(data.type) tagsContainer.innerHTML += `<span class="tag">${data.type}</span>`;
                 if(data.genres) data.genres.forEach(g => tagsContainer.innerHTML += `<span class="tag">${g}</span>`);
 
-                // ================= SETUP KHUSUS FILM / ANIME =================
                 const isVideo = data.format === 'film' || (data.type && (data.type.toLowerCase().includes('film') || data.type.toLowerCase().includes('anime')));
                 const movieExtras = document.querySelectorAll('.movie-extra-info');
                 
                 if (isVideo) {
-                    // Sembunyikan "Studio/Produksi" agar tidak double dengan "Sutradara/Produser"
                     document.getElementById('rowAuthorStudio').style.display = 'none';
                     
-                    // Gabungkan Format Durasi Jam dan Menit
                     let durasiStr = 'Belum ada info durasi';
                     if (data.durationHours || data.durationMinutes) {
                         let jam = data.durationHours ? data.durationHours + ' Jam ' : '';
@@ -1307,26 +1363,19 @@
                         durasiStr = jam + menit;
                     }
                     document.getElementById('detailDuration').innerText = durasiStr;
-                    
-                    // Pemetaan Sutradara dari array
                     document.getElementById('detailDirector').innerText = (data.directors && data.directors.length > 0) ? data.directors.join(', ') : "Tidak diketahui";
-                    
-                    // Pemetaan Cast & Crew
                     document.getElementById('detailCast').innerText = data.castCrew || "Belum ada informasi cast & crew yang terdaftar.";
                     
                     movieExtras.forEach(el => el.style.display = 'flex');
 
-                    // Merender Trailer YouTube ke bentuk Embed Otomatis
                     if(data.trailerUrl) {
                         document.getElementById('trailerSection').style.display = 'block';
-                        
                         let embedUrl = data.trailerUrl;
                         if (embedUrl.includes('watch?v=')) {
                             embedUrl = embedUrl.replace('watch?v=', 'embed/');
                         } else if (embedUrl.includes('youtu.be/')) {
                             embedUrl = embedUrl.replace('youtu.be/', 'www.youtube.com/embed/');
                         }
-                        
                         document.getElementById('detailTrailer').src = embedUrl;
                     } else {
                         document.getElementById('trailerSection').style.display = 'none';
@@ -1345,9 +1394,7 @@
         }
 
         window.closeDetail = function() {
-            // Hentikan video trailer saat popup ditutup
             document.getElementById('detailTrailer').src = ""; 
-            
             document.getElementById('detail-page').style.display = 'none';
             document.getElementById('home-page').style.display = 'block';
             document.getElementById('mainBottomNav').style.display = 'flex';
@@ -1370,7 +1417,6 @@
             container.innerHTML = '<div class="loading-text"><i class="fa-solid fa-spinner fa-spin"></i><br>Mencari daftar...</div>';
             badge.style.display = 'none';
 
-            // Cek apakah tipe komik atau film
             const isVideo = window.comicsData[comicId].format === 'film' || (window.comicsData[comicId].type && (window.comicsData[comicId].type.toLowerCase().includes('film') || window.comicsData[comicId].type.toLowerCase().includes('anime')));
             const actionText = isVideo ? 'Tonton' : 'Baca';
             const actionClass = isVideo ? 'chapter-action tonton' : 'chapter-action';
@@ -1406,9 +1452,7 @@
             } catch(e) { container.innerHTML = '<div class="loading-text">Gagal memuat daftar isi.</div>'; }
         }
 
-        // ================= ROUTER BACA/TONTON =================
         window.handleMediaOpen = function(comicId, chapterId, chapterNum) {
-            // Matikan Trailer jika berjalan lalu berpindah page
             document.getElementById('detailTrailer').src = document.getElementById('detailTrailer').src;
 
             const comicRecord = window.comicsData[comicId] || {};
@@ -1421,7 +1465,6 @@
             }
         }
 
-        // ================= READER VIEW (BACA KOMIK) =================
         window.openReader = async function(comicId, chapterId, chapterNum, targetPageIndex = 1) {
             window.currentActiveComicId = comicId;
             window.currentActiveChapterId = chapterId;
@@ -1493,7 +1536,6 @@
             document.getElementById('reader-page').style.display = 'none';
             document.getElementById('readerImagesContainer').innerHTML = '';
             
-            // Solusi Tombol Back: Memuat ulang halaman detail spesifik
             if (window.currentActiveComicId) {
                 openDetail(window.currentActiveComicId); 
             } else {
@@ -1502,7 +1544,6 @@
         }
         window.toggleReaderNav = function() { document.getElementById('readerHeader').classList.toggle('hidden'); }
 
-        // ================= VIDEO PLAYER VIEW (TONTON FILM) =================
         window.openPlayer = async function(comicId, chapterId, chapterNum) {
             window.currentActiveComicId = comicId;
             window.currentActiveChapterId = chapterId;
@@ -1518,18 +1559,14 @@
             const videoPlayer = document.getElementById('mainVideoPlayer');
             videoPlayer.pause();
             
-            // Pengambilan video url dari document image/urls
             try {
                 const snap = await getDoc(doc(db, "comics", comicId, "chapters", chapterId));
                 if(snap.exists()) {
                     const data = snap.data();
                     let targetUrl = "";
-                    
-                    // Ambil dari images[] yang di-upload dari admin sebelumnya
                     if (data.images && data.images.length > 0) {
                         targetUrl = data.images[0];
                     }
-                    
                     if (targetUrl) {
                         videoPlayer.src = targetUrl;
                         videoPlayer.play().catch(e => console.log("Menunggu aksi user untuk play"));
@@ -1557,7 +1594,6 @@
             document.getElementById('mainVideoPlayer').src = "";
             document.getElementById('player-page').style.display = 'none';
             
-            // Solusi Tombol Back: Memuat ulang halaman detail spesifik
             if (window.currentActiveComicId) {
                 openDetail(window.currentActiveComicId); 
             } else {
@@ -1578,8 +1614,9 @@
             } else {
                 document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
                 if(pageId === 'home') document.querySelectorAll('.nav-item')[0].classList.add('active');
-                if(pageId === 'bookmark') document.querySelectorAll('.nav-item')[1].classList.add('active');
-                if(pageId === 'profile') document.querySelectorAll('.nav-item')[2].classList.add('active');
+                if(pageId === 'discovery') document.querySelectorAll('.nav-item')[1].classList.add('active');
+                if(pageId === 'bookmark') document.querySelectorAll('.nav-item')[2].classList.add('active');
+                if(pageId === 'profile') document.querySelectorAll('.nav-item')[3].classList.add('active');
             }
             window.scrollTo(0,0);
         }

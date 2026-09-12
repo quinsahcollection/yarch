@@ -3,8 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Komik & Anime — Alphabet V8</title>
-    <!-- BUILD: ALPHABET-V8 | complete A-Z/# quick index -->
+    <title>Komik & Anime — Navigation V9</title>
+    <!-- BUILD: NAVIGATION-V9 | sticky alphabet + stateful back navigation + modern dialogs -->
     <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <!-- Google Fonts -->
@@ -363,6 +363,30 @@
         .bookmark-grid.view-list .info-container { justify-content:center; padding:14px 50px 14px 15px; }
         .bookmark-grid.view-list .title { font-size:14px; min-height:0; }
         .bookmark-grid.view-list .bookmark-delete-btn { top:50%; right:13px; transform:translateY(-50%); background:#fff0f0; color:#e64c5f; box-shadow:none; }
+
+        /* Horizontal sticky alphabet: compact on mobile and never covers cards */
+        .alphabet-rail { position:sticky; top:129px; left:auto; bottom:auto; width:calc(100% - 24px); height:52px; margin:8px 12px 2px; padding:7px; flex-direction:row; justify-content:flex-start; gap:5px; border-radius:17px; overflow-x:auto; overflow-y:hidden; scroll-snap-type:x proximity; }
+        #discovery-page.alphabet-active .discovery-grid { padding-left:16px; }
+        .alphabet-btn { width:auto; min-width:32px; height:36px; min-height:36px; flex:0 0 32px; padding:0 8px; border-radius:11px; font-size:11px; scroll-snap-align:center; }
+        .alphabet-btn.all-letters { min-width:58px; flex-basis:58px; }
+        .alphabet-btn.active { min-height:36px; height:36px; flex-basis:32px; }
+        .alphabet-btn.all-letters.active { flex-basis:58px; }
+
+        /* Modern confirmation dialog */
+        .modern-modal-backdrop { position:fixed; inset:0; z-index:10000; display:none; align-items:center; justify-content:center; padding:22px; background:rgba(13,16,31,.52); backdrop-filter:blur(8px); -webkit-backdrop-filter:blur(8px); }
+        .modern-modal-backdrop.show { display:flex; animation:modalFade .2s ease; }
+        .modern-modal { width:min(100%,360px); padding:22px; border:1px solid rgba(255,255,255,.65); border-radius:24px; background:rgba(255,255,255,.97); box-shadow:0 24px 70px rgba(13,16,31,.28); animation:modalPop .25s ease; }
+        .modern-modal-icon { width:50px; height:50px; display:grid; place-items:center; margin-bottom:15px; border-radius:16px; color:var(--primary-blue); background:var(--light-blue); font-size:20px; }
+        .modern-modal-icon.danger { color:#e5485d; background:#fff0f2; }
+        .modern-modal-title { margin-bottom:7px; color:var(--text-dark); font-size:18px; font-weight:850; letter-spacing:-.35px; }
+        .modern-modal-message { color:#74798e; font-size:13px; line-height:1.55; }
+        .modern-modal-actions { display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-top:20px; }
+        .modern-modal-btn { height:44px; border:0; border-radius:13px; cursor:pointer; font-size:13px; font-weight:800; }
+        .modern-modal-cancel { color:#60657a; background:#f0f1f6; }
+        .modern-modal-confirm { color:#fff; background:linear-gradient(135deg,#6d5dfc,#5153e8); box-shadow:0 7px 16px rgba(91,92,240,.24); }
+        .modern-modal-confirm.danger { background:linear-gradient(135deg,#f05b6e,#df4055); box-shadow:0 7px 16px rgba(225,64,85,.22); }
+        @keyframes modalFade { from{opacity:0} to{opacity:1} }
+        @keyframes modalPop { from{opacity:0;transform:translateY(12px) scale(.97)} to{opacity:1;transform:none} }
         .bottom-nav { max-width:520px; min-height:70px; padding:8px 12px calc(9px + env(safe-area-inset-bottom)); border-top:1px solid rgba(231,233,242,.9); background:rgba(255,255,255,.93); backdrop-filter:blur(20px); -webkit-backdrop-filter:blur(20px); box-shadow:0 -10px 30px rgba(27,31,62,.07); }
         .nav-item { gap:3px; font-size:9px; }
         .nav-item i { font-size:18px; }
@@ -386,7 +410,7 @@
         .auth-form-card input { border-radius:12px; }
         .toast-notification { max-width:calc(100% - 32px); width:max-content; text-align:center; bottom:calc(86px + env(safe-area-inset-bottom)); }
         @media (min-width:600px) { .app-container{margin:22px 0;min-height:calc(100vh - 44px);border-radius:28px;overflow:hidden}.bottom-nav{bottom:22px;border-radius:0 0 28px 28px}.detail-top-nav,.reader-header,.player-header{top:22px;border-radius:28px 28px 0 0} }
-        @media (max-width:370px) { .slider-container{height:305px}.hero-content{width:61%}.hero-synopsis{-webkit-line-clamp:2}.manga-card-simple{min-width:124px;width:124px}.card-poster-wrap{height:168px}.discovery-toolbar{gap:7px;padding:10px 12px}.catalog-count{font-size:10px}.filter-toggle-btn{padding:0 10px}.discovery-grid{padding:12px;gap:10px}.discovery-grid.view-3{gap:7px}.discovery-grid.view-3 .discovery-card img{height:138px}#discovery-page.alphabet-active .discovery-grid{padding-left:44px}.alphabet-rail{left:3px;width:32px} }
+        @media (max-width:370px) { .slider-container{height:305px}.hero-content{width:61%}.hero-synopsis{-webkit-line-clamp:2}.manga-card-simple{min-width:124px;width:124px}.card-poster-wrap{height:168px}.discovery-toolbar{gap:7px;padding:10px 12px}.catalog-count{font-size:10px}.filter-toggle-btn{padding:0 10px}.discovery-grid{padding:12px;gap:10px}.discovery-grid.view-3{gap:7px}.discovery-grid.view-3 .discovery-card img{height:138px}#discovery-page.alphabet-active .discovery-grid{padding-left:12px}.alphabet-rail{width:calc(100% - 20px);margin-left:10px;margin-right:10px} }
     </style>
 </head>
 <body>
@@ -766,6 +790,18 @@
         </nav>
     </div>
 
+    <div class="modern-modal-backdrop" id="modernConfirmModal" role="dialog" aria-modal="true" aria-labelledby="modernConfirmTitle">
+        <div class="modern-modal">
+            <div class="modern-modal-icon" id="modernConfirmIcon"><i class="fa-solid fa-circle-question"></i></div>
+            <div class="modern-modal-title" id="modernConfirmTitle">Konfirmasi</div>
+            <div class="modern-modal-message" id="modernConfirmMessage">Apakah Anda yakin?</div>
+            <div class="modern-modal-actions">
+                <button class="modern-modal-btn modern-modal-cancel" id="modernConfirmCancel" onclick="resolveModernConfirm(false)">Batal</button>
+                <button class="modern-modal-btn modern-modal-confirm" id="modernConfirmOk" onclick="resolveModernConfirm(true)">Lanjutkan</button>
+            </div>
+        </div>
+    </div>
+
     <!-- SCRIPT FIREBASE & LOGIKA UTAMA -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
@@ -795,6 +831,74 @@
         window.sliderInterval = null;
         
         window.currentVideoQualities = {};
+        window.modernConfirmResolver = null;
+
+        window.showModernConfirm = function({ title='Konfirmasi', message='Apakah Anda yakin?', confirmText='Lanjutkan', cancelText='Batal', danger=false, icon='fa-circle-question' } = {}) {
+            const modal = document.getElementById('modernConfirmModal');
+            document.getElementById('modernConfirmTitle').innerText = title;
+            document.getElementById('modernConfirmMessage').innerText = message;
+            document.getElementById('modernConfirmCancel').innerText = cancelText;
+            document.getElementById('modernConfirmOk').innerText = confirmText;
+            document.getElementById('modernConfirmIcon').className = `modern-modal-icon ${danger ? 'danger' : ''}`;
+            document.getElementById('modernConfirmIcon').innerHTML = `<i class="fa-solid ${icon}"></i>`;
+            document.getElementById('modernConfirmOk').className = `modern-modal-btn modern-modal-confirm ${danger ? 'danger' : ''}`;
+            modal.classList.add('show');
+            return new Promise(resolve => { window.modernConfirmResolver = resolve; });
+        }
+
+        window.resolveModernConfirm = function(result) {
+            document.getElementById('modernConfirmModal').classList.remove('show');
+            if(window.modernConfirmResolver) {
+                const resolver = window.modernConfirmResolver;
+                window.modernConfirmResolver = null;
+                resolver(result);
+            }
+        }
+
+        window.handlingPopState = false;
+        function pushAppState(view, data = {}) {
+            if(window.handlingPopState) return;
+            const current = history.state;
+            if(current?.comicApp && !current.exitBoundary) {
+                history.replaceState({ ...current, scrollY:window.scrollY }, '');
+            }
+            history.pushState({ comicApp:true, view, scrollY:0, ...data }, '');
+        }
+
+        if(!history.state?.comicApp) {
+            history.replaceState({ comicApp:true, exitBoundary:true }, '');
+            history.pushState({ comicApp:true, view:'home', scrollY:0 }, '');
+        } else if(history.state.exitBoundary) {
+            history.pushState({ comicApp:true, view:'home', scrollY:0 }, '');
+        }
+
+        window.addEventListener('popstate', async event => {
+            const state = event.state;
+            if(state?.exitBoundary) {
+                const shouldExit = await window.showModernConfirm({
+                    title:'Keluar dari aplikasi?',
+                    message:'Anda sudah berada di halaman awal. Apakah ingin meninggalkan aplikasi ini?',
+                    confirmText:'Ya, keluar', cancelText:'Tetap di sini', danger:true, icon:'fa-arrow-right-from-bracket'
+                });
+                if(shouldExit) history.back();
+                else history.forward();
+                return;
+            }
+            if(!state?.comicApp) return;
+            window.handlingPopState = true;
+            if(state.view !== 'player') {
+                const player = document.getElementById('mainVideoPlayer');
+                player.pause(); player.src = '';
+            }
+            if(state.view !== 'reader' && window.readerObserver) window.readerObserver.disconnect();
+            if(state.view !== 'detail') document.getElementById('detailTrailer').src = '';
+            if(['home','discovery','bookmark','profile'].includes(state.view)) window.switchNav(state.view, null, true);
+            else if(state.view === 'detail') await window.openDetail(state.comicId, true);
+            else if(state.view === 'reader') await window.openReader(state.comicId, state.chapterId, state.chapterNum, state.pageIndex || 1, true);
+            else if(state.view === 'player') await window.openPlayer(state.comicId, state.chapterId, state.chapterNum, true);
+            window.handlingPopState = false;
+            setTimeout(() => window.scrollTo(0, state.scrollY || 0), 60);
+        });
 
         window.showToast = function(msg) {
             let toast = document.getElementById('appToast');
@@ -1150,8 +1254,9 @@
         function renderAlphabetRail() {
             const rail = document.getElementById('alphabetRail');
             if(!rail) return;
-            const letters = ['#', ...'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split('')];
-            rail.innerHTML = letters.map(letter => `<button class="alphabet-btn ${window.discoveryLetter === letter ? 'active' : ''}" data-letter="${letter}" onclick="selectAlphabetLetter('${letter}')" title="Judul ${letter}">${letter}</button>`).join('');
+            const letters = ['', '#', ...'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split('')];
+            rail.innerHTML = letters.map(letter => `<button class="alphabet-btn ${letter === '' ? 'all-letters' : ''} ${window.discoveryLetter === letter ? 'active' : ''}" data-letter="${letter}" onclick="selectAlphabetLetter('${letter}')" title="${letter ? 'Judul ' + letter : 'Semua judul'}">${letter || 'Semua'}</button>`).join('');
+            requestAnimationFrame(() => rail.querySelector('.alphabet-btn.active')?.scrollIntoView({ behavior:'smooth', block:'nearest', inline:'center' }));
         }
 
         function updateAlphabetMode() {
@@ -1162,7 +1267,7 @@
         }
 
         window.selectAlphabetLetter = function(letter) {
-            window.discoveryLetter = window.discoveryLetter === letter ? '' : letter;
+            window.discoveryLetter = letter;
             renderAlphabetRail();
             renderDiscoveryGrid(false);
             window.scrollTo({ top:0, behavior:'smooth' });
@@ -1478,7 +1583,8 @@
         }
 
         window.clearHistory = async function() {
-            if(confirm("Bersihkan semua riwayat bacaan & tontonan?")) {
+            const confirmed = await window.showModernConfirm({ title:'Bersihkan riwayat?', message:'Semua riwayat membaca dan menonton akan dihapus dari perangkat dan akun Anda.', confirmText:'Ya, bersihkan', danger:true, icon:'fa-trash-can' });
+            if(confirmed) {
                 localStorage.removeItem('comicHistoryDetail');
                 if(auth.currentUser) {
                     try {
@@ -1553,7 +1659,8 @@
 
         window.removeBookmarkDirect = async function(event, id) {
             event.stopPropagation();
-            if(!confirm("Hapus konten ini dari bookmark?")) return;
+            const confirmed = await window.showModernConfirm({ title:'Hapus bookmark?', message:'Konten ini akan dihapus dari koleksi Bookmark Anda.', confirmText:'Ya, hapus', danger:true, icon:'fa-bookmark' });
+            if(!confirmed) return;
 
             window.userBookmarks = window.userBookmarks.filter(item => item !== id);
             if(auth.currentUser) {
@@ -1751,7 +1858,8 @@
         }
 
         // ================= HALAMAN DETAIL UTAMA =================
-        window.openDetail = async function(comicId) {
+        window.openDetail = async function(comicId, fromHistory = false) {
+            if(!fromHistory) pushAppState('detail', { comicId });
             window.currentActiveComicId = comicId;
             document.querySelectorAll('.app-container > div').forEach(el => { if(el.id!=='mainBottomNav') el.style.display = 'none'; });
             document.getElementById('detail-page').style.display = 'block';
@@ -1764,8 +1872,10 @@
                 
                 try {
                     const comicRef = doc(db, "comics", comicId);
-                    await updateDoc(comicRef, { views: increment(1) });
-                    window.comicsData[comicId].views = (data.views || 0) + 1;
+                    if(!fromHistory) {
+                        await updateDoc(comicRef, { views: increment(1) });
+                        window.comicsData[comicId].views = (data.views || 0) + 1;
+                    }
                 } catch(e) {}
 
                 fetchChapters(comicId);
@@ -1842,10 +1952,8 @@
 
         window.closeDetail = function() {
             document.getElementById('detailTrailer').src = ""; 
-            document.getElementById('detail-page').style.display = 'none';
-            document.getElementById('home-page').style.display = 'block';
-            document.getElementById('mainBottomNav').style.display = 'flex';
-            window.currentActiveComicId = null;
+            if(history.state?.comicApp && history.state.view === 'detail') history.back();
+            else window.switchNav('home');
         }
 
         window.switchTab = function(tabName) {
@@ -1912,7 +2020,8 @@
             }
         }
 
-        window.openReader = async function(comicId, chapterId, chapterNum, targetPageIndex = 1) {
+        window.openReader = async function(comicId, chapterId, chapterNum, targetPageIndex = 1, fromHistory = false) {
+            if(!fromHistory) pushAppState('reader', { comicId, chapterId, chapterNum, pageIndex:targetPageIndex });
             window.currentActiveComicId = comicId;
             window.currentActiveChapterId = chapterId;
             window.currentActiveChapterNum = chapterNum;
@@ -1980,18 +2089,13 @@
 
         window.closeReader = function() {
             if (window.readerObserver) window.readerObserver.disconnect();
-            document.getElementById('reader-page').style.display = 'none';
-            document.getElementById('readerImagesContainer').innerHTML = '';
-            
-            if (window.currentActiveComicId) {
-                openDetail(window.currentActiveComicId); 
-            } else {
-                switchNav('home');
-            }
+            if(history.state?.comicApp && history.state.view === 'reader') history.back();
+            else window.switchNav('home');
         }
         window.toggleReaderNav = function() { document.getElementById('readerHeader').classList.toggle('hidden'); }
 
-        window.openPlayer = async function(comicId, chapterId, chapterNum) {
+        window.openPlayer = async function(comicId, chapterId, chapterNum, fromHistory = false) {
+            if(!fromHistory) pushAppState('player', { comicId, chapterId, chapterNum });
             window.currentActiveComicId = comicId;
             window.currentActiveChapterId = chapterId;
             window.currentActiveChapterNum = chapterNum;
@@ -2039,21 +2143,18 @@
         window.closePlayer = function() {
             document.getElementById('mainVideoPlayer').pause();
             document.getElementById('mainVideoPlayer').src = "";
-            document.getElementById('player-page').style.display = 'none';
-            
-            if (window.currentActiveComicId) {
-                openDetail(window.currentActiveComicId); 
-            } else {
-                switchNav('home');
-            }
+            if(history.state?.comicApp && history.state.view === 'player') history.back();
+            else window.switchNav('home');
         }
 
         // ================= PENGENDALI MENU BAWAH =================
-        window.switchNav = function(pageId, element = null) {
+        window.switchNav = function(pageId, element = null, fromHistory = false) {
+            if(!fromHistory && history.state?.view !== pageId) pushAppState(pageId);
             document.querySelectorAll('.app-container > div').forEach(el => {
                 if(el.id !== 'mainBottomNav') el.style.display = 'none';
             });
             document.getElementById(pageId + '-page').style.display = 'block';
+            document.getElementById('mainBottomNav').style.display = 'flex';
             
             if(element) {
                 document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));

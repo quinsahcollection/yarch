@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Aplikasi Web Manga & Anime - Full UI & Detail</title>
+    <title>Komik & Anime — Baca dan Tonton</title>
     <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <!-- Google Fonts -->
@@ -235,6 +235,83 @@
         /* CUSTOM TOAST NOTIFICATION */
         .toast-notification { position: fixed; bottom: 80px; left: 50%; transform: translateX(-50%); background: rgba(0,0,0,0.85); color: white; padding: 10px 20px; border-radius: 20px; font-size: 13px; z-index: 9999; opacity: 0; pointer-events: none; transition: opacity 0.3s ease; box-shadow: 0 4px 15px rgba(0,0,0,0.3); font-weight: 500;}
         .toast-notification.show { opacity: 1; }
+
+        /* ===== PREMIUM UI REFRESH ===== */
+        :root { --primary-blue:#5b5cf0; --light-blue:#eeefff; --dark-blue:#3730a3; --primary-orange:#ff6b35; --light-orange:#ff8a5c; --bg-gray:#eef1f7; --text-dark:#121528; --text-gray:#71758a; --border-color:#e7e9f2; }
+        html { scroll-behavior:smooth; background:#e9edf5; }
+        body { background:radial-gradient(circle at 50% -10%,#dfe2ff 0,#eef1f7 38%,#e9edf5 100%); }
+        button,a,.manga-card-simple,.manga-card-history,.discovery-card,.chapter-item { touch-action:manipulation; }
+        .app-container { max-width:520px; box-shadow:0 18px 60px rgba(23,27,55,.14); background:#f8f9fc; padding-bottom:calc(78px + env(safe-area-inset-bottom)); }
+        #home-page,#discovery-page,#bookmark-page,#profile-page { background:#f8f9fc; }
+        .header { min-height:68px; padding:12px 16px; gap:10px; background:rgba(255,255,255,.88); backdrop-filter:blur(18px); -webkit-backdrop-filter:blur(18px); border-bottom-color:rgba(231,233,242,.8); }
+        .brand-mark { width:38px; height:38px; flex:0 0 38px; display:grid; place-items:center; border-radius:13px; color:#fff; background:linear-gradient(135deg,#6d5dfc,#ff6b35); box-shadow:0 8px 18px rgba(91,92,240,.28); font-size:16px; }
+        .search-container { min-height:42px; padding:10px 14px; border-radius:14px; background:#f3f4f8; border-color:transparent; transition:.2s ease; }
+        .search-container:focus-within { background:#fff; border-color:rgba(91,92,240,.35); box-shadow:0 0 0 4px rgba(91,92,240,.09); }
+        .search-container input { font-size:13px; }
+        .header-icons { gap:8px; }
+        .header-icons i { width:38px; height:38px; display:grid; place-items:center; border-radius:12px; background:var(--light-blue); font-size:15px; }
+        .search-results-dropdown { top:64px; border-radius:18px; border-color:var(--border-color); box-shadow:0 18px 50px rgba(24,29,58,.18); }
+        .slider-container { height:330px; margin:12px 12px 4px; width:calc(100% - 24px); border-radius:24px; box-shadow:0 16px 36px rgba(18,21,40,.22); }
+        .slide-bg-blur { filter:blur(20px); opacity:.58; transform:scale(1.04); }
+        .slide-img { width:64%; left:auto; right:0; background-size:cover; background-position:center; }
+        .slide-overlay { background:linear-gradient(90deg,#101223 0%,rgba(16,18,35,.95) 38%,rgba(16,18,35,.54) 72%,rgba(16,18,35,.18) 100%),linear-gradient(0deg,rgba(8,10,20,.75),transparent 60%); }
+        .hero-content { left:20px; width:58%; max-width:260px; gap:11px; }
+        .hero-title { font-size:clamp(20px,5.2vw,26px); letter-spacing:-.6px; line-height:1.12; }
+        .hero-chapter-badge { font-size:10px; padding:5px 9px; border-radius:99px; background:linear-gradient(135deg,#ff7a45,#ff4f46); box-shadow:none; }
+        .hero-synopsis { font-size:11px; line-height:1.55; color:#d6d8e5; -webkit-line-clamp:3; }
+        .hero-btn-read { padding:9px 15px; border-radius:12px; color:#fff; background:linear-gradient(135deg,#6d5dfc,#5153e8); box-shadow:0 8px 18px rgba(91,92,240,.32); }
+        .slider-indicators { bottom:16px; right:18px; }
+        .dot { height:5px; width:5px; }
+        .dot.active { width:20px; background:#fff; }
+        .section-container { padding:22px 16px 6px; background:transparent; }
+        .section-header { margin-bottom:13px; }
+        .section-title { font-size:17px; letter-spacing:-.3px; }
+        .see-all { font-size:12px; padding:7px 10px; border-radius:10px; background:var(--light-blue); }
+        .horizontal-scroll { gap:12px; padding:2px 1px 12px; scroll-snap-type:x proximity; }
+        .manga-card-simple,.manga-card-history { scroll-snap-align:start; min-width:132px; width:132px; border:0; border-radius:16px; background:#fff; box-shadow:0 7px 20px rgba(32,37,70,.08); transition:transform .2s ease,box-shadow .2s ease; }
+        .manga-card-history { min-width:145px; width:145px; }
+        .manga-card-simple:active,.manga-card-history:active { transform:scale(.97); }
+        .card-poster-wrap { position:relative; height:178px; overflow:hidden; background:#e9ebf2; }
+        .manga-card-simple img { height:100%; border:0; transition:transform .3s ease; }
+        .manga-card-simple:hover img { transform:scale(1.035); }
+        .card-format-badge { position:absolute; left:8px; top:8px; padding:4px 7px; border-radius:8px; color:white; background:rgba(13,16,30,.78); backdrop-filter:blur(8px); font-size:9px; font-weight:800; text-transform:uppercase; letter-spacing:.35px; }
+        .card-rating { position:absolute; right:8px; bottom:8px; padding:4px 7px; border-radius:8px; color:#ffd45a; background:rgba(13,16,30,.78); font-size:10px; font-weight:800; }
+        .manga-card-simple .info-container,.manga-card-history .info { padding:10px 10px 11px; }
+        .manga-card-simple .title,.manga-card-history .title { font-size:12px; line-height:1.4; font-weight:750; min-height:34px; }
+        .card-meta { display:flex; align-items:center; justify-content:space-between; gap:5px; margin-top:7px; color:var(--text-gray); font-size:9px; }
+        .card-status { color:var(--primary-blue); font-weight:700; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+        .manga-card-history img { height:184px; border:0; }
+        .manga-card-history .chapter { margin-top:5px; }
+        .discovery-grid,.bookmark-grid { grid-template-columns:repeat(2,minmax(0,1fr)); gap:14px; padding:16px; background:transparent; }
+        .discovery-card { border:0; border-radius:16px; box-shadow:0 8px 22px rgba(32,37,70,.08); }
+        .discovery-card img { height:218px; border:0; }
+        .discovery-info { padding:11px; gap:6px; }
+        .discovery-title { font-size:12px; min-height:32px; }
+        .discovery-latest { border-radius:8px; padding:5px 7px; }
+        .bottom-nav { max-width:520px; min-height:70px; padding:8px 12px calc(9px + env(safe-area-inset-bottom)); border-top:1px solid rgba(231,233,242,.9); background:rgba(255,255,255,.93); backdrop-filter:blur(20px); -webkit-backdrop-filter:blur(20px); box-shadow:0 -10px 30px rgba(27,31,62,.07); }
+        .nav-item { gap:3px; font-size:9px; }
+        .nav-item i { font-size:18px; }
+        .nav-item.active .icon-bg { width:44px; height:29px; background:linear-gradient(135deg,#eeefff,#fff0e9); }
+        .detail-top-nav,.reader-header,.player-header { max-width:520px; }
+        .detail-top-nav { background:linear-gradient(180deg,rgba(10,12,25,.72),transparent); backdrop-filter:none; }
+        .detail-top-nav>i,.detail-top-nav .right-icons i { background:rgba(17,19,34,.54); backdrop-filter:blur(10px); border-radius:50%; width:40px; height:40px; display:grid; place-items:center; }
+        .detail-header { min-height:385px; padding:105px 20px 28px; background-position:center 25%; }
+        .detail-header::before { background:linear-gradient(to bottom,rgba(10,12,24,.2),rgba(10,12,24,.96)); }
+        .comic-cover-wrapper { width:122px; }
+        .comic-cover { border-radius:14px; }
+        .age-rating { border-radius:0 0 12px 12px; }
+        .comic-detail-title { font-size:22px; }
+        .detail-tabs { top:0; box-shadow:0 5px 16px rgba(26,31,61,.05); }
+        .tab-btn { padding:16px 4px 13px; font-size:12px; }
+        .tab-content { padding:22px 18px; }
+        .detail-info-box,.stat-card,.user-menu-list li { border:0; box-shadow:0 7px 20px rgba(32,37,70,.06); border-radius:14px; }
+        .chapter-item { margin-bottom:10px; padding:14px; border:0; border-radius:14px; background:#f7f8fc; }
+        .profile-hero { background:radial-gradient(circle at 75% 15%,rgba(255,255,255,.24),transparent 25%),linear-gradient(135deg,#6d5dfc,#4144c8); border-radius:0 0 30px 30px; padding-top:45px; }
+        .auth-main-btn { border-radius:13px; background:linear-gradient(135deg,#6d5dfc,#5153e8); }
+        .auth-form-card input { border-radius:12px; }
+        .toast-notification { max-width:calc(100% - 32px); width:max-content; text-align:center; bottom:calc(86px + env(safe-area-inset-bottom)); }
+        @media (min-width:600px) { .app-container{margin:22px 0;min-height:calc(100vh - 44px);border-radius:28px;overflow:hidden}.bottom-nav{bottom:22px;border-radius:0 0 28px 28px}.detail-top-nav,.reader-header,.player-header{top:22px;border-radius:28px 28px 0 0} }
+        @media (max-width:370px) { .slider-container{height:305px}.hero-content{width:61%}.hero-synopsis{-webkit-line-clamp:2}.manga-card-simple{min-width:124px;width:124px}.card-poster-wrap{height:168px} }
     </style>
 </head>
 <body>
@@ -244,15 +321,13 @@
         <!-- ================= 1. HALAMAN HOME ================= -->
         <div id="home-page">
             <header class="header">
+                <div class="brand-mark" aria-label="Beranda"><i class="fa-solid fa-bolt"></i></div>
                 <div class="search-container">
                     <i class="fa-solid fa-magnifying-glass"></i>
-                    <input type="text" id="searchInput" placeholder="Cari komik atau film...">
+                    <input type="text" id="searchInput" placeholder="Cari judul, manga, atau anime...">
                 </div>
                 <div class="header-icons">
-                    <i class="fa-solid fa-filter"></i>
-                    <i class="fa-solid fa-arrow-down-a-z"></i>
-                    <i class="fa-solid fa-bag-shopping"></i>
-                    <i class="fa-solid fa-chart-simple"></i>
+                    <i class="fa-regular fa-bell" aria-label="Notifikasi"></i>
                 </div>
             </header>
             
@@ -284,9 +359,9 @@
                     <div class="section-header">
                         <div class="section-title-wrapper">
                             <i class="fa-regular fa-calendar-days" style="color: var(--primary-blue); font-size: 16px;"></i>
-                            <h2 class="section-title">Jadwal Hari Ini</h2>
+                            <h2 class="section-title">Pilihan Hari Ini</h2>
                         </div>
-                        <a class="see-all">Lihat Semua</a>
+                        <a class="see-all" onclick="switchNav('discovery')">Lihat Semua</a>
                     </div>
                     <div class="horizontal-scroll" id="firebase-jadwal">
                         <div class="loading-text"><i class="fa-solid fa-spinner fa-spin"></i> Memuat...</div>
@@ -297,7 +372,7 @@
                 <section class="section-container">
                     <div class="section-header">
                         <div class="section-title-wrapper"><span>🎬</span><h2 class="section-title">Film & Anime</h2></div>
-                        <a class="see-all">Lihat Semua</a>
+                        <a class="see-all" onclick="switchNav('discovery')">Lihat Semua</a>
                     </div>
                     <div class="horizontal-scroll" id="firebase-film"><div class="loading-text"><i class="fa-solid fa-spinner fa-spin"></i> Memuat...</div></div>
                 </section>
@@ -306,7 +381,7 @@
                 <section class="section-container">
                     <div class="section-header">
                         <div class="section-title-wrapper"><span style="color: var(--primary-blue); font-size: 10px;">●</span><h2 class="section-title">Manga</h2></div>
-                        <a class="see-all">Lihat Semua</a>
+                        <a class="see-all" onclick="switchNav('discovery')">Lihat Semua</a>
                     </div>
                     <div class="horizontal-scroll" id="firebase-manga"><div class="loading-text"><i class="fa-solid fa-spinner fa-spin"></i> Memuat...</div></div>
                 </section>
@@ -314,7 +389,7 @@
                 <section class="section-container">
                     <div class="section-header">
                         <div class="section-title-wrapper"><span>🇰🇷</span><h2 class="section-title">Manhwa</h2></div>
-                        <a class="see-all">Lihat Semua</a>
+                        <a class="see-all" onclick="switchNav('discovery')">Lihat Semua</a>
                     </div>
                     <div class="horizontal-scroll" id="firebase-manhwa"><div class="loading-text"><i class="fa-solid fa-spinner fa-spin"></i> Memuat...</div></div>
                 </section>
@@ -322,7 +397,7 @@
                 <section class="section-container">
                     <div class="section-header">
                         <div class="section-title-wrapper"><span>🇨🇳</span><h2 class="section-title">Manhua</h2></div>
-                        <a class="see-all">Lihat Semua</a>
+                        <a class="see-all" onclick="switchNav('discovery')">Lihat Semua</a>
                     </div>
                     <div class="horizontal-scroll" id="firebase-manhua"><div class="loading-text"><i class="fa-solid fa-spinner fa-spin"></i> Memuat...</div></div>
                 </section>
@@ -331,7 +406,7 @@
                 <section class="section-container" style="padding-bottom: 30px;">
                     <div class="section-header">
                         <div class="section-title-wrapper"><h2 class="section-title">Semua Update Terbaru</h2></div>
-                        <a class="see-all">Lihat Semua</a>
+                        <a class="see-all" onclick="switchNav('discovery')">Lihat Semua</a>
                     </div>
                     <div class="horizontal-scroll" id="firebase-updates">
                         <div class="loading-text"><i class="fa-solid fa-spinner fa-spin"></i> Memuat...</div>
@@ -785,10 +860,21 @@
         }
 
         function generateComicCard(docId, data) {
+            const isVideo = data.format === 'film' || (data.type && /film|anime|series/i.test(data.type));
+            const rating = data.ratingCount ? (data.ratingTotal / data.ratingCount).toFixed(1) : 'Baru';
+            const label = isVideo ? 'Video' : (data.type || 'Komik');
+            const status = data.status || (isVideo ? 'Tonton sekarang' : 'Mulai membaca');
             return `
                 <div class="manga-card-simple" onclick="openDetail('${docId}')">
-                    <img src="${data.coverUrl}" alt="${data.title}" onerror="this.src='https://placehold.co/120x150?text=No+Cover'">
-                    <div class="info-container"><div class="title">${data.title}</div></div>
+                    <div class="card-poster-wrap">
+                        <img src="${data.coverUrl}" alt="${data.title}" loading="lazy" onerror="this.src='https://placehold.co/132x178?text=No+Cover'">
+                        <span class="card-format-badge">${label}</span>
+                        <span class="card-rating"><i class="fa-solid fa-star"></i> ${rating}</span>
+                    </div>
+                    <div class="info-container">
+                        <div class="title">${data.title}</div>
+                        <div class="card-meta"><span class="card-status">${status}</span><i class="fa-solid fa-chevron-right"></i></div>
+                    </div>
                 </div>
             `;
         }
@@ -801,11 +887,13 @@
                 let htmlUpdates = ''; let htmlJadwal = ''; let htmlManga = ''; let htmlManhwa = ''; let htmlManhua = ''; let htmlFilm = '';
                 
                 let countSlider = 0;
+                let choiceCount = 0;
                 let sliderHtml = '';
                 let sliderDots = '';
                 
                 querySnapshot.forEach((docSnap) => {
                     const data = docSnap.data();
+                    if (data.isPublished === false) return;
                     window.comicsData[docSnap.id] = data; 
                     
                     const isVideoType = data.format === 'film' || (data.type && (data.type.toLowerCase().includes("film") || data.type.toLowerCase().includes("anime")));
@@ -841,7 +929,7 @@
 
                     const cardHTML = generateComicCard(docSnap.id, data);
                     htmlUpdates += cardHTML;
-                    if(Math.random() > 0.4) htmlJadwal += cardHTML;
+                    if(choiceCount < 8) { htmlJadwal += cardHTML; choiceCount++; }
 
                     const type = (data.type || "").toLowerCase();
                     const format = (data.format || "").toLowerCase();

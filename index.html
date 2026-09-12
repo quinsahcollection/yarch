@@ -3,7 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Komik & Anime — Baca dan Tonton</title>
+    <title>Komik & Anime — Discovery V3</title>
+    <!-- BUILD: DISCOVERY-V3 | layout 2-grid, 3-grid, list + advanced filters -->
     <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <!-- Google Fonts -->
@@ -288,6 +289,37 @@
         .discovery-info { padding:11px; gap:6px; }
         .discovery-title { font-size:12px; min-height:32px; }
         .discovery-latest { border-radius:8px; padding:5px 7px; }
+        .discovery-toolbar { position:sticky; top:68px; z-index:90; display:flex; align-items:center; gap:10px; padding:12px 16px; background:rgba(248,249,252,.94); backdrop-filter:blur(16px); -webkit-backdrop-filter:blur(16px); border-bottom:1px solid var(--border-color); }
+        .catalog-count { flex:1; color:var(--text-gray); font-size:11px; font-weight:600; }
+        .view-switcher { display:flex; gap:3px; padding:3px; border-radius:12px; background:#eceef5; }
+        .view-btn,.filter-toggle-btn { border:0; cursor:pointer; color:#85899a; background:transparent; }
+        .view-btn { width:32px; height:32px; border-radius:9px; font-size:13px; }
+        .view-btn.active { color:#fff; background:linear-gradient(135deg,#6d5dfc,#5153e8); box-shadow:0 4px 10px rgba(91,92,240,.25); }
+        .filter-toggle-btn { height:38px; padding:0 13px; display:flex; align-items:center; gap:7px; border-radius:11px; color:var(--primary-blue); background:var(--light-blue); font-size:12px; font-weight:750; }
+        .filter-toggle-btn.has-filter::after { content:''; width:7px; height:7px; border-radius:50%; background:var(--primary-orange); box-shadow:0 0 0 2px #fff; }
+        .filter-panel { display:none; margin:2px 16px 4px; padding:16px; border-radius:18px; background:#fff; box-shadow:0 12px 32px rgba(32,37,70,.1); border:1px solid var(--border-color); }
+        .filter-panel.show { display:block; animation:fadeIn .2s ease; }
+        .filter-panel-head { display:flex; justify-content:space-between; align-items:center; margin-bottom:13px; }
+        .filter-panel-title { font-size:14px; font-weight:800; }
+        .filter-reset { border:0; background:transparent; color:var(--primary-blue); font-size:11px; font-weight:700; cursor:pointer; }
+        .filter-fields { display:grid; grid-template-columns:1fr 1fr; gap:10px; }
+        .filter-field { display:flex; flex-direction:column; gap:6px; }
+        .filter-field label { color:var(--text-gray); font-size:10px; font-weight:700; }
+        .filter-field select { width:100%; height:40px; padding:0 30px 0 10px; border:1px solid var(--border-color); border-radius:11px; outline:0; color:var(--text-dark); background:#f7f8fc; font-size:11px; font-weight:600; }
+        .filter-field select:focus { border-color:rgba(91,92,240,.45); box-shadow:0 0 0 3px rgba(91,92,240,.08); }
+        .discovery-grid.view-3 { grid-template-columns:repeat(3,minmax(0,1fr)); gap:9px; }
+        .discovery-grid.view-3 .discovery-card { border-radius:12px; }
+        .discovery-grid.view-3 .discovery-card img { height:150px; }
+        .discovery-grid.view-3 .discovery-info { padding:8px; gap:4px; }
+        .discovery-grid.view-3 .discovery-title { font-size:10px; min-height:27px; }
+        .discovery-grid.view-3 .discovery-stats,.discovery-grid.view-3 .discovery-latest { font-size:9px; }
+        .discovery-grid.view-list { grid-template-columns:1fr; gap:10px; }
+        .discovery-grid.view-list .discovery-card { display:grid; grid-template-columns:92px 1fr; min-height:128px; }
+        .discovery-grid.view-list .discovery-card img { width:92px; height:128px; }
+        .discovery-grid.view-list .discovery-info { padding:14px; justify-content:center; }
+        .discovery-grid.view-list .discovery-title { font-size:14px; min-height:auto; }
+        .discovery-grid.view-list .discovery-stats { justify-content:flex-start; gap:18px; font-size:11px; }
+        .discovery-grid.view-list .discovery-latest { width:max-content; max-width:100%; padding:5px 10px; }
         .bottom-nav { max-width:520px; min-height:70px; padding:8px 12px calc(9px + env(safe-area-inset-bottom)); border-top:1px solid rgba(231,233,242,.9); background:rgba(255,255,255,.93); backdrop-filter:blur(20px); -webkit-backdrop-filter:blur(20px); box-shadow:0 -10px 30px rgba(27,31,62,.07); }
         .nav-item { gap:3px; font-size:9px; }
         .nav-item i { font-size:18px; }
@@ -423,6 +455,28 @@
                     <span style="font-size:14px; font-weight:700; color:#111;">Discovery - Semua Konten</span>
                 </div>
             </header>
+            <div class="discovery-toolbar">
+                <div class="catalog-count" id="discoveryCount">Memuat katalog...</div>
+                <div class="view-switcher" aria-label="Pilih tampilan katalog">
+                    <button class="view-btn active" data-view="2" onclick="setDiscoveryView('2')" title="2 Kolom"><i class="fa-solid fa-table-cells-large"></i></button>
+                    <button class="view-btn" data-view="3" onclick="setDiscoveryView('3')" title="3 Kolom"><i class="fa-solid fa-grip"></i></button>
+                    <button class="view-btn" data-view="list" onclick="setDiscoveryView('list')" title="Daftar"><i class="fa-solid fa-list"></i></button>
+                </div>
+                <button class="filter-toggle-btn" id="filterToggleBtn" onclick="toggleDiscoveryFilters()"><i class="fa-solid fa-sliders"></i> Filter</button>
+            </div>
+            <div class="filter-panel" id="discoveryFilterPanel">
+                <div class="filter-panel-head">
+                    <div class="filter-panel-title">Filter Konten</div>
+                    <button class="filter-reset" onclick="resetDiscoveryFilters()"><i class="fa-solid fa-rotate-left"></i> Reset</button>
+                </div>
+                <div class="filter-fields">
+                    <div class="filter-field"><label for="filterGenre">Genre</label><select id="filterGenre" onchange="applyDiscoveryFilters()"><option value="">Semua Genre</option></select></div>
+                    <div class="filter-field"><label for="filterType">Tipe</label><select id="filterType" onchange="applyDiscoveryFilters()"><option value="">Semua Tipe</option></select></div>
+                    <div class="filter-field"><label for="filterStatus">Status</label><select id="filterStatus" onchange="applyDiscoveryFilters()"><option value="">Semua Status</option></select></div>
+                    <div class="filter-field"><label for="filterAge">Rating Usia</label><select id="filterAge" onchange="applyDiscoveryFilters()"><option value="">Semua Usia</option></select></div>
+                    <div class="filter-field"><label for="filterYear">Tahun Rilis</label><select id="filterYear" onchange="applyDiscoveryFilters()"><option value="">Semua Tahun</option></select></div>
+                </div>
+            </div>
             <div class="discovery-grid" id="discoveryGridContainer">
                 <div class="loading-text" style="grid-column: 1 / -1;"><i class="fa-solid fa-spinner fa-spin"></i> Memuat seluruh konten...</div>
             </div>
@@ -995,14 +1049,84 @@
         }
         fetchAllComics();
 
-        // ================= RENDER HALAMAN DISCOVERY =================
-        function renderDiscoveryGrid() {
+        // ================= DISCOVERY: VIEW & FILTER =================
+        window.discoveryView = localStorage.getItem('discoveryView') || '2';
+
+        window.setDiscoveryView = function(view) {
+            const container = document.getElementById('discoveryGridContainer');
+            if(!container || !['2', '3', 'list'].includes(view)) return;
+            window.discoveryView = view;
+            localStorage.setItem('discoveryView', view);
+            container.classList.remove('view-3', 'view-list');
+            if(view === '3') container.classList.add('view-3');
+            if(view === 'list') container.classList.add('view-list');
+            document.querySelectorAll('.view-btn').forEach(btn => btn.classList.toggle('active', btn.dataset.view === view));
+        }
+
+        window.toggleDiscoveryFilters = function() {
+            document.getElementById('discoveryFilterPanel').classList.toggle('show');
+        }
+
+        function fillFilterOptions(id, values, defaultLabel, descending = false) {
+            const select = document.getElementById(id);
+            if(!select) return;
+            const current = select.value;
+            const sorted = [...new Set(values.filter(Boolean).map(v => String(v).trim()).filter(Boolean))]
+                .sort((a,b) => descending ? b.localeCompare(a, 'id', {numeric:true}) : a.localeCompare(b, 'id'));
+            select.innerHTML = `<option value="">${defaultLabel}</option>` + sorted.map(v => `<option value="${v}">${v}</option>`).join('');
+            if(sorted.includes(current)) select.value = current;
+        }
+
+        function refreshDiscoveryFilterOptions() {
+            const comics = Object.values(window.comicsData);
+            fillFilterOptions('filterGenre', comics.flatMap(c => Array.isArray(c.genres) ? c.genres : []), 'Semua Genre');
+            fillFilterOptions('filterType', comics.map(c => c.type), 'Semua Tipe');
+            fillFilterOptions('filterStatus', comics.map(c => c.status), 'Semua Status');
+            fillFilterOptions('filterAge', comics.map(c => c.ageRating), 'Semua Usia');
+            fillFilterOptions('filterYear', comics.map(c => c.releaseDate ? String(c.releaseDate).slice(0,4) : ''), 'Semua Tahun', true);
+        }
+
+        function getDiscoveryFilters() {
+            return {
+                genre: document.getElementById('filterGenre')?.value || '',
+                type: document.getElementById('filterType')?.value || '',
+                status: document.getElementById('filterStatus')?.value || '',
+                age: document.getElementById('filterAge')?.value || '',
+                year: document.getElementById('filterYear')?.value || ''
+            };
+        }
+
+        window.applyDiscoveryFilters = function() { renderDiscoveryGrid(false); }
+
+        window.resetDiscoveryFilters = function() {
+            ['filterGenre','filterType','filterStatus','filterAge','filterYear'].forEach(id => {
+                const el = document.getElementById(id); if(el) el.value = '';
+            });
+            renderDiscoveryGrid(false);
+        }
+
+        function renderDiscoveryGrid(refreshOptions = true) {
             const container = document.getElementById('discoveryGridContainer');
             if(!container) return;
+            if(refreshOptions) refreshDiscoveryFilterOptions();
+            window.setDiscoveryView(window.discoveryView);
+
+            const filters = getDiscoveryFilters();
+            const hasFilter = Object.values(filters).some(Boolean);
+            document.getElementById('filterToggleBtn')?.classList.toggle('has-filter', hasFilter);
 
             let gridHtml = '';
+            let resultCount = 0;
             for(let id in window.comicsData) {
                 const comic = window.comicsData[id];
+                const comicGenres = Array.isArray(comic.genres) ? comic.genres : [];
+                const releaseYear = comic.releaseDate ? String(comic.releaseDate).slice(0,4) : '';
+                if(filters.genre && !comicGenres.includes(filters.genre)) continue;
+                if(filters.type && comic.type !== filters.type) continue;
+                if(filters.status && comic.status !== filters.status) continue;
+                if(filters.age && comic.ageRating !== filters.age) continue;
+                if(filters.year && releaseYear !== filters.year) continue;
+
                 const isVideoType = comic.format === 'film' || (comic.type && (comic.type.toLowerCase().includes("film") || comic.type.toLowerCase().includes("anime")));
                 
                 const ratingNum = comic.ratingCount ? (comic.ratingTotal / comic.ratingCount).toFixed(1) : "0.0";
@@ -1031,10 +1155,15 @@
                         </div>
                     </div>
                 `;
+                resultCount++;
             }
 
-            container.innerHTML = gridHtml || '<div class="empty-history" style="grid-column:1/-1;">Belum ada konten.</div>';
+            const countEl = document.getElementById('discoveryCount');
+            if(countEl) countEl.innerText = `${resultCount} konten ditemukan`;
+            container.innerHTML = gridHtml || `<div class="empty-history" style="grid-column:1/-1;"><i class="fa-solid fa-filter-circle-xmark" style="font-size:28px;margin-bottom:12px;color:#b6b9c7;"></i><br>Tidak ada konten yang cocok dengan filter.</div>`;
         }
+
+        window.setDiscoveryView(window.discoveryView);
 
         // ================= HERO SLIDER LOGIC =================
         let slideIndex = 0;

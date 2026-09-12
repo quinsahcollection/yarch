@@ -3,8 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Komik & Anime — Sorting V7</title>
-    <!-- BUILD: SORTING-V7 | discovery sorting + comment aggregation -->
+    <title>Komik & Anime — Alphabet V8</title>
+    <!-- BUILD: ALPHABET-V8 | complete A-Z/# quick index -->
     <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <!-- Google Fonts -->
@@ -312,6 +312,13 @@
         .sort-option i { width:17px; color:#85899a; text-align:center; }
         .sort-option.active { color:var(--primary-blue); background:var(--light-blue); font-weight:800; }
         .sort-option.active i { color:var(--primary-blue); }
+        .alphabet-rail { display:none; position:fixed; top:190px; bottom:calc(82px + env(safe-area-inset-bottom)); left:max(4px,calc(50% - 256px)); z-index:88; width:34px; padding:5px 3px; flex-direction:column; align-items:center; justify-content:space-between; border:1px solid rgba(226,229,240,.9); border-radius:17px; background:rgba(255,255,255,.94); backdrop-filter:blur(14px); box-shadow:0 8px 24px rgba(30,35,66,.12); overflow-y:auto; scrollbar-width:none; }
+        .alphabet-rail::-webkit-scrollbar { display:none; }
+        #discovery-page.alphabet-active .alphabet-rail { display:flex; }
+        #discovery-page.alphabet-active .discovery-grid { padding-left:50px; }
+        .alphabet-btn { width:25px; min-height:18px; display:grid; place-items:center; flex:0 0 18px; border:0; border-radius:9px; color:#60657a; background:transparent; cursor:pointer; font-size:9px; font-weight:800; line-height:1; }
+        .alphabet-btn:hover { color:var(--primary-blue); background:var(--light-blue); }
+        .alphabet-btn.active { min-height:25px; flex-basis:25px; color:#fff; background:linear-gradient(135deg,#6d5dfc,#5153e8); box-shadow:0 4px 10px rgba(91,92,240,.28); }
         .filter-panel { display:none; margin:2px 16px 4px; padding:16px; border-radius:18px; background:#fff; box-shadow:0 12px 32px rgba(32,37,70,.1); border:1px solid var(--border-color); }
         .filter-panel.show { display:block; animation:fadeIn .2s ease; }
         .filter-panel-head { display:flex; justify-content:space-between; align-items:center; margin-bottom:13px; }
@@ -379,7 +386,7 @@
         .auth-form-card input { border-radius:12px; }
         .toast-notification { max-width:calc(100% - 32px); width:max-content; text-align:center; bottom:calc(86px + env(safe-area-inset-bottom)); }
         @media (min-width:600px) { .app-container{margin:22px 0;min-height:calc(100vh - 44px);border-radius:28px;overflow:hidden}.bottom-nav{bottom:22px;border-radius:0 0 28px 28px}.detail-top-nav,.reader-header,.player-header{top:22px;border-radius:28px 28px 0 0} }
-        @media (max-width:370px) { .slider-container{height:305px}.hero-content{width:61%}.hero-synopsis{-webkit-line-clamp:2}.manga-card-simple{min-width:124px;width:124px}.card-poster-wrap{height:168px}.discovery-toolbar{gap:7px;padding:10px 12px}.catalog-count{font-size:10px}.filter-toggle-btn{padding:0 10px}.discovery-grid{padding:12px;gap:10px}.discovery-grid.view-3{gap:7px}.discovery-grid.view-3 .discovery-card img{height:138px} }
+        @media (max-width:370px) { .slider-container{height:305px}.hero-content{width:61%}.hero-synopsis{-webkit-line-clamp:2}.manga-card-simple{min-width:124px;width:124px}.card-poster-wrap{height:168px}.discovery-toolbar{gap:7px;padding:10px 12px}.catalog-count{font-size:10px}.filter-toggle-btn{padding:0 10px}.discovery-grid{padding:12px;gap:10px}.discovery-grid.view-3{gap:7px}.discovery-grid.view-3 .discovery-card img{height:138px}#discovery-page.alphabet-active .discovery-grid{padding-left:44px}.alphabet-rail{left:3px;width:32px} }
     </style>
 </head>
 <body>
@@ -527,6 +534,7 @@
                     <div class="filter-field"><label for="filterYear">Tahun Rilis</label><select id="filterYear" onchange="applyDiscoveryFilters()"><option value="">Semua Tahun</option></select></div>
                 </div>
             </div>
+            <aside class="alphabet-rail" id="alphabetRail" aria-label="Indeks judul berdasarkan abjad"></aside>
             <div class="discovery-grid" id="discoveryGridContainer">
                 <div class="loading-text" style="grid-column: 1 / -1;"><i class="fa-solid fa-spinner fa-spin"></i> Memuat seluruh konten...</div>
             </div>
@@ -1137,6 +1145,29 @@
         }
 
         window.discoverySort = localStorage.getItem('discoverySort') || 'newest';
+        window.discoveryLetter = '';
+
+        function renderAlphabetRail() {
+            const rail = document.getElementById('alphabetRail');
+            if(!rail) return;
+            const letters = ['#', ...'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split('')];
+            rail.innerHTML = letters.map(letter => `<button class="alphabet-btn ${window.discoveryLetter === letter ? 'active' : ''}" data-letter="${letter}" onclick="selectAlphabetLetter('${letter}')" title="Judul ${letter}">${letter}</button>`).join('');
+        }
+
+        function updateAlphabetMode() {
+            const enabled = window.discoverySort === 'title-asc' || window.discoverySort === 'title-desc';
+            document.getElementById('discovery-page')?.classList.toggle('alphabet-active', enabled);
+            if(!enabled) window.discoveryLetter = '';
+            renderAlphabetRail();
+        }
+
+        window.selectAlphabetLetter = function(letter) {
+            window.discoveryLetter = window.discoveryLetter === letter ? '' : letter;
+            renderAlphabetRail();
+            renderDiscoveryGrid(false);
+            window.scrollTo({ top:0, behavior:'smooth' });
+        }
+
         window.toggleDiscoverySort = function() {
             document.getElementById('discoveryFilterPanel')?.classList.remove('show');
             document.getElementById('discoverySortPanel').classList.toggle('show');
@@ -1145,10 +1176,12 @@
             const allowed = ['newest','title-asc','title-desc','comments-desc','rating-desc','rating-asc','views-desc','views-asc'];
             if(!allowed.includes(sortKey)) return;
             window.discoverySort = sortKey;
+            if(sortKey !== 'title-asc' && sortKey !== 'title-desc') window.discoveryLetter = '';
             localStorage.setItem('discoverySort', sortKey);
             document.querySelectorAll('.sort-option').forEach(btn => btn.classList.toggle('active', btn.dataset.sort === sortKey));
             document.getElementById('sortToggleBtn')?.classList.toggle('active', sortKey !== 'newest');
             document.getElementById('discoverySortPanel')?.classList.remove('show');
+            updateAlphabetMode();
             renderDiscoveryGrid(false);
         }
 
@@ -1255,6 +1288,9 @@
             let resultCount = 0;
             const sortedEntries = sortDiscoveryEntries(Object.entries(window.comicsData));
             for(const [id, comic] of sortedEntries) {
+                const firstCharacter = String(comic.title || '').trim().charAt(0).toUpperCase();
+                const titleLetter = /^[A-Z]$/.test(firstCharacter) ? firstCharacter : '#';
+                if(window.discoveryLetter && titleLetter !== window.discoveryLetter) continue;
                 const comicGenres = Array.isArray(comic.genres) ? comic.genres : [];
                 const releaseYear = comic.releaseDate ? String(comic.releaseDate).slice(0,4) : '';
                 if(filters.genre && !comicGenres.includes(filters.genre)) continue;
@@ -1306,12 +1342,13 @@
             }
 
             const countEl = document.getElementById('discoveryCount');
-            if(countEl) countEl.innerText = `${resultCount} konten ditemukan`;
+            if(countEl) countEl.innerText = `${window.discoveryLetter ? 'Huruf ' + window.discoveryLetter + ' • ' : ''}${resultCount} konten ditemukan`;
             container.innerHTML = gridHtml || `<div class="empty-history" style="grid-column:1/-1;"><i class="fa-solid fa-filter-circle-xmark" style="font-size:28px;margin-bottom:12px;color:#b6b9c7;"></i><br>Tidak ada konten yang cocok dengan filter.</div>`;
         }
 
         window.setDiscoveryView(window.discoveryView);
         window.selectDiscoverySort(window.discoverySort);
+        updateAlphabetMode();
 
         // ================= HERO SLIDER LOGIC =================
         let slideIndex = 0;

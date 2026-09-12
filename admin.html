@@ -1236,14 +1236,15 @@
                 if (!snapshot.empty) {
                     const docSnap = snapshot.docs[0];
                     targetChapterId = docSnap.id;
-                    await updateDoc(doc(db, "comics", comicId, "chapters", targetChapterId), { title: chapterTitle });
+                    await updateDoc(doc(db, "comics", comicId, "chapters", targetChapterId), { title: chapterTitle, updatedAt: serverTimestamp() });
                     statusEl.innerHTML = "✅ Identitas Node (Folder) ini sudah ada dan datanya berhasil diupdate!<br>Silakan lanjut Buka File Manager di Langkah 2.";
                 } else {
                     const newDocRef = await addDoc(chaptersRef, {
                         chapterNumber: parseFloat(chapterNum),
                         title: chapterTitle,
                         images: [],
-                        createdAt: serverTimestamp()
+                        createdAt: serverTimestamp(),
+                        updatedAt: serverTimestamp()
                     });
                     targetChapterId = newDocRef.id;
                     statusEl.innerHTML = "✅ Folder sukses diregistrasi!<br>Silakan lanjut Buka File Manager di Langkah 2 untuk upload konten media.";
@@ -1303,7 +1304,7 @@
                 if(snap.exists()) {
                     const existingImages = snap.data().images || [];
                     const updatedImages = existingImages.concat(uploadedUrls);
-                    await updateDoc(chapterDocRef, { images: updatedImages });
+                    await updateDoc(chapterDocRef, { images: updatedImages, updatedAt: serverTimestamp() });
                     window.galleryState.currentChapterImages = updatedImages;
                 }
 
@@ -1339,7 +1340,7 @@
                 if(selIndex !== -1) window.selectedMediaGallery.splice(selIndex, 1);
 
                 const chapterDocRef = doc(db, "comics", comicId, "chapters", chapterId);
-                await updateDoc(chapterDocRef, { images: window.galleryState.currentChapterImages });
+                await updateDoc(chapterDocRef, { images: window.galleryState.currentChapterImages, updatedAt: serverTimestamp() });
 
                 window.loadCloudGallery();
             } catch(e) { Swal.fire('Error', "Gagal membuang media: " + e.message, 'error'); }
@@ -1522,7 +1523,8 @@
                 await updateDoc(chapterDocRef, {
                     images: finalUrls,
                     title: title,
-                    updateDate: finalUpdateDate 
+                    updateDate: finalUpdateDate,
+                    updatedAt: serverTimestamp()
                 });
 
                 closeMediaGallery();

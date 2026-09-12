@@ -1,0 +1,1714 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Komik & Anime — Baca dan Tonton</title>
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            --primary-blue: #007aff;
+            --light-blue: #e5f1ff;
+            --dark-blue: #005bb5;
+            --primary-orange: #ea580c;
+            --light-orange: #f97316;
+            --bg-gray: #e5e5e5;
+            --text-dark: #111111;
+            --text-gray: #777777;
+            --border-color: #eeeeee;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; -webkit-tap-highlight-color: transparent; }
+        body { background-color: var(--bg-gray); color: var(--text-dark); display: flex; justify-content: center; }
+        .app-container { width: 100%; max-width: 480px; background-color: #ffffff; min-height: 100vh; position: relative; padding-bottom: 65px; box-shadow: 0 0 20px rgba(0,0,0,0.15); overflow-x: hidden; }
+
+        /* HEADER & SEARCH */
+        .header { display: flex; align-items: center; padding: 12px 16px; gap: 12px; background-color: #ffffff; position: sticky; top: 0; z-index: 100; border-bottom: 1px solid #f0f0f0; }
+        .search-container { flex: 1; display: flex; align-items: center; background-color: #f5f6f8; padding: 10px 16px; border-radius: 24px; border: 1px solid #eef0f2; position: relative; }
+        .search-container i { color: var(--primary-blue); margin-right: 8px; font-size: 14px; }
+        .search-container input { border: none; background: transparent; outline: none; width: 100%; font-size: 14px; color: #111; }
+        .header-icons { display: flex; gap: 14px; color: var(--primary-blue); font-size: 18px; align-items: center; }
+
+        /* SEARCH DROPDOWN */
+        .search-results-dropdown { position: absolute; top: 58px; left: 16px; right: 16px; background: white; border-radius: 12px; box-shadow: 0 8px 24px rgba(0,0,0,0.15); max-height: 320px; overflow-y: auto; z-index: 200; display: none; border: 1px solid #eee; }
+        .search-item { display: flex; align-items: center; padding: 12px 12px; border-bottom: 1px solid #f5f5f5; cursor: pointer; transition: background 0.2s; }
+        .search-item:hover { background: #f8fafc; }
+        .search-item:last-child { border-bottom: none; }
+        .search-item img { width: 42px; height: 56px; object-fit: cover; border-radius: 6px; margin-right: 12px; border: 1px solid #eee; }
+        .search-item-info { display: flex; flex-direction: column; flex: 1; overflow: hidden; justify-content: center; }
+        .search-item-top-row { display: flex; justify-content: space-between; align-items: center; width: 100%; margin-bottom: 6px; }
+        .search-item-title { font-size: 13px; font-weight: 700; color: #111; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 65%; }
+        .search-item-badges { display: flex; align-items: center; gap: 6px; font-size: 10px; font-weight: 600; color: #555; }
+        .badge-type { background: #e2e8f0; padding: 1px 6px; border-radius: 4px; color: #334155; }
+        .badge-rating { color: #d97706; display: flex; align-items: center; gap: 2px; }
+        .search-item-bottom { font-size: 11px; color: #64748b; display: flex; gap: 8px; align-items: center; }
+
+        /* HERO SLIDER (PERBAIKAN BATAS TEKS KIRI) */
+        .slider-container { position: relative; width: 100%; height: 280px; overflow: hidden; background-color: #000000; }
+        .slides-wrapper { display: flex; width: 100%; height: 100%; transition: transform 0.5s ease-in-out; }
+        .slide { flex: 0 0 100%; height: 100%; position: relative; overflow: hidden; }
+        
+        .slide-bg-blur { position: absolute; top: -10%; left: -10%; width: 120%; height: 120%; background-size: cover; background-position: center; filter: blur(15px); opacity: 0.5; z-index: 0; }
+        .slide-img { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background-size: contain; background-position: right center; background-repeat: no-repeat; z-index: 1; }
+        
+        .slide-overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: linear-gradient(to right, rgba(0,0,0,0.98) 0%, rgba(0,0,0,0.92) 55%, rgba(0,0,0,0.4) 80%, transparent 100%); z-index: 2; }
+        
+        .hero-content { position: absolute; top: 50%; left: 16px; transform: translateY(-50%); width: 52%; max-width: 230px; z-index: 3; display: flex; flex-direction: column; gap: 8px; }
+        .hero-title-row { display: flex; flex-direction: column; align-items: flex-start; gap: 5px; }
+        .hero-title { font-size: 16px; font-weight: 800; color: #ffffff; text-shadow: 0 2px 4px rgba(0,0,0,0.8); line-height: 1.25; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+        .hero-chapter-badge { font-size: 10px; color: #fff; font-weight: 700; background: var(--primary-orange); padding: 2px 7px; border-radius: 5px; box-shadow: 0 2px 4px rgba(234, 88, 12, 0.5); }
+        .hero-synopsis { font-size: 11px; color: #cbd5e1; line-height: 1.4; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; font-weight: 400; text-shadow: 0 1px 2px rgba(0,0,0,0.9); }
+        .hero-footer-row { display: flex; justify-content: space-between; align-items: center; padding-top: 2px; }
+        .hero-btn-read { background: #ffffff; color: #111; padding: 7px 14px; border-radius: 18px; font-size: 11px; font-weight: 700; border: none; cursor: pointer; display: flex; align-items: center; gap: 5px; box-shadow: 0 4px 10px rgba(0,0,0,0.3); }
+        .hero-rating-badge { display: flex; align-items: center; gap: 4px; font-size: 11px; font-weight: 700; color: #fbbf24; text-shadow: 0 1px 2px rgba(0,0,0,0.8); }
+        
+        .slider-indicators { position: absolute; bottom: 12px; right: 16px; top: auto; display: flex; gap: 5px; z-index: 4; }
+        .dot { width: 6px; height: 6px; background-color: rgba(255, 255, 255, 0.4); border-radius: 50%; cursor: pointer; transition: all 0.3s ease; box-shadow: 0 1px 3px rgba(0,0,0,0.5);}
+        .dot.active { width: 16px; border-radius: 3px; background-color: var(--primary-orange); }
+
+        /* SECTIONS & CARDS */
+        .section-container { padding: 20px 16px 10px 16px; background: white; }
+        .section-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; }
+        .section-title-wrapper { display: flex; align-items: center; gap: 8px; }
+        .section-title { font-size: 16px; font-weight: 700; color: #111; }
+        .see-all { color: var(--primary-blue); font-size: 13px; text-decoration: none; font-weight: 600; cursor: pointer;}
+        .horizontal-scroll { display: flex; gap: 6px; overflow-x: auto; padding-bottom: 8px; scrollbar-width: none; }
+        .horizontal-scroll::-webkit-scrollbar { display: none; }
+        
+        .manga-card-history, .manga-card-simple { min-width: 120px; width: 120px; background: #ffffff; border-radius: 6px; overflow: hidden; border: 1px solid #e0e0e0; display: flex; flex-direction: column; cursor: pointer; position: relative; }
+        .manga-card-history { min-width: 130px; width: 130px; }
+        .manga-card-history img { border-bottom: 3px solid var(--primary-blue); height: 170px; width: 100%; object-fit: cover; }
+        .manga-card-simple img { border-bottom: 1px solid #eeeeee; height: 150px; width: 100%; object-fit: cover; }
+        .manga-card-simple .info-container, .manga-card-history .info { padding: 8px; flex-grow: 1; display: flex; flex-direction: column; }
+        .manga-card-simple .title, .manga-card-history .title { font-size: 12px; font-weight: 600; color: #222; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+        .manga-card-history .chapter { font-size: 11px; color: var(--primary-blue); font-weight: 600; margin-top: 4px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+
+        /* DISCOVERY PAGE GRID STYLES */
+        .discovery-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; padding: 16px; background: #f8fafc; min-height: 80vh; }
+        .discovery-card { background: white; border-radius: 8px; overflow: hidden; border: 1px solid #e2e8f0; display: flex; flex-direction: column; cursor: pointer; box-shadow: 0 2px 5px rgba(0,0,0,0.05); transition: transform 0.2s; }
+        .discovery-card:hover { transform: translateY(-2px); }
+        .discovery-card img { width: 100%; height: 140px; object-fit: cover; border-bottom: 1px solid #eee; }
+        .discovery-info { padding: 8px; display: flex; flex-direction: column; gap: 4px; flex-grow: 1; }
+        .discovery-title { font-size: 11px; font-weight: 700; color: #111; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; line-height: 1.3; }
+        .discovery-stats { display: flex; justify-content: space-between; align-items: center; font-size: 10px; color: #64748b; margin-top: 2px; }
+        .discovery-rating { color: #d97706; font-weight: 700; display: flex; align-items: center; gap: 2px; }
+        .discovery-latest { font-size: 10px; color: var(--primary-blue); font-weight: 600; background: var(--light-blue); padding: 2px 6px; border-radius: 4px; text-align: center; margin-top: 4px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+
+        /* TOMBOL DELETE DI BOOKMARK CARD */
+        .bookmark-delete-btn { position: absolute; top: 6px; right: 6px; background: rgba(0, 0, 0, 0.6); color: white; border: none; width: 26px; height: 26px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 12px; cursor: pointer; z-index: 5; transition: background 0.2s; }
+        .bookmark-delete-btn:hover { background: #ef4444; }
+
+        /* BOTTOM NAV (DITAMBAHKAN MENU DISCOVERY) */
+        .bottom-nav { position: fixed; bottom: 0; width: 100%; max-width: 480px; background-color: #ffffff; display: flex; justify-content: space-around; padding: 8px 10px 12px 10px; border-top: 1px solid #eaeaea; z-index: 100; }
+        .nav-item { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px; color: #999999; font-size: 10px; text-decoration: none; font-weight: 600; flex: 1; cursor: pointer;}
+        .nav-item i { font-size: 20px; margin-bottom: 2px; }
+        .nav-item.active { color: var(--primary-blue); }
+        .nav-item.active .icon-bg { background-color: var(--light-blue); width: 48px; height: 28px; display: flex; align-items: center; justify-content: center; border-radius: 14px; }
+        .nav-item.active i { margin-bottom: 0; }
+
+        /* PAGE CONTROL */
+        #detail-page, #profile-page, #reader-page, #player-page, #bookmark-page, #discovery-page { display: none; background-color: #ffffff; min-height: 100vh; animation: fadeIn 0.3s ease-in-out; padding-bottom: 65px; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+        /* DETAIL PAGE */
+        .detail-top-nav { position: fixed; top: 0; width: 100%; max-width: 480px; display: flex; justify-content: space-between; align-items: center; padding: 15px 20px; z-index: 200; background: rgba(0, 0, 0, 0.2); backdrop-filter: blur(10px); color: white; transition: background 0.3s; }
+        .detail-top-nav i { font-size: 20px; cursor: pointer; text-shadow: 0 1px 3px rgba(0,0,0,0.5); padding: 8px; }
+        .detail-top-nav .right-icons { display: flex; gap: 10px; align-items: center; }
+        .bookmark-active { color: #ffc107 !important; text-shadow: 0 0 5px rgba(255, 193, 7, 0.6) !important; }
+
+        .detail-header { position: relative; padding: 80px 20px 30px 20px; background-size: cover; background-position: center; color: white; transition: background-image 0.3s ease;}
+        .detail-header::before { content: ''; position: absolute; top: 0; left: 0; right: 0; bottom: 0; background: linear-gradient(to bottom, rgba(0,0,0,0.4) 0%, rgba(0,0,0,0.85) 100%); z-index: 1; }
+        .comic-info-layout { position: relative; z-index: 2; display: flex; gap: 15px; align-items: flex-end; }
+        .comic-cover-wrapper { position: relative; width: 110px; flex-shrink: 0; }
+        .comic-cover { width: 100%; border-radius: 8px; box-shadow: 0 5px 15px rgba(0,0,0,0.5); border: 1px solid rgba(255,255,255,0.2); }
+        .age-rating { background: linear-gradient(135deg, #ff9800, #ff5722); color: white; text-align: center; padding: 4px 0; border-bottom-left-radius: 8px; border-bottom-right-radius: 8px; font-size: 11px; font-weight: 700; margin-top: -4px; position: relative; }
+
+        .comic-meta { flex-grow: 1; padding-bottom: 5px;}
+        .comic-detail-title { font-size: 20px; font-weight: 700; line-height: 1.2; margin-bottom: 4px; text-shadow: 0 2px 4px rgba(0,0,0,0.5); }
+        .comic-alt-title { font-size: 11px; color: #cccccc; margin-bottom: 8px; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; font-style: italic; }
+        .comic-stats-row { display: flex; align-items: center; gap: 10px; font-size: 12px; color: #eeeeee; margin-bottom: 12px; flex-wrap: wrap;}
+        .comic-stats-row .stat-rating { color: #ffc107; font-weight: 700; }
+        .comic-stats-row .stat-rating span { font-weight: 400; color: #ccc; font-size: 10px; }
+        .status-badge { background-color: #28a745; color: white; padding: 2px 8px; border-radius: 12px; font-size: 10px; font-weight: 600; }
+        .genre-tags { display: flex; flex-wrap: wrap; gap: 6px; }
+        .genre-tags .tag { border: 1px solid rgba(255, 255, 255, 0.4); padding: 3px 10px; border-radius: 14px; font-size: 10px; color: #ffffff; background: rgba(255, 255, 255, 0.1); backdrop-filter: blur(4px); }
+
+        .detail-tabs { display: flex; border-bottom: 1px solid var(--border-color); background: #ffffff; position: sticky; top: 50px; z-index: 99; }
+        .tab-btn { flex: 1; text-align: center; padding: 15px 0; font-size: 14px; font-weight: 600; color: var(--text-gray); cursor: pointer; border-bottom: 2px solid transparent; transition: all 0.3s; }
+        .tab-btn.active { color: var(--primary-blue); border-bottom: 2px solid var(--primary-blue); }
+        .tab-content { padding: 20px; display: none; }
+        .tab-content.active { display: block; animation: fadeIn 0.3s; }
+
+        .synopsis-title { font-size: 16px; font-weight: 700; margin-bottom: 10px; color: var(--text-dark); }
+        .synopsis-text { font-size: 13px; color: #444; line-height: 1.6; text-align: justify; margin-bottom: 20px; }
+
+        .detail-info-box { background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px; padding: 15px; font-size: 13px; }
+        .detail-info-row { display: flex; justify-content: space-between; margin-bottom: 8px; padding-bottom: 8px; border-bottom: 1px dashed #cbd5e1; }
+        .detail-info-row:last-child { border-bottom: none; margin-bottom: 0; padding-bottom: 0; }
+        .detail-info-row span.label { font-weight: 600; color: #64748b; }
+        .detail-info-row span.val { font-weight: 500; color: #0f172a; text-align: right; }
+
+        /* RATING STARS */
+        .rating-section { margin-top: 15px; padding-top: 15px; border-top: 1px dashed #cbd5e1; display: flex; align-items: center; justify-content: space-between; }
+        .star-rater { display: flex; gap: 5px; font-size: 22px; color: #ccc; cursor: pointer; }
+        .star-rater i { padding: 5px; } 
+        .star-rater i.active { color: #ffc107; }
+
+        /* CHAPTER LIST */
+        .chapter-list { list-style: none; padding: 0; margin: 0; }
+        .chapter-item { display: flex; justify-content: space-between; align-items: center; padding: 14px 0; border-bottom: 1px solid var(--border-color); cursor: pointer; transition: 0.2s; }
+        .chapter-info { display: flex; flex-direction: column; gap: 4px; }
+        .chapter-title { font-size: 14px; font-weight: 600; color: var(--text-dark); }
+        .chapter-date { font-size: 11px; color: #999; }
+        .chapter-action { color: var(--primary-blue); font-size: 12px; font-weight: 700; background: var(--light-blue); padding: 6px 12px; border-radius: 16px; }
+        .chapter-action.tonton { color: #fff; background: var(--primary-orange); box-shadow: 0 2px 5px rgba(234, 88, 12, 0.4); }
+
+        /* COMMENT UI */
+        .comment-wrapper { display: flex; flex-direction: column; height: 100%; min-height: 50vh; position: relative;}
+        .comment-list { flex: 1; display: flex; flex-direction: column; gap: 18px; padding-bottom: 20px; }
+        .comment-item { display: flex; gap: 12px; }
+        .comment-avatar { width: 36px; height: 36px; border-radius: 50%; background: linear-gradient(135deg, var(--primary-blue), #8b5cf6); display: flex; align-items: center; justify-content: center; font-size: 14px; font-weight: bold; color: white; flex-shrink: 0;}
+        .comment-content { flex: 1; }
+        .comment-user { font-weight: 700; font-size: 13px; color: #262626; margin-bottom: 3px; display:flex; gap:6px; align-items:center; }
+        .comment-time { font-size: 11px; color: #8e8e8e; font-weight: 400; }
+        .comment-text { font-size: 13px; color: #262626; line-height: 1.4; }
+
+        .comment-input-area { position: sticky; bottom: -20px; background: white; padding: 10px 0; border-top: 1px solid #eee; display: flex; gap: 10px; align-items: center; z-index: 10; margin-top: 10px;}
+        .comment-input-area input { flex: 1; padding: 10px 15px; border-radius: 20px; border: 1px solid #ddd; outline: none; font-size: 13px; background: #fafafa; }
+        .btn-send-comment { background: none; border: none; color: var(--primary-blue); font-weight: 600; font-size: 14px; cursor: pointer; padding: 5px 10px; }
+        .login-prompt { background: #f8fafc; padding: 15px; border-radius: 8px; text-align: center; font-size: 13px; color: #666; border: 1px dashed #cbd5e1; margin-top: 10px; }
+        .loading-text, .empty-history { text-align: center; padding: 20px; color: #888; font-size: 13px; width: 100%; }
+
+        /* READER PAGE (KOMIK) */
+        #reader-page { background: #111; color: white; padding-bottom: 0; min-height: 100vh; position: absolute; top: 0; left: 0; width: 100%; z-index: 500;}
+        .reader-header { position: fixed; top: 0; width: 100%; max-width: 480px; background: rgba(17, 17, 17, 0.95); padding: 15px 20px; display: flex; justify-content: space-between; align-items: center; z-index: 501; transition: transform 0.3s; }
+        .reader-header.hidden { transform: translateY(-100%); }
+        .reader-title { font-weight: 600; font-size: 14px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 70%; }
+        .reader-images { display: flex; flex-direction: column; align-items: center; width: 100%; padding-top: 55px; }
+        .reader-images img { width: 100%; height: auto; display: block; margin: 0; }
+
+        /* VIDEO PLAYER PAGE (FILM) */
+        #player-page { display: none; background: #000; color: white; min-height: 100vh; position: absolute; top: 0; left: 0; width: 100%; z-index: 600; flex-direction: column; padding-bottom: 0;}
+        .player-header { padding: 15px 20px; display: flex; justify-content: space-between; align-items: center; background: rgba(0,0,0,0.8); z-index: 601; width: 100%; max-width: 480px; position: fixed; top: 0; }
+        .video-container { position: relative; width: 100%; height: 100vh; display: flex; align-items: center; justify-content: center; flex: 1; padding-top: 50px;}
+        video { width: 100%; max-height: 100vh; outline: none; }
+        
+        .quality-selector { position: absolute; top: 60px; right: 20px; background: rgba(20,20,20,0.95); border: 1px solid #444; border-radius: 8px; overflow: hidden; z-index: 602; display: none; flex-direction: column; box-shadow: 0 4px 15px rgba(0,0,0,0.5);}
+        .quality-btn { background: transparent; color: white; border: none; padding: 12px 24px; font-size: 13px; font-weight: 600; cursor: pointer; border-bottom: 1px solid #333; text-align: left; transition: 0.2s;}
+        .quality-btn:last-child { border-bottom: none; }
+        .quality-btn.active { color: var(--primary-orange); background: rgba(234, 88, 12, 0.1); }
+        .quality-btn:hover { background: rgba(255,255,255,0.1); }
+        .btn-toggle-quality { background: rgba(255,255,255,0.15); border: 1px solid rgba(255,255,255,0.3); color: white; border-radius: 16px; padding: 6px 14px; font-size: 12px; font-weight: bold; cursor: pointer; transition: 0.2s;}
+        .btn-toggle-quality:hover { background: rgba(255,255,255,0.3); }
+
+        /* AUTH & DETAILED PROFILE PAGE */
+        .profile-hero { background: linear-gradient(135deg, var(--primary-blue), var(--dark-blue)); padding: 35px 20px 25px; color: white; text-align: center; border-bottom-left-radius: 24px; border-bottom-right-radius: 24px; }
+        .profile-avatar-lg { width: 75px; height: 75px; background: rgba(255,255,255,0.25); border: 2px solid white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 32px; margin: 0 auto 12px; box-shadow: 0 4px 10px rgba(0,0,0,0.15); }
+        .profile-stats-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; padding: 20px 16px 10px; }
+        .stat-card { background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 12px; padding: 12px 8px; text-align: center; }
+        .stat-card .number { font-size: 18px; font-weight: 700; color: var(--primary-blue); margin-bottom: 2px; }
+        .stat-card .label { font-size: 11px; color: #64748b; font-weight: 500; }
+
+        .auth-form-card { padding: 30px 20px; }
+        .auth-form-card input { width: 100%; padding: 14px 16px; border: 1px solid #cbd5e1; border-radius: 8px; margin-bottom: 15px; font-size: 14px; outline: none; background: #f8fafc; }
+        .auth-form-card input:focus { border-color: var(--primary-blue); background: white; }
+        .auth-main-btn { width: 100%; background: var(--primary-blue); color: white; border: none; padding: 14px; border-radius: 8px; font-weight: 600; font-size: 15px; cursor: pointer; margin-bottom: 15px; box-shadow: 0 4px 10px rgba(0,122,255,0.2); }
+        .auth-toggle-link { text-align: center; font-size: 13px; color: #64748b; cursor: pointer; }
+        .auth-toggle-link span { color: var(--primary-blue); font-weight: 600; }
+        
+        .user-menu-list { padding: 10px 16px 20px; list-style: none; }
+        .user-menu-list li { padding: 14px 16px; background: #f8fafc; margin-bottom: 8px; border: 1px solid #e2e8f0; border-radius: 10px; display: flex; align-items: center; justify-content: space-between; font-size: 14px; font-weight: 500; cursor: pointer; transition: 0.2s; }
+        .user-menu-list li:hover { background: #f1f5f9; }
+        .user-menu-list li .left-info { display: flex; align-items: center; gap: 12px; }
+        .user-menu-list li i { color: var(--primary-blue); font-size: 16px; width: 20px; text-align: center; }
+        .user-menu-list li.logout-item { background: #fef2f2; border-color: #fecaca; color: #e11d48; }
+        .user-menu-list li.logout-item i { color: #e11d48; }
+        
+        /* BOOKMARK PAGE */
+        .page-header { padding: 15px 20px; background: white; border-bottom: 1px solid #eee; position: sticky; top: 0; z-index: 10; font-weight: 700; font-size: 16px; display: flex; align-items: center; gap: 15px; }
+        .bookmark-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; padding: 15px; }
+        
+        /* CUSTOM TOAST NOTIFICATION */
+        .toast-notification { position: fixed; bottom: 80px; left: 50%; transform: translateX(-50%); background: rgba(0,0,0,0.85); color: white; padding: 10px 20px; border-radius: 20px; font-size: 13px; z-index: 9999; opacity: 0; pointer-events: none; transition: opacity 0.3s ease; box-shadow: 0 4px 15px rgba(0,0,0,0.3); font-weight: 500;}
+        .toast-notification.show { opacity: 1; }
+
+        /* ===== PREMIUM UI REFRESH ===== */
+        :root { --primary-blue:#5b5cf0; --light-blue:#eeefff; --dark-blue:#3730a3; --primary-orange:#ff6b35; --light-orange:#ff8a5c; --bg-gray:#eef1f7; --text-dark:#121528; --text-gray:#71758a; --border-color:#e7e9f2; }
+        html { scroll-behavior:smooth; background:#e9edf5; }
+        body { background:radial-gradient(circle at 50% -10%,#dfe2ff 0,#eef1f7 38%,#e9edf5 100%); }
+        button,a,.manga-card-simple,.manga-card-history,.discovery-card,.chapter-item { touch-action:manipulation; }
+        .app-container { max-width:520px; box-shadow:0 18px 60px rgba(23,27,55,.14); background:#f8f9fc; padding-bottom:calc(78px + env(safe-area-inset-bottom)); }
+        #home-page,#discovery-page,#bookmark-page,#profile-page { background:#f8f9fc; }
+        .header { min-height:68px; padding:12px 16px; gap:10px; background:rgba(255,255,255,.88); backdrop-filter:blur(18px); -webkit-backdrop-filter:blur(18px); border-bottom-color:rgba(231,233,242,.8); }
+        .brand-mark { width:38px; height:38px; flex:0 0 38px; display:grid; place-items:center; border-radius:13px; color:#fff; background:linear-gradient(135deg,#6d5dfc,#ff6b35); box-shadow:0 8px 18px rgba(91,92,240,.28); font-size:16px; }
+        .search-container { min-height:42px; padding:10px 14px; border-radius:14px; background:#f3f4f8; border-color:transparent; transition:.2s ease; }
+        .search-container:focus-within { background:#fff; border-color:rgba(91,92,240,.35); box-shadow:0 0 0 4px rgba(91,92,240,.09); }
+        .search-container input { font-size:13px; }
+        .header-icons { gap:8px; }
+        .header-icons i { width:38px; height:38px; display:grid; place-items:center; border-radius:12px; background:var(--light-blue); font-size:15px; }
+        .search-results-dropdown { top:64px; border-radius:18px; border-color:var(--border-color); box-shadow:0 18px 50px rgba(24,29,58,.18); }
+        .slider-container { height:330px; margin:12px 12px 4px; width:calc(100% - 24px); border-radius:24px; box-shadow:0 16px 36px rgba(18,21,40,.22); }
+        .slide-bg-blur { filter:blur(20px); opacity:.58; transform:scale(1.04); }
+        .slide-img { width:64%; left:auto; right:0; background-size:cover; background-position:center; }
+        .slide-overlay { background:linear-gradient(90deg,#101223 0%,rgba(16,18,35,.95) 38%,rgba(16,18,35,.54) 72%,rgba(16,18,35,.18) 100%),linear-gradient(0deg,rgba(8,10,20,.75),transparent 60%); }
+        .hero-content { left:20px; width:58%; max-width:260px; gap:11px; }
+        .hero-title { font-size:clamp(20px,5.2vw,26px); letter-spacing:-.6px; line-height:1.12; }
+        .hero-chapter-badge { font-size:10px; padding:5px 9px; border-radius:99px; background:linear-gradient(135deg,#ff7a45,#ff4f46); box-shadow:none; }
+        .hero-synopsis { font-size:11px; line-height:1.55; color:#d6d8e5; -webkit-line-clamp:3; }
+        .hero-btn-read { padding:9px 15px; border-radius:12px; color:#fff; background:linear-gradient(135deg,#6d5dfc,#5153e8); box-shadow:0 8px 18px rgba(91,92,240,.32); }
+        .slider-indicators { bottom:16px; right:18px; }
+        .dot { height:5px; width:5px; }
+        .dot.active { width:20px; background:#fff; }
+        .section-container { padding:22px 16px 6px; background:transparent; }
+        .section-header { margin-bottom:13px; }
+        .section-title { font-size:17px; letter-spacing:-.3px; }
+        .see-all { font-size:12px; padding:7px 10px; border-radius:10px; background:var(--light-blue); }
+        .horizontal-scroll { gap:12px; padding:2px 1px 12px; scroll-snap-type:x proximity; }
+        .manga-card-simple,.manga-card-history { scroll-snap-align:start; min-width:132px; width:132px; border:0; border-radius:16px; background:#fff; box-shadow:0 7px 20px rgba(32,37,70,.08); transition:transform .2s ease,box-shadow .2s ease; }
+        .manga-card-history { min-width:145px; width:145px; }
+        .manga-card-simple:active,.manga-card-history:active { transform:scale(.97); }
+        .card-poster-wrap { position:relative; height:178px; overflow:hidden; background:#e9ebf2; }
+        .manga-card-simple img { height:100%; border:0; transition:transform .3s ease; }
+        .manga-card-simple:hover img { transform:scale(1.035); }
+        .card-format-badge { position:absolute; left:8px; top:8px; padding:4px 7px; border-radius:8px; color:white; background:rgba(13,16,30,.78); backdrop-filter:blur(8px); font-size:9px; font-weight:800; text-transform:uppercase; letter-spacing:.35px; }
+        .card-rating { position:absolute; right:8px; bottom:8px; padding:4px 7px; border-radius:8px; color:#ffd45a; background:rgba(13,16,30,.78); font-size:10px; font-weight:800; }
+        .manga-card-simple .info-container,.manga-card-history .info { padding:10px 10px 11px; }
+        .manga-card-simple .title,.manga-card-history .title { font-size:12px; line-height:1.4; font-weight:750; min-height:34px; }
+        .card-meta { display:flex; align-items:center; justify-content:space-between; gap:5px; margin-top:7px; color:var(--text-gray); font-size:9px; }
+        .card-status { color:var(--primary-blue); font-weight:700; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+        .manga-card-history img { height:184px; border:0; }
+        .manga-card-history .chapter { margin-top:5px; }
+        .discovery-grid,.bookmark-grid { grid-template-columns:repeat(2,minmax(0,1fr)); gap:14px; padding:16px; background:transparent; }
+        .discovery-card { border:0; border-radius:16px; box-shadow:0 8px 22px rgba(32,37,70,.08); }
+        .discovery-card img { height:218px; border:0; }
+        .discovery-info { padding:11px; gap:6px; }
+        .discovery-title { font-size:12px; min-height:32px; }
+        .discovery-latest { border-radius:8px; padding:5px 7px; }
+        .bottom-nav { max-width:520px; min-height:70px; padding:8px 12px calc(9px + env(safe-area-inset-bottom)); border-top:1px solid rgba(231,233,242,.9); background:rgba(255,255,255,.93); backdrop-filter:blur(20px); -webkit-backdrop-filter:blur(20px); box-shadow:0 -10px 30px rgba(27,31,62,.07); }
+        .nav-item { gap:3px; font-size:9px; }
+        .nav-item i { font-size:18px; }
+        .nav-item.active .icon-bg { width:44px; height:29px; background:linear-gradient(135deg,#eeefff,#fff0e9); }
+        .detail-top-nav,.reader-header,.player-header { max-width:520px; }
+        .detail-top-nav { background:linear-gradient(180deg,rgba(10,12,25,.72),transparent); backdrop-filter:none; }
+        .detail-top-nav>i,.detail-top-nav .right-icons i { background:rgba(17,19,34,.54); backdrop-filter:blur(10px); border-radius:50%; width:40px; height:40px; display:grid; place-items:center; }
+        .detail-header { min-height:385px; padding:105px 20px 28px; background-position:center 25%; }
+        .detail-header::before { background:linear-gradient(to bottom,rgba(10,12,24,.2),rgba(10,12,24,.96)); }
+        .comic-cover-wrapper { width:122px; }
+        .comic-cover { border-radius:14px; }
+        .age-rating { border-radius:0 0 12px 12px; }
+        .comic-detail-title { font-size:22px; }
+        .detail-tabs { top:0; box-shadow:0 5px 16px rgba(26,31,61,.05); }
+        .tab-btn { padding:16px 4px 13px; font-size:12px; }
+        .tab-content { padding:22px 18px; }
+        .detail-info-box,.stat-card,.user-menu-list li { border:0; box-shadow:0 7px 20px rgba(32,37,70,.06); border-radius:14px; }
+        .chapter-item { margin-bottom:10px; padding:14px; border:0; border-radius:14px; background:#f7f8fc; }
+        .profile-hero { background:radial-gradient(circle at 75% 15%,rgba(255,255,255,.24),transparent 25%),linear-gradient(135deg,#6d5dfc,#4144c8); border-radius:0 0 30px 30px; padding-top:45px; }
+        .auth-main-btn { border-radius:13px; background:linear-gradient(135deg,#6d5dfc,#5153e8); }
+        .auth-form-card input { border-radius:12px; }
+        .toast-notification { max-width:calc(100% - 32px); width:max-content; text-align:center; bottom:calc(86px + env(safe-area-inset-bottom)); }
+        @media (min-width:600px) { .app-container{margin:22px 0;min-height:calc(100vh - 44px);border-radius:28px;overflow:hidden}.bottom-nav{bottom:22px;border-radius:0 0 28px 28px}.detail-top-nav,.reader-header,.player-header{top:22px;border-radius:28px 28px 0 0} }
+        @media (max-width:370px) { .slider-container{height:305px}.hero-content{width:61%}.hero-synopsis{-webkit-line-clamp:2}.manga-card-simple{min-width:124px;width:124px}.card-poster-wrap{height:168px} }
+    </style>
+</head>
+<body>
+
+    <div class="app-container">
+        
+        <!-- ================= 1. HALAMAN HOME ================= -->
+        <div id="home-page">
+            <header class="header">
+                <div class="brand-mark" aria-label="Beranda"><i class="fa-solid fa-bolt"></i></div>
+                <div class="search-container">
+                    <i class="fa-solid fa-magnifying-glass"></i>
+                    <input type="text" id="searchInput" placeholder="Cari judul, manga, atau anime...">
+                </div>
+                <div class="header-icons">
+                    <i class="fa-regular fa-bell" aria-label="Notifikasi"></i>
+                </div>
+            </header>
+            
+            <!-- Tempat Munculnya Hasil Pencarian (Dropdown) -->
+            <div id="searchResults" class="search-results-dropdown"></div>
+
+            <main>
+                <!-- Hero Slider Modern & Minimalis -->
+                <section class="slider-container">
+                    <div class="slider-indicators" id="slider-dots"></div>
+                    <div class="slides-wrapper" id="hero-slider">
+                        <div class="loading-text" style="color: white; margin: auto;">Memuat konten terbaru...</div>
+                    </div>
+                </section>
+
+                <!-- Lanjutkan Membaca / Menonton -->
+                <section class="section-container">
+                    <div class="section-header">
+                        <div class="section-title-wrapper"><h2 class="section-title">Lanjutkan Membaca</h2></div>
+                        <a class="see-all" onclick="clearHistory()">Bersihkan</a>
+                    </div>
+                    <div class="horizontal-scroll" id="history-container">
+                        <div class="empty-history">Memuat histori...</div>
+                    </div>
+                </section>
+
+                <!-- Jadwal Hari Ini -->
+                <section class="section-container">
+                    <div class="section-header">
+                        <div class="section-title-wrapper">
+                            <i class="fa-regular fa-calendar-days" style="color: var(--primary-blue); font-size: 16px;"></i>
+                            <h2 class="section-title">Pilihan Hari Ini</h2>
+                        </div>
+                        <a class="see-all" onclick="switchNav('discovery')">Lihat Semua</a>
+                    </div>
+                    <div class="horizontal-scroll" id="firebase-jadwal">
+                        <div class="loading-text"><i class="fa-solid fa-spinner fa-spin"></i> Memuat...</div>
+                    </div>
+                </section>
+
+                <!-- Film & Anime -->
+                <section class="section-container">
+                    <div class="section-header">
+                        <div class="section-title-wrapper"><span>🎬</span><h2 class="section-title">Film & Anime</h2></div>
+                        <a class="see-all" onclick="switchNav('discovery')">Lihat Semua</a>
+                    </div>
+                    <div class="horizontal-scroll" id="firebase-film"><div class="loading-text"><i class="fa-solid fa-spinner fa-spin"></i> Memuat...</div></div>
+                </section>
+
+                <!-- Manga, Manhwa, Manhua -->
+                <section class="section-container">
+                    <div class="section-header">
+                        <div class="section-title-wrapper"><span style="color: var(--primary-blue); font-size: 10px;">●</span><h2 class="section-title">Manga</h2></div>
+                        <a class="see-all" onclick="switchNav('discovery')">Lihat Semua</a>
+                    </div>
+                    <div class="horizontal-scroll" id="firebase-manga"><div class="loading-text"><i class="fa-solid fa-spinner fa-spin"></i> Memuat...</div></div>
+                </section>
+
+                <section class="section-container">
+                    <div class="section-header">
+                        <div class="section-title-wrapper"><span>🇰🇷</span><h2 class="section-title">Manhwa</h2></div>
+                        <a class="see-all" onclick="switchNav('discovery')">Lihat Semua</a>
+                    </div>
+                    <div class="horizontal-scroll" id="firebase-manhwa"><div class="loading-text"><i class="fa-solid fa-spinner fa-spin"></i> Memuat...</div></div>
+                </section>
+
+                <section class="section-container">
+                    <div class="section-header">
+                        <div class="section-title-wrapper"><span>🇨🇳</span><h2 class="section-title">Manhua</h2></div>
+                        <a class="see-all" onclick="switchNav('discovery')">Lihat Semua</a>
+                    </div>
+                    <div class="horizontal-scroll" id="firebase-manhua"><div class="loading-text"><i class="fa-solid fa-spinner fa-spin"></i> Memuat...</div></div>
+                </section>
+
+                <!-- Update Terbaru -->
+                <section class="section-container" style="padding-bottom: 30px;">
+                    <div class="section-header">
+                        <div class="section-title-wrapper"><h2 class="section-title">Semua Update Terbaru</h2></div>
+                        <a class="see-all" onclick="switchNav('discovery')">Lihat Semua</a>
+                    </div>
+                    <div class="horizontal-scroll" id="firebase-updates">
+                        <div class="loading-text"><i class="fa-solid fa-spinner fa-spin"></i> Memuat...</div>
+                    </div>
+                </section>
+            </main>
+        </div>
+
+        <!-- ================= 2. HALAMAN DISCOVERY ================= -->
+        <div id="discovery-page">
+            <header class="header">
+                <div class="search-container" style="background:#fff; border:1px solid #ddd;">
+                    <i class="fa-solid fa-compass" style="color:var(--primary-blue)"></i>
+                    <span style="font-size:14px; font-weight:700; color:#111;">Discovery - Semua Konten</span>
+                </div>
+            </header>
+            <div class="discovery-grid" id="discoveryGridContainer">
+                <div class="loading-text" style="grid-column: 1 / -1;"><i class="fa-solid fa-spinner fa-spin"></i> Memuat seluruh konten...</div>
+            </div>
+        </div>
+
+        <!-- ================= 3. HALAMAN DETAIL ================= -->
+        <div id="detail-page">
+            <div class="detail-top-nav" id="detailNav">
+                <i class="fa-solid fa-arrow-left" onclick="closeDetail()"></i>
+                <div class="right-icons">
+                    <i class="fa-regular fa-bookmark" id="btnBookmark" onclick="toggleBookmark(event)"></i>
+                </div>
+            </div>
+
+            <main>
+                <div class="detail-header" id="detailHeaderBg">
+                    <div class="comic-info-layout">
+                        <div class="comic-cover-wrapper">
+                            <img src="" alt="Cover" class="comic-cover" id="detailCoverImage">
+                            <div class="age-rating" id="detailAgeRating">Remaja<span>13+</span></div>
+                        </div>
+                        <div class="comic-meta">
+                            <h1 class="comic-detail-title" id="detailTitle">Memuat...</h1>
+                            <div class="comic-alt-title" id="detailAltTitle">...</div>
+                            <div class="comic-stats-row">
+                                <span><i class="fa-regular fa-eye"></i> <span id="detailViews">0</span> views</span>
+                                <span class="stat-rating"><i class="fa-solid fa-star"></i> <span id="detailAvgRating" style="color:#ffc107; font-weight:700; font-size:12px;">0.0</span> <span id="detailCountRating">(0)</span></span>
+                                <span class="status-badge" id="detailStatus">Ongoing</span>
+                            </div>
+                            <div class="genre-tags" id="detailTags"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="detail-tabs">
+                    <div class="tab-btn active" onclick="switchTab('detail')">Detail</div>
+                    <div class="tab-btn" onclick="switchTab('chapter')">Daftar Isi <span id="chapterBadge" style="font-size:10px; background:var(--primary-blue); color:white; padding:2px 6px; border-radius:10px; margin-left:4px; display:none;">0</span></div>
+                    <div class="tab-btn" onclick="switchTab('comment')">Komentar <span id="commentBadge" style="font-size:10px; background:var(--primary-blue); color:white; padding:2px 6px; border-radius:10px; margin-left:4px; display:none;">0</span></div>
+                </div>
+
+                <!-- TAB: DETAIL -->
+                <div class="tab-content active" id="tab-detail">
+                    <h3 class="synopsis-title">Sinopsis</h3>
+                    <p class="synopsis-text" id="detailSynopsis">Memuat sinopsis...</p>
+                    
+                    <div class="detail-info-box">
+                        <div class="detail-info-row" id="rowAuthorStudio"><span class="label" id="lblAuthor">Author / Studio</span><span class="val" id="detailAuthor">-</span></div>
+                        <div class="detail-info-row"><span class="label">Tipe</span><span class="val" id="detailType">-</span></div>
+                        <div class="detail-info-row"><span class="label">Tanggal Rilis</span><span class="val" id="detailRelease">-</span></div>
+                        
+                        <!-- Ekstra Row Khusus Film/Anime -->
+                        <div class="detail-info-row movie-extra-info" style="display:none;"><span class="label">Durasi</span><span class="val" id="detailDuration">-</span></div>
+                        <div class="detail-info-row movie-extra-info" style="display:none;"><span class="label" id="lblDirector">Sutradara/Produser</span><span class="val" id="detailDirector">-</span></div>
+                        <div class="detail-info-row movie-extra-info" style="display:none; flex-direction:column; gap:4px; border-bottom:none; margin-bottom:0; padding-bottom:0;">
+                            <span class="label">Cast & Crew</span>
+                            <span class="val" id="detailCast" style="text-align:left; font-size:12px; line-height:1.4; color:#475569; font-weight:500; margin-top:4px;">-</span>
+                        </div>
+                    </div>
+
+                    <!-- Trailer Section Khusus Film/Anime -->
+                    <div id="trailerSection" style="display:none; margin-top:20px; padding-top:15px; border-top:1px dashed #cbd5e1;">
+                        <h3 class="synopsis-title">Trailer Resmi</h3>
+                        <div class="trailer-container" style="position: relative; padding-bottom: 56.25%; height: 0; overflow: hidden; max-width: 100%; background:#111; border-radius:12px; margin-top:10px; box-shadow: 0 4px 10px rgba(0,0,0,0.1);">
+                            <iframe id="detailTrailer" src="" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen style="position: absolute; top: 0; left: 0; width: 100%; height: 100%;"></iframe>
+                        </div>
+                    </div>
+
+                    <!-- Sistem Rating Bintang -->
+                    <div class="rating-section">
+                        <div style="font-size: 13px; font-weight: 600; color: var(--text-dark);">Beri Rating:</div>
+                        <div class="star-rater" id="userStarRater">
+                            <i class="fa-regular fa-star" data-val="1" onclick="submitRating(1)"></i>
+                            <i class="fa-regular fa-star" data-val="2" onclick="submitRating(2)"></i>
+                            <i class="fa-regular fa-star" data-val="3" onclick="submitRating(3)"></i>
+                            <i class="fa-regular fa-star" data-val="4" onclick="submitRating(4)"></i>
+                            <i class="fa-regular fa-star" data-val="5" onclick="submitRating(5)"></i>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- TAB: CHAPTER / EPISODE -->
+                <div class="tab-content" id="tab-chapter">
+                    <ul class="chapter-list" id="chapterListContainer">
+                        <div class="loading-text"><i class="fa-solid fa-spinner fa-spin"></i><br>Mencari daftar...</div>
+                    </ul>
+                </div>
+
+                <!-- TAB: KOMENTAR -->
+                <div class="tab-content" id="tab-comment">
+                    <div class="comment-wrapper">
+                        <div class="comment-list" id="commentListContainer">
+                            <div class="loading-text"><i class="fa-solid fa-spinner fa-spin"></i><br>Memuat komentar...</div>
+                        </div>
+                        
+                        <!-- Input Komentar -->
+                        <div class="comment-input-area" id="commentInputArea" style="display:none;">
+                            <input type="text" id="newCommentText" placeholder="Tambahkan komentar..." autocomplete="off">
+                            <button class="btn-send-comment" onclick="postComment()">Kirim</button>
+                        </div>
+                        
+                        <!-- Prompt Peringatan Belum Login -->
+                        <div class="login-prompt" id="commentLoginPrompt">
+                            Silakan <span style="color:var(--primary-blue); font-weight:600; cursor:pointer;" onclick="switchNav('profile')">Login</span> terlebih dahulu untuk berkomentar.
+                        </div>
+                    </div>
+                </div>
+            </main>
+        </div>
+
+        <!-- ================= 4. HALAMAN BACA KOMIK (READER) ================= -->
+        <div id="reader-page">
+            <div class="reader-header" id="readerHeader">
+                <i class="fa-solid fa-arrow-left" onclick="closeReader()" style="font-size: 20px; cursor: pointer;"></i>
+                <div class="reader-title" id="readerTitle">Chapter...</div>
+                <i class="fa-solid fa-bars" style="font-size: 20px;"></i>
+            </div>
+            <div class="reader-images" id="readerImagesContainer" onclick="toggleReaderNav()">
+            </div>
+            <div id="readerLoading" class="loading-text" style="padding-top:100px;"><i class="fa-solid fa-spinner fa-spin" style="font-size:30px;"></i><br><br>Memuat gambar...</div>
+        </div>
+
+        <!-- ================= 5. HALAMAN VIDEO PLAYER (FILM / ANIME) ================= -->
+        <div id="player-page">
+            <div class="player-header">
+                <i class="fa-solid fa-arrow-left" onclick="closePlayer()" style="font-size: 20px; cursor: pointer;"></i>
+                <div class="reader-title" id="playerTitle">Memuat Film...</div>
+                <button class="btn-toggle-quality" onclick="toggleQualityMenu()"><i class="fa-solid fa-gear"></i> Resolusi</button>
+            </div>
+            
+            <div class="quality-selector" id="qualityMenu">
+                <button class="quality-btn" onclick="changeQuality('1080')">1080p FHD</button>
+                <button class="quality-btn" onclick="changeQuality('720')">720p HD</button>
+                <button class="quality-btn active" onclick="changeQuality('480')">480p SD</button>
+                <button class="quality-btn" onclick="changeQuality('360')">360p Hemat Data</button>
+            </div>
+
+            <div class="video-container" onclick="if(document.getElementById('qualityMenu').style.display==='flex') toggleQualityMenu();">
+                <video id="mainVideoPlayer" controls playsinline>
+                    <source src="" type="video/mp4" id="videoSource">
+                    Browser Anda tidak mendukung pemutar video html5.
+                </video>
+            </div>
+        </div>
+
+        <!-- ================= 6. HALAMAN BOOKMARK ================= -->
+        <div id="bookmark-page">
+            <div class="page-header">Bookmark Saya</div>
+            <div class="bookmark-grid" id="bookmarkContainer">
+                <div class="empty-history">Anda belum login atau belum ada bookmark.</div>
+            </div>
+        </div>
+
+        <!-- ================= 7. HALAMAN PROFIL & AKUN ================= -->
+        <div id="profile-page">
+            <!-- Tampilan Belum Login -->
+            <div id="authSection">
+                <div class="profile-hero">
+                    <div class="profile-avatar-lg"><i class="fa-solid fa-user-lock"></i></div>
+                    <h2>Selamat Datang</h2>
+                    <p style="font-size: 13px; opacity: 0.85; margin-top: 4px;">Masuk untuk akses penuh Cloud, Komentar & Bookmark</p>
+                </div>
+                <div class="auth-form-card" id="loginFormUI">
+                    <input type="email" id="authEmail" placeholder="Alamat Email">
+                    <input type="password" id="authPass" placeholder="Kata Sandi (Password)">
+                    <div id="authError" style="color:#ef4444; font-size:12px; margin-bottom:12px; text-align:center; font-weight:600;"></div>
+                    <button class="auth-main-btn" onclick="doLogin()">Masuk Akun</button>
+                    <div class="auth-toggle-link">Belum punya akun? <span onclick="toggleAuthMode()">Daftar Disini</span></div>
+                </div>
+            </div>
+
+            <!-- Tampilan Sudah Login -->
+            <div id="userSection" style="display:none;">
+                <div class="profile-hero">
+                    <div class="profile-avatar-lg"><i class="fa-solid fa-user-astronaut"></i></div>
+                    <h2 id="userNameDisplay">Member Utama</h2>
+                    <p id="userEmailDisplay" style="font-size: 13px; opacity: 0.9; margin-top: 4px;">user@email.com</p>
+                </div>
+
+                <div class="profile-stats-grid">
+                    <div class="stat-card">
+                        <div class="number" id="statBookmarkCount">0</div>
+                        <div class="label">Bookmark</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="number" id="statHistoryCount">0</div>
+                        <div class="label">Riwayat Baca</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="number">VIP</div>
+                        <div class="label">Status Akun</div>
+                    </div>
+                </div>
+
+                <ul class="user-menu-list" style="margin-top: 15px;">
+                    <li onclick="switchNav('bookmark')">
+                        <div class="left-info"><i class="fa-solid fa-bookmark"></i> Kelola Bookmark</div>
+                        <i class="fa-solid fa-chevron-right" style="font-size: 12px; color: #94a3b8;"></i>
+                    </li>
+                    <li class="logout-item" onclick="doLogout()">
+                        <div class="left-info"><i class="fa-solid fa-right-from-bracket"></i> Keluar (Logout Akun)</div>
+                        <i class="fa-solid fa-arrow-right-from-bracket" style="font-size: 12px;"></i>
+                    </li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- ================= BOTTOM NAVIGATION (DITAMBAHKAN DISCOVERY) ================= -->
+        <nav class="bottom-nav" id="mainBottomNav">
+            <a class="nav-item active" onclick="switchNav('home', this)">
+                <div class="icon-bg"><i class="fa-solid fa-house"></i></div><span>Home</span>
+            </a>
+            <a class="nav-item" onclick="switchNav('discovery', this)">
+                <div class="icon-bg"><i class="fa-solid fa-compass"></i></div><span>Discovery</span>
+            </a>
+            <a class="nav-item" onclick="switchNav('bookmark', this)">
+                <div class="icon-bg"><i class="fa-solid fa-bookmark"></i></div><span>Bookmark</span>
+            </a>
+            <a class="nav-item" onclick="switchNav('profile', this)">
+                <div class="icon-bg"><i class="fa-solid fa-user"></i></div><span>Profil</span>
+            </a>
+        </nav>
+    </div>
+
+    <!-- SCRIPT FIREBASE & LOGIKA UTAMA -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+        import { getFirestore, collection, getDocs, getDoc, doc, query, orderBy, limit, updateDoc, increment, setDoc, deleteDoc, addDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+        import { getAuth, onAuthStateChanged, signInWithEmailAndPassword, createUserWithEmailAndPassword, signOut } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyAt1V2Ogx0P8rSLSNz9_zZpYt00cCN5JL0",
+            authDomain: "yarch-b63d8.firebaseapp.com",
+            projectId: "yarch-b63d8",
+            storageBucket: "yarch-b63d8.firebasestorage.app",
+            messagingSenderId: "778365226622",
+            appId: "1:778365226622:web:56a71b1fbf4e5fbc8f522f",
+            measurementId: "G-7K4Q05DV11"
+        };
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+        const auth = getAuth(app);
+
+        window.comicsData = {};
+        window.currentActiveComicId = null;
+        window.currentActiveChapterId = null;
+        window.currentActiveChapterNum = null;
+        window.userBookmarks = [];
+        window.isAuthModeLogin = true;
+        window.readerObserver = null; 
+        window.sliderInterval = null;
+        
+        window.currentVideoQualities = {};
+
+        window.showToast = function(msg) {
+            let toast = document.getElementById('appToast');
+            if(!toast) {
+                toast = document.createElement('div');
+                toast.id = 'appToast';
+                toast.className = 'toast-notification';
+                document.body.appendChild(toast);
+            }
+            toast.innerText = msg;
+            toast.classList.add('show');
+            setTimeout(() => toast.classList.remove('show'), 3000);
+        }
+
+        // ================= FITUR PENCARIAN (SEARCH) DINAMIS =================
+        const searchInput = document.getElementById('searchInput');
+        const searchResults = document.getElementById('searchResults');
+
+        searchInput.addEventListener('input', function(e) {
+            const queryText = e.target.value.toLowerCase().trim();
+            if(queryText === '') {
+                searchResults.style.display = 'none';
+                return;
+            }
+            
+            let html = '';
+            let count = 0;
+            
+            for(let id in window.comicsData) {
+                const comic = window.comicsData[id];
+                if(comic.title.toLowerCase().includes(queryText)) {
+                    
+                    const isVideoType = comic.format === 'film' || (comic.type && (comic.type.toLowerCase().includes("film") || comic.type.toLowerCase().includes("anime")));
+                    
+                    let latestChText = "Belum ada rilis";
+                    if (comic.realLatestChapter) {
+                        if (comic.realLatestChapter === 1 && comic.realLatestTitle === "Full Movie") {
+                            latestChText = "Full Movie";
+                        } else {
+                            const prefix = isVideoType ? 'Ep' : 'Ch';
+                            const titlePart = (comic.realLatestTitle && comic.realLatestTitle !== "Full Movie") ? ` - ${comic.realLatestTitle}` : '';
+                            latestChText = `${prefix} ${comic.realLatestChapter}${titlePart}`;
+                        }
+                    }
+
+                    const updateDateText = comic.realUpdateDate || "Baru";
+                    const typeStr = comic.type ? comic.type : "Manga";
+                    const ratingNum = comic.ratingCount ? (comic.ratingTotal / comic.ratingCount).toFixed(1) : "0.0";
+                    
+                    html += `
+                        <div class="search-item" onclick="selectSearchResult('${id}')">
+                            <img src="${comic.coverUrl}" onerror="this.src='https://placehold.co/42x56?text=No+Cover'">
+                            <div class="search-item-info">
+                                <div class="search-item-top-row">
+                                    <div class="search-item-title">${comic.title}</div>
+                                    <div class="search-item-badges">
+                                        <span class="badge-type">${typeStr}</span>
+                                        <span class="badge-rating"><i class="fa-solid fa-star"></i> ${ratingNum}</span>
+                                    </div>
+                                </div>
+                                <div class="search-item-bottom">
+                                    <span style="font-weight:700; color:var(--primary-blue); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; max-width:60%;">${latestChText}</span> • 
+                                    <span>${updateDateText}</span>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                    count++;
+                }
+            }
+            
+            if(count > 0) {
+                searchResults.innerHTML = html;
+                searchResults.style.display = 'block';
+            } else {
+                searchResults.innerHTML = '<div style="padding:20px; text-align:center; font-size:13px; color:#888;">Konten tidak ditemukan.</div>';
+                searchResults.style.display = 'block';
+            }
+        });
+
+        document.addEventListener('click', function(e) {
+            if(!e.target.closest('.search-container') && !e.target.closest('#searchResults')) {
+                searchResults.style.display = 'none';
+            }
+        });
+
+        window.selectSearchResult = function(comicId) {
+            searchResults.style.display = 'none';
+            searchInput.value = ''; 
+            openDetail(comicId);
+        }
+
+        // ================= SISTEM AUTENTIKASI =================
+        onAuthStateChanged(auth, async (user) => {
+            if (user) {
+                document.getElementById('authSection').style.display = 'none';
+                document.getElementById('userSection').style.display = 'block';
+                document.getElementById('userEmailDisplay').innerText = user.email;
+                document.getElementById('userNameDisplay').innerText = user.email.split('@')[0].toUpperCase();
+                
+                document.getElementById('commentLoginPrompt').style.display = 'none';
+                document.getElementById('commentInputArea').style.display = 'flex';
+
+                await syncUserData(user.uid);
+            } else {
+                document.getElementById('authSection').style.display = 'block';
+                document.getElementById('userSection').style.display = 'none';
+                
+                document.getElementById('commentLoginPrompt').style.display = 'block';
+                document.getElementById('commentInputArea').style.display = 'none';
+
+                window.userBookmarks = [];
+                renderBookmarks();
+                renderReadingHistory();
+            }
+        });
+
+        window.toggleAuthMode = function() {
+            window.isAuthModeLogin = !window.isAuthModeLogin;
+            const btn = document.querySelector('.auth-main-btn');
+            const switchTxt = document.querySelector('.auth-toggle-link');
+            const title = document.querySelector('.profile-hero h2');
+            
+            if(window.isAuthModeLogin) {
+                title.innerText = "Selamat Datang";
+                btn.innerText = "Masuk Akun";
+                switchTxt.innerHTML = 'Belum punya akun? <span onclick="toggleAuthMode()">Daftar Disini</span>';
+            } else {
+                title.innerText = "Daftar Akun Baru";
+                btn.innerText = "Daftar Sekarang";
+                switchTxt.innerHTML = 'Sudah punya akun? <span onclick="toggleAuthMode()">Masuk Disini</span>';
+            }
+        }
+
+        window.doLogin = async function() {
+            const email = document.getElementById('authEmail').value;
+            const pass = document.getElementById('authPass').value;
+            const errEl = document.getElementById('authError');
+            errEl.innerText = "Memproses...";
+            
+            try {
+                if(window.isAuthModeLogin) {
+                    await signInWithEmailAndPassword(auth, email, pass);
+                } else {
+                    await createUserWithEmailAndPassword(auth, email, pass);
+                }
+                errEl.innerText = "";
+                document.getElementById('authEmail').value = "";
+                document.getElementById('authPass').value = "";
+                if(window.currentActiveComicId) switchNav('home'); 
+            } catch(e) {
+                errEl.innerText = "Gagal: Periksa kembali email & password anda.";
+            }
+        }
+
+        window.doLogout = function() { 
+            signOut(auth); 
+            window.showToast("Berhasil keluar dari akun.");
+        }
+
+        async function syncUserData(uid) {
+            const localBms = JSON.parse(localStorage.getItem('localBookmarks_' + uid)) || [];
+            window.userBookmarks = localBms;
+            
+            try {
+                const bmRef = collection(db, "users", uid, "bookmarks");
+                const bmSnap = await getDocs(bmRef);
+                window.userBookmarks = [];
+                bmSnap.forEach(doc => window.userBookmarks.push(doc.id));
+                localStorage.setItem('localBookmarks_' + uid, JSON.stringify(window.userBookmarks));
+            } catch(e) { }
+            
+            renderBookmarks();
+            if(document.getElementById('statBookmarkCount')) {
+                document.getElementById('statBookmarkCount').innerText = window.userBookmarks.length;
+            }
+            renderReadingHistory();
+            
+            if(window.currentActiveComicId) {
+                checkBookmarkStatus(window.currentActiveComicId);
+                loadUserRating(window.currentActiveComicId);
+            }
+        }
+
+        function generateComicCard(docId, data) {
+            const isVideo = data.format === 'film' || (data.type && /film|anime|series/i.test(data.type));
+            const rating = data.ratingCount ? (data.ratingTotal / data.ratingCount).toFixed(1) : 'Baru';
+            const label = isVideo ? 'Video' : (data.type || 'Komik');
+            const status = data.status || (isVideo ? 'Tonton sekarang' : 'Mulai membaca');
+            return `
+                <div class="manga-card-simple" onclick="openDetail('${docId}')">
+                    <div class="card-poster-wrap">
+                        <img src="${data.coverUrl}" alt="${data.title}" loading="lazy" onerror="this.src='https://placehold.co/132x178?text=No+Cover'">
+                        <span class="card-format-badge">${label}</span>
+                        <span class="card-rating"><i class="fa-solid fa-star"></i> ${rating}</span>
+                    </div>
+                    <div class="info-container">
+                        <div class="title">${data.title}</div>
+                        <div class="card-meta"><span class="card-status">${status}</span><i class="fa-solid fa-chevron-right"></i></div>
+                    </div>
+                </div>
+            `;
+        }
+
+        async function fetchAllComics() {
+            try {
+                const q = query(collection(db, "comics"), orderBy("createdAt", "desc"), limit(40));
+                const querySnapshot = await getDocs(q);
+                
+                let htmlUpdates = ''; let htmlJadwal = ''; let htmlManga = ''; let htmlManhwa = ''; let htmlManhua = ''; let htmlFilm = '';
+                
+                let countSlider = 0;
+                let choiceCount = 0;
+                let sliderHtml = '';
+                let sliderDots = '';
+                
+                querySnapshot.forEach((docSnap) => {
+                    const data = docSnap.data();
+                    if (data.isPublished === false) return;
+                    window.comicsData[docSnap.id] = data; 
+                    
+                    const isVideoType = data.format === 'film' || (data.type && (data.type.toLowerCase().includes("film") || data.type.toLowerCase().includes("anime")));
+                    
+                    if(countSlider < 5) {
+                        const rating = data.ratingCount ? (data.ratingTotal / data.ratingCount).toFixed(1) : "0.0";
+                        const synopsisText = data.synopsis ? data.synopsis : "Ikuti kisah seru dan petualangan tanpa batas di dalam konten ini.";
+                        const actionBtnText = isVideoType ? "Tonton" : "Baca";
+                        const iconClass = isVideoType ? "fa-play" : "fa-book-open";
+                        
+                        sliderHtml += `
+                            <div class="slide">
+                                <div class="slide-bg-blur" style="background-image: url('${data.coverUrl}');"></div>
+                                <div class="slide-img" style="background-image: url('${data.coverUrl}');"></div>
+                                <div class="slide-overlay"></div>
+                                
+                                <div class="hero-content">
+                                    <div class="hero-title-row">
+                                        <h1 class="hero-title">${data.title}</h1>
+                                        <span class="hero-chapter-badge" id="slider-badge-${docSnap.id}">Memuat...</span>
+                                    </div>
+                                    <div class="hero-synopsis">${synopsisText}</div>
+                                    <div class="hero-footer-row">
+                                        <button class="hero-btn-read" onclick="openDetail('${docSnap.id}')"><i class="fa-solid ${iconClass}"></i> ${actionBtnText}</button>
+                                        <div class="hero-rating-badge"><i class="fa-solid fa-star"></i> ${rating}</div>
+                                    </div>
+                                </div>
+                            </div>
+                        `;
+                        sliderDots += `<span class="dot ${countSlider === 0 ? 'active' : ''}" onclick="currentSlide(${countSlider})"></span>`;
+                        countSlider++;
+                    }
+
+                    const cardHTML = generateComicCard(docSnap.id, data);
+                    htmlUpdates += cardHTML;
+                    if(choiceCount < 8) { htmlJadwal += cardHTML; choiceCount++; }
+
+                    const type = (data.type || "").toLowerCase();
+                    const format = (data.format || "").toLowerCase();
+
+                    if (type.includes("manga") || format === "komik") htmlManga += cardHTML;
+                    if (type.includes("manhwa")) htmlManhwa += cardHTML;
+                    if (type.includes("manhua")) htmlManhua += cardHTML;
+                    if (type.includes("film") || type.includes("anime") || format === "film") htmlFilm += cardHTML;
+                });
+                
+                if (sliderHtml !== '') {
+                    document.getElementById('hero-slider').innerHTML = sliderHtml;
+                    document.getElementById('slider-dots').innerHTML = sliderDots;
+                    initHeroSlider(); 
+                } else {
+                    document.getElementById('hero-slider').innerHTML = '<div class="loading-text" style="color:white; margin:auto;">Belum ada konten diupload.</div>';
+                }
+
+                document.getElementById('firebase-updates').innerHTML = htmlUpdates || '<div class="empty-history">Kosong</div>';
+                document.getElementById('firebase-jadwal').innerHTML = htmlJadwal || '<div class="empty-history">Kosong</div>';
+                document.getElementById('firebase-manga').innerHTML = htmlManga || '<div class="empty-history">Kosong</div>';
+                document.getElementById('firebase-manhwa').innerHTML = htmlManhwa || '<div class="empty-history">Kosong</div>';
+                document.getElementById('firebase-manhua').innerHTML = htmlManhua || '<div class="empty-history">Kosong</div>';
+                document.getElementById('firebase-film').innerHTML = htmlFilm || '<div class="empty-history">Kosong</div>';
+
+                renderReadingHistory();
+                renderBookmarks();
+                renderDiscoveryGrid();
+
+                // Fetching Info Chapter terbaru untuk Slider & Discovery di background
+                Object.keys(window.comicsData).forEach(async (id) => {
+                    try {
+                        const chSnap = await getDocs(query(collection(db, "comics", id, "chapters"), orderBy("chapterNumber", "desc"), limit(1)));
+                        if(!chSnap.empty) {
+                            const chData = chSnap.docs[0].data();
+                            window.comicsData[id].realLatestChapter = chData.chapterNumber;
+                            window.comicsData[id].realLatestTitle = chData.title;
+                            window.comicsData[id].realUpdateDate = chData.updateDate || (chData.createdAt ? chData.createdAt.toDate().toLocaleDateString('id-ID', {day:'numeric', month:'short'}) : '');
+                            
+                            const badgeEl = document.getElementById(`slider-badge-${id}`);
+                            if(badgeEl) {
+                                const isVideo = window.comicsData[id].format === 'film' || (window.comicsData[id].type && window.comicsData[id].type.toLowerCase().includes('film'));
+                                let tText = "";
+                                if (chData.chapterNumber === 1 && chData.title === "Full Movie") {
+                                    tText = "Full Movie";
+                                } else {
+                                    const prefix = isVideo ? 'Ep' : 'Ch';
+                                    tText = `${prefix} ${chData.chapterNumber}`;
+                                }
+                                badgeEl.innerText = tText;
+                            }
+                        } else {
+                            const badgeEl = document.getElementById(`slider-badge-${id}`);
+                            if(badgeEl) badgeEl.innerText = "Baru";
+                        }
+                        renderDiscoveryGrid(); 
+                    } catch(e) { }
+                });
+
+            } catch (error) {
+                console.error("Gagal load konten:", error);
+            }
+        }
+        fetchAllComics();
+
+        // ================= RENDER HALAMAN DISCOVERY =================
+        function renderDiscoveryGrid() {
+            const container = document.getElementById('discoveryGridContainer');
+            if(!container) return;
+
+            let gridHtml = '';
+            for(let id in window.comicsData) {
+                const comic = window.comicsData[id];
+                const isVideoType = comic.format === 'film' || (comic.type && (comic.type.toLowerCase().includes("film") || comic.type.toLowerCase().includes("anime")));
+                
+                const ratingNum = comic.ratingCount ? (comic.ratingTotal / comic.ratingCount).toFixed(1) : "0.0";
+                const viewsCount = comic.views || 0;
+                
+                let latestText = "Baru rilis";
+                if (comic.realLatestChapter) {
+                    if (comic.realLatestChapter === 1 && comic.realLatestTitle === "Full Movie") {
+                        latestText = "Full Movie";
+                    } else {
+                        const prefix = isVideoType ? 'Ep' : 'Ch';
+                        latestText = `${prefix} ${comic.realLatestChapter}`;
+                    }
+                }
+
+                gridHtml += `
+                    <div class="discovery-card" onclick="openDetail('${id}')">
+                        <img src="${comic.coverUrl}" onerror="this.src='https://placehold.co/120x140?text=No+Cover'">
+                        <div class="discovery-info">
+                            <div class="discovery-title">${comic.title}</div>
+                            <div class="discovery-stats">
+                                <span class="discovery-rating"><i class="fa-solid fa-star"></i> ${ratingNum}</span>
+                                <span><i class="fa-regular fa-eye"></i> ${viewsCount}</span>
+                            </div>
+                            <div class="discovery-latest">${latestText}</div>
+                        </div>
+                    </div>
+                `;
+            }
+
+            container.innerHTML = gridHtml || '<div class="empty-history" style="grid-column:1/-1;">Belum ada konten.</div>';
+        }
+
+        // ================= HERO SLIDER LOGIC =================
+        let slideIndex = 0;
+        window.currentSlide = function(index) {
+            slideIndex = index;
+            const slides = document.getElementById('hero-slider');
+            const dots = document.querySelectorAll('.dot');
+            if(slides && dots.length > 0) {
+                slides.style.transform = `translateX(-${slideIndex * 100}%)`;
+                dots.forEach(dot => dot.classList.remove('active'));
+                dots[slideIndex].classList.add('active');
+            }
+        }
+        function initHeroSlider() {
+            if(window.sliderInterval) clearInterval(window.sliderInterval);
+            slideIndex = 0;
+            window.currentSlide(0);
+            window.sliderInterval = setInterval(() => { 
+                const dots = document.querySelectorAll('.dot');
+                if(dots.length > 0) {
+                    slideIndex = (slideIndex + 1) % dots.length; 
+                    window.currentSlide(slideIndex); 
+                }
+            }, 4000);
+        }
+
+        // ================= FITUR HISTORY & LANJUT BACA =================
+        window.saveReadingProgress = async function(comicId, chapterId, chapterNum, pageIndex = 1) {
+            if (!comicId) return;
+            const comicData = window.comicsData[comicId] || {};
+            const title = comicData.title || "Konten";
+            const coverUrl = comicData.coverUrl || "";
+
+            const historyItem = {
+                comicId: comicId,
+                comicTitle: title,
+                coverUrl: coverUrl,
+                chapterId: chapterId || "",
+                chapterNumber: chapterNum || "1",
+                pageIndex: pageIndex || 1,
+                updatedAt: new Date().getTime()
+            };
+
+            let localHist = JSON.parse(localStorage.getItem('comicHistoryDetail')) || {};
+            localHist[comicId] = historyItem;
+            localStorage.setItem('comicHistoryDetail', JSON.stringify(localHist));
+
+            if (auth.currentUser) {
+                try {
+                    await setDoc(doc(db, "users", auth.currentUser.uid, "history", comicId), {
+                        ...historyItem,
+                        updatedAt: serverTimestamp()
+                    });
+                } catch(e) { }
+            }
+            renderReadingHistory();
+        }
+
+        async function renderReadingHistory() {
+            const container = document.getElementById('history-container');
+            if (!container) return;
+
+            let historyList = [];
+
+            if (auth.currentUser) {
+                try {
+                    const histRef = collection(db, "users", auth.currentUser.uid, "history");
+                    const q = query(histRef, orderBy("updatedAt", "desc"), limit(10));
+                    const snap = await getDocs(q);
+                    snap.forEach(d => {
+                        historyList.push(d.data());
+                    });
+                } catch(e) { }
+            }
+
+            if (historyList.length === 0) {
+                const localHist = JSON.parse(localStorage.getItem('comicHistoryDetail')) || {};
+                historyList = Object.values(localHist).sort((a,b) => (b.updatedAt || 0) - (a.updatedAt || 0));
+            }
+
+            const statHistEl = document.getElementById('statHistoryCount');
+            if(statHistEl) statHistEl.innerText = historyList.length;
+
+            if (historyList.length === 0) {
+                container.innerHTML = '<div class="empty-history">Belum ada histori bacaan/tontonan.</div>';
+                return;
+            }
+
+            let html = '';
+            historyList.forEach(item => {
+                const cover = item.coverUrl || (window.comicsData[item.comicId] ? window.comicsData[item.comicId].coverUrl : '');
+                const title = item.comicTitle || (window.comicsData[item.comicId] ? window.comicsData[item.comicId].title : 'Konten');
+                
+                const comicRecord = window.comicsData[item.comicId] || {};
+                const isVideo = comicRecord.format === 'film' || (comicRecord.type && (comicRecord.type.toLowerCase().includes('film') || comicRecord.type.toLowerCase().includes('anime')));
+                
+                const chInfo = item.chapterNumber ? (isVideo ? `Ep. ${item.chapterNumber}` : `Ch. ${item.chapterNumber}`) : '';
+                const pgInfo = !isVideo && item.pageIndex ? ` • Hal. ${item.pageIndex}` : '';
+
+                html += `
+                    <div class="manga-card-history" onclick="continueReading('${item.comicId}', '${item.chapterId}', '${item.chapterNumber}', ${item.pageIndex || 1})">
+                        <img src="${cover}" onerror="this.src='https://placehold.co/130x170?text=No+Cover'">
+                        <div class="info">
+                            <div class="title">${title}</div>
+                            <div class="chapter">${chInfo}${pgInfo}</div>
+                        </div>
+                    </div>
+                `;
+            });
+
+            container.innerHTML = html;
+        }
+
+        window.continueReading = function(comicId, chapterId, chapterNum, pageIndex) {
+            if (chapterId && chapterId !== 'undefined' && chapterId !== '') {
+                const comicRecord = window.comicsData[comicId] || {};
+                const isVideo = comicRecord.format === 'film' || (comicRecord.type && (comicRecord.type.toLowerCase().includes('film') || comicRecord.type.toLowerCase().includes('anime')));
+                
+                if (isVideo) {
+                    openPlayer(comicId, chapterId, chapterNum);
+                } else {
+                    openReader(comicId, chapterId, chapterNum, pageIndex);
+                }
+            } else {
+                openDetail(comicId);
+            }
+        }
+
+        window.clearHistory = async function() {
+            if(confirm("Bersihkan semua riwayat bacaan & tontonan?")) {
+                localStorage.removeItem('comicHistoryDetail');
+                if(auth.currentUser) {
+                    try {
+                        const snap = await getDocs(collection(db, "users", auth.currentUser.uid, "history"));
+                        snap.forEach(async (d) => {
+                            await deleteDoc(doc(db, "users", auth.currentUser.uid, "history", d.id));
+                        });
+                    } catch(e) {}
+                }
+                renderReadingHistory();
+            }
+        }
+
+        // ================= FITUR BOOKMARK =================
+        window.toggleBookmark = async function(e) {
+            if(e) e.preventDefault(); 
+            
+            if(!auth.currentUser) { 
+                window.showToast("Silakan Login terlebih dahulu di menu Profil untuk menyimpan Bookmark!"); 
+                switchNav('profile');
+                return; 
+            }
+            if(!window.currentActiveComicId) return;
+            
+            const cid = window.currentActiveComicId;
+            const isBookmarked = window.userBookmarks.includes(cid);
+            
+            if(isBookmarked) {
+                window.userBookmarks = window.userBookmarks.filter(id => id !== cid);
+                checkBookmarkStatus(cid);
+                window.showToast("Dihapus dari Bookmark!");
+                try { await deleteDoc(doc(db, "users", auth.currentUser.uid, "bookmarks", cid)); } catch(err) { }
+            } else {
+                window.userBookmarks.push(cid);
+                checkBookmarkStatus(cid);
+                window.showToast("Berhasil ditambahkan ke Bookmark!");
+                try { await setDoc(doc(db, "users", auth.currentUser.uid, "bookmarks", cid), { comicId: cid, addedAt: new Date() }); } catch(err) { }
+            }
+            
+            localStorage.setItem('localBookmarks_' + auth.currentUser.uid, JSON.stringify(window.userBookmarks));
+            renderBookmarks();
+            if(document.getElementById('statBookmarkCount')){
+                document.getElementById('statBookmarkCount').innerText = window.userBookmarks.length;
+            }
+        }
+
+        window.removeBookmarkDirect = async function(event, id) {
+            event.stopPropagation();
+            if(!confirm("Hapus konten ini dari bookmark?")) return;
+
+            window.userBookmarks = window.userBookmarks.filter(item => item !== id);
+            if(auth.currentUser) {
+                try {
+                    await deleteDoc(doc(db, "users", auth.currentUser.uid, "bookmarks", id));
+                } catch(err) {}
+                localStorage.setItem('localBookmarks_' + auth.currentUser.uid, JSON.stringify(window.userBookmarks));
+            }
+
+            renderBookmarks();
+            if(window.currentActiveComicId === id) {
+                checkBookmarkStatus(id);
+            }
+            if(document.getElementById('statBookmarkCount')){
+                document.getElementById('statBookmarkCount').innerText = window.userBookmarks.length;
+            }
+        }
+
+        function checkBookmarkStatus(comicId) {
+            const btnBm = document.getElementById('btnBookmark');
+            if(!btnBm) return;
+            if(window.userBookmarks.includes(comicId)) {
+                btnBm.className = "fa-solid fa-bookmark bookmark-active";
+            } else {
+                btnBm.className = "fa-regular fa-bookmark";
+            }
+        }
+
+        function renderBookmarks() {
+            const container = document.getElementById('bookmarkContainer');
+            if(!auth.currentUser) {
+                container.innerHTML = '<div class="empty-history" style="grid-column:1/-1;">Harap masuk (Login) untuk melihat bookmark.</div>';
+                return;
+            }
+            if(window.userBookmarks.length === 0) {
+                container.innerHTML = '<div class="empty-history" style="grid-column:1/-1;">Anda belum menyimpan apapun.</div>';
+                return;
+            }
+            let bmHTML = '';
+            window.userBookmarks.forEach(id => {
+                if(window.comicsData[id]) {
+                    const data = window.comicsData[id];
+                    bmHTML += `
+                        <div class="manga-card-simple" onclick="openDetail('${id}')" style="width:100%;">
+                            <button class="bookmark-delete-btn" onclick="removeBookmarkDirect(event, '${id}')" title="Hapus Bookmark"><i class="fa-solid fa-trash-can"></i></button>
+                            <img src="${data.coverUrl}" onerror="this.src='https://placehold.co/120x150?text=No+Cover'">
+                            <div class="info-container"><div class="title">${data.title}</div></div>
+                        </div>
+                    `;
+                }
+            });
+            container.innerHTML = bmHTML;
+        }
+
+        // ================= FITUR KOMENTAR =================
+        async function fetchComments(comicId) {
+            const container = document.getElementById('commentListContainer');
+            const badge = document.getElementById('commentBadge');
+            container.innerHTML = '<div class="loading-text"><i class="fa-solid fa-spinner fa-spin"></i><br>Memuat komentar...</div>';
+            badge.style.display = 'none';
+
+            try {
+                const commentRef = collection(db, "comics", comicId, "comments");
+                const q = query(commentRef, orderBy("timestamp", "desc"));
+                const snapshot = await getDocs(q);
+                
+                let commentHTML = ''; let total = 0;
+                snapshot.forEach(doc => {
+                    const c = doc.data(); total++;
+                    const dateObj = c.timestamp ? c.timestamp.toDate() : new Date();
+                    const dateStr = dateObj.toLocaleDateString('id-ID', {day:'numeric', month:'short'}) + ' ' + String(dateObj.getHours()).padStart(2, '0') + ':' + String(dateObj.getMinutes()).padStart(2, '0');
+                    const initial = c.username ? c.username.charAt(0).toUpperCase() : 'U';
+                    
+                    commentHTML += `
+                        <div class="comment-item">
+                            <div class="comment-avatar">${initial}</div>
+                            <div class="comment-content">
+                                <div class="comment-user">${c.username} <span class="comment-time">${dateStr}</span></div>
+                                <div class="comment-text">${c.text}</div>
+                            </div>
+                        </div>
+                    `;
+                });
+                
+                if(total > 0) {
+                    container.innerHTML = commentHTML;
+                    badge.innerText = total; badge.style.display = 'inline-block';
+                } else {
+                    container.innerHTML = '<div class="empty-history" style="background:none;">Jadilah yang pertama berkomentar!</div>';
+                }
+            } catch(e) { container.innerHTML = '<div class="loading-text">Gagal memuat komentar. Cek Rules Firebase.</div>'; }
+        }
+
+        window.postComment = async function() {
+            if(!auth.currentUser) { window.showToast("Silakan Login terlebih dahulu!"); return; }
+            const textInput = document.getElementById('newCommentText');
+            const text = textInput.value.trim();
+            if(text === "") return;
+            const comicId = window.currentActiveComicId;
+
+            try {
+                const btn = document.querySelector('.btn-send-comment');
+                btn.innerText = "..."; btn.disabled = true;
+
+                await addDoc(collection(db, "comics", comicId, "comments"), {
+                    userId: auth.currentUser.uid,
+                    username: auth.currentUser.email.split('@')[0],
+                    text: text,
+                    timestamp: serverTimestamp()
+                });
+
+                textInput.value = "";
+                btn.innerText = "Kirim"; btn.disabled = false;
+                fetchComments(comicId);
+            } catch (e) { window.showToast("Gagal mengirim komentar. Pastikan Rules Firebase sudah diizinkan (write)."); }
+        }
+
+        // ================= FITUR RATING BINTANG =================
+        async function loadUserRating(comicId) {
+            const stars = document.querySelectorAll('#userStarRater i');
+            stars.forEach(s => { s.className = 'fa-regular fa-star'; });
+
+            if(auth.currentUser) {
+                try {
+                    const ratingDoc = await getDoc(doc(db, "comics", comicId, "ratings", auth.currentUser.uid));
+                    if(ratingDoc.exists()) {
+                        const val = ratingDoc.data().rating;
+                        stars.forEach((s, idx) => {
+                            if(idx < val) { s.className = 'fa-solid fa-star active'; }
+                        });
+                    }
+                } catch(e) {}
+            }
+        }
+
+        window.submitRating = async function(starValue) {
+            if(!auth.currentUser) { 
+                window.showToast("Silakan Login terlebih dahulu di menu Profil untuk memberi rating!"); 
+                switchNav('profile');
+                return; 
+            }
+            const comicId = window.currentActiveComicId;
+            if(!comicId) return;
+            
+            try {
+                const stars = document.querySelectorAll('#userStarRater i');
+                stars.forEach((s, idx) => {
+                    if(idx < starValue) { s.className = 'fa-solid fa-star active'; }
+                    else { s.className = 'fa-regular fa-star'; }
+                });
+
+                await setDoc(doc(db, "comics", comicId, "ratings", auth.currentUser.uid), { 
+                    rating: starValue,
+                    updatedAt: serverTimestamp()
+                });
+                
+                const comicRef = doc(db, "comics", comicId);
+                const cSnap = await getDoc(comicRef);
+                if(cSnap.exists()) {
+                    let rCount = cSnap.data().ratingCount || 0;
+                    let rTotal = cSnap.data().ratingTotal || 0;
+                    
+                    await updateDoc(comicRef, { 
+                        ratingCount: increment(1), 
+                        ratingTotal: increment(starValue) 
+                    });
+                    
+                    const newCount = rCount + 1;
+                    const newAvg = ((rTotal + starValue) / newCount).toFixed(1);
+                    document.getElementById('detailAvgRating').innerText = newAvg;
+                    document.getElementById('detailCountRating').innerText = `(${newCount})`;
+                    
+                    window.showToast(`Berhasil! Kamu memberikan rating ${starValue} bintang.`);
+                }
+            } catch(e) { window.showToast("Gagal menyimpan rating. Cek Rules Firebase."); }
+        }
+
+        // ================= HALAMAN DETAIL UTAMA =================
+        window.openDetail = async function(comicId) {
+            window.currentActiveComicId = comicId;
+            document.querySelectorAll('.app-container > div').forEach(el => { if(el.id!=='mainBottomNav') el.style.display = 'none'; });
+            document.getElementById('detail-page').style.display = 'block';
+            document.getElementById('mainBottomNav').style.display = 'none';
+            window.scrollTo(0, 0);
+            switchTab('detail');
+
+            if (comicId && window.comicsData[comicId]) {
+                const data = window.comicsData[comicId];
+                
+                try {
+                    const comicRef = doc(db, "comics", comicId);
+                    await updateDoc(comicRef, { views: increment(1) });
+                    window.comicsData[comicId].views = (data.views || 0) + 1;
+                } catch(e) {}
+
+                fetchChapters(comicId);
+                fetchComments(comicId);
+                loadUserRating(comicId);
+                checkBookmarkStatus(comicId);
+
+                document.getElementById('detailTitle').innerText = data.title;
+                document.getElementById('detailAltTitle').innerText = data.altTitle || "-";
+                document.getElementById('detailStatus').innerText = data.status || "Ongoing";
+                document.getElementById('detailSynopsis').innerText = data.synopsis || "Belum ada sinopsis.";
+                document.getElementById('detailViews').innerText = window.comicsData[comicId].views || 1;
+                document.getElementById('detailType').innerText = data.type || "Manga";
+                document.getElementById('detailRelease').innerText = data.releaseDate || "-";
+                
+                const avg = data.ratingCount ? (data.ratingTotal / data.ratingCount).toFixed(1) : "0.0";
+                const count = data.ratingCount || 0;
+                document.getElementById('detailAvgRating').innerText = avg;
+                document.getElementById('detailCountRating').innerText = `(${count})`;
+
+                document.getElementById('detailCoverImage').src = data.coverUrl;
+                document.getElementById('detailHeaderBg').style.backgroundImage = `url('${data.coverUrl}')`;
+
+                const ageHtml = data.ageRating ? `<span>${data.ageRating}</span>` : '<span>SU</span>';
+                document.getElementById('detailAgeRating').innerHTML = `Rating${ageHtml}`;
+
+                const tagsContainer = document.getElementById('detailTags');
+                tagsContainer.innerHTML = '';
+                if(data.type) tagsContainer.innerHTML += `<span class="tag">${data.type}</span>`;
+                if(data.genres) data.genres.forEach(g => tagsContainer.innerHTML += `<span class="tag">${g}</span>`);
+
+                const isVideo = data.format === 'film' || (data.type && (data.type.toLowerCase().includes('film') || data.type.toLowerCase().includes('anime')));
+                const movieExtras = document.querySelectorAll('.movie-extra-info');
+                
+                if (isVideo) {
+                    document.getElementById('rowAuthorStudio').style.display = 'none';
+                    
+                    let durasiStr = 'Belum ada info durasi';
+                    if (data.durationHours || data.durationMinutes) {
+                        let jam = data.durationHours ? data.durationHours + ' Jam ' : '';
+                        let menit = data.durationMinutes ? data.durationMinutes + ' Menit' : '';
+                        durasiStr = jam + menit;
+                    }
+                    document.getElementById('detailDuration').innerText = durasiStr;
+                    document.getElementById('detailDirector').innerText = (data.directors && data.directors.length > 0) ? data.directors.join(', ') : "Tidak diketahui";
+                    document.getElementById('detailCast').innerText = data.castCrew || "Belum ada informasi cast & crew yang terdaftar.";
+                    
+                    movieExtras.forEach(el => el.style.display = 'flex');
+
+                    if(data.trailerUrl) {
+                        document.getElementById('trailerSection').style.display = 'block';
+                        let embedUrl = data.trailerUrl;
+                        if (embedUrl.includes('watch?v=')) {
+                            embedUrl = embedUrl.replace('watch?v=', 'embed/');
+                        } else if (embedUrl.includes('youtu.be/')) {
+                            embedUrl = embedUrl.replace('youtu.be/', 'www.youtube.com/embed/');
+                        }
+                        document.getElementById('detailTrailer').src = embedUrl;
+                    } else {
+                        document.getElementById('trailerSection').style.display = 'none';
+                        document.getElementById('detailTrailer').src = "";
+                    }
+                } else {
+                    document.getElementById('rowAuthorStudio').style.display = 'flex';
+                    document.getElementById('lblAuthor').innerText = "Author / Artist";
+                    document.getElementById('detailAuthor').innerText = data.author || "Tidak diketahui";
+                    
+                    movieExtras.forEach(el => el.style.display = 'none');
+                    document.getElementById('trailerSection').style.display = 'none';
+                    document.getElementById('detailTrailer').src = "";
+                }
+            }
+        }
+
+        window.closeDetail = function() {
+            document.getElementById('detailTrailer').src = ""; 
+            document.getElementById('detail-page').style.display = 'none';
+            document.getElementById('home-page').style.display = 'block';
+            document.getElementById('mainBottomNav').style.display = 'flex';
+            window.currentActiveComicId = null;
+        }
+
+        window.switchTab = function(tabName) {
+            document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+            document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
+            const buttons = document.querySelectorAll('.tab-btn');
+            if(tabName === 'detail') buttons[0].classList.add('active');
+            if(tabName === 'chapter') buttons[1].classList.add('active');
+            if(tabName === 'comment') buttons[2].classList.add('active');
+            document.getElementById('tab-' + tabName).classList.add('active');
+        }
+
+        async function fetchChapters(comicId) {
+            const container = document.getElementById('chapterListContainer');
+            const badge = document.getElementById('chapterBadge');
+            container.innerHTML = '<div class="loading-text"><i class="fa-solid fa-spinner fa-spin"></i><br>Mencari daftar...</div>';
+            badge.style.display = 'none';
+
+            const isVideo = window.comicsData[comicId].format === 'film' || (window.comicsData[comicId].type && (window.comicsData[comicId].type.toLowerCase().includes('film') || window.comicsData[comicId].type.toLowerCase().includes('anime')));
+            const actionText = isVideo ? 'Tonton' : 'Baca';
+            const actionClass = isVideo ? 'chapter-action tonton' : 'chapter-action';
+            const chapterPrefix = isVideo ? 'Episode' : 'Chapter';
+
+            try {
+                const chaptersRef = collection(db, "comics", comicId, "chapters");
+                const q = query(chaptersRef, orderBy("chapterNumber", "desc"));
+                const snapshot = await getDocs(q);
+                
+                let chapterHTML = ''; let total = 0;
+                snapshot.forEach(doc => {
+                    const ch = doc.data(); total++;
+                    const date = ch.updateDate || "Baru";
+                    const title = ch.title && ch.title !== "Full Movie" ? `- ${ch.title}` : '';
+                    const titleDisplay = ch.chapterNumber === 1 && ch.title === "Full Movie" ? "Full Movie" : `${chapterPrefix} ${ch.chapterNumber} ${title}`;
+                    
+                    chapterHTML += `
+                        <li class="chapter-item" onclick="handleMediaOpen('${comicId}', '${doc.id}', '${ch.chapterNumber}')">
+                            <div class="chapter-info">
+                                <span class="chapter-title">${titleDisplay}</span>
+                                <span class="chapter-date">${date}</span>
+                            </div>
+                            <div class="${actionClass}">${actionText}</div>
+                        </li>`;
+                });
+                if(total > 0) {
+                    container.innerHTML = chapterHTML;
+                    badge.innerText = total; badge.style.display = 'inline-block';
+                } else {
+                    container.innerHTML = `<div class="loading-text">Belum ada ${chapterPrefix.toLowerCase()} dirilis.</div>`;
+                }
+            } catch(e) { container.innerHTML = '<div class="loading-text">Gagal memuat daftar isi.</div>'; }
+        }
+
+        window.handleMediaOpen = function(comicId, chapterId, chapterNum) {
+            document.getElementById('detailTrailer').src = document.getElementById('detailTrailer').src;
+
+            const comicRecord = window.comicsData[comicId] || {};
+            const isVideo = comicRecord.format === 'film' || (comicRecord.type && (comicRecord.type.toLowerCase().includes('film') || comicRecord.type.toLowerCase().includes('anime')));
+            
+            if(isVideo) {
+                openPlayer(comicId, chapterId, chapterNum);
+            } else {
+                openReader(comicId, chapterId, chapterNum, 1);
+            }
+        }
+
+        window.openReader = async function(comicId, chapterId, chapterNum, targetPageIndex = 1) {
+            window.currentActiveComicId = comicId;
+            window.currentActiveChapterId = chapterId;
+            window.currentActiveChapterNum = chapterNum;
+
+            document.querySelectorAll('.app-container > div').forEach(el => { if(el.id!=='mainBottomNav') el.style.display = 'none'; });
+            document.getElementById('reader-page').style.display = 'block';
+            document.getElementById('readerTitle').innerText = `Chapter ${chapterNum} • Hal. ${targetPageIndex}`;
+            document.getElementById('readerHeader').classList.remove('hidden');
+            
+            const imgContainer = document.getElementById('readerImagesContainer');
+            const loader = document.getElementById('readerLoading');
+            imgContainer.innerHTML = '';
+            loader.style.display = 'block';
+            window.scrollTo(0, 0);
+
+            try {
+                const snap = await getDoc(doc(db, "comics", comicId, "chapters", chapterId));
+                if(snap.exists() && snap.data().images) {
+                    const images = snap.data().images;
+                    loader.style.display = 'none';
+                    if(images.length === 0) {
+                        imgContainer.innerHTML = '<div class="loading-text">Gambar kosong. Admin belum mengupload.</div>';
+                    } else {
+                        images.forEach((url, idx) => { 
+                            imgContainer.innerHTML += `<img src="${url}" loading="lazy" data-page="${idx + 1}" alt="Page ${idx + 1}">`; 
+                        });
+
+                        setTimeout(() => {
+                            const targetImg = imgContainer.querySelector(`img[data-page="${targetPageIndex}"]`);
+                            if (targetImg) {
+                                targetImg.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                            }
+                        }, 300);
+
+                        saveReadingProgress(comicId, chapterId, chapterNum, targetPageIndex);
+
+                        if (window.readerObserver) window.readerObserver.disconnect();
+                        let lastSavedPage = targetPageIndex;
+                        
+                        window.readerObserver = new IntersectionObserver((entries) => {
+                            entries.forEach(entry => {
+                                if(entry.isIntersecting) {
+                                    const visiblePage = parseInt(entry.target.getAttribute('data-page'));
+                                    if(visiblePage !== lastSavedPage) {
+                                        lastSavedPage = visiblePage;
+                                        document.getElementById('readerTitle').innerText = `Chapter ${chapterNum} • Hal. ${visiblePage}`;
+                                        saveReadingProgress(comicId, chapterId, chapterNum, visiblePage);
+                                    }
+                                }
+                            });
+                        }, { threshold: 0.5 });
+
+                        const imgs = imgContainer.querySelectorAll('img[data-page]');
+                        imgs.forEach(img => window.readerObserver.observe(img));
+                    }
+                } else {
+                    loader.style.display = 'none';
+                    imgContainer.innerHTML = '<div class="loading-text">Chapter rusak atau terhapus.</div>';
+                }
+            } catch(e) {
+                loader.style.display = 'none';
+                imgContainer.innerHTML = '<div class="loading-text">Koneksi Error saat memuat gambar.</div>';
+            }
+        }
+
+        window.closeReader = function() {
+            if (window.readerObserver) window.readerObserver.disconnect();
+            document.getElementById('reader-page').style.display = 'none';
+            document.getElementById('readerImagesContainer').innerHTML = '';
+            
+            if (window.currentActiveComicId) {
+                openDetail(window.currentActiveComicId); 
+            } else {
+                switchNav('home');
+            }
+        }
+        window.toggleReaderNav = function() { document.getElementById('readerHeader').classList.toggle('hidden'); }
+
+        window.openPlayer = async function(comicId, chapterId, chapterNum) {
+            window.currentActiveComicId = comicId;
+            window.currentActiveChapterId = chapterId;
+            window.currentActiveChapterNum = chapterNum;
+
+            document.querySelectorAll('.app-container > div').forEach(el => { if(el.id!=='mainBottomNav') el.style.display = 'none'; });
+            document.getElementById('player-page').style.display = 'flex';
+            
+            const titleDisplay = (chapterNum === "1" || chapterNum === 1) ? "Full Movie" : `Episode ${chapterNum}`;
+            document.getElementById('playerTitle').innerText = titleDisplay;
+            document.getElementById('qualityMenu').style.display = 'none';
+            
+            const videoPlayer = document.getElementById('mainVideoPlayer');
+            videoPlayer.pause();
+            
+            try {
+                const snap = await getDoc(doc(db, "comics", comicId, "chapters", chapterId));
+                if(snap.exists()) {
+                    const data = snap.data();
+                    let targetUrl = "";
+                    if (data.images && data.images.length > 0) {
+                        targetUrl = data.images[0];
+                    }
+                    if (targetUrl) {
+                        videoPlayer.src = targetUrl;
+                        videoPlayer.play().catch(e => console.log("Menunggu aksi user untuk play"));
+                    } else {
+                        window.showToast("File video tidak ditemukan dalam database.");
+                    }
+                }
+            } catch(e) { console.log("Gagal memuat detail video dari Firebase", e); }
+            
+            saveReadingProgress(comicId, chapterId, chapterNum, 1);
+        }
+
+        window.toggleQualityMenu = function() {
+            const menu = document.getElementById('qualityMenu');
+            menu.style.display = menu.style.display === 'none' || menu.style.display === '' ? 'flex' : 'none';
+        }
+
+        window.changeQuality = function(quality, isInitial = false) {
+            window.showToast("Fitur pemilihan resolusi statis. Saat ini video menggunakan file utuh dari Cloud.");
+            document.getElementById('qualityMenu').style.display = 'none';
+        }
+
+        window.closePlayer = function() {
+            document.getElementById('mainVideoPlayer').pause();
+            document.getElementById('mainVideoPlayer').src = "";
+            document.getElementById('player-page').style.display = 'none';
+            
+            if (window.currentActiveComicId) {
+                openDetail(window.currentActiveComicId); 
+            } else {
+                switchNav('home');
+            }
+        }
+
+        // ================= PENGENDALI MENU BAWAH =================
+        window.switchNav = function(pageId, element = null) {
+            document.querySelectorAll('.app-container > div').forEach(el => {
+                if(el.id !== 'mainBottomNav') el.style.display = 'none';
+            });
+            document.getElementById(pageId + '-page').style.display = 'block';
+            
+            if(element) {
+                document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
+                element.classList.add('active');
+            } else {
+                document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
+                if(pageId === 'home') document.querySelectorAll('.nav-item')[0].classList.add('active');
+                if(pageId === 'discovery') document.querySelectorAll('.nav-item')[1].classList.add('active');
+                if(pageId === 'bookmark') document.querySelectorAll('.nav-item')[2].classList.add('active');
+                if(pageId === 'profile') document.querySelectorAll('.nav-item')[3].classList.add('active');
+            }
+            window.scrollTo(0,0);
+        }
+
+    </script>
+</body>
+</html>

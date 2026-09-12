@@ -1,0 +1,11 @@
+{
+  "name": "Komik & Anime Pro",
+  "short_name": "KomikAnime",
+  "start_url": "./index.html",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#0b0c12",
+  "theme_color": "#625af2",
+  "description": "Reader komik dan video player profesional dengan resume, subtitle dan autoplay.",
+  "icons": [{"src":"app-icon-v13.svg","sizes":"any","type":"image/svg+xml","purpose":"any maskable"}]
+}

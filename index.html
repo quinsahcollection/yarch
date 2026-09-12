@@ -3,7 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Komik & Anime — Foundation V10</title>
+    <title>Komik & Anime — PWA V12</title>
+    <meta name="theme-color" content="#625af2">
+    <meta name="description" content="Aplikasi komik, manga, anime dan film dengan update terbaru.">
+    <meta name="referrer" content="strict-origin-when-cross-origin">
+    <link rel="manifest" href="manifest-v12.webmanifest">
+    <link rel="icon" href="app-icon-v12.svg" type="image/svg+xml">
+    <link rel="preconnect" href="https://www.gstatic.com" crossorigin>
+    <link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin>
     <!-- BUILD: FOUNDATION-V10 | updates + read state + safe rating/views/comment+ comment counter -->
     <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
@@ -385,6 +392,27 @@
         .read-state.is-read { color:#23a777; }
         .chapter-item.is-read { background:#f1fbf7; }
         .chapter-item.is-read .chapter-title::after { content:'Sudah dibaca'; display:inline-flex; margin-left:7px; padding:3px 6px; border-radius:7px; color:#16845d; background:#dff7ed; font-size:8px; vertical-align:middle; }
+        .updates-hero-row { display:flex; align-items:center; justify-content:space-between; gap:12px; }
+        .notification-btn { position:relative; width:43px; height:43px; flex:0 0 43px; border:1px solid rgba(255,255,255,.28); border-radius:14px; color:#fff; background:rgba(255,255,255,.16); font-size:17px; cursor:pointer; }
+        .notification-count { position:absolute; top:-5px; right:-5px; min-width:19px; height:19px; display:none; place-items:center; padding:0 5px; border:2px solid #6a5cf3; border-radius:10px; color:#fff; background:#ff5e73; font-size:9px; font-weight:850; }
+        .notification-count.show { display:grid; }
+        .notification-panel { display:none; margin:0 14px 12px; padding:16px; border:1px solid #e8e9f2; border-radius:18px; background:#fff; box-shadow:0 12px 30px rgba(32,37,70,.09); }
+        .notification-panel.show { display:block; animation:fadeIn .2s ease; }
+        .notification-panel h3 { font-size:14px; margin-bottom:4px; }
+        .notification-panel p { color:#858a9d; font-size:10px; line-height:1.5; }
+        .notification-setting { display:flex; align-items:center; justify-content:space-between; gap:12px; margin-top:13px; padding-top:13px; border-top:1px solid #eef0f5; font-size:12px; font-weight:750; }
+        .switch-control { position:relative; width:44px; height:25px; flex:0 0 44px; }
+        .switch-control input { position:absolute; opacity:0; }
+        .switch-control span { position:absolute; inset:0; border-radius:20px; background:#d8dbe5; transition:.2s; cursor:pointer; }
+        .switch-control span::after { content:''; position:absolute; width:19px; height:19px; top:3px; left:3px; border-radius:50%; background:#fff; box-shadow:0 2px 6px rgba(0,0,0,.18); transition:.2s; }
+        .switch-control input:checked + span { background:#625af2; }
+        .switch-control input:checked + span::after { transform:translateX(19px); }
+        .new-update-dot { width:7px; height:7px; flex:0 0 7px; border-radius:50%; background:#ff5e73; box-shadow:0 0 0 4px rgba(255,94,115,.12); }
+        .manga-card-simple,.manga-card-history,.discovery-card,.update-feed-card { content-visibility:auto; contain-intrinsic-size:180px 290px; }
+        .network-status { position:fixed; top:12px; left:50%; z-index:10020; transform:translate(-50%,-140%); padding:9px 15px; border-radius:99px; color:#fff; background:#24283a; box-shadow:0 8px 24px rgba(0,0,0,.2); font-size:11px; font-weight:750; transition:.25s; }
+        .network-status.show { transform:translate(-50%,0); }
+        .network-status.online { background:#18956b; }
+        .install-app-item[hidden] { display:none !important; }
 
         /* Horizontal sticky alphabet: compact on mobile and never covers cards */
         .alphabet-rail { position:sticky; top:129px; left:auto; bottom:auto; width:calc(100% - 24px); height:52px; margin:8px 12px 2px; padding:7px; flex-direction:row; justify-content:flex-start; gap:5px; border-radius:17px; overflow-x:auto; overflow-y:hidden; scroll-snap-type:x proximity; }
@@ -436,6 +464,7 @@
     </style>
 </head>
 <body>
+    <div class="network-status" id="networkStatus"><i class="fa-solid fa-wifi"></i> <span>Status koneksi</span></div>
 
     <div class="app-container">
         
@@ -589,14 +618,21 @@
         <!-- ================= HALAMAN UPDATE ================= -->
         <div id="updates-page">
             <div class="updates-hero">
-                <h2>Update Terbaru</h2>
-                <p>Chapter dan episode terbaru dari semua koleksi.</p>
+                <div class="updates-hero-row"><div><h2>Update Terbaru</h2><p>Chapter dan episode terbaru dari semua koleksi.</p></div>
+                    <button class="notification-btn" onclick="toggleNotificationPanel()" aria-label="Pengaturan notifikasi"><i class="fa-solid fa-bell"></i><span class="notification-count" id="notificationCount">0</span></button>
+                </div>
             </div>
             <div class="updates-tabs">
                 <button class="update-tab active" data-period="all" onclick="setUpdatePeriod('all')">Semua</button>
                 <button class="update-tab" data-period="today" onclick="setUpdatePeriod('today')">Hari ini</button>
                 <button class="update-tab" data-period="yesterday" onclick="setUpdatePeriod('yesterday')">Kemarin</button>
                 <button class="update-tab" data-period="week" onclick="setUpdatePeriod('week')">Minggu ini</button>
+            </div>
+            <div class="notification-panel" id="notificationPanel">
+                <h3>Pengaturan Update</h3><p>Pilihan tersimpan pada perangkat ini dan dapat diubah kapan saja.</p>
+                <div class="notification-setting"><span>Ingatkan chapter baru</span><label class="switch-control"><input id="notifyComic" type="checkbox" onchange="saveNotificationSettings()"><span></span></label></div>
+                <div class="notification-setting"><span>Ingatkan episode atau film baru</span><label class="switch-control"><input id="notifyVideo" type="checkbox" onchange="saveNotificationSettings()"><span></span></label></div>
+                <div class="notification-setting"><span>Tandai semua sudah dilihat</span><button class="update-tab active" onclick="markAllUpdatesSeen()">Tandai</button></div>
             </div>
             <div class="updates-feed" id="updatesFeed"><div class="loading-text">Memuat update...</div></div>
         </div>
@@ -771,6 +807,7 @@
                     <div id="authError" style="color:#ef4444; font-size:12px; margin-bottom:12px; text-align:center; font-weight:600;"></div>
                     <button class="auth-main-btn" onclick="doLogin()">Masuk Akun</button>
                     <div class="auth-toggle-link">Belum punya akun? <span onclick="toggleAuthMode()">Daftar Disini</span></div>
+                    <button class="auth-main-btn install-app-item" id="installAppGuest" hidden onclick="installApp()" style="margin-top:16px;background:#20243a"><i class="fa-solid fa-download"></i> Pasang Aplikasi</button>
                 </div>
             </div>
 
@@ -798,6 +835,7 @@
                 </div>
 
                 <ul class="user-menu-list" style="margin-top: 15px;">
+                    <li class="install-app-item" id="installAppUser" hidden onclick="installApp()"><div class="left-info"><i class="fa-solid fa-mobile-screen-button"></i> Pasang Aplikasi</div><i class="fa-solid fa-download" style="font-size:12px;color:#94a3b8"></i></li>
                     <li onclick="switchNav('bookmark')">
                         <div class="left-info"><i class="fa-solid fa-bookmark"></i> Kelola Bookmark</div>
                         <i class="fa-solid fa-chevron-right" style="font-size: 12px; color: #94a3b8;"></i>
@@ -952,6 +990,36 @@
             toast.classList.add('show');
             setTimeout(() => toast.classList.remove('show'), 3000);
         }
+
+        // ================= V12: SAFE OUTPUT, INSTALL & NETWORK =================
+        window.safeText = function(value) {
+            return String(value ?? '').replace(/[&<>'"]/g, char => ({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[char]));
+        }
+        window.safeMediaUrl = function(value) {
+            try {
+                const url = new URL(String(value || ''), location.href);
+                return ['http:','https:'].includes(url.protocol) ? url.href : '';
+            } catch(e) { return ''; }
+        }
+        let deferredInstallPrompt = null;
+        window.addEventListener('beforeinstallprompt', event => {
+            event.preventDefault(); deferredInstallPrompt = event;
+            document.querySelectorAll('.install-app-item').forEach(el => el.hidden = false);
+        });
+        window.installApp = async function() {
+            if(!deferredInstallPrompt) { window.showToast('Buka menu browser lalu pilih Tambahkan ke layar utama'); return; }
+            deferredInstallPrompt.prompt(); await deferredInstallPrompt.userChoice; deferredInstallPrompt = null;
+            document.querySelectorAll('.install-app-item').forEach(el => el.hidden = true);
+        }
+        function showNetworkStatus(online) {
+            const bar = document.getElementById('networkStatus'); if(!bar) return;
+            bar.classList.toggle('online', online); bar.classList.add('show');
+            bar.querySelector('span').textContent = online ? 'Koneksi kembali aktif' : 'Offline — menampilkan data tersimpan';
+            setTimeout(() => bar.classList.remove('show'), online ? 2200 : 4500);
+        }
+        window.addEventListener('online', () => showNetworkStatus(true));
+        window.addEventListener('offline', () => showNetworkStatus(false));
+        if('serviceWorker' in navigator && location.protocol !== 'file:') navigator.serviceWorker.register('./sw-v12.js').catch(() => {});
 
         // ================= FITUR PENCARIAN (SEARCH) DINAMIS =================
         const searchInput = document.getElementById('searchInput');
@@ -1133,13 +1201,13 @@
             return `
                 <div class="manga-card-simple" onclick="openDetail('${docId}')">
                     <div class="card-poster-wrap">
-                        <img src="${data.coverUrl}" alt="${data.title}" loading="lazy" onerror="this.src='https://placehold.co/132x178?text=No+Cover'">
-                        <span class="card-format-badge">${label}</span>
+                        <img src="${safeMediaUrl(data.coverUrl)}" alt="${safeText(data.title)}" loading="lazy" decoding="async" onerror="this.src='https://placehold.co/132x178?text=No+Cover'">
+                        <span class="card-format-badge">${safeText(label)}</span>
                         <span class="card-rating"><i class="fa-solid fa-star"></i> ${rating}</span>
                     </div>
                     <div class="info-container">
-                        <div class="title">${data.title}</div>
-                        <div class="card-meta"><span class="card-status">${status}</span><i class="fa-solid fa-chevron-right"></i></div>
+                        <div class="title">${safeText(data.title)}</div>
+                        <div class="card-meta"><span class="card-status">${safeText(status)}</span><i class="fa-solid fa-chevron-right"></i></div>
                     </div>
                 </div>
             `;
@@ -1274,6 +1342,45 @@
 
         // ================= UPDATE FEED & STATUS SUDAH DIBACA =================
         window.updatePeriod = 'all';
+        window.notificationSettings = JSON.parse(localStorage.getItem('notificationSettings') || '{"comic":true,"video":true}');
+        window.toggleNotificationPanel = function() {
+            document.getElementById('notificationPanel')?.classList.toggle('show');
+        }
+        window.saveNotificationSettings = function() {
+            window.notificationSettings = {
+                comic: document.getElementById('notifyComic')?.checked !== false,
+                video: document.getElementById('notifyVideo')?.checked !== false
+            };
+            localStorage.setItem('notificationSettings', JSON.stringify(window.notificationSettings));
+            updateNotificationBadge();
+            window.showToast('Pengaturan update disimpan');
+        }
+        window.markAllUpdatesSeen = function() {
+            localStorage.setItem('lastUpdatesSeen', String(Date.now()));
+            updateNotificationBadge();
+            renderUpdatesFeed();
+            window.showToast('Semua update sudah ditandai');
+        }
+        function getAllRecentUpdates() {
+            const updates = [];
+            Object.entries(window.comicsData).forEach(([comicId, comic]) => {
+                (comic.recentChapters || []).forEach(ch => updates.push({ comicId, comic, chapter:ch, time:ch.updatedAt || ch.updateDate || ch.createdAt || '' }));
+            });
+            return updates.sort((a,b) => getTimeValue(b.time) - getTimeValue(a.time));
+        }
+        function updateNotificationBadge() {
+            const badge = document.getElementById('notificationCount');
+            if(!badge) return;
+            const seenAt = Number(localStorage.getItem('lastUpdatesSeen') || 0);
+            const count = getAllRecentUpdates().filter(({comic,time}) => {
+                const isVideo = comic.format === 'film' || /film|anime|series/i.test(comic.type || '');
+                return getTimeValue(time) > seenAt && (isVideo ? window.notificationSettings.video : window.notificationSettings.comic);
+            }).length;
+            badge.textContent = count > 99 ? '99+' : count;
+            badge.classList.toggle('show', count > 0);
+            document.getElementById('notifyComic') && (document.getElementById('notifyComic').checked = window.notificationSettings.comic);
+            document.getElementById('notifyVideo') && (document.getElementById('notifyVideo').checked = window.notificationSettings.video);
+        }
         function getReadChapterMap() {
             try { return JSON.parse(localStorage.getItem('readChapterMap')) || {}; }
             catch(e) { return {}; }
@@ -1306,11 +1413,8 @@
         function renderUpdatesFeed() {
             const container = document.getElementById('updatesFeed');
             if(!container) return;
-            const updates = [];
-            Object.entries(window.comicsData).forEach(([comicId, comic]) => {
-                (comic.recentChapters || []).forEach(ch => updates.push({ comicId, comic, chapter:ch, time:ch.updatedAt || ch.updateDate || ch.createdAt || '' }));
-            });
-            updates.sort((a,b) => getTimeValue(b.time) - getTimeValue(a.time));
+            const updates = getAllRecentUpdates();
+            const seenAt = Number(localStorage.getItem('lastUpdatesSeen') || 0);
             const filtered = updates.filter(item => matchesUpdatePeriod(item.time, window.updatePeriod));
             container.innerHTML = filtered.map(({comicId,comic,chapter,time}) => {
                 const isVideo = comic.format === 'film' || /film|anime|series/i.test(comic.type || '');
@@ -1318,12 +1422,13 @@
                 const releaseLabel = fullMovie ? 'Full Movie' : `${isVideo ? 'Episode' : 'Chapter'} ${chapter.chapterNumber}`;
                 const read = isChapterRead(comicId, chapter.id);
                 return `<div class="update-feed-card" onclick="handleMediaOpen('${comicId}','${chapter.id}','${chapter.chapterNumber}')">
-                    <img src="${comic.coverUrl}" loading="lazy" onerror="this.src='https://placehold.co/72x104?text=Cover'">
-                    <div class="update-feed-info"><div class="update-feed-title">${comic.title}</div>
-                    <div class="update-feed-meta"><span>${comic.type || (isVideo ? 'Video' : 'Komik')}</span><span>•</span><span>${formatRelativeUpdateTime(time)}</span></div>
-                    <div class="update-feed-release"><span class="update-release-btn">${releaseLabel}${chapter.title && !fullMovie ? ' — ' + chapter.title : ''}</span><span class="read-state ${read ? 'is-read' : ''}"><i class="fa-solid ${read ? 'fa-circle-check' : 'fa-circle'}"></i>${read ? 'Dibaca' : 'Belum'}</span></div></div>
+                    <img src="${safeMediaUrl(comic.coverUrl)}" loading="lazy" decoding="async" onerror="this.src='https://placehold.co/72x104?text=Cover'">
+                    <div class="update-feed-info"><div class="update-feed-title">${getTimeValue(time) > seenAt ? '<span class="new-update-dot"></span> ' : ''}${safeText(comic.title)}</div>
+                    <div class="update-feed-meta"><span>${safeText(comic.type || (isVideo ? 'Video' : 'Komik'))}</span><span>•</span><span>${safeText(formatRelativeUpdateTime(time))}</span></div>
+                    <div class="update-feed-release"><span class="update-release-btn">${safeText(releaseLabel + (chapter.title && !fullMovie ? ' — ' + chapter.title : ''))}</span><span class="read-state ${read ? 'is-read' : ''}"><i class="fa-solid ${read ? 'fa-circle-check' : 'fa-circle'}"></i>${read ? 'Dibaca' : 'Belum'}</span></div></div>
                 </div>`;
             }).join('') || '<div class="empty-history">Belum ada update pada periode ini.</div>';
+            updateNotificationBadge();
         }
 
         // ================= DISCOVERY: VIEW & FILTER =================
@@ -1527,9 +1632,9 @@
                 gridHtml += `
                     <div class="discovery-card" onclick="openDetail('${id}')">
                         <button class="quick-bookmark-btn ${bookmarkActive ? 'active' : ''}" data-bookmark-id="${id}" onclick="toggleBookmarkFromCard(event,'${id}')" title="${bookmarkActive ? 'Hapus bookmark' : 'Simpan bookmark'}"><i class="fa-${bookmarkActive ? 'solid' : 'regular'} fa-bookmark"></i></button>
-                        <img src="${comic.coverUrl}" onerror="this.src='https://placehold.co/120x140?text=No+Cover'">
+                        <img src="${safeMediaUrl(comic.coverUrl)}" loading="lazy" decoding="async" alt="${safeText(comic.title)}" onerror="this.src='https://placehold.co/120x140?text=No+Cover'">
                         <div class="discovery-info">
-                            <div class="discovery-title">${comic.title}</div>
+                            <div class="discovery-title">${safeText(comic.title)}</div>
                             <div class="discovery-stats">
                                 <span class="discovery-rating"><i class="fa-solid fa-star"></i> ${ratingNum}</span>
                                 <span><i class="fa-regular fa-eye"></i> ${viewsCount}</span>

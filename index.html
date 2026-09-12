@@ -3,8 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Komik & Anime — Relative Time V5</title>
-    <!-- BUILD: RELATIVE-TIME-V5 | compact discovery + human-readable update time -->
+    <title>Komik & Anime — Catalog V6</title>
+    <!-- BUILD: CATALOG-V6 | recent releases + quick bookmark + bookmark layouts -->
     <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <!-- Google Fonts -->
@@ -284,12 +284,15 @@
         .manga-card-history img { height:184px; border:0; }
         .manga-card-history .chapter { margin-top:5px; }
         .discovery-grid,.bookmark-grid { grid-template-columns:repeat(2,minmax(0,1fr)); gap:14px; padding:16px; background:transparent; align-content:start; align-items:start; grid-auto-rows:max-content; }
-        .discovery-card { width:100%; height:auto; align-self:start; border:0; border-radius:16px; box-shadow:0 8px 22px rgba(32,37,70,.08); }
+        .discovery-card { position:relative; width:100%; height:auto; align-self:start; border:0; border-radius:16px; box-shadow:0 8px 22px rgba(32,37,70,.08); }
         .discovery-card img { height:218px; border:0; }
         .discovery-info { padding:11px; gap:6px; }
         .discovery-title { font-size:12px; min-height:32px; }
         .discovery-latest { min-width:0; display:flex; align-items:center; justify-content:center; gap:5px; border-radius:8px; padding:5px 7px; }
         .discovery-update-date { padding-left:6px; border-left:1px solid rgba(91,92,240,.2); color:#73778e; font-weight:650; }
+        .quick-bookmark-btn { position:absolute; top:11px; right:11px; z-index:5; width:36px; height:36px; display:grid; place-items:center; border:1px solid rgba(255,255,255,.7); border-radius:12px; color:#4f556d; background:rgba(255,255,255,.9); backdrop-filter:blur(10px); box-shadow:0 5px 14px rgba(25,29,55,.16); cursor:pointer; }
+        .quick-bookmark-btn.active { color:#fff; border-color:transparent; background:linear-gradient(135deg,#6d5dfc,#5153e8); }
+        .recent-releases { display:none; }
         .discovery-toolbar { position:sticky; top:68px; z-index:90; display:flex; align-items:center; gap:10px; padding:12px 16px; background:rgba(248,249,252,.94); backdrop-filter:blur(16px); -webkit-backdrop-filter:blur(16px); border-bottom:1px solid var(--border-color); }
         .catalog-count { flex:1; color:var(--text-gray); font-size:11px; font-weight:600; }
         .view-switcher { display:flex; gap:3px; padding:3px; border-radius:12px; background:#eceef5; }
@@ -317,12 +320,30 @@
         .discovery-grid.view-3 .discovery-latest { gap:3px; padding:5px 3px; white-space:nowrap; }
         .discovery-grid.view-3 .discovery-update-date { padding-left:4px; }
         .discovery-grid.view-list { grid-template-columns:1fr; gap:11px; align-content:start; grid-auto-rows:max-content; }
-        .discovery-grid.view-list .discovery-card { display:grid; grid-template-columns:96px minmax(0,1fr); height:136px; min-height:0; overflow:hidden; }
-        .discovery-grid.view-list .discovery-card img { width:96px; height:136px; }
-        .discovery-grid.view-list .discovery-info { padding:14px; justify-content:center; }
+        .discovery-grid.view-list .discovery-card { display:grid; grid-template-columns:112px minmax(0,1fr); height:196px; min-height:0; overflow:hidden; }
+        .discovery-grid.view-list .discovery-card>img { width:112px; height:196px; }
+        .discovery-grid.view-list .discovery-info { padding:15px 52px 14px 15px; justify-content:center; }
         .discovery-grid.view-list .discovery-title { font-size:14px; min-height:auto; }
         .discovery-grid.view-list .discovery-stats { justify-content:flex-start; gap:18px; font-size:11px; }
         .discovery-grid.view-list .discovery-latest { width:max-content; max-width:100%; padding:6px 10px; }
+        .discovery-grid.view-list .recent-releases { display:flex; flex-direction:column; gap:6px; margin-top:10px; }
+        .recent-release-row { min-width:0; display:flex; align-items:center; justify-content:space-between; gap:8px; padding:7px 9px; border-radius:9px; background:#f4f5fb; color:#555b72; font-size:10px; }
+        .recent-release-label { color:var(--primary-blue); font-weight:800; white-space:nowrap; }
+        .recent-release-time { overflow:hidden; text-overflow:ellipsis; white-space:nowrap; color:#85899a; }
+        .discovery-grid:not(.view-list) .quick-bookmark-btn { width:30px; height:30px; top:8px; right:8px; border-radius:10px; font-size:12px; }
+
+        .bookmark-toolbar { position:sticky; top:0; z-index:9; display:flex; align-items:center; justify-content:space-between; gap:12px; padding:11px 16px; background:rgba(248,249,252,.94); backdrop-filter:blur(16px); border-bottom:1px solid var(--border-color); }
+        .bookmark-toolbar-label { color:var(--text-gray); font-size:11px; font-weight:650; }
+        .bookmark-grid.view-3 { grid-template-columns:repeat(3,minmax(0,1fr)); gap:9px; }
+        .bookmark-grid.view-3 .manga-card-simple { border-radius:12px; }
+        .bookmark-grid.view-3 .manga-card-simple>img { height:148px; }
+        .bookmark-grid.view-3 .title { font-size:10px; min-height:28px; }
+        .bookmark-grid.view-list { grid-template-columns:1fr; gap:11px; }
+        .bookmark-grid.view-list .manga-card-simple { display:grid; grid-template-columns:94px minmax(0,1fr); min-width:0; width:100%; height:132px; }
+        .bookmark-grid.view-list .manga-card-simple>img { width:94px; height:132px; }
+        .bookmark-grid.view-list .info-container { justify-content:center; padding:14px 50px 14px 15px; }
+        .bookmark-grid.view-list .title { font-size:14px; min-height:0; }
+        .bookmark-grid.view-list .bookmark-delete-btn { top:50%; right:13px; transform:translateY(-50%); background:#fff0f0; color:#e64c5f; box-shadow:none; }
         .bottom-nav { max-width:520px; min-height:70px; padding:8px 12px calc(9px + env(safe-area-inset-bottom)); border-top:1px solid rgba(231,233,242,.9); background:rgba(255,255,255,.93); backdrop-filter:blur(20px); -webkit-backdrop-filter:blur(20px); box-shadow:0 -10px 30px rgba(27,31,62,.07); }
         .nav-item { gap:3px; font-size:9px; }
         .nav-item i { font-size:18px; }
@@ -627,6 +648,14 @@
         <!-- ================= 6. HALAMAN BOOKMARK ================= -->
         <div id="bookmark-page">
             <div class="page-header">Bookmark Saya</div>
+            <div class="bookmark-toolbar">
+                <span class="bookmark-toolbar-label" id="bookmarkCountLabel">Koleksi tersimpan</span>
+                <div class="view-switcher" aria-label="Pilih tampilan bookmark">
+                    <button class="view-btn bookmark-view-btn active" data-bookmark-view="2" onclick="setBookmarkView('2')" title="2 Kolom"><i class="fa-solid fa-table-cells-large"></i></button>
+                    <button class="view-btn bookmark-view-btn" data-bookmark-view="3" onclick="setBookmarkView('3')" title="3 Kolom"><i class="fa-solid fa-grip"></i></button>
+                    <button class="view-btn bookmark-view-btn" data-bookmark-view="list" onclick="setBookmarkView('list')" title="Daftar"><i class="fa-solid fa-list"></i></button>
+                </div>
+            </div>
             <div class="bookmark-grid" id="bookmarkContainer">
                 <div class="empty-history">Anda belum login atau belum ada bookmark.</div>
             </div>
@@ -846,6 +875,7 @@
                 window.userBookmarks = [];
                 renderBookmarks();
                 renderReadingHistory();
+                renderDiscoveryGrid(false);
             }
         });
 
@@ -905,6 +935,7 @@
             } catch(e) { }
             
             renderBookmarks();
+            renderDiscoveryGrid(false);
             if(document.getElementById('statBookmarkCount')) {
                 document.getElementById('statBookmarkCount').innerText = window.userBookmarks.length;
             }
@@ -1019,9 +1050,11 @@
                 // Fetching Info Chapter terbaru untuk Slider & Discovery di background
                 Object.keys(window.comicsData).forEach(async (id) => {
                     try {
-                        const chSnap = await getDocs(query(collection(db, "comics", id, "chapters"), orderBy("chapterNumber", "desc"), limit(1)));
+                        const chSnap = await getDocs(query(collection(db, "comics", id, "chapters"), orderBy("chapterNumber", "desc"), limit(3)));
                         if(!chSnap.empty) {
-                            const chData = chSnap.docs[0].data();
+                            const recentChapters = chSnap.docs.map(chDoc => ({ id:chDoc.id, ...chDoc.data() }));
+                            const chData = recentChapters[0];
+                            window.comicsData[id].recentChapters = recentChapters;
                             window.comicsData[id].realLatestChapter = chData.chapterNumber;
                             window.comicsData[id].realLatestTitle = chData.title;
                             window.comicsData[id].realUpdateDate = chData.updatedAt || chData.updateDate || chData.createdAt || '';
@@ -1169,9 +1202,17 @@
                     }
                 }
                 const updateDateText = formatRelativeUpdateTime(comic.realUpdateDate);
+                const recentRows = (comic.recentChapters || []).slice(0,3).map(ch => {
+                    const isFullMovie = Number(ch.chapterNumber) === 1 && ch.title === 'Full Movie';
+                    const label = isFullMovie ? 'Full Movie' : `${isVideoType ? 'Ep' : 'Ch'} ${ch.chapterNumber}`;
+                    const relativeTime = formatRelativeUpdateTime(ch.updatedAt || ch.updateDate || ch.createdAt || '');
+                    return `<div class="recent-release-row" onclick="event.stopPropagation(); handleMediaOpen('${id}','${ch.id}','${ch.chapterNumber}')"><span class="recent-release-label">${label}</span><span class="recent-release-time">${relativeTime}</span></div>`;
+                }).join('');
+                const bookmarkActive = window.userBookmarks.includes(id);
 
                 gridHtml += `
                     <div class="discovery-card" onclick="openDetail('${id}')">
+                        <button class="quick-bookmark-btn ${bookmarkActive ? 'active' : ''}" data-bookmark-id="${id}" onclick="toggleBookmarkFromCard(event,'${id}')" title="${bookmarkActive ? 'Hapus bookmark' : 'Simpan bookmark'}"><i class="fa-${bookmarkActive ? 'solid' : 'regular'} fa-bookmark"></i></button>
                         <img src="${comic.coverUrl}" onerror="this.src='https://placehold.co/120x140?text=No+Cover'">
                         <div class="discovery-info">
                             <div class="discovery-title">${comic.title}</div>
@@ -1180,6 +1221,7 @@
                                 <span><i class="fa-regular fa-eye"></i> ${viewsCount}</span>
                             </div>
                             <div class="discovery-latest"><span>${latestText}</span><span class="discovery-update-date"><i class="fa-regular fa-calendar"></i> ${updateDateText}</span></div>
+                            <div class="recent-releases">${recentRows || '<div class="recent-release-row"><span>Belum ada rilis</span></div>'}</div>
                         </div>
                     </div>
                 `;
@@ -1363,9 +1405,35 @@
             
             localStorage.setItem('localBookmarks_' + auth.currentUser.uid, JSON.stringify(window.userBookmarks));
             renderBookmarks();
+            renderDiscoveryGrid(false);
             if(document.getElementById('statBookmarkCount')){
                 document.getElementById('statBookmarkCount').innerText = window.userBookmarks.length;
             }
+        }
+
+        window.toggleBookmarkFromCard = async function(event, comicId) {
+            if(event) event.stopPropagation();
+            if(!auth.currentUser) {
+                window.showToast('Silakan Login untuk menyimpan Bookmark!');
+                switchNav('profile');
+                return;
+            }
+            const isSaved = window.userBookmarks.includes(comicId);
+            if(isSaved) {
+                window.userBookmarks = window.userBookmarks.filter(id => id !== comicId);
+                try { await deleteDoc(doc(db, 'users', auth.currentUser.uid, 'bookmarks', comicId)); } catch(e) {}
+                window.showToast('Dihapus dari Bookmark');
+            } else {
+                window.userBookmarks.push(comicId);
+                try { await setDoc(doc(db, 'users', auth.currentUser.uid, 'bookmarks', comicId), { comicId, addedAt:serverTimestamp() }); } catch(e) {}
+                window.showToast('Disimpan ke Bookmark');
+            }
+            localStorage.setItem('localBookmarks_' + auth.currentUser.uid, JSON.stringify(window.userBookmarks));
+            if(window.currentActiveComicId === comicId) checkBookmarkStatus(comicId);
+            const stat = document.getElementById('statBookmarkCount');
+            if(stat) stat.innerText = window.userBookmarks.length;
+            renderBookmarks();
+            renderDiscoveryGrid(false);
         }
 
         window.removeBookmarkDirect = async function(event, id) {
@@ -1381,6 +1449,7 @@
             }
 
             renderBookmarks();
+            renderDiscoveryGrid(false);
             if(window.currentActiveComicId === id) {
                 checkBookmarkStatus(id);
             }
@@ -1399,8 +1468,23 @@
             }
         }
 
+        window.bookmarkView = localStorage.getItem('bookmarkView') || '2';
+        window.setBookmarkView = function(view) {
+            const container = document.getElementById('bookmarkContainer');
+            if(!container || !['2','3','list'].includes(view)) return;
+            window.bookmarkView = view;
+            localStorage.setItem('bookmarkView', view);
+            container.classList.remove('view-3','view-list');
+            if(view === '3') container.classList.add('view-3');
+            if(view === 'list') container.classList.add('view-list');
+            document.querySelectorAll('.bookmark-view-btn').forEach(btn => btn.classList.toggle('active', btn.dataset.bookmarkView === view));
+        }
+
         function renderBookmarks() {
             const container = document.getElementById('bookmarkContainer');
+            window.setBookmarkView(window.bookmarkView);
+            const countLabel = document.getElementById('bookmarkCountLabel');
+            if(countLabel) countLabel.innerText = `${window.userBookmarks.length} konten tersimpan`;
             if(!auth.currentUser) {
                 container.innerHTML = '<div class="empty-history" style="grid-column:1/-1;">Harap masuk (Login) untuk melihat bookmark.</div>';
                 return;
@@ -1416,14 +1500,17 @@
                     bmHTML += `
                         <div class="manga-card-simple" onclick="openDetail('${id}')" style="width:100%;">
                             <button class="bookmark-delete-btn" onclick="removeBookmarkDirect(event, '${id}')" title="Hapus Bookmark"><i class="fa-solid fa-trash-can"></i></button>
-                            <img src="${data.coverUrl}" onerror="this.src='https://placehold.co/120x150?text=No+Cover'">
+                            <img src="${data.coverUrl}" loading="lazy" onerror="this.src='https://placehold.co/120x150?text=No+Cover'">
                             <div class="info-container"><div class="title">${data.title}</div></div>
                         </div>
                     `;
                 }
             });
             container.innerHTML = bmHTML;
+            window.setBookmarkView(window.bookmarkView);
         }
+
+        window.setBookmarkView(window.bookmarkView);
 
         // ================= FITUR KOMENTAR =================
         async function fetchComments(comicId) {

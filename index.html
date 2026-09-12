@@ -3,8 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Komik & Anime — Navigation V9</title>
-    <!-- BUILD: NAVIGATION-V9 | sticky alphabet + stateful back navigation + modern dialogs -->
+    <title>Komik & Anime — Foundation V10</title>
+    <!-- BUILD: FOUNDATION-V10 | updates + read state + safe rating/views/comment+ comment counter -->
     <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <!-- Google Fonts -->
@@ -112,7 +112,7 @@
         .nav-item.active i { margin-bottom: 0; }
 
         /* PAGE CONTROL */
-        #detail-page, #profile-page, #reader-page, #player-page, #bookmark-page, #discovery-page { display: none; background-color: #ffffff; min-height: 100vh; animation: fadeIn 0.3s ease-in-out; padding-bottom: 65px; }
+        #detail-page, #profile-page, #reader-page, #player-page, #bookmark-page, #discovery-page, #updates-page { display: none; background-color: #ffffff; min-height: 100vh; animation: fadeIn 0.3s ease-in-out; padding-bottom: 65px; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 
         /* DETAIL PAGE */
@@ -364,6 +364,28 @@
         .bookmark-grid.view-list .title { font-size:14px; min-height:0; }
         .bookmark-grid.view-list .bookmark-delete-btn { top:50%; right:13px; transform:translateY(-50%); background:#fff0f0; color:#e64c5f; box-shadow:none; }
 
+        /* Update feed & read progress */
+        #updates-page { background:#f8f9fc; }
+        .updates-hero { padding:22px 18px 16px; background:linear-gradient(135deg,#5b5cf0,#7c5df5); color:#fff; }
+        .updates-hero h2 { font-size:22px; letter-spacing:-.5px; }
+        .updates-hero p { margin-top:5px; color:rgba(255,255,255,.78); font-size:12px; }
+        .updates-tabs { position:sticky; top:0; z-index:20; display:flex; gap:7px; padding:12px 14px; overflow-x:auto; background:rgba(248,249,252,.94); backdrop-filter:blur(16px); scrollbar-width:none; }
+        .updates-tabs::-webkit-scrollbar { display:none; }
+        .update-tab { flex:0 0 auto; padding:8px 13px; border:0; border-radius:99px; color:#74798d; background:#eceef5; font-size:11px; font-weight:750; cursor:pointer; }
+        .update-tab.active { color:#fff; background:linear-gradient(135deg,#6d5dfc,#5153e8); box-shadow:0 6px 14px rgba(91,92,240,.22); }
+        .updates-feed { display:flex; flex-direction:column; gap:11px; padding:4px 14px 20px; }
+        .update-feed-card { display:grid; grid-template-columns:72px minmax(0,1fr); gap:12px; min-height:104px; padding:10px; border-radius:17px; background:#fff; box-shadow:0 7px 20px rgba(32,37,70,.07); cursor:pointer; }
+        .update-feed-card img { width:72px; height:104px; object-fit:cover; border-radius:12px; }
+        .update-feed-info { min-width:0; display:flex; flex-direction:column; justify-content:center; }
+        .update-feed-title { padding-right:5px; font-size:13px; font-weight:800; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+        .update-feed-meta { display:flex; align-items:center; gap:7px; margin-top:6px; color:#80859a; font-size:10px; }
+        .update-feed-release { display:flex; align-items:center; justify-content:space-between; gap:8px; margin-top:10px; }
+        .update-release-btn { min-width:0; padding:7px 10px; border-radius:9px; color:var(--primary-blue); background:var(--light-blue); font-size:10px; font-weight:800; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+        .read-state { flex:0 0 auto; display:flex; align-items:center; gap:4px; color:#9a9eae; font-size:9px; font-weight:700; }
+        .read-state.is-read { color:#23a777; }
+        .chapter-item.is-read { background:#f1fbf7; }
+        .chapter-item.is-read .chapter-title::after { content:'Sudah dibaca'; display:inline-flex; margin-left:7px; padding:3px 6px; border-radius:7px; color:#16845d; background:#dff7ed; font-size:8px; vertical-align:middle; }
+
         /* Horizontal sticky alphabet: compact on mobile and never covers cards */
         .alphabet-rail { position:sticky; top:129px; left:auto; bottom:auto; width:calc(100% - 24px); height:52px; margin:8px 12px 2px; padding:7px; flex-direction:row; justify-content:flex-start; gap:5px; border-radius:17px; overflow-x:auto; overflow-y:hidden; scroll-snap-type:x proximity; }
         #discovery-page.alphabet-active .discovery-grid { padding-left:16px; }
@@ -562,6 +584,21 @@
             <div class="discovery-grid" id="discoveryGridContainer">
                 <div class="loading-text" style="grid-column: 1 / -1;"><i class="fa-solid fa-spinner fa-spin"></i> Memuat seluruh konten...</div>
             </div>
+        </div>
+
+        <!-- ================= HALAMAN UPDATE ================= -->
+        <div id="updates-page">
+            <div class="updates-hero">
+                <h2>Update Terbaru</h2>
+                <p>Chapter dan episode terbaru dari semua koleksi.</p>
+            </div>
+            <div class="updates-tabs">
+                <button class="update-tab active" data-period="all" onclick="setUpdatePeriod('all')">Semua</button>
+                <button class="update-tab" data-period="today" onclick="setUpdatePeriod('today')">Hari ini</button>
+                <button class="update-tab" data-period="yesterday" onclick="setUpdatePeriod('yesterday')">Kemarin</button>
+                <button class="update-tab" data-period="week" onclick="setUpdatePeriod('week')">Minggu ini</button>
+            </div>
+            <div class="updates-feed" id="updatesFeed"><div class="loading-text">Memuat update...</div></div>
         </div>
 
         <!-- ================= 3. HALAMAN DETAIL ================= -->
@@ -781,6 +818,9 @@
             <a class="nav-item" onclick="switchNav('discovery', this)">
                 <div class="icon-bg"><i class="fa-solid fa-compass"></i></div><span>Discovery</span>
             </a>
+            <a class="nav-item" onclick="switchNav('updates', this)">
+                <div class="icon-bg"><i class="fa-solid fa-bolt"></i></div><span>Update</span>
+            </a>
             <a class="nav-item" onclick="switchNav('bookmark', this)">
                 <div class="icon-bg"><i class="fa-solid fa-bookmark"></i></div><span>Bookmark</span>
             </a>
@@ -805,7 +845,7 @@
     <!-- SCRIPT FIREBASE & LOGIKA UTAMA -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-        import { getFirestore, collection, getDocs, getDoc, getCountFromServer, doc, query, orderBy, limit, updateDoc, increment, setDoc, deleteDoc, addDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+        import { getFirestore, collection, getDocs, getDoc, getCountFromServer, doc, query, orderBy, limit, updateDoc, increment, setDoc, deleteDoc, addDoc, serverTimestamp, runTransaction } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
         import { getAuth, onAuthStateChanged, signInWithEmailAndPassword, createUserWithEmailAndPassword, signOut } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
 
         const firebaseConfig = {
@@ -892,7 +932,7 @@
             }
             if(state.view !== 'reader' && window.readerObserver) window.readerObserver.disconnect();
             if(state.view !== 'detail') document.getElementById('detailTrailer').src = '';
-            if(['home','discovery','bookmark','profile'].includes(state.view)) window.switchNav(state.view, null, true);
+            if(['home','discovery','updates','bookmark','profile'].includes(state.view)) window.switchNav(state.view, null, true);
             else if(state.view === 'detail') await window.openDetail(state.comicId, true);
             else if(state.view === 'reader') await window.openReader(state.comicId, state.chapterId, state.chapterNum, state.pageIndex || 1, true);
             else if(state.view === 'player') await window.openPlayer(state.comicId, state.chapterId, state.chapterNum, true);
@@ -1213,13 +1253,16 @@
                             const badgeEl = document.getElementById(`slider-badge-${id}`);
                             if(badgeEl) badgeEl.innerText = "Baru";
                         }
-                        try {
-                            const commentAggregate = await getCountFromServer(collection(db, "comics", id, "comments"));
-                            window.comicsData[id].commentCount = commentAggregate.data().count || 0;
-                        } catch(commentError) {
-                            window.comicsData[id].commentCount = window.comicsData[id].commentCount || 0;
+                        if(typeof window.comicsData[id].commentCount !== 'number') {
+                            try {
+                                const commentAggregate = await getCountFromServer(collection(db, "comics", id, "comments"));
+                                window.comicsData[id].commentCount = commentAggregate.data().count || 0;
+                            } catch(commentError) {
+                                window.comicsData[id].commentCount = 0;
+                            }
                         }
-                        renderDiscoveryGrid(); 
+                        renderDiscoveryGrid();
+                        renderUpdatesFeed();
                     } catch(e) { }
                 });
 
@@ -1228,6 +1271,60 @@
             }
         }
         fetchAllComics();
+
+        // ================= UPDATE FEED & STATUS SUDAH DIBACA =================
+        window.updatePeriod = 'all';
+        function getReadChapterMap() {
+            try { return JSON.parse(localStorage.getItem('readChapterMap')) || {}; }
+            catch(e) { return {}; }
+        }
+        function isChapterRead(comicId, chapterId) {
+            return Boolean(getReadChapterMap()[`${comicId}__${chapterId}`]);
+        }
+        function markChapterRead(comicId, chapterId) {
+            if(!comicId || !chapterId) return;
+            const map = getReadChapterMap();
+            map[`${comicId}__${chapterId}`] = Date.now();
+            localStorage.setItem('readChapterMap', JSON.stringify(map));
+        }
+        window.setUpdatePeriod = function(period) {
+            window.updatePeriod = ['all','today','yesterday','week'].includes(period) ? period : 'all';
+            document.querySelectorAll('.update-tab').forEach(btn => btn.classList.toggle('active', btn.dataset.period === window.updatePeriod));
+            renderUpdatesFeed();
+        }
+        function matchesUpdatePeriod(timestamp, period) {
+            if(period === 'all') return true;
+            const ms = getTimeValue(timestamp);
+            if(!ms) return period === 'all';
+            const now = new Date();
+            const startToday = new Date(now.getFullYear(), now.getMonth(), now.getDate()).getTime();
+            if(period === 'today') return ms >= startToday;
+            if(period === 'yesterday') return ms >= startToday - 86400000 && ms < startToday;
+            if(period === 'week') return ms >= startToday - (7 * 86400000);
+            return true;
+        }
+        function renderUpdatesFeed() {
+            const container = document.getElementById('updatesFeed');
+            if(!container) return;
+            const updates = [];
+            Object.entries(window.comicsData).forEach(([comicId, comic]) => {
+                (comic.recentChapters || []).forEach(ch => updates.push({ comicId, comic, chapter:ch, time:ch.updatedAt || ch.updateDate || ch.createdAt || '' }));
+            });
+            updates.sort((a,b) => getTimeValue(b.time) - getTimeValue(a.time));
+            const filtered = updates.filter(item => matchesUpdatePeriod(item.time, window.updatePeriod));
+            container.innerHTML = filtered.map(({comicId,comic,chapter,time}) => {
+                const isVideo = comic.format === 'film' || /film|anime|series/i.test(comic.type || '');
+                const fullMovie = Number(chapter.chapterNumber) === 1 && chapter.title === 'Full Movie';
+                const releaseLabel = fullMovie ? 'Full Movie' : `${isVideo ? 'Episode' : 'Chapter'} ${chapter.chapterNumber}`;
+                const read = isChapterRead(comicId, chapter.id);
+                return `<div class="update-feed-card" onclick="handleMediaOpen('${comicId}','${chapter.id}','${chapter.chapterNumber}')">
+                    <img src="${comic.coverUrl}" loading="lazy" onerror="this.src='https://placehold.co/72x104?text=Cover'">
+                    <div class="update-feed-info"><div class="update-feed-title">${comic.title}</div>
+                    <div class="update-feed-meta"><span>${comic.type || (isVideo ? 'Video' : 'Komik')}</span><span>•</span><span>${formatRelativeUpdateTime(time)}</span></div>
+                    <div class="update-feed-release"><span class="update-release-btn">${releaseLabel}${chapter.title && !fullMovie ? ' — ' + chapter.title : ''}</span><span class="read-state ${read ? 'is-read' : ''}"><i class="fa-solid ${read ? 'fa-circle-check' : 'fa-circle'}"></i>${read ? 'Dibaca' : 'Belum'}</span></div></div>
+                </div>`;
+            }).join('') || '<div class="empty-history">Belum ada update pada periode ini.</div>';
+        }
 
         // ================= DISCOVERY: VIEW & FILTER =================
         window.discoveryView = localStorage.getItem('discoveryView') || '2';
@@ -1483,6 +1580,7 @@
         // ================= FITUR HISTORY & LANJUT BACA =================
         window.saveReadingProgress = async function(comicId, chapterId, chapterNum, pageIndex = 1) {
             if (!comicId) return;
+            if(chapterId) markChapterRead(comicId, chapterId);
             const comicData = window.comicsData[comicId] || {};
             const title = comicData.title || "Konten";
             const coverUrl = comicData.coverUrl || "";
@@ -1510,6 +1608,7 @@
                 } catch(e) { }
             }
             renderReadingHistory();
+            renderUpdatesFeed();
         }
 
         async function renderReadingHistory() {
@@ -1790,6 +1889,10 @@
                     text: text,
                     timestamp: serverTimestamp()
                 });
+                try {
+                    await updateDoc(doc(db, "comics", comicId), { commentCount: increment(1) });
+                    if(window.comicsData[comicId]) window.comicsData[comicId].commentCount = (window.comicsData[comicId].commentCount || 0) + 1;
+                } catch(counterError) {}
 
                 textInput.value = "";
                 btn.innerText = "Kirim"; btn.disabled = false;
@@ -1831,30 +1934,34 @@
                     else { s.className = 'fa-regular fa-star'; }
                 });
 
-                await setDoc(doc(db, "comics", comicId, "ratings", auth.currentUser.uid), { 
-                    rating: starValue,
-                    updatedAt: serverTimestamp()
-                });
-                
                 const comicRef = doc(db, "comics", comicId);
-                const cSnap = await getDoc(comicRef);
-                if(cSnap.exists()) {
-                    let rCount = cSnap.data().ratingCount || 0;
-                    let rTotal = cSnap.data().ratingTotal || 0;
-                    
-                    await updateDoc(comicRef, { 
-                        ratingCount: increment(1), 
-                        ratingTotal: increment(starValue) 
-                    });
-                    
-                    const newCount = rCount + 1;
-                    const newAvg = ((rTotal + starValue) / newCount).toFixed(1);
-                    document.getElementById('detailAvgRating').innerText = newAvg;
-                    document.getElementById('detailCountRating').innerText = `(${newCount})`;
-                    
-                    window.showToast(`Berhasil! Kamu memberikan rating ${starValue} bintang.`);
-                }
+                const ratingRef = doc(db, "comics", comicId, "ratings", auth.currentUser.uid);
+                const result = await runTransaction(db, async transaction => {
+                    const [comicSnap, oldRatingSnap] = await Promise.all([transaction.get(comicRef), transaction.get(ratingRef)]);
+                    if(!comicSnap.exists()) throw new Error('Konten tidak ditemukan');
+                    const comicData = comicSnap.data();
+                    const oldRating = oldRatingSnap.exists() ? Number(oldRatingSnap.data().rating || 0) : 0;
+                    const oldCount = Number(comicData.ratingCount || 0);
+                    const oldTotal = Number(comicData.ratingTotal || 0);
+                    const newCount = oldRatingSnap.exists() ? oldCount : oldCount + 1;
+                    const newTotal = oldTotal - oldRating + starValue;
+                    transaction.set(ratingRef, { rating:starValue, updatedAt:serverTimestamp() });
+                    transaction.update(comicRef, { ratingCount:newCount, ratingTotal:newTotal });
+                    return { newCount, newTotal };
+                });
+                const newAvg = result.newCount ? (result.newTotal / result.newCount).toFixed(1) : '0.0';
+                document.getElementById('detailAvgRating').innerText = newAvg;
+                document.getElementById('detailCountRating').innerText = `(${result.newCount})`;
+                window.comicsData[comicId].ratingCount = result.newCount;
+                window.comicsData[comicId].ratingTotal = result.newTotal;
+                window.showToast(`Rating ${starValue} bintang berhasil disimpan.`);
             } catch(e) { window.showToast("Gagal menyimpan rating. Cek Rules Firebase."); }
+        }
+
+        function canCountView(comicId) {
+            const key = `lastView_${comicId}`;
+            const last = Number(localStorage.getItem(key) || 0);
+            return { allowed:Date.now() - last > 6 * 60 * 60 * 1000, key };
         }
 
         // ================= HALAMAN DETAIL UTAMA =================
@@ -1872,9 +1979,11 @@
                 
                 try {
                     const comicRef = doc(db, "comics", comicId);
-                    if(!fromHistory) {
+                    const viewGate = canCountView(comicId);
+                    if(!fromHistory && viewGate.allowed) {
                         await updateDoc(comicRef, { views: increment(1) });
                         window.comicsData[comicId].views = (data.views || 0) + 1;
+                        localStorage.setItem(viewGate.key, String(Date.now()));
                     }
                 } catch(e) {}
 
@@ -1989,8 +2098,9 @@
                     const title = ch.title && ch.title !== "Full Movie" ? `- ${ch.title}` : '';
                     const titleDisplay = ch.chapterNumber === 1 && ch.title === "Full Movie" ? "Full Movie" : `${chapterPrefix} ${ch.chapterNumber} ${title}`;
                     
+                    const readClass = isChapterRead(comicId, doc.id) ? 'is-read' : '';
                     chapterHTML += `
-                        <li class="chapter-item" onclick="handleMediaOpen('${comicId}', '${doc.id}', '${ch.chapterNumber}')">
+                        <li class="chapter-item ${readClass}" onclick="handleMediaOpen('${comicId}', '${doc.id}', '${ch.chapterNumber}')">
                             <div class="chapter-info">
                                 <span class="chapter-title">${titleDisplay}</span>
                                 <span class="chapter-date">${date}</span>
@@ -2155,6 +2265,7 @@
             });
             document.getElementById(pageId + '-page').style.display = 'block';
             document.getElementById('mainBottomNav').style.display = 'flex';
+            if(pageId === 'updates') renderUpdatesFeed();
             
             if(element) {
                 document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
@@ -2163,8 +2274,9 @@
                 document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
                 if(pageId === 'home') document.querySelectorAll('.nav-item')[0].classList.add('active');
                 if(pageId === 'discovery') document.querySelectorAll('.nav-item')[1].classList.add('active');
-                if(pageId === 'bookmark') document.querySelectorAll('.nav-item')[2].classList.add('active');
-                if(pageId === 'profile') document.querySelectorAll('.nav-item')[3].classList.add('active');
+                if(pageId === 'updates') document.querySelectorAll('.nav-item')[2].classList.add('active');
+                if(pageId === 'bookmark') document.querySelectorAll('.nav-item')[3].classList.add('active');
+                if(pageId === 'profile') document.querySelectorAll('.nav-item')[4].classList.add('active');
             }
             window.scrollTo(0,0);
         }

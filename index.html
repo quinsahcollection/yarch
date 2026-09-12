@@ -3,8 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Komik & Anime — Catalog V6</title>
-    <!-- BUILD: CATALOG-V6 | recent releases + quick bookmark + bookmark layouts -->
+    <title>Komik & Anime — Sorting V7</title>
+    <!-- BUILD: SORTING-V7 | discovery sorting + comment aggregation -->
     <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <!-- Google Fonts -->
@@ -294,13 +294,24 @@
         .quick-bookmark-btn.active { color:#fff; border-color:transparent; background:linear-gradient(135deg,#6d5dfc,#5153e8); }
         .recent-releases { display:none; }
         .discovery-toolbar { position:sticky; top:68px; z-index:90; display:flex; align-items:center; gap:10px; padding:12px 16px; background:rgba(248,249,252,.94); backdrop-filter:blur(16px); -webkit-backdrop-filter:blur(16px); border-bottom:1px solid var(--border-color); }
-        .catalog-count { flex:1; color:var(--text-gray); font-size:11px; font-weight:600; }
+        .catalog-count { flex:1; min-width:0; color:var(--text-gray); font-size:11px; font-weight:600; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
         .view-switcher { display:flex; gap:3px; padding:3px; border-radius:12px; background:#eceef5; }
         .view-btn,.filter-toggle-btn { border:0; cursor:pointer; color:#85899a; background:transparent; }
         .view-btn { width:32px; height:32px; border-radius:9px; font-size:13px; }
         .view-btn.active { color:#fff; background:linear-gradient(135deg,#6d5dfc,#5153e8); box-shadow:0 4px 10px rgba(91,92,240,.25); }
         .filter-toggle-btn { height:38px; padding:0 13px; display:flex; align-items:center; gap:7px; border-radius:11px; color:var(--primary-blue); background:var(--light-blue); font-size:12px; font-weight:750; }
         .filter-toggle-btn.has-filter::after { content:''; width:7px; height:7px; border-radius:50%; background:var(--primary-orange); box-shadow:0 0 0 2px #fff; }
+        .sort-toggle-btn { position:relative; width:38px; height:38px; flex:0 0 38px; display:grid; place-items:center; border:0; border-radius:11px; color:var(--primary-blue); background:var(--light-blue); cursor:pointer; font-size:14px; }
+        .sort-toggle-btn.active::after { content:''; position:absolute; top:5px; right:5px; width:7px; height:7px; border-radius:50%; background:var(--primary-orange); box-shadow:0 0 0 2px #fff; }
+        .sort-panel { display:none; margin:2px 16px 4px; padding:8px; border-radius:18px; background:#fff; box-shadow:0 12px 32px rgba(32,37,70,.12); border:1px solid var(--border-color); }
+        .sort-panel.show { display:block; animation:fadeIn .2s ease; }
+        .sort-panel-head { display:flex; align-items:center; justify-content:space-between; padding:7px 8px 10px; }
+        .sort-panel-title { font-size:14px; font-weight:800; }
+        .sort-options { display:grid; grid-template-columns:1fr 1fr; gap:6px; }
+        .sort-option { min-width:0; display:flex; align-items:center; gap:9px; padding:10px; border:0; border-radius:11px; color:#555b72; background:#f6f7fb; cursor:pointer; text-align:left; font-size:10px; font-weight:650; }
+        .sort-option i { width:17px; color:#85899a; text-align:center; }
+        .sort-option.active { color:var(--primary-blue); background:var(--light-blue); font-weight:800; }
+        .sort-option.active i { color:var(--primary-blue); }
         .filter-panel { display:none; margin:2px 16px 4px; padding:16px; border-radius:18px; background:#fff; box-shadow:0 12px 32px rgba(32,37,70,.1); border:1px solid var(--border-color); }
         .filter-panel.show { display:block; animation:fadeIn .2s ease; }
         .filter-panel-head { display:flex; justify-content:space-between; align-items:center; margin-bottom:13px; }
@@ -317,6 +328,7 @@
         .discovery-grid.view-3 .discovery-info { padding:8px; gap:4px; }
         .discovery-grid.view-3 .discovery-title { font-size:10px; min-height:27px; }
         .discovery-grid.view-3 .discovery-stats,.discovery-grid.view-3 .discovery-latest { font-size:8.5px; }
+        .discovery-grid.view-3 .discovery-comment-stat { display:none; }
         .discovery-grid.view-3 .discovery-latest { gap:3px; padding:5px 3px; white-space:nowrap; }
         .discovery-grid.view-3 .discovery-update-date { padding-left:4px; }
         .discovery-grid.view-list { grid-template-columns:1fr; gap:11px; align-content:start; grid-auto-rows:max-content; }
@@ -486,7 +498,21 @@
                     <button class="view-btn" data-view="3" onclick="setDiscoveryView('3')" title="3 Kolom"><i class="fa-solid fa-grip"></i></button>
                     <button class="view-btn" data-view="list" onclick="setDiscoveryView('list')" title="Daftar"><i class="fa-solid fa-list"></i></button>
                 </div>
+                <button class="sort-toggle-btn" id="sortToggleBtn" onclick="toggleDiscoverySort()" title="Urutkan konten"><i class="fa-solid fa-arrow-down-wide-short"></i></button>
                 <button class="filter-toggle-btn" id="filterToggleBtn" onclick="toggleDiscoveryFilters()"><i class="fa-solid fa-sliders"></i> Filter</button>
+            </div>
+            <div class="sort-panel" id="discoverySortPanel">
+                <div class="sort-panel-head"><div class="sort-panel-title">Urutkan Konten</div><button class="filter-reset" onclick="selectDiscoverySort('newest')">Reset</button></div>
+                <div class="sort-options">
+                    <button class="sort-option active" data-sort="newest" onclick="selectDiscoverySort('newest')"><i class="fa-regular fa-clock"></i> Update terbaru</button>
+                    <button class="sort-option" data-sort="title-asc" onclick="selectDiscoverySort('title-asc')"><i class="fa-solid fa-arrow-down-a-z"></i> Judul A–Z</button>
+                    <button class="sort-option" data-sort="title-desc" onclick="selectDiscoverySort('title-desc')"><i class="fa-solid fa-arrow-down-z-a"></i> Judul Z–A</button>
+                    <button class="sort-option" data-sort="comments-desc" onclick="selectDiscoverySort('comments-desc')"><i class="fa-regular fa-comments"></i> Komentar terbanyak</button>
+                    <button class="sort-option" data-sort="rating-desc" onclick="selectDiscoverySort('rating-desc')"><i class="fa-solid fa-star"></i> Rating tertinggi</button>
+                    <button class="sort-option" data-sort="rating-asc" onclick="selectDiscoverySort('rating-asc')"><i class="fa-regular fa-star"></i> Rating terendah</button>
+                    <button class="sort-option" data-sort="views-desc" onclick="selectDiscoverySort('views-desc')"><i class="fa-solid fa-arrow-trend-up"></i> Views tertinggi</button>
+                    <button class="sort-option" data-sort="views-asc" onclick="selectDiscoverySort('views-asc')"><i class="fa-solid fa-arrow-trend-down"></i> Views terendah</button>
+                </div>
             </div>
             <div class="filter-panel" id="discoveryFilterPanel">
                 <div class="filter-panel-head">
@@ -735,7 +761,7 @@
     <!-- SCRIPT FIREBASE & LOGIKA UTAMA -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-        import { getFirestore, collection, getDocs, getDoc, doc, query, orderBy, limit, updateDoc, increment, setDoc, deleteDoc, addDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+        import { getFirestore, collection, getDocs, getDoc, getCountFromServer, doc, query, orderBy, limit, updateDoc, increment, setDoc, deleteDoc, addDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
         import { getAuth, onAuthStateChanged, signInWithEmailAndPassword, createUserWithEmailAndPassword, signOut } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
 
         const firebaseConfig = {
@@ -1075,6 +1101,12 @@
                             const badgeEl = document.getElementById(`slider-badge-${id}`);
                             if(badgeEl) badgeEl.innerText = "Baru";
                         }
+                        try {
+                            const commentAggregate = await getCountFromServer(collection(db, "comics", id, "comments"));
+                            window.comicsData[id].commentCount = commentAggregate.data().count || 0;
+                        } catch(commentError) {
+                            window.comicsData[id].commentCount = window.comicsData[id].commentCount || 0;
+                        }
                         renderDiscoveryGrid(); 
                     } catch(e) { }
                 });
@@ -1100,7 +1132,51 @@
         }
 
         window.toggleDiscoveryFilters = function() {
+            document.getElementById('discoverySortPanel')?.classList.remove('show');
             document.getElementById('discoveryFilterPanel').classList.toggle('show');
+        }
+
+        window.discoverySort = localStorage.getItem('discoverySort') || 'newest';
+        window.toggleDiscoverySort = function() {
+            document.getElementById('discoveryFilterPanel')?.classList.remove('show');
+            document.getElementById('discoverySortPanel').classList.toggle('show');
+        }
+        window.selectDiscoverySort = function(sortKey) {
+            const allowed = ['newest','title-asc','title-desc','comments-desc','rating-desc','rating-asc','views-desc','views-asc'];
+            if(!allowed.includes(sortKey)) return;
+            window.discoverySort = sortKey;
+            localStorage.setItem('discoverySort', sortKey);
+            document.querySelectorAll('.sort-option').forEach(btn => btn.classList.toggle('active', btn.dataset.sort === sortKey));
+            document.getElementById('sortToggleBtn')?.classList.toggle('active', sortKey !== 'newest');
+            document.getElementById('discoverySortPanel')?.classList.remove('show');
+            renderDiscoveryGrid(false);
+        }
+
+        function getComicRating(comic) {
+            return comic.ratingCount ? Number(comic.ratingTotal || 0) / Number(comic.ratingCount) : 0;
+        }
+
+        function getTimeValue(value) {
+            if(!value) return 0;
+            if(typeof value.toMillis === 'function') return value.toMillis();
+            if(typeof value.toDate === 'function') return value.toDate().getTime();
+            if(value instanceof Date) return value.getTime();
+            const parsed = new Date(value).getTime();
+            return Number.isNaN(parsed) ? 0 : parsed;
+        }
+
+        function sortDiscoveryEntries(entries) {
+            const sortKey = window.discoverySort || 'newest';
+            return entries.sort(([,a],[,b]) => {
+                if(sortKey === 'title-asc') return String(a.title || '').localeCompare(String(b.title || ''), 'id');
+                if(sortKey === 'title-desc') return String(b.title || '').localeCompare(String(a.title || ''), 'id');
+                if(sortKey === 'comments-desc') return Number(b.commentCount || 0) - Number(a.commentCount || 0);
+                if(sortKey === 'rating-desc') return getComicRating(b) - getComicRating(a);
+                if(sortKey === 'rating-asc') return getComicRating(a) - getComicRating(b);
+                if(sortKey === 'views-desc') return Number(b.views || 0) - Number(a.views || 0);
+                if(sortKey === 'views-asc') return Number(a.views || 0) - Number(b.views || 0);
+                return getTimeValue(b.realUpdateDate || b.createdAt) - getTimeValue(a.realUpdateDate || a.createdAt);
+            });
         }
 
         function fillFilterOptions(id, values, defaultLabel, descending = false) {
@@ -1177,8 +1253,8 @@
 
             let gridHtml = '';
             let resultCount = 0;
-            for(let id in window.comicsData) {
-                const comic = window.comicsData[id];
+            const sortedEntries = sortDiscoveryEntries(Object.entries(window.comicsData));
+            for(const [id, comic] of sortedEntries) {
                 const comicGenres = Array.isArray(comic.genres) ? comic.genres : [];
                 const releaseYear = comic.releaseDate ? String(comic.releaseDate).slice(0,4) : '';
                 if(filters.genre && !comicGenres.includes(filters.genre)) continue;
@@ -1219,6 +1295,7 @@
                             <div class="discovery-stats">
                                 <span class="discovery-rating"><i class="fa-solid fa-star"></i> ${ratingNum}</span>
                                 <span><i class="fa-regular fa-eye"></i> ${viewsCount}</span>
+                                <span class="discovery-comment-stat"><i class="fa-regular fa-comment"></i> ${comic.commentCount || 0}</span>
                             </div>
                             <div class="discovery-latest"><span>${latestText}</span><span class="discovery-update-date"><i class="fa-regular fa-calendar"></i> ${updateDateText}</span></div>
                             <div class="recent-releases">${recentRows || '<div class="recent-release-row"><span>Belum ada rilis</span></div>'}</div>
@@ -1234,6 +1311,7 @@
         }
 
         window.setDiscoveryView(window.discoveryView);
+        window.selectDiscoverySort(window.discoverySort);
 
         // ================= HERO SLIDER LOGIC =================
         let slideIndex = 0;

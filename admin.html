@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Admin Panel V17 - Manga & Anime App</title>
+    <title>Admin Panel V18 - Manga & Anime App</title>
     <!-- Google Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <!-- Font Awesome -->
@@ -458,6 +458,10 @@
                                     <input type="date" id="releaseDate" required>
                                 </div>
                                 <div class="form-group">
+                                    <label>Jadwal Update Mingguan</label>
+                                    <select id="scheduleDay"><option value="">Belum ditentukan</option><option value="1">Senin</option><option value="2">Selasa</option><option value="3">Rabu</option><option value="4">Kamis</option><option value="5">Jumat</option><option value="6">Sabtu</option><option value="0">Minggu</option></select>
+                                </div>
+                                <div class="form-group">
                                     <label>Rating Usia</label>
                                     <div style="display: flex; gap: 8px;">
                                         <select id="ageRating" style="flex-grow: 1;"><option value="">Memuat data...</option></select>
@@ -701,7 +705,7 @@
                     </div>
                 </div>
                 
-                <div id="view-pengaturan" class="admin-view"><h1 class="page-title">Update & Maintenance</h1><div class="card"><div class="app-config-grid"><div class="form-group"><label>Versi terbaru</label><input id="configLatestVersion" type="text" placeholder="17.0.0"><div class="config-help">Gunakan format angka seperti 17.0.1.</div></div><div class="form-group"><label>Judul maintenance</label><input id="configMaintenanceTitle" type="text" placeholder="Sedang dalam pemeliharaan"></div><div class="form-group full"><label>Changelog</label><textarea id="configChangelog" rows="5" placeholder="Tuliskan perubahan versi terbaru..."></textarea></div><div class="form-group full"><label>Pesan maintenance</label><textarea id="configMaintenanceMessage" rows="3" placeholder="Aplikasi akan segera kembali..."></textarea></div><div class="config-switch"><div><strong>Update wajib</strong><div class="config-help">Pengingat akan terus muncul sampai pengguna memperbarui.</div></div><input id="configUpdateRequired" type="checkbox"></div><div class="config-switch"><div><strong>Mode maintenance</strong><div class="config-help">Pengguna biasa melihat halaman maintenance; admin tetap dapat masuk.</div></div><input id="configMaintenanceMode" type="checkbox"></div><div class="full"><button class="btn-submit" onclick="saveAppConfiguration()"><i class="fa-solid fa-cloud-arrow-up"></i> Simpan Pengaturan Aplikasi</button><div class="config-status" id="configStatus"></div></div></div></div></div>
+                <div id="view-pengaturan" class="admin-view"><h1 class="page-title">Update & Maintenance</h1><div class="card"><div class="app-config-grid"><div class="form-group"><label>Versi terbaru</label><input id="configLatestVersion" type="text" placeholder="18.0.0"><div class="config-help">Gunakan format angka seperti 18.0.1.</div></div><div class="form-group"><label>Judul maintenance</label><input id="configMaintenanceTitle" type="text" placeholder="Sedang dalam pemeliharaan"></div><div class="form-group full"><label>Changelog</label><textarea id="configChangelog" rows="5" placeholder="Tuliskan perubahan versi terbaru..."></textarea></div><div class="form-group full"><label>Pesan maintenance</label><textarea id="configMaintenanceMessage" rows="3" placeholder="Aplikasi akan segera kembali..."></textarea></div><div class="config-switch"><div><strong>Update wajib</strong><div class="config-help">Pengingat akan terus muncul sampai pengguna memperbarui.</div></div><input id="configUpdateRequired" type="checkbox"></div><div class="config-switch"><div><strong>Mode maintenance</strong><div class="config-help">Pengguna biasa melihat halaman maintenance; admin tetap dapat masuk.</div></div><input id="configMaintenanceMode" type="checkbox"></div><div class="full"><button class="btn-submit" onclick="saveAppConfiguration()"><i class="fa-solid fa-cloud-arrow-up"></i> Simpan Pengaturan Aplikasi</button><div class="config-status" id="configStatus"></div></div></div></div></div>
                 <div id="view-moderasi" class="admin-view"><h1 class="page-title">Moderasi Komentar</h1><div class="moderation-toolbar"><button class="mod-btn primary" onclick="loadModeration()"><i class="fa-solid fa-rotate"></i> Muat ulang</button><button class="mod-btn" onclick="setModerationFilter('all')">Semua</button><button class="mod-btn" onclick="setModerationFilter('reported')">Dilaporkan</button><button class="mod-btn" onclick="setModerationFilter('pinned')">Disematkan</button><span id="moderationCount" class="moderation-meta"></span></div><div id="moderationList"><div class="loading-text">Memuat moderasi...</div></div></div>
 
             </div>
@@ -1078,6 +1082,7 @@
                     document.getElementById('type').value = data.type || '';
                     document.getElementById('status').value = data.status || '';
                     document.getElementById('releaseDate').value = data.releaseDate || '';
+                    document.getElementById('scheduleDay').value = data.scheduleDay ?? '';
                     document.getElementById('ageRating').value = data.ageRating || '';
                     document.getElementById('synopsis').value = data.synopsis || '';
                     
@@ -1168,6 +1173,7 @@
                     status: document.getElementById('status').value,
                     ageRating: document.getElementById('ageRating').value,
                     releaseDate: document.getElementById('releaseDate').value,
+                    scheduleDay: document.getElementById('scheduleDay').value === '' ? null : Number(document.getElementById('scheduleDay').value),
                     genres: genres,
                     synopsis: document.getElementById('synopsis').value,
                     coverUrl: finalCoverUrl,
@@ -1709,10 +1715,10 @@
 
         window.loadAppConfiguration=async function(){
             const status=document.getElementById('configStatus');
-            try{const snap=await getDoc(doc(db,'settings','appConfig'));const c=snap.exists()?snap.data():{};document.getElementById('configLatestVersion').value=c.latestVersion||'17.0.0';document.getElementById('configChangelog').value=c.changelog||'';document.getElementById('configMaintenanceTitle').value=c.maintenanceTitle||'Sedang dalam pemeliharaan';document.getElementById('configMaintenanceMessage').value=c.maintenanceMessage||'Kami sedang melakukan peningkatan agar aplikasi menjadi lebih baik. Silakan coba kembali beberapa saat lagi.';document.getElementById('configUpdateRequired').checked=c.updateRequired===true;document.getElementById('configMaintenanceMode').checked=c.maintenanceMode===true;if(status)status.className='config-status';}catch(e){if(status){status.textContent='Gagal memuat pengaturan aplikasi.';status.className='config-status show error';}}
+            try{const snap=await getDoc(doc(db,'settings','appConfig'));const c=snap.exists()?snap.data():{};document.getElementById('configLatestVersion').value=c.latestVersion||'18.0.0';document.getElementById('configChangelog').value=c.changelog||'';document.getElementById('configMaintenanceTitle').value=c.maintenanceTitle||'Sedang dalam pemeliharaan';document.getElementById('configMaintenanceMessage').value=c.maintenanceMessage||'Kami sedang melakukan peningkatan agar aplikasi menjadi lebih baik. Silakan coba kembali beberapa saat lagi.';document.getElementById('configUpdateRequired').checked=c.updateRequired===true;document.getElementById('configMaintenanceMode').checked=c.maintenanceMode===true;if(status)status.className='config-status';}catch(e){if(status){status.textContent='Gagal memuat pengaturan aplikasi.';status.className='config-status show error';}}
         }
         window.saveAppConfiguration=async function(){
-            const status=document.getElementById('configStatus');const version=document.getElementById('configLatestVersion').value.trim().replace(/^v/i,'');if(!/^\d+\.\d+\.\d+$/.test(version)){status.textContent='Format versi harus seperti 17.0.1';status.className='config-status show error';return;}
+            const status=document.getElementById('configStatus');const version=document.getElementById('configLatestVersion').value.trim().replace(/^v/i,'');if(!/^\d+\.\d+\.\d+$/.test(version)){status.textContent='Format versi harus seperti 18.0.1';status.className='config-status show error';return;}
             status.textContent='Menyimpan...';status.className='config-status show';
             try{await setDoc(doc(db,'settings','appConfig'),{latestVersion:version,changelog:document.getElementById('configChangelog').value.trim(),maintenanceTitle:document.getElementById('configMaintenanceTitle').value.trim()||'Sedang dalam pemeliharaan',maintenanceMessage:document.getElementById('configMaintenanceMessage').value.trim()||'Kami sedang melakukan peningkatan aplikasi.',updateRequired:document.getElementById('configUpdateRequired').checked,maintenanceMode:document.getElementById('configMaintenanceMode').checked,updatedAt:serverTimestamp(),updatedBy:auth.currentUser?.uid||''},{merge:true});status.textContent='Pengaturan berhasil disimpan. Aplikasi pengguna akan memeriksanya saat dibuka atau kembali aktif.';status.className='config-status show success';}catch(e){status.textContent='Gagal menyimpan. Pastikan akun ini adalah admin pada Firestore Rules.';status.className='config-status show error';}
         }

@@ -3,12 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Komik & Anime — Update Manager V17</title>
+    <title>Komik & Anime — Update Manager V18</title>
     <meta name="theme-color" content="#625af2">
     <meta name="description" content="Aplikasi komik, manga, anime dan film dengan update terbaru.">
     <meta name="referrer" content="strict-origin-when-cross-origin">
-    <link rel="manifest" href="manifest-v17.webmanifest">
-    <link rel="icon" href="app-icon-v17.svg" type="image/svg+xml">
+    <link rel="manifest" href="manifest-v18.webmanifest">
+    <link rel="icon" href="app-icon-v18.svg" type="image/svg+xml">
     <link rel="preconnect" href="https://www.gstatic.com" crossorigin>
     <link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin>
     <!-- BUILD: FOUNDATION-V10 | updates + read state + safe rating/views/comment+ comment counter -->
@@ -515,7 +515,7 @@
         .toast-notification { max-width:calc(100% - 32px); width:max-content; text-align:center; bottom:calc(86px + env(safe-area-inset-bottom)); }
         @media (min-width:600px) { .app-container{margin:22px 0;min-height:calc(100vh - 44px);border-radius:28px;overflow:hidden}.bottom-nav{bottom:22px;border-radius:0 0 28px 28px}.detail-top-nav,.reader-header,.player-header{top:22px;border-radius:28px 28px 0 0} }
         @media (max-width:370px) { .slider-container{height:305px}.hero-content{width:61%}.hero-synopsis{-webkit-line-clamp:2}.manga-card-simple{min-width:124px;width:124px}.card-poster-wrap{height:168px}.discovery-toolbar{gap:7px;padding:10px 12px}.catalog-count{font-size:10px}.filter-toggle-btn{padding:0 10px}.discovery-grid{padding:12px;gap:10px}.discovery-grid.view-3{gap:7px}.discovery-grid.view-3 .discovery-card img{height:138px}#discovery-page.alphabet-active .discovery-grid{padding-left:12px}.alphabet-rail{width:calc(100% - 20px);margin-left:10px;margin-right:10px} }
-        /* V17: rekomendasi personal & smart search */
+        /* V18: rekomendasi personal & smart search */
         .smart-search-head{padding:12px 14px 7px;font-size:11px;font-weight:800;color:#8b91a7;text-transform:uppercase;letter-spacing:.07em}
         .smart-search-chips{display:flex;gap:7px;flex-wrap:wrap;padding:3px 14px 13px}
         .smart-chip{border:0;background:#f0efff;color:#5950d8;border-radius:999px;padding:8px 11px;font-size:11px;font-weight:700;cursor:pointer}
@@ -526,6 +526,11 @@
         .similar-block{margin-top:24px;padding-top:20px;border-top:1px solid #eceef5}
         .similar-block .horizontal-scroll{margin:0 -18px;padding:3px 18px 10px}
         .smart-empty{width:100%;padding:20px;border:1px dashed #dcd9ff;border-radius:14px;background:#faf9ff;text-align:center;color:#777b90;font-size:12px;line-height:1.55}
+        /* V18: koleksi, ranking, jadwal, dan notifikasi pengikut */
+        .home-bell{position:relative;cursor:pointer}.home-notification-count{position:absolute;right:-7px;top:-8px;min-width:17px;height:17px;padding:0 4px;border-radius:9px;background:#f04461;color:#fff;font-size:9px;font-weight:800;display:none;place-items:center;border:2px solid #fff}.home-notification-count.show{display:grid}
+        .home-feature-section{background:#fff}.ranking-scroll{display:flex;gap:10px;overflow-x:auto;scrollbar-width:none;padding-bottom:8px}.ranking-scroll::-webkit-scrollbar{display:none}.ranking-card{min-width:210px;border-radius:17px;padding:13px;background:linear-gradient(135deg,#242842,#5a50d8);color:#fff;display:flex;gap:12px;cursor:pointer;box-shadow:0 9px 23px rgba(58,52,141,.18)}.ranking-card:nth-child(2n){background:linear-gradient(135deg,#172c3c,#168e8c)}.ranking-number{font-size:28px;font-weight:900;opacity:.55;align-self:center}.ranking-card img{width:55px;height:78px;border-radius:9px;object-fit:cover}.ranking-info{min-width:0;display:flex;flex-direction:column;justify-content:center}.ranking-title{font-size:12px;font-weight:800;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.ranking-meta{font-size:10px;opacity:.78;margin-top:6px}.schedule-days,.library-tabs{display:flex;gap:7px;overflow-x:auto;scrollbar-width:none;padding-bottom:11px}.schedule-day,.library-tab{border:1px solid #e5e5f0;background:#fff;color:#777c91;border-radius:999px;padding:8px 12px;white-space:nowrap;font-size:10px;font-weight:800;cursor:pointer}.schedule-day.active,.library-tab.active{background:#625af2;color:#fff;border-color:#625af2;box-shadow:0 5px 13px rgba(98,90,242,.22)}
+        .collection-action-box{margin:0 0 18px;padding:13px;border-radius:15px;background:linear-gradient(135deg,#f2f0ff,#fafaff);border:1px solid #e4e1ff;display:flex;align-items:center;gap:10px}.collection-action-box i{color:#625af2}.collection-action-box>div{flex:1}.collection-action-box strong{display:block;font-size:12px}.collection-action-box small{color:#85899c;font-size:10px}.collection-select{border:1px solid #dcd9f7;background:#fff;border-radius:10px;padding:9px 8px;color:#4c466f;font-size:10px;font-weight:700;max-width:130px}
+        .library-status-badge{position:absolute;left:7px;bottom:7px;background:rgba(38,34,77,.84);color:#fff;padding:4px 7px;border-radius:7px;font-size:9px;font-weight:800;z-index:4}.bookmark-grid .manga-card-simple{position:relative}
     </style>
 </head>
 <body>
@@ -542,8 +547,8 @@
                     <i class="fa-solid fa-magnifying-glass"></i>
                     <input type="text" id="searchInput" placeholder="Cari judul, manga, atau anime...">
                 </div>
-                <div class="header-icons">
-                    <i class="fa-regular fa-bell" aria-label="Notifikasi"></i>
+                <div class="header-icons home-bell" onclick="switchNav('updates')">
+                    <i class="fa-regular fa-bell" aria-label="Notifikasi"></i><span class="home-notification-count" id="homeNotificationCount">0</span>
                 </div>
             </header>
             
@@ -576,6 +581,22 @@
                         <a class="see-all" onclick="refreshRecommendations()"><i class="fa-solid fa-rotate"></i></a>
                     </div>
                     <div class="horizontal-scroll" id="recommendationContainer"><div class="loading-text"><i class="fa-solid fa-spinner fa-spin"></i> Menganalisis pilihan...</div></div>
+                </section>
+
+                <section class="section-container home-feature-section">
+                    <div class="section-header"><div class="section-title-wrapper"><i class="fa-solid fa-fire" style="color:#ff5b45"></i><div><h2 class="section-title">Trending Sekarang</h2><div class="recommendation-subtitle">Ramai dilihat dan dibicarakan</div></div></div><a class="see-all" onclick="openRankingDiscovery()">Lihat Semua</a></div>
+                    <div class="ranking-scroll" id="trendingContainer"><div class="loading-text">Memuat trending...</div></div>
+                </section>
+
+                <section class="section-container home-feature-section">
+                    <div class="section-header"><div class="section-title-wrapper"><i class="fa-solid fa-trophy" style="color:#f2a700"></i><div><h2 class="section-title">Ranking Mingguan</h2><div class="recommendation-subtitle">Peringkat berdasarkan rating dan aktivitas</div></div></div></div>
+                    <div class="ranking-scroll" id="weeklyRankingContainer"><div class="loading-text">Menghitung ranking...</div></div>
+                </section>
+
+                <section class="section-container home-feature-section">
+                    <div class="section-header"><div class="section-title-wrapper"><i class="fa-regular fa-calendar-check" style="color:#625af2"></i><div><h2 class="section-title">Jadwal Rilis</h2><div class="recommendation-subtitle">Jadwal dari update katalog terbaru</div></div></div></div>
+                    <div class="schedule-days" id="scheduleDayTabs"></div>
+                    <div class="horizontal-scroll" id="releaseScheduleContainer"><div class="loading-text">Menyiapkan jadwal...</div></div>
                 </section>
 
                 <!-- Jadwal Hari Ini -->
@@ -706,6 +727,7 @@
                 <h3>Pengaturan Update</h3><p>Pilihan tersimpan pada perangkat ini dan dapat diubah kapan saja.</p>
                 <div class="notification-setting"><span>Ingatkan chapter baru</span><label class="switch-control"><input id="notifyComic" type="checkbox" onchange="saveNotificationSettings()"><span></span></label></div>
                 <div class="notification-setting"><span>Ingatkan episode atau film baru</span><label class="switch-control"><input id="notifyVideo" type="checkbox" onchange="saveNotificationSettings()"><span></span></label></div>
+                <div class="notification-setting"><span>Hanya judul yang saya simpan</span><label class="switch-control"><input id="notifyFollowedOnly" type="checkbox" onchange="saveNotificationSettings()"><span></span></label></div>
                 <div class="notification-setting"><span>Tandai semua sudah dilihat</span><button class="update-tab active" onclick="markAllUpdatesSeen()">Tandai</button></div>
             </div>
             <div class="updates-feed" id="updatesFeed"><div class="loading-text">Memuat update...</div></div>
@@ -748,6 +770,7 @@
 
                 <!-- TAB: DETAIL -->
                 <div class="tab-content active" id="tab-detail">
+                    <div class="collection-action-box"><i class="fa-solid fa-layer-group"></i><div><strong>Masukkan ke Koleksi</strong><small>Status membaca atau menonton tersimpan di akun</small></div><select class="collection-select" id="detailCollectionStatus" onchange="setCollectionStatus(window.currentActiveComicId,this.value)"><option value="">Belum disimpan</option><option value="want">Ingin dibaca</option><option value="reading">Sedang dibaca</option><option value="completed">Selesai</option><option value="paused">Ditunda</option></select></div>
                     <h3 class="synopsis-title">Sinopsis</h3>
                     <p class="synopsis-text" id="detailSynopsis">Memuat sinopsis...</p>
                     
@@ -877,7 +900,7 @@
 
         <!-- ================= 6. HALAMAN BOOKMARK ================= -->
         <div id="bookmark-page">
-            <div class="page-header">Bookmark Saya</div>
+            <div class="page-header">Koleksi Saya</div>
             <div class="bookmark-toolbar">
                 <span class="bookmark-toolbar-label" id="bookmarkCountLabel">Koleksi tersimpan</span>
                 <div class="view-switcher" aria-label="Pilih tampilan bookmark">
@@ -886,6 +909,7 @@
                     <button class="view-btn bookmark-view-btn" data-bookmark-view="list" onclick="setBookmarkView('list')" title="Daftar"><i class="fa-solid fa-list"></i></button>
                 </div>
             </div>
+            <div class="library-tabs" style="padding:0 15px 12px"><button class="library-tab active" data-library-filter="all" onclick="setLibraryFilter('all')">Semua</button><button class="library-tab" data-library-filter="want" onclick="setLibraryFilter('want')">Ingin dibaca</button><button class="library-tab" data-library-filter="reading" onclick="setLibraryFilter('reading')">Sedang dibaca</button><button class="library-tab" data-library-filter="completed" onclick="setLibraryFilter('completed')">Selesai</button><button class="library-tab" data-library-filter="paused" onclick="setLibraryFilter('paused')">Ditunda</button></div>
             <div class="bookmark-grid" id="bookmarkContainer">
                 <div class="empty-history">Anda belum login atau belum ada bookmark.</div>
             </div>
@@ -936,7 +960,7 @@
                 <ul class="user-menu-list" style="margin-top: 15px;">
                     <li class="install-app-item" id="installAppUser" hidden onclick="installApp()"><div class="left-info"><i class="fa-solid fa-mobile-screen-button"></i> Pasang Aplikasi</div><i class="fa-solid fa-download" style="font-size:12px;color:#94a3b8"></i></li>
                     <li onclick="switchNav('bookmark')">
-                        <div class="left-info"><i class="fa-solid fa-bookmark"></i> Kelola Bookmark</div>
+                        <div class="left-info"><i class="fa-solid fa-layer-group"></i> Kelola Koleksi Saya</div>
                         <i class="fa-solid fa-chevron-right" style="font-size: 12px; color: #94a3b8;"></i>
                     </li>
                     <li class="logout-item" onclick="doLogout()">
@@ -945,7 +969,7 @@
                     </li>
                 </ul>
             </div>
-            <div class="app-version-card"><div><strong>Versi Aplikasi</strong><span id="currentVersionLabel">V17.0.0 • Memeriksa pembaruan...</span></div><button class="version-check-btn" onclick="checkAppConfiguration(true)"><i class="fa-solid fa-rotate"></i> Periksa</button></div>
+            <div class="app-version-card"><div><strong>Versi Aplikasi</strong><span id="currentVersionLabel">V18.0.0 • Memeriksa pembaruan...</span></div><button class="version-check-btn" onclick="checkAppConfiguration(true)"><i class="fa-solid fa-rotate"></i> Periksa</button></div>
         </div>
 
         <!-- ================= BOTTOM NAVIGATION (DITAMBAHKAN DISCOVERY) ================= -->
@@ -960,14 +984,14 @@
                 <div class="icon-bg"><i class="fa-solid fa-bolt"></i></div><span>Update</span>
             </a>
             <a class="nav-item" onclick="switchNav('bookmark', this)">
-                <div class="icon-bg"><i class="fa-solid fa-bookmark"></i></div><span>Bookmark</span>
+                <div class="icon-bg"><i class="fa-solid fa-layer-group"></i></div><span>Koleksi</span>
             </a>
             <a class="nav-item" onclick="switchNav('profile', this)">
                 <div class="icon-bg"><i class="fa-solid fa-user"></i></div><span>Profil</span>
             </a>
         </nav>
     </div>
-    <div class="update-modal-backdrop" id="updateModal"><div class="update-sheet"><div class="update-icon"><i class="fa-solid fa-cloud-arrow-down"></i></div><h2>Versi baru tersedia</h2><p>Pembaruan aplikasi sudah siap. Proses ini akan membersihkan cache antarmuka lama tanpa menghapus akun, bookmark, atau riwayat Anda.</p><div class="update-version-line"><span id="updateCurrentVersion">V17.0.0</span><i class="fa-solid fa-arrow-right"></i><span id="updateLatestVersion">V17.0.1</span></div><div class="update-changelog" id="updateChangelog">Peningkatan stabilitas dan tampilan.</div><div class="update-actions"><button class="update-action update-later" onclick="dismissAppUpdate()">Nanti</button><button class="update-action update-now" onclick="applyAppUpdate()"><i class="fa-solid fa-bolt"></i> Perbarui Sekarang</button></div></div></div>
+    <div class="update-modal-backdrop" id="updateModal"><div class="update-sheet"><div class="update-icon"><i class="fa-solid fa-cloud-arrow-down"></i></div><h2>Versi baru tersedia</h2><p>Pembaruan aplikasi sudah siap. Proses ini akan membersihkan cache antarmuka lama tanpa menghapus akun, bookmark, atau riwayat Anda.</p><div class="update-version-line"><span id="updateCurrentVersion">V18.0.0</span><i class="fa-solid fa-arrow-right"></i><span id="updateLatestVersion">V18.0.1</span></div><div class="update-changelog" id="updateChangelog">Peningkatan stabilitas dan tampilan.</div><div class="update-actions"><button class="update-action update-later" onclick="dismissAppUpdate()">Nanti</button><button class="update-action update-now" onclick="applyAppUpdate()"><i class="fa-solid fa-bolt"></i> Perbarui Sekarang</button></div></div></div>
 
     <div class="modern-modal-backdrop" id="modernConfirmModal" role="dialog" aria-modal="true" aria-labelledby="modernConfirmTitle">
         <div class="modern-modal">
@@ -999,7 +1023,7 @@
         const app = initializeApp(firebaseConfig);
         const db = getFirestore(app);
         const auth = getAuth(app);
-        const APP_VERSION = '17.0.0';
+        const APP_VERSION = '18.0.0';
         const ADMIN_UID = 'dWUWpKAWQRRxMOzjzaOA3zXWZLp2';
 
         window.comicsData = {};
@@ -1007,6 +1031,9 @@
         window.currentActiveChapterId = null;
         window.currentActiveChapterNum = null;
         window.userBookmarks = [];
+        window.userLibrary = {};
+        window.libraryFilter = 'all';
+        window.scheduleDay = new Date().getDay();
         window.isAuthModeLogin = true;
         window.readerObserver = null; 
         window.sliderInterval = null;
@@ -1139,14 +1166,14 @@
             const button=document.querySelector('.update-now');button.disabled=true;button.innerHTML='<i class="fa-solid fa-spinner fa-spin"></i> Memperbarui...';
             try{if('serviceWorker'in navigator){const regs=await navigator.serviceWorker.getRegistrations();await Promise.all(regs.map(reg=>reg.unregister()));}if('caches'in window){const keys=await caches.keys();await Promise.all(keys.map(key=>caches.delete(key)));}localStorage.removeItem('dismissedAppVersion');const url=new URL(location.href);url.searchParams.set('appVersion',Date.now());location.replace(url.href);}catch(e){button.disabled=false;button.innerHTML='<i class="fa-solid fa-bolt"></i> Perbarui Sekarang';window.showToast('Pembaruan gagal. Silakan muat ulang halaman.');}
         }
-        if('serviceWorker' in navigator && location.protocol !== 'file:') navigator.serviceWorker.register('./sw-v17.js',{updateViaCache:'none'}).then(reg=>reg.update()).catch(() => {});
+        if('serviceWorker' in navigator && location.protocol !== 'file:') navigator.serviceWorker.register('./sw-v18.js',{updateViaCache:'none'}).then(reg=>reg.update()).catch(() => {});
         document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible')window.checkAppConfiguration(false);});
 
         // ================= FITUR PENCARIAN (SEARCH) DINAMIS =================
         const searchInput = document.getElementById('searchInput');
         const searchResults = document.getElementById('searchResults');
 
-        const SEARCH_HISTORY_KEY = 'smartSearchHistoryV17';
+        const SEARCH_HISTORY_KEY = 'smartSearchHistoryV18';
         function normalizeSearch(value) { return String(value || '').normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase().replace(/[^a-z0-9]+/g,' ').trim(); }
         function editDistance(a,b) { const row=Array.from({length:b.length+1},(_,i)=>i); for(let i=1;i<=a.length;i++){let prev=row[0];row[0]=i;for(let j=1;j<=b.length;j++){const old=row[j];row[j]=Math.min(row[j]+1,row[j-1]+1,prev+(a[i-1]===b[j-1]?0:1));prev=old;}}return row[b.length]; }
         function fuzzySimilarity(a,b) { if(!a||!b)return 0;if(a.includes(b)||b.includes(a))return .88;return 1-editDistance(a,b)/Math.max(a.length,b.length); }
@@ -1204,6 +1231,7 @@
                 document.getElementById('commentInputArea').style.display = 'none';
 
                 window.userBookmarks = [];
+                window.userLibrary = {};
                 renderBookmarks();
                 renderReadingHistory();
                 renderDiscoveryGrid(false);
@@ -1265,6 +1293,16 @@
                 bmSnap.forEach(doc => window.userBookmarks.push(doc.id));
                 localStorage.setItem('localBookmarks_' + uid, JSON.stringify(window.userBookmarks));
             } catch(e) { }
+
+            try {
+                const librarySnap = await getDocs(collection(db,"users",uid,"library"));
+                window.userLibrary = {};
+                librarySnap.forEach(item => window.userLibrary[item.id] = item.data());
+            } catch(e) {
+                try { window.userLibrary = JSON.parse(localStorage.getItem('userLibrary_' + uid) || '{}'); } catch(error) { window.userLibrary = {}; }
+            }
+            window.userBookmarks.forEach(id => { if(!window.userLibrary[id]) window.userLibrary[id] = {comicId:id,status:'want'}; });
+            localStorage.setItem('userLibrary_' + uid, JSON.stringify(window.userLibrary));
             
             renderBookmarks();
             renderDiscoveryGrid(false);
@@ -1276,6 +1314,7 @@
             if(window.currentActiveComicId) {
                 checkBookmarkStatus(window.currentActiveComicId);
                 loadUserRating(window.currentActiveComicId);
+                updateDetailCollectionStatus(window.currentActiveComicId);
             }
         }
 
@@ -1328,6 +1367,26 @@
             const baseGenres=new Set(base.genres||[]);const items=Object.entries(window.comicsData).filter(([id])=>id!==comicId).map(([id,comic])=>{const overlap=(comic.genres||[]).filter(g=>baseGenres.has(g));let score=overlap.length*5;if(comic.type===base.type)score+=3;if(comic.format===base.format)score+=2;if(base.author&&comic.author===base.author)score+=4;return{id,comic,score,reason:overlap.length?overlap.slice(0,2).join(' • '):(comic.type||'Pilihan serupa')};}).sort((a,b)=>b.score-a.score).slice(0,6);
             container.innerHTML=items.map(x=>smartCard(x.id,x.comic,x.reason)).join('')||'<div class="smart-empty">Belum ada judul serupa.</div>';
         }
+
+        function activityScore(comic) {
+            const rating=comic.ratingCount?(comic.ratingTotal/comic.ratingCount):0;
+            return Math.log10((comic.views||0)+1)*20 + rating*8 + Math.log10((comic.commentCount||0)+1)*15 + Math.min(comic.ratingCount||0,100)/5;
+        }
+        function rankingCard(item,index) {
+            const {id,comic}=item;const rating=comic.ratingCount?(comic.ratingTotal/comic.ratingCount).toFixed(1):'Baru';
+            return `<div class="ranking-card" onclick="openDetail('${safeAttr(id)}')"><div class="ranking-number">#${index+1}</div><img src="${safeMediaUrl(comic.coverUrl)}" loading="lazy" onerror="this.src='https://placehold.co/55x78?text=Cover'"><div class="ranking-info"><div class="ranking-title">${safeText(comic.title)}</div><div class="ranking-meta"><i class="fa-solid fa-star"></i> ${rating} &nbsp; <i class="fa-regular fa-eye"></i> ${Number(comic.views||0).toLocaleString('id-ID')}</div><div class="ranking-meta">${Number(comic.commentCount||0)} komentar</div></div></div>`;
+        }
+        function renderHomeInsights() {
+            const ranked=Object.entries(window.comicsData).map(([id,comic])=>({id,comic,score:activityScore(comic)})).sort((a,b)=>b.score-a.score);
+            const trending=document.getElementById('trendingContainer'),weekly=document.getElementById('weeklyRankingContainer');
+            if(trending)trending.innerHTML=ranked.slice(0,6).map(rankingCard).join('')||'<div class="smart-empty">Belum ada data trending.</div>';
+            const weeklyRank=[...ranked].sort((a,b)=>(getTimeValue(b.comic.realUpdateDate)-getTimeValue(a.comic.realUpdateDate)) || b.score-a.score);
+            if(weekly)weekly.innerHTML=weeklyRank.slice(0,6).map(rankingCard).join('')||'<div class="smart-empty">Belum ada ranking.</div>';
+            renderReleaseSchedule();
+        }
+        window.openRankingDiscovery=function(){window.discoverySort='views-desc';switchNav('discovery');renderDiscoveryGrid(false);}
+        window.setScheduleDay=function(day){window.scheduleDay=Number(day);document.querySelectorAll('.schedule-day').forEach(x=>x.classList.toggle('active',Number(x.dataset.day)===window.scheduleDay));renderReleaseSchedule();}
+        function renderReleaseSchedule(){const tabs=document.getElementById('scheduleDayTabs'),container=document.getElementById('releaseScheduleContainer');if(!tabs||!container)return;const names=['Min','Sen','Sel','Rab','Kam','Jum','Sab'];tabs.innerHTML=names.map((name,i)=>`<button class="schedule-day ${i===window.scheduleDay?'active':''}" data-day="${i}" onclick="setScheduleDay(${i})">${name}</button>`).join('');let items=Object.entries(window.comicsData).filter(([,comic])=>{const raw=comic.releaseDay??comic.scheduleDay;if(raw!==undefined&&raw!==null){const normalized=typeof raw==='number'?raw:names.findIndex(x=>normalizeSearch(raw).startsWith(normalizeSearch(x)));return normalized===window.scheduleDay;}const time=getTimeValue(comic.realUpdateDate);return time&&new Date(time).getDay()===window.scheduleDay;});if(!items.length)items=Object.entries(window.comicsData).slice(0,6);container.innerHTML=items.slice(0,8).map(([id,comic])=>smartCard(id,comic,`Jadwal ${names[window.scheduleDay]}`)).join('')||'<div class="smart-empty">Belum ada jadwal hari ini.</div>';}
 
         async function fetchAllComics() {
             try {
@@ -1409,6 +1468,7 @@
                 renderBookmarks();
                 renderDiscoveryGrid();
                 renderRecommendations();
+                renderHomeInsights();
 
                 // Fetching Info Chapter terbaru untuk Slider & Discovery di background
                 Object.keys(window.comicsData).forEach(async (id) => {
@@ -1449,6 +1509,7 @@
                         renderDiscoveryGrid();
                         renderUpdatesFeed();
                         renderRecommendations();
+                        renderHomeInsights();
                     } catch(e) { }
                 });
 
@@ -1460,14 +1521,15 @@
 
         // ================= UPDATE FEED & STATUS SUDAH DIBACA =================
         window.updatePeriod = 'all';
-        window.notificationSettings = JSON.parse(localStorage.getItem('notificationSettings') || '{"comic":true,"video":true}');
+        window.notificationSettings = JSON.parse(localStorage.getItem('notificationSettings') || '{"comic":true,"video":true,"followedOnly":true}');
         window.toggleNotificationPanel = function() {
             document.getElementById('notificationPanel')?.classList.toggle('show');
         }
         window.saveNotificationSettings = function() {
             window.notificationSettings = {
                 comic: document.getElementById('notifyComic')?.checked !== false,
-                video: document.getElementById('notifyVideo')?.checked !== false
+                video: document.getElementById('notifyVideo')?.checked !== false,
+                followedOnly: document.getElementById('notifyFollowedOnly')?.checked !== false
             };
             localStorage.setItem('notificationSettings', JSON.stringify(window.notificationSettings));
             updateNotificationBadge();
@@ -1490,14 +1552,17 @@
             const badge = document.getElementById('notificationCount');
             if(!badge) return;
             const seenAt = Number(localStorage.getItem('lastUpdatesSeen') || 0);
-            const count = getAllRecentUpdates().filter(({comic,time}) => {
+            const count = getAllRecentUpdates().filter(({comicId,comic,time}) => {
                 const isVideo = comic.format === 'film' || /film|anime|series/i.test(comic.type || '');
-                return getTimeValue(time) > seenAt && (isVideo ? window.notificationSettings.video : window.notificationSettings.comic);
+                const followed = !window.notificationSettings.followedOnly || window.userBookmarks.includes(comicId);
+                return followed && getTimeValue(time) > seenAt && (isVideo ? window.notificationSettings.video : window.notificationSettings.comic);
             }).length;
             badge.textContent = count > 99 ? '99+' : count;
             badge.classList.toggle('show', count > 0);
+            const homeBadge=document.getElementById('homeNotificationCount');if(homeBadge){homeBadge.textContent=count>99?'99+':count;homeBadge.classList.toggle('show',count>0);}
             document.getElementById('notifyComic') && (document.getElementById('notifyComic').checked = window.notificationSettings.comic);
             document.getElementById('notifyVideo') && (document.getElementById('notifyVideo').checked = window.notificationSettings.video);
+            document.getElementById('notifyFollowedOnly') && (document.getElementById('notifyFollowedOnly').checked = window.notificationSettings.followedOnly !== false);
         }
         function getReadChapterMap() {
             try { return JSON.parse(localStorage.getItem('readChapterMap')) || {}; }
@@ -1829,6 +1894,9 @@
                         updatedAt: serverTimestamp()
                     });
                 } catch(e) { }
+                if(window.userLibrary[comicId]?.status === 'want') {
+                    window.setCollectionStatus(comicId,'reading');
+                }
             }
             renderReadingHistory();
             renderUpdatesFeed();
@@ -1936,17 +2004,21 @@
             
             if(isBookmarked) {
                 window.userBookmarks = window.userBookmarks.filter(id => id !== cid);
+                delete window.userLibrary[cid];
                 checkBookmarkStatus(cid);
                 window.showToast("Dihapus dari Bookmark!");
-                try { await deleteDoc(doc(db, "users", auth.currentUser.uid, "bookmarks", cid)); } catch(err) { }
+                try { await Promise.all([deleteDoc(doc(db, "users", auth.currentUser.uid, "bookmarks", cid)),deleteDoc(doc(db,"users",auth.currentUser.uid,"library",cid))]); } catch(err) { }
             } else {
                 window.userBookmarks.push(cid);
+                window.userLibrary[cid]={comicId:cid,status:'want',updatedAt:Date.now()};
                 checkBookmarkStatus(cid);
                 window.showToast("Berhasil ditambahkan ke Bookmark!");
-                try { await setDoc(doc(db, "users", auth.currentUser.uid, "bookmarks", cid), { comicId: cid, addedAt: new Date() }); } catch(err) { }
+                try { await Promise.all([setDoc(doc(db, "users", auth.currentUser.uid, "bookmarks", cid), { comicId: cid, addedAt:serverTimestamp() }),setDoc(doc(db,"users",auth.currentUser.uid,"library",cid),{comicId:cid,status:'want',updatedAt:serverTimestamp()})]); } catch(err) { }
             }
             
             localStorage.setItem('localBookmarks_' + auth.currentUser.uid, JSON.stringify(window.userBookmarks));
+            localStorage.setItem('userLibrary_' + auth.currentUser.uid, JSON.stringify(window.userLibrary));
+            updateDetailCollectionStatus(cid);
             renderBookmarks();
             renderDiscoveryGrid(false);
             if(document.getElementById('statBookmarkCount')){
@@ -1964,14 +2036,17 @@
             const isSaved = window.userBookmarks.includes(comicId);
             if(isSaved) {
                 window.userBookmarks = window.userBookmarks.filter(id => id !== comicId);
-                try { await deleteDoc(doc(db, 'users', auth.currentUser.uid, 'bookmarks', comicId)); } catch(e) {}
+                delete window.userLibrary[comicId];
+                try { await Promise.all([deleteDoc(doc(db, 'users', auth.currentUser.uid, 'bookmarks', comicId)),deleteDoc(doc(db,'users',auth.currentUser.uid,'library',comicId))]); } catch(e) {}
                 window.showToast('Dihapus dari Bookmark');
             } else {
                 window.userBookmarks.push(comicId);
-                try { await setDoc(doc(db, 'users', auth.currentUser.uid, 'bookmarks', comicId), { comicId, addedAt:serverTimestamp() }); } catch(e) {}
+                window.userLibrary[comicId]={comicId,status:'want',updatedAt:Date.now()};
+                try { await Promise.all([setDoc(doc(db, 'users', auth.currentUser.uid, 'bookmarks', comicId), { comicId, addedAt:serverTimestamp() }),setDoc(doc(db,'users',auth.currentUser.uid,'library',comicId),{comicId,status:'want',updatedAt:serverTimestamp()})]); } catch(e) {}
                 window.showToast('Disimpan ke Bookmark');
             }
             localStorage.setItem('localBookmarks_' + auth.currentUser.uid, JSON.stringify(window.userBookmarks));
+            localStorage.setItem('userLibrary_' + auth.currentUser.uid, JSON.stringify(window.userLibrary));
             if(window.currentActiveComicId === comicId) checkBookmarkStatus(comicId);
             const stat = document.getElementById('statBookmarkCount');
             if(stat) stat.innerText = window.userBookmarks.length;
@@ -1985,11 +2060,13 @@
             if(!confirmed) return;
 
             window.userBookmarks = window.userBookmarks.filter(item => item !== id);
+            delete window.userLibrary[id];
             if(auth.currentUser) {
                 try {
-                    await deleteDoc(doc(db, "users", auth.currentUser.uid, "bookmarks", id));
+                    await Promise.all([deleteDoc(doc(db, "users", auth.currentUser.uid, "bookmarks", id)),deleteDoc(doc(db,"users",auth.currentUser.uid,"library",id))]);
                 } catch(err) {}
                 localStorage.setItem('localBookmarks_' + auth.currentUser.uid, JSON.stringify(window.userBookmarks));
+                localStorage.setItem('userLibrary_' + auth.currentUser.uid, JSON.stringify(window.userLibrary));
             }
 
             renderBookmarks();
@@ -2013,6 +2090,15 @@
         }
 
         window.bookmarkView = localStorage.getItem('bookmarkView') || '2';
+        const LIBRARY_STATUS_LABELS={want:'Ingin dibaca',reading:'Sedang dibaca',completed:'Selesai',paused:'Ditunda'};
+        window.setLibraryFilter=function(filter){window.libraryFilter=['all','want','reading','completed','paused'].includes(filter)?filter:'all';document.querySelectorAll('.library-tab').forEach(btn=>btn.classList.toggle('active',btn.dataset.libraryFilter===window.libraryFilter));renderBookmarks();}
+        window.updateDetailCollectionStatus=function(comicId){const select=document.getElementById('detailCollectionStatus');if(select)select.value=window.userLibrary[comicId]?.status||'';}
+        window.setCollectionStatus=async function(comicId,status){
+            if(!auth.currentUser){window.showToast('Login untuk menggunakan Koleksi Saya');document.getElementById('detailCollectionStatus').value='';switchNav('profile');return;}
+            if(!comicId)return;
+            if(status){window.userLibrary[comicId]={comicId,status,updatedAt:Date.now()};if(!window.userBookmarks.includes(comicId))window.userBookmarks.push(comicId);try{await Promise.all([setDoc(doc(db,'users',auth.currentUser.uid,'library',comicId),{comicId,status,updatedAt:serverTimestamp()}),setDoc(doc(db,'users',auth.currentUser.uid,'bookmarks',comicId),{comicId,addedAt:serverTimestamp()})]);}catch(e){window.showToast('Koleksi disimpan di perangkat; sinkronisasi tertunda.');}window.showToast(`Masuk ke ${LIBRARY_STATUS_LABELS[status]}`);}else{delete window.userLibrary[comicId];window.userBookmarks=window.userBookmarks.filter(id=>id!==comicId);try{await Promise.all([deleteDoc(doc(db,'users',auth.currentUser.uid,'library',comicId)),deleteDoc(doc(db,'users',auth.currentUser.uid,'bookmarks',comicId))]);}catch(e){}window.showToast('Dihapus dari koleksi');}
+            localStorage.setItem('userLibrary_'+auth.currentUser.uid,JSON.stringify(window.userLibrary));localStorage.setItem('localBookmarks_'+auth.currentUser.uid,JSON.stringify(window.userBookmarks));checkBookmarkStatus(comicId);renderBookmarks();renderDiscoveryGrid(false);renderRecommendations();updateNotificationBadge();const stat=document.getElementById('statBookmarkCount');if(stat)stat.textContent=window.userBookmarks.length;
+        }
         window.setBookmarkView = function(view) {
             const container = document.getElementById('bookmarkContainer');
             if(!container || !['2','3','list'].includes(view)) return;
@@ -2028,24 +2114,26 @@
             const container = document.getElementById('bookmarkContainer');
             window.setBookmarkView(window.bookmarkView);
             const countLabel = document.getElementById('bookmarkCountLabel');
-            if(countLabel) countLabel.innerText = `${window.userBookmarks.length} konten tersimpan`;
+            const visibleIds=window.userBookmarks.filter(id=>window.libraryFilter==='all'||(window.userLibrary[id]?.status||'want')===window.libraryFilter);
+            if(countLabel) countLabel.innerText = `${visibleIds.length} dari ${window.userBookmarks.length} konten`;
             if(!auth.currentUser) {
                 container.innerHTML = '<div class="empty-history" style="grid-column:1/-1;">Harap masuk (Login) untuk melihat bookmark.</div>';
                 return;
             }
-            if(window.userBookmarks.length === 0) {
-                container.innerHTML = '<div class="empty-history" style="grid-column:1/-1;">Anda belum menyimpan apapun.</div>';
+            if(visibleIds.length === 0) {
+                container.innerHTML = `<div class="empty-history" style="grid-column:1/-1;">${window.userBookmarks.length?'Belum ada konten pada status ini.':'Anda belum menyimpan apapun.'}</div>`;
                 return;
             }
             let bmHTML = '';
-            window.userBookmarks.forEach(id => {
+            visibleIds.forEach(id => {
                 if(window.comicsData[id]) {
                     const data = window.comicsData[id];
+                    const status=window.userLibrary[id]?.status||'want';
                     bmHTML += `
                         <div class="manga-card-simple" onclick="openDetail('${id}')" style="width:100%;">
                             <button class="bookmark-delete-btn" onclick="removeBookmarkDirect(event, '${id}')" title="Hapus Bookmark"><i class="fa-solid fa-trash-can"></i></button>
-                            <img src="${data.coverUrl}" loading="lazy" onerror="this.src='https://placehold.co/120x150?text=No+Cover'">
-                            <div class="info-container"><div class="title">${data.title}</div></div>
+                            <div style="position:relative"><img src="${safeMediaUrl(data.coverUrl)}" loading="lazy" onerror="this.src='https://placehold.co/120x150?text=No+Cover'"><span class="library-status-badge">${safeText(LIBRARY_STATUS_LABELS[status])}</span></div>
+                            <div class="info-container"><div class="title">${safeText(data.title)}</div><select class="collection-select" style="margin-top:8px;max-width:100%;width:100%" onclick="event.stopPropagation()" onchange="event.stopPropagation();setCollectionStatus('${id}',this.value)"><option value="want" ${status==='want'?'selected':''}>Ingin dibaca</option><option value="reading" ${status==='reading'?'selected':''}>Sedang dibaca</option><option value="completed" ${status==='completed'?'selected':''}>Selesai</option><option value="paused" ${status==='paused'?'selected':''}>Ditunda</option></select></div>
                         </div>
                     `;
                 }
@@ -2242,6 +2330,7 @@
                 fetchComments(comicId);
                 loadUserRating(comicId);
                 checkBookmarkStatus(comicId);
+                updateDetailCollectionStatus(comicId);
                 renderSimilarTitles(comicId);
 
                 document.getElementById('detailTitle').innerText = data.title;

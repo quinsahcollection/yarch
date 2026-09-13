@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Admin Panel V14 - Manga & Anime App</title>
+    <title>Admin Panel V15 - Manga & Anime App</title>
     <!-- Google Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <!-- Font Awesome -->
@@ -216,6 +216,7 @@
         .moderation-head { display:flex; justify-content:space-between; gap:12px; margin-bottom:7px; }
         .moderation-user { font-weight:700; font-size:13px; }.moderation-meta{color:#89909f;font-size:11px}.moderation-text{margin:9px 0;color:#333;font-size:13px;line-height:1.5;white-space:pre-wrap}.moderation-actions{display:flex;flex-wrap:wrap;gap:7px}
         .mod-btn { border:0; padding:8px 11px; border-radius:8px; color:#4c5262; background:#edf0f5; font-size:11px; font-weight:650; cursor:pointer; }.mod-btn.primary{color:#fff;background:#625af2}.mod-btn.danger{color:#fff;background:#e94f68}.mod-btn.success{color:#fff;background:#15966b}.report-badge{display:inline-flex;padding:3px 7px;border-radius:8px;color:#d94158;background:#fff0f2;font-size:9px;font-weight:750}
+        .app-config-grid { display:grid; grid-template-columns:1fr 1fr; gap:16px; }.app-config-grid .full{grid-column:1/-1}.config-switch{display:flex;align-items:center;justify-content:space-between;gap:15px;padding:14px;border:1px solid var(--border);border-radius:10px;background:#f8fafc}.config-switch input{width:20px;height:20px;accent-color:#625af2}.config-help{margin-top:5px;color:var(--text-muted);font-size:11px;line-height:1.5}.config-status{display:none;margin-top:14px;padding:11px;border-radius:9px;font-size:12px;font-weight:600}.config-status.show{display:block}.config-status.success{color:#087a55;background:#e5f8f1}.config-status.error{color:#c53045;background:#fff0f2}@media(max-width:700px){.app-config-grid{grid-template-columns:1fr}.app-config-grid .full{grid-column:auto}}
         .master-input-group { display: flex; gap: 8px; margin-bottom: 15px; }
         .master-input-group input { padding: 10px; flex: 1; }
         .btn-add { background: var(--primary); color: white; border: none; padding: 0 15px; border-radius: 8px; cursor: pointer; font-weight: 600; }
@@ -700,7 +701,7 @@
                     </div>
                 </div>
                 
-                <div id="view-pengaturan" class="admin-view"><h1 class="page-title">Pengaturan</h1><div class="card"><p>Pengaturan konfigurasi website utama.</p></div></div>
+                <div id="view-pengaturan" class="admin-view"><h1 class="page-title">Update & Maintenance</h1><div class="card"><div class="app-config-grid"><div class="form-group"><label>Versi terbaru</label><input id="configLatestVersion" type="text" placeholder="15.0.0"><div class="config-help">Gunakan format angka seperti 15.0.1.</div></div><div class="form-group"><label>Judul maintenance</label><input id="configMaintenanceTitle" type="text" placeholder="Sedang dalam pemeliharaan"></div><div class="form-group full"><label>Changelog</label><textarea id="configChangelog" rows="5" placeholder="Tuliskan perubahan versi terbaru..."></textarea></div><div class="form-group full"><label>Pesan maintenance</label><textarea id="configMaintenanceMessage" rows="3" placeholder="Aplikasi akan segera kembali..."></textarea></div><div class="config-switch"><div><strong>Update wajib</strong><div class="config-help">Pengingat akan terus muncul sampai pengguna memperbarui.</div></div><input id="configUpdateRequired" type="checkbox"></div><div class="config-switch"><div><strong>Mode maintenance</strong><div class="config-help">Pengguna biasa melihat halaman maintenance; admin tetap dapat masuk.</div></div><input id="configMaintenanceMode" type="checkbox"></div><div class="full"><button class="btn-submit" onclick="saveAppConfiguration()"><i class="fa-solid fa-cloud-arrow-up"></i> Simpan Pengaturan Aplikasi</button><div class="config-status" id="configStatus"></div></div></div></div></div>
                 <div id="view-moderasi" class="admin-view"><h1 class="page-title">Moderasi Komentar</h1><div class="moderation-toolbar"><button class="mod-btn primary" onclick="loadModeration()"><i class="fa-solid fa-rotate"></i> Muat ulang</button><button class="mod-btn" onclick="setModerationFilter('all')">Semua</button><button class="mod-btn" onclick="setModerationFilter('reported')">Dilaporkan</button><button class="mod-btn" onclick="setModerationFilter('pinned')">Disematkan</button><span id="moderationCount" class="moderation-meta"></span></div><div id="moderationList"><div class="loading-text">Memuat moderasi...</div></div></div>
 
             </div>
@@ -1706,6 +1707,16 @@
         window.resolveCommentReports=async function(comicId,commentId){const targets=window.moderationItems.find(x=>x.comicId===comicId&&x.id===commentId)?.reports||[];await Promise.all(targets.map(r=>updateDoc(doc(db,'commentReports',r.id),{status:'resolved',resolvedAt:serverTimestamp()})));window.moderationItems.find(x=>x.comicId===comicId&&x.id===commentId).reports=[];renderModeration();}
         window.adminDeleteComment=async function(comicId,commentId){const result=await Swal.fire({title:'Hapus komentar?',text:'Tindakan ini tidak dapat dibatalkan.',icon:'warning',showCancelButton:true,confirmButtonText:'Hapus',cancelButtonText:'Batal',confirmButtonColor:'#e94f68'});if(!result.isConfirmed)return;await deleteDoc(doc(db,'comics',comicId,'comments',commentId));try{await updateDoc(doc(db,'comics',comicId),{commentCount:increment(-1)});}catch(e){}window.moderationItems=window.moderationItems.filter(x=>!(x.comicId===comicId&&x.id===commentId));renderModeration();}
 
+        window.loadAppConfiguration=async function(){
+            const status=document.getElementById('configStatus');
+            try{const snap=await getDoc(doc(db,'settings','appConfig'));const c=snap.exists()?snap.data():{};document.getElementById('configLatestVersion').value=c.latestVersion||'15.0.0';document.getElementById('configChangelog').value=c.changelog||'';document.getElementById('configMaintenanceTitle').value=c.maintenanceTitle||'Sedang dalam pemeliharaan';document.getElementById('configMaintenanceMessage').value=c.maintenanceMessage||'Kami sedang melakukan peningkatan agar aplikasi menjadi lebih baik. Silakan coba kembali beberapa saat lagi.';document.getElementById('configUpdateRequired').checked=c.updateRequired===true;document.getElementById('configMaintenanceMode').checked=c.maintenanceMode===true;if(status)status.className='config-status';}catch(e){if(status){status.textContent='Gagal memuat pengaturan aplikasi.';status.className='config-status show error';}}
+        }
+        window.saveAppConfiguration=async function(){
+            const status=document.getElementById('configStatus');const version=document.getElementById('configLatestVersion').value.trim().replace(/^v/i,'');if(!/^\d+\.\d+\.\d+$/.test(version)){status.textContent='Format versi harus seperti 15.0.1';status.className='config-status show error';return;}
+            status.textContent='Menyimpan...';status.className='config-status show';
+            try{await setDoc(doc(db,'settings','appConfig'),{latestVersion:version,changelog:document.getElementById('configChangelog').value.trim(),maintenanceTitle:document.getElementById('configMaintenanceTitle').value.trim()||'Sedang dalam pemeliharaan',maintenanceMessage:document.getElementById('configMaintenanceMessage').value.trim()||'Kami sedang melakukan peningkatan aplikasi.',updateRequired:document.getElementById('configUpdateRequired').checked,maintenanceMode:document.getElementById('configMaintenanceMode').checked,updatedAt:serverTimestamp(),updatedBy:auth.currentUser?.uid||''},{merge:true});status.textContent='Pengaturan berhasil disimpan. Aplikasi pengguna akan memeriksanya saat dibuka atau kembali aktif.';status.className='config-status show success';}catch(e){status.textContent='Gagal menyimpan. Pastikan akun ini adalah admin pada Firestore Rules.';status.className='config-status show error';}
+        }
+
         function switchView(viewId, element) {
             document.querySelectorAll('.sidebar-menu a').forEach(el => el.classList.remove('active'));
             if(element) element.classList.add('active');
@@ -1714,6 +1725,7 @@
             if(window.innerWidth <= 992) toggleSidebar();
             if(viewId === 'view-daftar' && typeof window.loadComicsList === 'function') { window.loadComicsList(); }
             if(viewId === 'view-moderasi') window.loadModeration();
+            if(viewId === 'view-pengaturan') window.loadAppConfiguration();
         }
 
         const sidebar = document.getElementById('sidebar');

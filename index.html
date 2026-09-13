@@ -3,12 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Komik & Anime — Professional Comments V14</title>
+    <title>Komik & Anime — Update Manager V15</title>
     <meta name="theme-color" content="#625af2">
     <meta name="description" content="Aplikasi komik, manga, anime dan film dengan update terbaru.">
     <meta name="referrer" content="strict-origin-when-cross-origin">
-    <link rel="manifest" href="manifest-v14.webmanifest">
-    <link rel="icon" href="app-icon-v14.svg" type="image/svg+xml">
+    <link rel="manifest" href="manifest-v15.webmanifest">
+    <link rel="icon" href="app-icon-v15.svg" type="image/svg+xml">
     <link rel="preconnect" href="https://www.gstatic.com" crossorigin>
     <link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin>
     <!-- BUILD: FOUNDATION-V10 | updates + read state + safe rating/views/comment+ comment counter -->
@@ -457,6 +457,16 @@
         .network-status.show { transform:translate(-50%,0); }
         .network-status.online { background:#18956b; }
         .install-app-item[hidden] { display:none !important; }
+        .app-version-card { margin:12px 16px 24px; padding:14px 15px; display:flex; align-items:center; justify-content:space-between; gap:12px; border:1px solid #e8eaf2; border-radius:15px; background:#f8f9fc; color:#74798d; font-size:11px; }
+        .app-version-card strong { display:block; margin-bottom:3px; color:#25283a; font-size:12px; }
+        .version-check-btn { flex:0 0 auto; border:0; padding:8px 11px; border-radius:10px; color:#625af2; background:#ecebff; font-size:10px; font-weight:800; cursor:pointer; }
+        .update-modal-backdrop { position:fixed; inset:0; z-index:11000; display:none; align-items:flex-end; justify-content:center; padding:18px; background:rgba(12,14,27,.58); backdrop-filter:blur(9px); }
+        .update-modal-backdrop.show { display:flex; }
+        .update-sheet { width:min(100%,450px); padding:22px; border-radius:25px; background:#fff; box-shadow:0 28px 80px rgba(10,12,25,.35); animation:modalPop .25s ease; }
+        .update-icon { width:58px; height:58px; display:grid; place-items:center; margin-bottom:15px; border-radius:18px; color:#fff; background:linear-gradient(135deg,#7c5df5,#4f53e8); font-size:23px; box-shadow:0 10px 24px rgba(91,92,240,.25); }
+        .update-sheet h2 { font-size:20px; letter-spacing:-.4px; }.update-sheet p{margin-top:6px;color:#777c90;font-size:12px;line-height:1.55}.update-version-line{display:flex;gap:7px;align-items:center;margin-top:12px;color:#625af2;font-size:10px;font-weight:800}.update-changelog{max-height:180px;overflow:auto;margin-top:14px;padding:13px;border-radius:14px;background:#f6f7fb;color:#505568;font-size:11px;line-height:1.6;white-space:pre-wrap}.update-actions{display:grid;grid-template-columns:1fr 1.4fr;gap:9px;margin-top:16px}.update-action{height:44px;border:0;border-radius:13px;font-size:12px;font-weight:800;cursor:pointer}.update-later{color:#686d80;background:#eff0f5}.update-now{color:#fff;background:linear-gradient(135deg,#6d5dfc,#4e52e6)}
+        .maintenance-screen { position:fixed; inset:0; z-index:12000; display:none; align-items:center; justify-content:center; padding:25px; background:radial-gradient(circle at 50% 15%,#7470ff,#292c66 58%,#17192e); color:#fff; text-align:center; }
+        .maintenance-screen.show { display:flex; }.maintenance-box{width:min(100%,390px)}.maintenance-icon{width:82px;height:82px;display:grid;place-items:center;margin:0 auto 22px;border-radius:26px;background:rgba(255,255,255,.13);border:1px solid rgba(255,255,255,.2);font-size:34px}.maintenance-box h1{font-size:25px}.maintenance-box p{margin-top:10px;color:rgba(255,255,255,.72);font-size:13px;line-height:1.65}.maintenance-retry{margin-top:22px;padding:12px 18px;border:1px solid rgba(255,255,255,.25);border-radius:13px;color:#fff;background:rgba(255,255,255,.12);font-weight:800;cursor:pointer}
 
         /* Horizontal sticky alphabet: compact on mobile and never covers cards */
         .alphabet-rail { position:sticky; top:129px; left:auto; bottom:auto; width:calc(100% - 24px); height:52px; margin:8px 12px 2px; padding:7px; flex-direction:row; justify-content:flex-start; gap:5px; border-radius:17px; overflow-x:auto; overflow-y:hidden; scroll-snap-type:x proximity; }
@@ -509,6 +519,7 @@
 </head>
 <body>
     <div class="network-status" id="networkStatus"><i class="fa-solid fa-wifi"></i> <span>Status koneksi</span></div>
+    <div class="maintenance-screen" id="maintenanceScreen"><div class="maintenance-box"><div class="maintenance-icon"><i class="fa-solid fa-screwdriver-wrench"></i></div><h1 id="maintenanceTitle">Sedang dalam pemeliharaan</h1><p id="maintenanceMessage">Kami sedang melakukan peningkatan agar aplikasi menjadi lebih baik. Silakan coba kembali beberapa saat lagi.</p><button class="maintenance-retry" onclick="checkAppConfiguration(true)"><i class="fa-solid fa-rotate"></i> Periksa kembali</button></div></div>
 
     <div class="app-container">
         
@@ -911,6 +922,7 @@
                     </li>
                 </ul>
             </div>
+            <div class="app-version-card"><div><strong>Versi Aplikasi</strong><span id="currentVersionLabel">V15.0.0 • Memeriksa pembaruan...</span></div><button class="version-check-btn" onclick="checkAppConfiguration(true)"><i class="fa-solid fa-rotate"></i> Periksa</button></div>
         </div>
 
         <!-- ================= BOTTOM NAVIGATION (DITAMBAHKAN DISCOVERY) ================= -->
@@ -932,6 +944,7 @@
             </a>
         </nav>
     </div>
+    <div class="update-modal-backdrop" id="updateModal"><div class="update-sheet"><div class="update-icon"><i class="fa-solid fa-cloud-arrow-down"></i></div><h2>Versi baru tersedia</h2><p>Pembaruan aplikasi sudah siap. Proses ini akan membersihkan cache antarmuka lama tanpa menghapus akun, bookmark, atau riwayat Anda.</p><div class="update-version-line"><span id="updateCurrentVersion">V15.0.0</span><i class="fa-solid fa-arrow-right"></i><span id="updateLatestVersion">V15.0.1</span></div><div class="update-changelog" id="updateChangelog">Peningkatan stabilitas dan tampilan.</div><div class="update-actions"><button class="update-action update-later" onclick="dismissAppUpdate()">Nanti</button><button class="update-action update-now" onclick="applyAppUpdate()"><i class="fa-solid fa-bolt"></i> Perbarui Sekarang</button></div></div></div>
 
     <div class="modern-modal-backdrop" id="modernConfirmModal" role="dialog" aria-modal="true" aria-labelledby="modernConfirmTitle">
         <div class="modern-modal">
@@ -963,6 +976,8 @@
         const app = initializeApp(firebaseConfig);
         const db = getFirestore(app);
         const auth = getAuth(app);
+        const APP_VERSION = '15.0.0';
+        const ADMIN_UID = 'dWUWpKAWQRRxMOzjzaOA3zXWZLp2';
 
         window.comicsData = {};
         window.currentActiveComicId = null;
@@ -1084,7 +1099,24 @@
         }
         window.addEventListener('online', () => showNetworkStatus(true));
         window.addEventListener('offline', () => showNetworkStatus(false));
-        if('serviceWorker' in navigator && location.protocol !== 'file:') navigator.serviceWorker.register('./sw-v14.js').catch(() => {});
+        function compareVersions(a,b){const pa=String(a).replace(/^v/i,'').split('.').map(Number),pb=String(b).replace(/^v/i,'').split('.').map(Number);for(let i=0;i<Math.max(pa.length,pb.length);i++){const d=(pa[i]||0)-(pb[i]||0);if(d)return d;}return 0;}
+        window.checkAppConfiguration = async function(showResult=false){
+            const label=document.getElementById('currentVersionLabel'); if(label) label.textContent=`V${APP_VERSION} • Memeriksa pembaruan...`;
+            try{
+                const snap=await getDoc(doc(db,'settings','appConfig')); const config=snap.exists()?snap.data():{}; const latest=String(config.latestVersion||APP_VERSION).replace(/^v/i,'');
+                const maintenance=config.maintenanceMode===true && auth.currentUser?.uid!==ADMIN_UID;
+                document.getElementById('maintenanceTitle').textContent=config.maintenanceTitle||'Sedang dalam pemeliharaan'; document.getElementById('maintenanceMessage').textContent=config.maintenanceMessage||'Kami sedang melakukan peningkatan agar aplikasi menjadi lebih baik. Silakan coba kembali beberapa saat lagi.'; document.getElementById('maintenanceScreen').classList.toggle('show',maintenance);
+                const hasUpdate=compareVersions(latest,APP_VERSION)>0; if(label) label.textContent=`V${APP_VERSION} • ${hasUpdate?'Pembaruan tersedia':'Versi terbaru'}`;
+                const dismissed=localStorage.getItem('dismissedAppVersion')===latest; if(hasUpdate && (!dismissed||config.updateRequired===true)){document.getElementById('updateCurrentVersion').textContent=`V${APP_VERSION}`;document.getElementById('updateLatestVersion').textContent=`V${latest}`;document.getElementById('updateChangelog').textContent=config.changelog||'Peningkatan stabilitas, performa, dan pengalaman pengguna.';document.getElementById('updateModal').dataset.version=latest;document.getElementById('updateModal').classList.add('show');}else if(showResult&&!maintenance){window.showToast(hasUpdate?'Pembaruan tersedia':'Aplikasi sudah versi terbaru');}
+            }catch(e){if(label)label.textContent=`V${APP_VERSION} • Tidak dapat memeriksa`;if(showResult)window.showToast('Pemeriksaan versi gagal. Periksa koneksi.');}
+        }
+        window.dismissAppUpdate=function(){const modal=document.getElementById('updateModal');localStorage.setItem('dismissedAppVersion',modal.dataset.version||'');modal.classList.remove('show');}
+        window.applyAppUpdate=async function(){
+            const button=document.querySelector('.update-now');button.disabled=true;button.innerHTML='<i class="fa-solid fa-spinner fa-spin"></i> Memperbarui...';
+            try{if('serviceWorker'in navigator){const regs=await navigator.serviceWorker.getRegistrations();await Promise.all(regs.map(reg=>reg.unregister()));}if('caches'in window){const keys=await caches.keys();await Promise.all(keys.map(key=>caches.delete(key)));}localStorage.removeItem('dismissedAppVersion');const url=new URL(location.href);url.searchParams.set('appVersion',Date.now());location.replace(url.href);}catch(e){button.disabled=false;button.innerHTML='<i class="fa-solid fa-bolt"></i> Perbarui Sekarang';window.showToast('Pembaruan gagal. Silakan muat ulang halaman.');}
+        }
+        if('serviceWorker' in navigator && location.protocol !== 'file:') navigator.serviceWorker.register('./sw-v15.js',{updateViaCache:'none'}).then(reg=>reg.update()).catch(() => {});
+        document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible')window.checkAppConfiguration(false);});
 
         // ================= FITUR PENCARIAN (SEARCH) DINAMIS =================
         const searchInput = document.getElementById('searchInput');
@@ -1188,6 +1220,7 @@
                 renderReadingHistory();
                 renderDiscoveryGrid(false);
             }
+            window.checkAppConfiguration(false);
         });
 
         window.toggleAuthMode = function() {

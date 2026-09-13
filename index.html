@@ -3,12 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Komik & Anime — Update Manager V18</title>
+    <title>Komik & Anime — Update Manager V19</title>
     <meta name="theme-color" content="#625af2">
     <meta name="description" content="Aplikasi komik, manga, anime dan film dengan update terbaru.">
     <meta name="referrer" content="strict-origin-when-cross-origin">
-    <link rel="manifest" href="manifest-v18.webmanifest">
-    <link rel="icon" href="app-icon-v18.svg" type="image/svg+xml">
+    <link rel="manifest" href="manifest-v19.webmanifest">
+    <link rel="icon" href="app-icon-v19.svg" type="image/svg+xml">
     <link rel="preconnect" href="https://www.gstatic.com" crossorigin>
     <link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin>
     <!-- BUILD: FOUNDATION-V10 | updates + read state + safe rating/views/comment+ comment counter -->
@@ -515,7 +515,7 @@
         .toast-notification { max-width:calc(100% - 32px); width:max-content; text-align:center; bottom:calc(86px + env(safe-area-inset-bottom)); }
         @media (min-width:600px) { .app-container{margin:22px 0;min-height:calc(100vh - 44px);border-radius:28px;overflow:hidden}.bottom-nav{bottom:22px;border-radius:0 0 28px 28px}.detail-top-nav,.reader-header,.player-header{top:22px;border-radius:28px 28px 0 0} }
         @media (max-width:370px) { .slider-container{height:305px}.hero-content{width:61%}.hero-synopsis{-webkit-line-clamp:2}.manga-card-simple{min-width:124px;width:124px}.card-poster-wrap{height:168px}.discovery-toolbar{gap:7px;padding:10px 12px}.catalog-count{font-size:10px}.filter-toggle-btn{padding:0 10px}.discovery-grid{padding:12px;gap:10px}.discovery-grid.view-3{gap:7px}.discovery-grid.view-3 .discovery-card img{height:138px}#discovery-page.alphabet-active .discovery-grid{padding-left:12px}.alphabet-rail{width:calc(100% - 20px);margin-left:10px;margin-right:10px} }
-        /* V18: rekomendasi personal & smart search */
+        /* V19: rekomendasi personal & smart search */
         .smart-search-head{padding:12px 14px 7px;font-size:11px;font-weight:800;color:#8b91a7;text-transform:uppercase;letter-spacing:.07em}
         .smart-search-chips{display:flex;gap:7px;flex-wrap:wrap;padding:3px 14px 13px}
         .smart-chip{border:0;background:#f0efff;color:#5950d8;border-radius:999px;padding:8px 11px;font-size:11px;font-weight:700;cursor:pointer}
@@ -526,11 +526,17 @@
         .similar-block{margin-top:24px;padding-top:20px;border-top:1px solid #eceef5}
         .similar-block .horizontal-scroll{margin:0 -18px;padding:3px 18px 10px}
         .smart-empty{width:100%;padding:20px;border:1px dashed #dcd9ff;border-radius:14px;background:#faf9ff;text-align:center;color:#777b90;font-size:12px;line-height:1.55}
-        /* V18: koleksi, ranking, jadwal, dan notifikasi pengikut */
+        /* V19: koleksi, ranking, jadwal, dan notifikasi pengikut */
         .home-bell{position:relative;cursor:pointer}.home-notification-count{position:absolute;right:-7px;top:-8px;min-width:17px;height:17px;padding:0 4px;border-radius:9px;background:#f04461;color:#fff;font-size:9px;font-weight:800;display:none;place-items:center;border:2px solid #fff}.home-notification-count.show{display:grid}
         .home-feature-section{background:#fff}.ranking-scroll{display:flex;gap:10px;overflow-x:auto;scrollbar-width:none;padding-bottom:8px}.ranking-scroll::-webkit-scrollbar{display:none}.ranking-card{min-width:210px;border-radius:17px;padding:13px;background:linear-gradient(135deg,#242842,#5a50d8);color:#fff;display:flex;gap:12px;cursor:pointer;box-shadow:0 9px 23px rgba(58,52,141,.18)}.ranking-card:nth-child(2n){background:linear-gradient(135deg,#172c3c,#168e8c)}.ranking-number{font-size:28px;font-weight:900;opacity:.55;align-self:center}.ranking-card img{width:55px;height:78px;border-radius:9px;object-fit:cover}.ranking-info{min-width:0;display:flex;flex-direction:column;justify-content:center}.ranking-title{font-size:12px;font-weight:800;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.ranking-meta{font-size:10px;opacity:.78;margin-top:6px}.schedule-days,.library-tabs{display:flex;gap:7px;overflow-x:auto;scrollbar-width:none;padding-bottom:11px}.schedule-day,.library-tab{border:1px solid #e5e5f0;background:#fff;color:#777c91;border-radius:999px;padding:8px 12px;white-space:nowrap;font-size:10px;font-weight:800;cursor:pointer}.schedule-day.active,.library-tab.active{background:#625af2;color:#fff;border-color:#625af2;box-shadow:0 5px 13px rgba(98,90,242,.22)}
         .collection-action-box{margin:0 0 18px;padding:13px;border-radius:15px;background:linear-gradient(135deg,#f2f0ff,#fafaff);border:1px solid #e4e1ff;display:flex;align-items:center;gap:10px}.collection-action-box i{color:#625af2}.collection-action-box>div{flex:1}.collection-action-box strong{display:block;font-size:12px}.collection-action-box small{color:#85899c;font-size:10px}.collection-select{border:1px solid #dcd9f7;background:#fff;border-radius:10px;padding:9px 8px;color:#4c466f;font-size:10px;font-weight:700;max-width:130px}
         .library-status-badge{position:absolute;left:7px;bottom:7px;background:rgba(38,34,77,.84);color:#fff;padding:4px 7px;border-radius:7px;font-size:9px;font-weight:800;z-index:4}.bookmark-grid .manga-card-simple{position:relative}
+        /* V19: profil sosial dan gamifikasi */
+        .social-profile-hero{padding:32px 18px 25px;text-align:left}.social-profile-top{display:flex;align-items:center;gap:14px}.profile-photo-wrap{position:relative;width:82px;height:82px;flex:0 0 82px}.profile-photo{width:82px;height:82px;border-radius:25px;object-fit:cover;background:rgba(255,255,255,.18);border:3px solid rgba(255,255,255,.85);box-shadow:0 8px 20px rgba(21,19,70,.25)}.profile-photo-edit{position:absolute;right:-4px;bottom:-4px;width:30px;height:30px;border:0;border-radius:50%;background:#fff;color:#625af2;display:grid;place-items:center;box-shadow:0 4px 12px rgba(0,0,0,.2)}.profile-identity{min-width:0;flex:1}.profile-identity h2{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.profile-level-pill{display:inline-flex;align-items:center;gap:5px;margin-top:6px;padding:5px 9px;border-radius:999px;background:rgba(255,255,255,.18);font-size:10px;font-weight:800}.profile-bio{font-size:11px;opacity:.84;line-height:1.5;margin-top:11px}.profile-hero-actions{display:flex;gap:8px;margin-top:14px}.profile-hero-btn{flex:1;border:1px solid rgba(255,255,255,.34);background:rgba(255,255,255,.14);color:#fff;border-radius:11px;padding:9px;font-size:10px;font-weight:800}.profile-xp{margin-top:14px}.profile-xp-head{display:flex;justify-content:space-between;font-size:9px;font-weight:700;margin-bottom:5px}.profile-xp-track{height:7px;background:rgba(255,255,255,.2);border-radius:9px;overflow:hidden}.profile-xp-fill{height:100%;width:0;background:linear-gradient(90deg,#ffe06d,#ff9c55);border-radius:9px;transition:width .4s}
+        .profile-dashboard{padding:14px;background:#f7f8fc}.profile-panel{background:#fff;border-radius:17px;padding:15px;margin-bottom:12px;box-shadow:0 7px 22px rgba(38,42,76,.06)}.profile-panel-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px}.profile-panel-title{font-size:13px;font-weight:850}.profile-panel-sub{font-size:9px;color:#999daf;margin-top:2px}.daily-checkin{background:linear-gradient(135deg,#fff7df,#fff);border:1px solid #ffe8a9}.checkin-row{display:flex;align-items:center;gap:12px}.checkin-icon{width:43px;height:43px;border-radius:14px;background:#ffb72d;color:#fff;display:grid;place-items:center;font-size:19px}.checkin-copy{flex:1}.checkin-copy strong{font-size:12px}.checkin-copy span{display:block;font-size:9px;color:#8b8068;margin-top:3px}.checkin-btn{border:0;border-radius:10px;padding:9px 12px;background:#ffad1f;color:#fff;font-size:10px;font-weight:850}.checkin-btn:disabled{background:#d5d6dc}
+        .game-stats{display:grid;grid-template-columns:repeat(4,1fr);gap:7px}.game-stat{background:#f7f7fd;border-radius:12px;padding:10px 4px;text-align:center}.game-stat strong{display:block;color:#5d55df;font-size:14px}.game-stat span{font-size:8px;color:#8f93a5}.achievement-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}.achievement{padding:10px 5px;border-radius:12px;background:#f4f5fa;text-align:center;filter:grayscale(1);opacity:.48}.achievement.unlocked{background:#fff8df;filter:none;opacity:1;border:1px solid #ffe6a0}.achievement i{font-size:20px;color:#f4ac14}.achievement strong{display:block;font-size:8px;margin-top:5px}.achievement span{font-size:7px;color:#9295a3}.mission{padding:10px 0;border-bottom:1px solid #f0f1f6}.mission:last-child{border:0}.mission-row{display:flex;justify-content:space-between;gap:8px;font-size:10px;font-weight:750}.mission-row span:last-child{color:#625af2}.mission-track{height:6px;background:#ececf4;border-radius:6px;margin-top:7px;overflow:hidden}.mission-fill{height:100%;background:linear-gradient(90deg,#625af2,#9b71f6)}.genre-stat{display:flex;align-items:center;gap:8px;margin:8px 0}.genre-stat-name{width:75px;font-size:9px;font-weight:750;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.genre-stat-track{flex:1;height:7px;background:#eeeef5;border-radius:7px;overflow:hidden}.genre-stat-fill{height:100%;background:#6a61eb}.genre-stat-value{width:22px;text-align:right;font-size:8px;color:#9295a7}.leaderboard-item{display:flex;align-items:center;gap:10px;padding:9px 0;border-bottom:1px solid #f0f1f5}.leaderboard-item:last-child{border:0}.leaderboard-rank{width:24px;font-size:12px;font-weight:900;color:#777b91}.leaderboard-avatar{width:34px;height:34px;border-radius:11px;object-fit:cover;background:#edefff}.leaderboard-name{flex:1;font-size:10px;font-weight:800}.leaderboard-points{font-size:9px;color:#625af2;font-weight:800}.privacy-row{display:flex;align-items:center;justify-content:space-between;padding:8px 0;font-size:10px}.profile-form input,.profile-form textarea,.profile-form select{width:100%;border:1px solid #e0e2ec;border-radius:11px;padding:11px;margin-bottom:9px;font-size:11px;background:#fafbfe}.profile-form textarea{resize:vertical;min-height:70px}.profile-save-btn{width:100%;border:0;border-radius:11px;padding:11px;background:#625af2;color:#fff;font-weight:800}.reward-row{display:flex;gap:8px;overflow-x:auto}.reward-card{min-width:95px;padding:10px;border-radius:13px;background:#f5f3ff;text-align:center;border:1px solid #e5e1ff}.reward-card.locked{filter:grayscale(1);opacity:.5}.reward-preview{width:38px;height:38px;border-radius:12px;margin:auto;background:linear-gradient(135deg,#625af2,#ff70a6)}.reward-card strong{display:block;font-size:8px;margin-top:6px}.reward-card button{border:0;background:#625af2;color:#fff;border-radius:7px;font-size:8px;padding:5px 7px;margin-top:5px}
+        .shared-profile-backdrop{position:fixed;inset:0;background:rgba(17,19,35,.58);z-index:10000;display:none;align-items:flex-end;justify-content:center;backdrop-filter:blur(6px)}.shared-profile-backdrop.show{display:flex}.shared-profile-sheet{width:100%;max-width:520px;max-height:88vh;overflow:auto;background:#f7f8fc;border-radius:26px 26px 0 0;padding:20px}.shared-profile-close{float:right;width:34px;height:34px;border:0;border-radius:50%;background:#ececf4}.shared-profile-head{text-align:center;padding:15px}.shared-profile-head img{width:88px;height:88px;border-radius:28px;object-fit:cover}.shared-profile-head h2{font-size:19px;margin-top:10px}.shared-profile-head p{font-size:11px;color:#85899b;margin-top:5px}.shared-favorites{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}.shared-favorite{background:#fff;border-radius:12px;padding:7px;font-size:9px;font-weight:750}.shared-favorite img{width:100%;height:110px;object-fit:cover;border-radius:8px;margin-bottom:5px}
+        body[data-app-theme="sunset"]{--primary-blue:#ef6a51;--light-blue:#fff0eb;--dark-blue:#c64336}body[data-app-theme="forest"]{--primary-blue:#15956e;--light-blue:#e5f8f1;--dark-blue:#087454}body[data-app-theme="midnight"]{--primary-blue:#7669ff;--light-blue:#eeecff;--dark-blue:#4037bd}
     </style>
 </head>
 <body>
@@ -936,40 +942,22 @@
 
             <!-- Tampilan Sudah Login -->
             <div id="userSection" style="display:none;">
-                <div class="profile-hero">
-                    <div class="profile-avatar-lg"><i class="fa-solid fa-user-astronaut"></i></div>
-                    <h2 id="userNameDisplay">Member Utama</h2>
-                    <p id="userEmailDisplay" style="font-size: 13px; opacity: 0.9; margin-top: 4px;">user@email.com</p>
-                </div>
+                <div class="profile-hero social-profile-hero"><div class="social-profile-top"><div class="profile-photo-wrap"><img class="profile-photo" id="profilePhoto" alt="Foto profil"><button class="profile-photo-edit" onclick="document.getElementById('profilePhotoInput').click()"><i class="fa-solid fa-camera"></i></button><input id="profilePhotoInput" type="file" accept="image/*" hidden onchange="handleProfilePhoto(this.files[0])"></div><div class="profile-identity"><h2 id="userNameDisplay">Member</h2><div class="profile-level-pill"><i class="fa-solid fa-bolt"></i> <span id="profileLevelLabel">Level 1 • Pemula</span></div><p id="userEmailDisplay" style="font-size:9px;opacity:.68;margin-top:5px"></p></div></div><p class="profile-bio" id="profileBioDisplay">Belum ada bio.</p><div class="profile-hero-actions"><button class="profile-hero-btn" onclick="document.getElementById('profileEditorPanel').scrollIntoView({behavior:'smooth'})"><i class="fa-solid fa-pen"></i> Edit Profil</button><button class="profile-hero-btn" onclick="shareMyProfile()"><i class="fa-solid fa-share-nodes"></i> Bagikan</button><button class="profile-hero-btn" onclick="switchNav('bookmark')"><i class="fa-solid fa-heart"></i> Favorit</button></div><div class="profile-xp"><div class="profile-xp-head"><span id="profilePointsLabel">0 poin</span><span id="profileNextLevel">100 menuju level berikutnya</span></div><div class="profile-xp-track"><div class="profile-xp-fill" id="profileXpFill"></div></div></div></div>
 
-                <div class="profile-stats-grid">
-                    <div class="stat-card">
-                        <div class="number" id="statBookmarkCount">0</div>
-                        <div class="label">Bookmark</div>
-                    </div>
-                    <div class="stat-card">
-                        <div class="number" id="statHistoryCount">0</div>
-                        <div class="label">Riwayat Baca</div>
-                    </div>
-                    <div class="stat-card">
-                        <div class="number">VIP</div>
-                        <div class="label">Status Akun</div>
-                    </div>
+                <div class="profile-dashboard">
+                    <div class="profile-panel daily-checkin"><div class="checkin-row"><div class="checkin-icon"><i class="fa-solid fa-calendar-check"></i></div><div class="checkin-copy"><strong>Check-in Harian</strong><span id="checkinMessage">Kembali setiap hari untuk menjaga streak.</span></div><button class="checkin-btn" id="checkinButton" onclick="dailyCheckIn()">+10 poin</button></div></div>
+                    <div class="profile-panel"><div class="profile-panel-head"><div><div class="profile-panel-title">Statistik Aktivitas</div><div class="profile-panel-sub">Perjalanan membaca dan menonton</div></div></div><div class="game-stats"><div class="game-stat"><strong id="statChapterRead">0</strong><span>Chapter</span></div><div class="game-stat"><strong id="statWatchTime">0m</strong><span>Menonton</span></div><div class="game-stat"><strong id="statStreak">0</strong><span>Streak</span></div><div class="game-stat"><strong id="statPoints">0</strong><span>Poin</span></div></div></div>
+                    <div class="profile-panel"><div class="profile-panel-head"><div><div class="profile-panel-title">Badge Pencapaian</div><div class="profile-panel-sub">Badge terbuka otomatis</div></div></div><div class="achievement-grid" id="achievementGrid"></div></div>
+                    <div class="profile-panel"><div class="profile-panel-head"><div><div class="profile-panel-title">Misi Mingguan</div><div class="profile-panel-sub" id="weeklyMissionReset">Diperbarui setiap minggu</div></div></div><div id="weeklyMissionList"></div></div>
+                    <div class="profile-panel"><div class="profile-panel-head"><div><div class="profile-panel-title">Genre Favorit</div><div class="profile-panel-sub">Dihitung dari riwayat dan koleksi</div></div></div><div id="favoriteGenreStats"></div></div>
+                    <div class="profile-panel"><div class="profile-panel-head"><div><div class="profile-panel-title">Hadiah</div><div class="profile-panel-sub">Tema dan avatar terbuka dengan poin</div></div></div><div class="reward-row" id="rewardList"></div></div>
+                    <div class="profile-panel"><div class="profile-panel-head"><div><div class="profile-panel-title">Ranking Pembaca</div><div class="profile-panel-sub">Profil publik dengan poin tertinggi</div></div><button class="profile-hero-btn" style="color:#625af2;border-color:#dedaff;flex:0 0 auto" onclick="loadReaderLeaderboard()"><i class="fa-solid fa-rotate"></i></button></div><div id="readerLeaderboard"><div class="loading-text">Memuat ranking...</div></div></div>
+                    <div class="profile-panel profile-form" id="profileEditorPanel"><div class="profile-panel-head"><div><div class="profile-panel-title">Edit Profil</div><div class="profile-panel-sub">Nama tampilan dan bio singkat</div></div></div><input id="profileDisplayName" maxlength="35" placeholder="Nama tampilan"><textarea id="profileBioInput" maxlength="160" placeholder="Tulis bio singkat..."></textarea><button class="profile-save-btn" onclick="saveSocialProfile()">Simpan Profil</button></div>
+                    <div class="profile-panel"><div class="profile-panel-head"><div><div class="profile-panel-title">Privasi Profil</div><div class="profile-panel-sub">Pilih informasi yang boleh dilihat pengguna lain</div></div></div><div class="privacy-row"><span>Profil dapat ditemukan</span><label class="switch-control"><input id="privacyPublicProfile" type="checkbox" onchange="savePrivacySettings()"><span></span></label></div><div class="privacy-row"><span>Tampilkan statistik</span><label class="switch-control"><input id="privacyShowStats" type="checkbox" onchange="savePrivacySettings()"><span></span></label></div><div class="privacy-row"><span>Bagikan daftar favorit</span><label class="switch-control"><input id="privacyShowFavorites" type="checkbox" onchange="savePrivacySettings()"><span></span></label></div></div>
+                    <ul class="user-menu-list"><li class="install-app-item" id="installAppUser" hidden onclick="installApp()"><div class="left-info"><i class="fa-solid fa-mobile-screen-button"></i> Pasang Aplikasi</div><i class="fa-solid fa-download"></i></li><li onclick="switchNav('bookmark')"><div class="left-info"><i class="fa-solid fa-layer-group"></i> Kelola Koleksi Saya</div><i class="fa-solid fa-chevron-right"></i></li><li class="logout-item" onclick="doLogout()"><div class="left-info"><i class="fa-solid fa-right-from-bracket"></i> Keluar dari Akun</div><i class="fa-solid fa-chevron-right"></i></li></ul>
                 </div>
-
-                <ul class="user-menu-list" style="margin-top: 15px;">
-                    <li class="install-app-item" id="installAppUser" hidden onclick="installApp()"><div class="left-info"><i class="fa-solid fa-mobile-screen-button"></i> Pasang Aplikasi</div><i class="fa-solid fa-download" style="font-size:12px;color:#94a3b8"></i></li>
-                    <li onclick="switchNav('bookmark')">
-                        <div class="left-info"><i class="fa-solid fa-layer-group"></i> Kelola Koleksi Saya</div>
-                        <i class="fa-solid fa-chevron-right" style="font-size: 12px; color: #94a3b8;"></i>
-                    </li>
-                    <li class="logout-item" onclick="doLogout()">
-                        <div class="left-info"><i class="fa-solid fa-right-from-bracket"></i> Keluar (Logout Akun)</div>
-                        <i class="fa-solid fa-arrow-right-from-bracket" style="font-size: 12px;"></i>
-                    </li>
-                </ul>
             </div>
-            <div class="app-version-card"><div><strong>Versi Aplikasi</strong><span id="currentVersionLabel">V18.0.0 • Memeriksa pembaruan...</span></div><button class="version-check-btn" onclick="checkAppConfiguration(true)"><i class="fa-solid fa-rotate"></i> Periksa</button></div>
+            <div class="app-version-card"><div><strong>Versi Aplikasi</strong><span id="currentVersionLabel">V19.0.0 • Memeriksa pembaruan...</span></div><button class="version-check-btn" onclick="checkAppConfiguration(true)"><i class="fa-solid fa-rotate"></i> Periksa</button></div>
         </div>
 
         <!-- ================= BOTTOM NAVIGATION (DITAMBAHKAN DISCOVERY) ================= -->
@@ -991,7 +979,7 @@
             </a>
         </nav>
     </div>
-    <div class="update-modal-backdrop" id="updateModal"><div class="update-sheet"><div class="update-icon"><i class="fa-solid fa-cloud-arrow-down"></i></div><h2>Versi baru tersedia</h2><p>Pembaruan aplikasi sudah siap. Proses ini akan membersihkan cache antarmuka lama tanpa menghapus akun, bookmark, atau riwayat Anda.</p><div class="update-version-line"><span id="updateCurrentVersion">V18.0.0</span><i class="fa-solid fa-arrow-right"></i><span id="updateLatestVersion">V18.0.1</span></div><div class="update-changelog" id="updateChangelog">Peningkatan stabilitas dan tampilan.</div><div class="update-actions"><button class="update-action update-later" onclick="dismissAppUpdate()">Nanti</button><button class="update-action update-now" onclick="applyAppUpdate()"><i class="fa-solid fa-bolt"></i> Perbarui Sekarang</button></div></div></div>
+    <div class="update-modal-backdrop" id="updateModal"><div class="update-sheet"><div class="update-icon"><i class="fa-solid fa-cloud-arrow-down"></i></div><h2>Versi baru tersedia</h2><p>Pembaruan aplikasi sudah siap. Proses ini akan membersihkan cache antarmuka lama tanpa menghapus akun, bookmark, atau riwayat Anda.</p><div class="update-version-line"><span id="updateCurrentVersion">V19.0.0</span><i class="fa-solid fa-arrow-right"></i><span id="updateLatestVersion">V19.0.1</span></div><div class="update-changelog" id="updateChangelog">Peningkatan stabilitas dan tampilan.</div><div class="update-actions"><button class="update-action update-later" onclick="dismissAppUpdate()">Nanti</button><button class="update-action update-now" onclick="applyAppUpdate()"><i class="fa-solid fa-bolt"></i> Perbarui Sekarang</button></div></div></div>
 
     <div class="modern-modal-backdrop" id="modernConfirmModal" role="dialog" aria-modal="true" aria-labelledby="modernConfirmTitle">
         <div class="modern-modal">
@@ -1005,10 +993,12 @@
         </div>
     </div>
 
+    <div class="shared-profile-backdrop" id="sharedProfileModal"><div class="shared-profile-sheet"><button class="shared-profile-close" onclick="closeSharedProfile()"><i class="fa-solid fa-xmark"></i></button><div id="sharedProfileContent"><div class="loading-text">Memuat profil...</div></div></div></div>
+
     <!-- SCRIPT FIREBASE & LOGIKA UTAMA -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-        import { getFirestore, collection, getDocs, getDoc, getCountFromServer, doc, query, orderBy, limit, updateDoc, increment, setDoc, deleteDoc, addDoc, serverTimestamp, runTransaction, arrayUnion, arrayRemove } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+        import { getFirestore, collection, getDocs, getDoc, getCountFromServer, doc, query, where, orderBy, limit, updateDoc, increment, setDoc, deleteDoc, addDoc, serverTimestamp, runTransaction, arrayUnion, arrayRemove } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
         import { getAuth, onAuthStateChanged, signInWithEmailAndPassword, createUserWithEmailAndPassword, signOut } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
 
         const firebaseConfig = {
@@ -1023,7 +1013,7 @@
         const app = initializeApp(firebaseConfig);
         const db = getFirestore(app);
         const auth = getAuth(app);
-        const APP_VERSION = '18.0.0';
+        const APP_VERSION = '19.0.0';
         const ADMIN_UID = 'dWUWpKAWQRRxMOzjzaOA3zXWZLp2';
 
         window.comicsData = {};
@@ -1034,11 +1024,47 @@
         window.userLibrary = {};
         window.libraryFilter = 'all';
         window.scheduleDay = new Date().getDay();
+        window.socialProfile = {displayName:'',bio:'',photoData:'',privacy:{publicProfile:true,showStats:true,showFavorites:true},theme:'default'};
+        window.gameData = {points:0,streak:0,lastCheckIn:'',chapterCount:0,watchSeconds:0,commentCount:0,awardedChapters:{},weekly:{}};
+        window.lastVideoTrackedSecond = 0;
         window.isAuthModeLogin = true;
         window.readerObserver = null; 
         window.sliderInterval = null;
         
         window.currentVideoQualities = {};
+
+        // ================= V19: PROFIL SOSIAL & GAMIFIKASI =================
+        function localDateKey(date=new Date()){return `${date.getFullYear()}-${String(date.getMonth()+1).padStart(2,'0')}-${String(date.getDate()).padStart(2,'0')}`;}
+        function weekKey(){const d=new Date(),start=new Date(d.getFullYear(),0,1);return `${d.getFullYear()}-W${Math.ceil((((d-start)/86400000)+start.getDay()+1)/7)}`;}
+        function defaultAvatar(name){const initial=String(name||'U').trim().charAt(0).toUpperCase()||'U';return `data:image/svg+xml,${encodeURIComponent(`<svg xmlns="http://www.w3.org/2000/svg" width="256" height="256"><defs><linearGradient id="g" x2="1" y2="1"><stop stop-color="#776cff"/><stop offset="1" stop-color="#f06ea9"/></linearGradient></defs><rect width="256" height="256" rx="72" fill="url(#g)"/><text x="128" y="154" text-anchor="middle" font-family="Arial" font-size="112" font-weight="700" fill="white">${initial}</text></svg>`)}`;}
+        function gameLevel(points=0){const level=Math.floor(points/100)+1;const names=['Pemula','Penjelajah','Pembaca Aktif','Kolektor','Ahli Cerita','Legenda'];return {level,name:names[Math.min(names.length-1,Math.floor((level-1)/3))],progress:points%100};}
+        function ensureWeekly(){const key=weekKey();if(!window.gameData.weekly||window.gameData.weekly.key!==key)window.gameData.weekly={key,chapters:0,watchMinutes:0,comments:0};}
+        async function syncGamification(){if(!auth.currentUser)return;ensureWeekly();const payload={...window.gameData,updatedAt:serverTimestamp()};try{await setDoc(doc(db,'users',auth.currentUser.uid,'gamification','main'),payload,{merge:true});await publishPublicProfile();}catch(e){}localStorage.setItem('gameData_'+auth.currentUser.uid,JSON.stringify(window.gameData));renderSocialProfile();}
+        async function loadSocialData(uid){
+            try{window.socialProfile=JSON.parse(localStorage.getItem('socialProfile_'+uid)||'null')||window.socialProfile;window.gameData=JSON.parse(localStorage.getItem('gameData_'+uid)||'null')||window.gameData;}catch(e){}
+            try{const [profileSnap,gameSnap]=await Promise.all([getDoc(doc(db,'users',uid,'profile','main')),getDoc(doc(db,'users',uid,'gamification','main'))]);if(profileSnap.exists())window.socialProfile={...window.socialProfile,...profileSnap.data()};if(gameSnap.exists())window.gameData={...window.gameData,...gameSnap.data()};}catch(e){}
+            ensureWeekly();const legacyReads=getReadChapterMap();const legacyKeys=Object.keys(legacyReads);window.gameData.awardedChapters=window.gameData.awardedChapters||{};let migrated=0;legacyKeys.forEach(key=>{if(!window.gameData.awardedChapters[key]){window.gameData.awardedChapters[key]=legacyReads[key];migrated++;}});window.gameData.chapterCount=Object.keys(window.gameData.awardedChapters).length;if(migrated)window.gameData.points=(window.gameData.points||0)+(migrated*5);localStorage.setItem('socialProfile_'+uid,JSON.stringify(window.socialProfile));localStorage.setItem('gameData_'+uid,JSON.stringify(window.gameData));renderSocialProfile();loadReaderLeaderboard();if(migrated)syncGamification();
+        }
+        async function publishPublicProfile(){if(!auth.currentUser)return;const p=window.socialProfile,g=window.gameData;const favorites=p.privacy?.showFavorites?window.userBookmarks.slice(0,30):[];try{await setDoc(doc(db,'publicProfiles',auth.currentUser.uid),{userId:auth.currentUser.uid,displayName:p.displayName||auth.currentUser.email.split('@')[0],bio:p.bio||'',photoData:p.photoData||'',publicProfile:p.privacy?.publicProfile!==false,showStats:p.privacy?.showStats!==false,showFavorites:p.privacy?.showFavorites!==false,favorites,points:g.points||0,level:gameLevel(g.points||0).level,chapterCount:g.chapterCount||0,watchSeconds:g.watchSeconds||0,streak:g.streak||0,updatedAt:serverTimestamp()},{merge:true});}catch(e){}}
+        window.dailyCheckIn=async function(){if(!auth.currentUser)return;const today=localDateKey();if(window.gameData.lastCheckIn===today)return window.showToast('Check-in hari ini sudah diambil');const yesterday=new Date();yesterday.setDate(yesterday.getDate()-1);window.gameData.streak=window.gameData.lastCheckIn===localDateKey(yesterday)?(window.gameData.streak||0)+1:1;window.gameData.lastCheckIn=today;window.gameData.points=(window.gameData.points||0)+10;await syncGamification();window.showToast('Check-in berhasil: +10 poin');}
+        function awardChapter(comicId,chapterId){if(!auth.currentUser||!chapterId)return;const key=`${comicId}__${chapterId}`;window.gameData.awardedChapters=window.gameData.awardedChapters||{};if(window.gameData.awardedChapters[key])return;window.gameData.awardedChapters[key]=Date.now();window.gameData.chapterCount=Object.keys(window.gameData.awardedChapters).length;window.gameData.points=(window.gameData.points||0)+5;ensureWeekly();window.gameData.weekly.chapters=(window.gameData.weekly.chapters||0)+1;syncGamification();}
+        function trackWatchSeconds(seconds){if(!auth.currentUser||seconds<=0||seconds>5)return;window.gameData.watchSeconds=(window.gameData.watchSeconds||0)+seconds;ensureWeekly();window.gameData.weekly.watchSeconds=(window.gameData.weekly.watchSeconds||0)+seconds;window.gameData.weekly.watchMinutes=Math.floor(window.gameData.weekly.watchSeconds/60);localStorage.setItem('gameData_'+auth.currentUser.uid,JSON.stringify(window.gameData));if(Math.floor(window.gameData.watchSeconds)%30===0)syncGamification();}
+        window.saveSocialProfile=async function(){if(!auth.currentUser)return;const name=document.getElementById('profileDisplayName').value.trim(),bio=document.getElementById('profileBioInput').value.trim();if(name.length<2)return window.showToast('Nama tampilan minimal 2 karakter');window.socialProfile.displayName=name.slice(0,35);window.socialProfile.bio=bio.slice(0,160);try{await setDoc(doc(db,'users',auth.currentUser.uid,'profile','main'),{...window.socialProfile,updatedAt:serverTimestamp()},{merge:true});await publishPublicProfile();localStorage.setItem('socialProfile_'+auth.currentUser.uid,JSON.stringify(window.socialProfile));renderSocialProfile();window.showToast('Profil berhasil diperbarui');}catch(e){window.showToast('Profil belum dapat disimpan');}}
+        window.handleProfilePhoto=function(file){if(!file||!auth.currentUser)return;if(file.size>8*1024*1024)return window.showToast('Foto maksimal 8 MB');const reader=new FileReader();reader.onload=()=>{const img=new Image();img.onload=()=>{const canvas=document.createElement('canvas');canvas.width=256;canvas.height=256;const ctx=canvas.getContext('2d');const scale=Math.max(256/img.width,256/img.height),w=img.width*scale,h=img.height*scale;ctx.drawImage(img,(256-w)/2,(256-h)/2,w,h);window.socialProfile.photoData=canvas.toDataURL('image/jpeg',.72);document.getElementById('profilePhoto').src=window.socialProfile.photoData;window.saveSocialProfile();};img.src=reader.result;};reader.readAsDataURL(file);}
+        window.savePrivacySettings=function(){window.socialProfile.privacy={publicProfile:document.getElementById('privacyPublicProfile').checked,showStats:document.getElementById('privacyShowStats').checked,showFavorites:document.getElementById('privacyShowFavorites').checked};window.saveSocialProfile();}
+        window.shareMyProfile=async function(){if(!auth.currentUser)return;const favorites=window.userBookmarks.slice(0,8).map(id=>window.comicsData[id]?.title).filter(Boolean);const text=`Profil ${window.socialProfile.displayName||'Pembaca'} • Level ${gameLevel(window.gameData.points).level}\nFavorit: ${favorites.join(', ')||'Belum ada'}`;try{if(navigator.share)await navigator.share({title:'Profil Pembaca Saya',text,url:location.href.split('?')[0]+`?profile=${auth.currentUser.uid}`});else{await navigator.clipboard.writeText(text);window.showToast('Profil dan daftar favorit disalin');}}catch(e){}}
+        window.closeSharedProfile=function(){document.getElementById('sharedProfileModal').classList.remove('show');}
+        async function loadSharedProfileFromUrl(){const uid=new URLSearchParams(location.search).get('profile');if(!uid)return;const modal=document.getElementById('sharedProfileModal'),box=document.getElementById('sharedProfileContent');modal.classList.add('show');try{const snap=await getDoc(doc(db,'publicProfiles',uid));if(!snap.exists()||snap.data().publicProfile!==true)throw new Error('private');const x=snap.data(),showStats=x.showStats!==false,ids=x.showFavorites!==false?(x.favorites||[]):[];const favorites=ids.map(id=>({id,comic:window.comicsData[id]})).filter(x=>x.comic);box.innerHTML=`<div class="shared-profile-head"><img src="${x.photoData||defaultAvatar(x.displayName)}"><h2>${safeText(x.displayName||'Pembaca')}</h2><p>${safeText(x.bio||'')}</p>${showStats?`<div class="game-stats" style="margin-top:14px"><div class="game-stat"><strong>${x.level||1}</strong><span>Level</span></div><div class="game-stat"><strong>${x.chapterCount||0}</strong><span>Chapter</span></div><div class="game-stat"><strong>${Math.floor((x.watchSeconds||0)/60)}m</strong><span>Menonton</span></div><div class="game-stat"><strong>${x.streak||0}</strong><span>Streak</span></div></div>`:''}</div><div class="profile-panel-title" style="margin:8px 0 12px">Daftar Favorit</div><div class="shared-favorites">${favorites.map(({id,comic})=>`<div class="shared-favorite" onclick="closeSharedProfile();openDetail('${safeAttr(id)}')"><img src="${safeMediaUrl(comic.coverUrl)}">${safeText(comic.title)}</div>`).join('')||'<div class="empty-history" style="grid-column:1/-1">Daftar favorit disembunyikan atau kosong.</div>'}</div>`;}catch(e){box.innerHTML='<div class="shared-profile-head"><i class="fa-solid fa-user-lock" style="font-size:42px;color:#85899b"></i><h2>Profil tidak tersedia</h2><p>Profil ini bersifat privat atau telah dihapus.</p></div>';}}
+        window.applyReward=function(theme,cost){if((window.gameData.points||0)<cost)return window.showToast(`Butuh ${cost} poin`);window.socialProfile.theme=theme;document.body.dataset.appTheme=theme;localStorage.setItem('socialProfile_'+auth.currentUser.uid,JSON.stringify(window.socialProfile));window.saveSocialProfile();window.showToast('Tema berhasil digunakan');}
+        function favoriteGenres(){const counts={};let history={};try{history=JSON.parse(localStorage.getItem('comicHistoryDetail')||'{}');}catch(e){};new Set([...Object.keys(history),...window.userBookmarks]).forEach(id=>(window.comicsData[id]?.genres||[]).forEach(g=>counts[g]=(counts[g]||0)+1));return Object.entries(counts).sort((a,b)=>b[1]-a[1]).slice(0,5);}
+        function renderSocialProfile(){if(!auth.currentUser)return;const p=window.socialProfile,g=window.gameData,level=gameLevel(g.points||0),name=p.displayName||auth.currentUser.email.split('@')[0];document.body.dataset.appTheme=p.theme||'default';document.getElementById('userNameDisplay').textContent=name;document.getElementById('userEmailDisplay').textContent=auth.currentUser.email;document.getElementById('profileBioDisplay').textContent=p.bio||'Belum ada bio. Ceritakan genre atau karakter favoritmu.';document.getElementById('profilePhoto').src=p.photoData||defaultAvatar(name);document.getElementById('profileDisplayName').value=name;document.getElementById('profileBioInput').value=p.bio||'';document.getElementById('profileLevelLabel').textContent=`Level ${level.level} • ${level.name}`;document.getElementById('profilePointsLabel').textContent=`${g.points||0} poin`;document.getElementById('profileNextLevel').textContent=`${100-level.progress} menuju level berikutnya`;document.getElementById('profileXpFill').style.width=`${level.progress}%`;document.getElementById('statChapterRead').textContent=g.chapterCount||0;document.getElementById('statWatchTime').textContent=(g.watchSeconds||0)>=3600?`${Math.floor(g.watchSeconds/3600)}j ${Math.floor((g.watchSeconds%3600)/60)}m`:`${Math.floor((g.watchSeconds||0)/60)}m`;document.getElementById('statStreak').textContent=`${g.streak||0}🔥`;document.getElementById('statPoints').textContent=g.points||0;
+            const today=localDateKey(),checked=g.lastCheckIn===today,button=document.getElementById('checkinButton');button.disabled=checked;button.textContent=checked?'Sudah diambil':'+10 poin';document.getElementById('checkinMessage').textContent=checked?`Streak ${g.streak||0} hari aktif. Kembali besok!`:'Ambil hadiah hari ini dan lanjutkan streak.';
+            const achievements=[{icon:'fa-book-open',title:'Pembaca 10',desc:'10 chapter',ok:(g.chapterCount||0)>=10},{icon:'fa-layer-group',title:'Pembaca 50',desc:'50 chapter',ok:(g.chapterCount||0)>=50},{icon:'fa-crown',title:'Pembaca 100',desc:'100 chapter',ok:(g.chapterCount||0)>=100},{icon:'fa-fire',title:'Streak 7',desc:'7 hari',ok:(g.streak||0)>=7},{icon:'fa-comments',title:'Komentator',desc:'10 komentar',ok:(g.commentCount||0)>=10},{icon:'fa-clock',title:'Penonton',desc:'10 jam',ok:(g.watchSeconds||0)>=36000}];document.getElementById('achievementGrid').innerHTML=achievements.map(a=>`<div class="achievement ${a.ok?'unlocked':''}"><i class="fa-solid ${a.icon}"></i><strong>${a.title}</strong><span>${a.ok?'Terbuka':a.desc}</span></div>`).join('');
+            ensureWeekly();const missions=[['Baca 5 chapter',g.weekly.chapters||0,5],['Menonton 30 menit',g.weekly.watchMinutes||0,30],['Tulis 3 komentar',g.weekly.comments||0,3]];document.getElementById('weeklyMissionList').innerHTML=missions.map(([name,val,target])=>`<div class="mission"><div class="mission-row"><span>${name}</span><span>${Math.min(val,target)}/${target}</span></div><div class="mission-track"><div class="mission-fill" style="width:${Math.min(100,val/target*100)}%"></div></div></div>`).join('');
+            const genres=favoriteGenres(),max=genres[0]?.[1]||1;document.getElementById('favoriteGenreStats').innerHTML=genres.map(([name,val])=>`<div class="genre-stat"><span class="genre-stat-name">${safeText(name)}</span><div class="genre-stat-track"><div class="genre-stat-fill" style="width:${val/max*100}%"></div></div><span class="genre-stat-value">${val}</span></div>`).join('')||'<div class="empty-history">Mulai membaca untuk melihat statistik genre.</div>';
+            const rewards=[['default',0,'Original'],['sunset',150,'Sunset'],['forest',300,'Forest'],['midnight',500,'Midnight']];document.getElementById('rewardList').innerHTML=rewards.map(([theme,cost,label])=>`<div class="reward-card ${(g.points||0)<cost?'locked':''}"><div class="reward-preview" style="${theme==='sunset'?'background:linear-gradient(135deg,#ef6a51,#ffb257)':theme==='forest'?'background:linear-gradient(135deg,#15956e,#7bcf9f)':theme==='midnight'?'background:linear-gradient(135deg,#211d48,#7669ff)':''}"></div><strong>${label} • ${cost} poin</strong><button onclick="applyReward('${theme}',${cost})">Pakai</button></div>`).join('');const privacy=p.privacy||{};document.getElementById('privacyPublicProfile').checked=privacy.publicProfile!==false;document.getElementById('privacyShowStats').checked=privacy.showStats!==false;document.getElementById('privacyShowFavorites').checked=privacy.showFavorites!==false;
+        }
+        window.loadReaderLeaderboard=async function(){const box=document.getElementById('readerLeaderboard');if(!box)return;box.innerHTML='<div class="loading-text">Memuat ranking...</div>';try{const snap=await getDocs(query(collection(db,'publicProfiles'),where('publicProfile','==',true),limit(50)));const rows=[];snap.forEach(d=>rows.push(d.data()));rows.sort((a,b)=>(b.points||0)-(a.points||0));box.innerHTML=rows.slice(0,20).map((x,i)=>`<div class="leaderboard-item"><span class="leaderboard-rank">#${i+1}</span><img class="leaderboard-avatar" src="${x.photoData||defaultAvatar(x.displayName)}"><span class="leaderboard-name">${safeText(x.displayName||'Pembaca')}</span><span class="leaderboard-points">Lv.${x.level||1} • ${x.points||0} poin</span></div>`).join('')||'<div class="empty-history">Belum ada profil publik.</div>';}catch(e){box.innerHTML='<div class="empty-history">Ranking belum dapat dimuat.</div>';}}
         window.modernConfirmResolver = null;
 
         window.showModernConfirm = function({ title='Konfirmasi', message='Apakah Anda yakin?', confirmText='Lanjutkan', cancelText='Batal', danger=false, icon='fa-circle-question' } = {}) {
@@ -1166,14 +1192,14 @@
             const button=document.querySelector('.update-now');button.disabled=true;button.innerHTML='<i class="fa-solid fa-spinner fa-spin"></i> Memperbarui...';
             try{if('serviceWorker'in navigator){const regs=await navigator.serviceWorker.getRegistrations();await Promise.all(regs.map(reg=>reg.unregister()));}if('caches'in window){const keys=await caches.keys();await Promise.all(keys.map(key=>caches.delete(key)));}localStorage.removeItem('dismissedAppVersion');const url=new URL(location.href);url.searchParams.set('appVersion',Date.now());location.replace(url.href);}catch(e){button.disabled=false;button.innerHTML='<i class="fa-solid fa-bolt"></i> Perbarui Sekarang';window.showToast('Pembaruan gagal. Silakan muat ulang halaman.');}
         }
-        if('serviceWorker' in navigator && location.protocol !== 'file:') navigator.serviceWorker.register('./sw-v18.js',{updateViaCache:'none'}).then(reg=>reg.update()).catch(() => {});
+        if('serviceWorker' in navigator && location.protocol !== 'file:') navigator.serviceWorker.register('./sw-v19.js',{updateViaCache:'none'}).then(reg=>reg.update()).catch(() => {});
         document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible')window.checkAppConfiguration(false);});
 
         // ================= FITUR PENCARIAN (SEARCH) DINAMIS =================
         const searchInput = document.getElementById('searchInput');
         const searchResults = document.getElementById('searchResults');
 
-        const SEARCH_HISTORY_KEY = 'smartSearchHistoryV18';
+        const SEARCH_HISTORY_KEY = 'smartSearchHistoryV19';
         function normalizeSearch(value) { return String(value || '').normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase().replace(/[^a-z0-9]+/g,' ').trim(); }
         function editDistance(a,b) { const row=Array.from({length:b.length+1},(_,i)=>i); for(let i=1;i<=a.length;i++){let prev=row[0];row[0]=i;for(let j=1;j<=b.length;j++){const old=row[j];row[j]=Math.min(row[j]+1,row[j-1]+1,prev+(a[i-1]===b[j-1]?0:1));prev=old;}}return row[b.length]; }
         function fuzzySimilarity(a,b) { if(!a||!b)return 0;if(a.includes(b)||b.includes(a))return .88;return 1-editDistance(a,b)/Math.max(a.length,b.length); }
@@ -1223,6 +1249,7 @@
                 document.getElementById('commentInputArea').style.display = 'block';
 
                 await syncUserData(user.uid);
+                await loadSocialData(user.uid);
             } else {
                 document.getElementById('authSection').style.display = 'block';
                 document.getElementById('userSection').style.display = 'none';
@@ -1232,6 +1259,9 @@
 
                 window.userBookmarks = [];
                 window.userLibrary = {};
+                document.body.dataset.appTheme = 'default';
+                window.socialProfile = {displayName:'',bio:'',photoData:'',privacy:{publicProfile:true,showStats:true,showFavorites:true},theme:'default'};
+                window.gameData = {points:0,streak:0,lastCheckIn:'',chapterCount:0,watchSeconds:0,commentCount:0,awardedChapters:{},weekly:{}};
                 renderBookmarks();
                 renderReadingHistory();
                 renderDiscoveryGrid(false);
@@ -1469,6 +1499,7 @@
                 renderDiscoveryGrid();
                 renderRecommendations();
                 renderHomeInsights();
+                if(!window.sharedProfileLoaded){window.sharedProfileLoaded=true;loadSharedProfileFromUrl();}
 
                 // Fetching Info Chapter terbaru untuk Slider & Discovery di background
                 Object.keys(window.comicsData).forEach(async (id) => {
@@ -1574,8 +1605,10 @@
         function markChapterRead(comicId, chapterId) {
             if(!comicId || !chapterId) return;
             const map = getReadChapterMap();
+            const isNew = !map[`${comicId}__${chapterId}`];
             map[`${comicId}__${chapterId}`] = Date.now();
             localStorage.setItem('readChapterMap', JSON.stringify(map));
+            if(isNew) awardChapter(comicId,chapterId);
         }
         window.setUpdatePeriod = function(period) {
             window.updatePeriod = ['all','today','yesterday','week'].includes(period) ? period : 'all';
@@ -2226,6 +2259,7 @@
                 } else {
                     await addDoc(collection(db, "comics", comicId, "comments"), {userId:auth.currentUser.uid,username:auth.currentUser.email.split('@')[0],text,parentId:window.commentMode.type==='reply'?window.commentMode.parentId:null,likedBy:[],isPinned:false,timestamp:serverTimestamp()});
                     try { await updateDoc(doc(db,"comics",comicId),{commentCount:increment(1)}); if(window.comicsData[comicId]) window.comicsData[comicId].commentCount=(window.comicsData[comicId].commentCount||0)+1; } catch(counterError) {}
+                    window.gameData.commentCount=(window.gameData.commentCount||0)+1;window.gameData.points=(window.gameData.points||0)+2;ensureWeekly();window.gameData.weekly.comments=(window.gameData.weekly.comments||0)+1;syncGamification();
                 }
                 localStorage.setItem('lastCommentAt',String(Date.now()));
 
@@ -2657,8 +2691,11 @@
             
             videoPlayer.ontimeupdate = () => {
                 const second = Math.floor(videoPlayer.currentTime || 0);
+                const delta=second-window.lastVideoTrackedSecond;if(!videoPlayer.paused&&delta>0&&delta<=3)trackWatchSeconds(delta);window.lastVideoTrackedSecond=second;
                 if(second > 0 && second % 5 === 0) localStorage.setItem(`videoResume_${comicId}_${chapterId}`, String(second));
             };
+            window.lastVideoTrackedSecond=0;
+            videoPlayer.onpause=()=>{if(auth.currentUser)syncGamification();};
             videoPlayer.onended = () => {
                 localStorage.removeItem(`videoResume_${comicId}_${chapterId}`);
                 saveReadingProgress(comicId, chapterId, chapterNum, 1);

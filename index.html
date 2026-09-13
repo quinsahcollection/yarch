@@ -3,12 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Komik & Anime — Pro Reader & Player V13</title>
+    <title>Komik & Anime — Professional Comments V14</title>
     <meta name="theme-color" content="#625af2">
     <meta name="description" content="Aplikasi komik, manga, anime dan film dengan update terbaru.">
     <meta name="referrer" content="strict-origin-when-cross-origin">
-    <link rel="manifest" href="manifest-v13.webmanifest">
-    <link rel="icon" href="app-icon-v13.svg" type="image/svg+xml">
+    <link rel="manifest" href="manifest-v14.webmanifest">
+    <link rel="icon" href="app-icon-v14.svg" type="image/svg+xml">
     <link rel="preconnect" href="https://www.gstatic.com" crossorigin>
     <link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin>
     <!-- BUILD: FOUNDATION-V10 | updates + read state + safe rating/views/comment+ comment counter -->
@@ -184,6 +184,27 @@
         .comment-user { font-weight: 700; font-size: 13px; color: #262626; margin-bottom: 3px; display:flex; gap:6px; align-items:center; }
         .comment-time { font-size: 11px; color: #8e8e8e; font-weight: 400; }
         .comment-text { font-size: 13px; color: #262626; line-height: 1.4; }
+        .comment-item { padding:12px; border:1px solid #edf0f5; border-radius:16px; background:#fff; box-shadow:0 5px 15px rgba(35,39,70,.04); }
+        .comment-item.pinned { border-color:#d9d7ff; background:linear-gradient(135deg,#fbfaff,#fff); }
+        .comment-item.reply { margin-left:34px; border-left:3px solid #dedcff; box-shadow:none; }
+        .pinned-badge { display:inline-flex; align-items:center; gap:4px; padding:3px 7px; border-radius:8px; color:#5d55dd; background:#ecebff; font-size:8px; font-weight:850; }
+        .edited-label { color:#aaa; font-size:9px; font-weight:500; }
+        .comment-actions { display:flex; align-items:center; flex-wrap:wrap; gap:5px; margin-top:9px; }
+        .comment-action { border:0; padding:5px 8px; border-radius:8px; color:#7d8294; background:#f3f4f8; font-size:9px; font-weight:750; cursor:pointer; }
+        .comment-action.liked { color:#e94f68; background:#fff0f3; }
+        .comment-action.report { margin-left:auto; color:#a0a4b2; background:transparent; }
+        .spoiler-content { display:inline-block; padding:4px 8px; border-radius:7px; color:transparent; background:#252735; cursor:pointer; user-select:none; }
+        .spoiler-content.revealed { color:#fff; user-select:text; }
+        .comment-composer { position:sticky; bottom:-20px; z-index:12; padding:11px; border:1px solid #e8eaf1; border-radius:17px; background:rgba(255,255,255,.96); backdrop-filter:blur(16px); box-shadow:0 -8px 25px rgba(35,39,70,.07); }
+        .comment-context { display:none; align-items:center; justify-content:space-between; gap:8px; margin-bottom:8px; padding:7px 9px; border-radius:9px; color:#625af2; background:#f0efff; font-size:10px; font-weight:700; }
+        .comment-context.show { display:flex; }
+        .comment-input-area { position:static !important; margin:0 !important; padding:0 !important; border:0 !important; }
+        .comment-input-area textarea { flex:1; min-height:42px; max-height:100px; resize:vertical; padding:11px 13px; border:1px solid #dde0e9; border-radius:13px; outline:none; font:inherit; font-size:12px; }
+        .comment-tools { display:flex; align-items:center; gap:7px; margin-top:8px; }
+        .emoji-panel { display:none; flex-wrap:wrap; gap:5px; margin-top:8px; padding:9px; border-radius:12px; background:#f5f6fa; }
+        .emoji-panel.show { display:flex; }
+        .emoji-btn { width:34px; height:34px; border:0; border-radius:9px; background:#fff; font-size:18px; cursor:pointer; }
+        .comment-hint { flex:1; color:#a0a4b2; font-size:9px; }
 
         .comment-input-area { position: sticky; bottom: -20px; background: white; padding: 10px 0; border-top: 1px solid #eee; display: flex; gap: 10px; align-items: center; z-index: 10; margin-top: 10px;}
         .comment-input-area input { flex: 1; padding: 10px 15px; border-radius: 20px; border: 1px solid #ddd; outline: none; font-size: 13px; background: #fafafa; }
@@ -750,9 +771,11 @@
                         </div>
                         
                         <!-- Input Komentar -->
-                        <div class="comment-input-area" id="commentInputArea" style="display:none;">
-                            <input type="text" id="newCommentText" placeholder="Tambahkan komentar..." autocomplete="off">
-                            <button class="btn-send-comment" onclick="postComment()">Kirim</button>
+                        <div class="comment-composer" id="commentInputArea" style="display:none;">
+                            <div class="comment-context" id="commentContext"><span id="commentContextText">Membalas komentar</span><button class="comment-action" onclick="cancelCommentMode()"><i class="fa-solid fa-xmark"></i></button></div>
+                            <div class="comment-input-area"><textarea id="newCommentText" maxlength="800" placeholder="Tulis komentar... Gunakan [spoiler]teks[/spoiler]" autocomplete="off"></textarea><button class="btn-send-comment" onclick="postComment()">Kirim</button></div>
+                            <div class="comment-tools"><button class="comment-action" onclick="toggleEmojiPanel()"><i class="fa-regular fa-face-smile"></i> Emoji</button><button class="comment-action" onclick="insertSpoilerTag()"><i class="fa-solid fa-eye-slash"></i> Spoiler</button><span class="comment-hint">Maks. 800 karakter</span></div>
+                            <div class="emoji-panel" id="emojiPanel"></div>
                         </div>
                         
                         <!-- Prompt Peringatan Belum Login -->
@@ -925,7 +948,7 @@
     <!-- SCRIPT FIREBASE & LOGIKA UTAMA -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-        import { getFirestore, collection, getDocs, getDoc, getCountFromServer, doc, query, orderBy, limit, updateDoc, increment, setDoc, deleteDoc, addDoc, serverTimestamp, runTransaction } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+        import { getFirestore, collection, getDocs, getDoc, getCountFromServer, doc, query, orderBy, limit, updateDoc, increment, setDoc, deleteDoc, addDoc, serverTimestamp, runTransaction, arrayUnion, arrayRemove } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
         import { getAuth, onAuthStateChanged, signInWithEmailAndPassword, createUserWithEmailAndPassword, signOut } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
 
         const firebaseConfig = {
@@ -1061,7 +1084,7 @@
         }
         window.addEventListener('online', () => showNetworkStatus(true));
         window.addEventListener('offline', () => showNetworkStatus(false));
-        if('serviceWorker' in navigator && location.protocol !== 'file:') navigator.serviceWorker.register('./sw-v13.js').catch(() => {});
+        if('serviceWorker' in navigator && location.protocol !== 'file:') navigator.serviceWorker.register('./sw-v14.js').catch(() => {});
 
         // ================= FITUR PENCARIAN (SEARCH) DINAMIS =================
         const searchInput = document.getElementById('searchInput');
@@ -1150,7 +1173,7 @@
                 document.getElementById('userNameDisplay').innerText = user.email.split('@')[0].toUpperCase();
                 
                 document.getElementById('commentLoginPrompt').style.display = 'none';
-                document.getElementById('commentInputArea').style.display = 'flex';
+                document.getElementById('commentInputArea').style.display = 'block';
 
                 await syncUserData(user.uid);
             } else {
@@ -1980,7 +2003,33 @@
 
         window.setBookmarkView(window.bookmarkView);
 
-        // ================= FITUR KOMENTAR =================
+        // ================= V14: PROFESSIONAL COMMENTS =================
+        window.commentMode = {type:'new', commentId:null, parentId:null, username:''};
+        const commentEmojis = ['😀','😂','😍','🥰','😮','😢','😡','👍','❤️','🔥','👏','🎉','🤔','💯','🙏'];
+        function initEmojiPanel() { const panel=document.getElementById('emojiPanel'); if(panel) panel.innerHTML=commentEmojis.map(e=>`<button class="emoji-btn" onclick="insertCommentEmoji('${e}')">${e}</button>`).join(''); }
+        window.toggleEmojiPanel = function(){ document.getElementById('emojiPanel').classList.toggle('show'); }
+        window.insertCommentEmoji = function(emoji){ const input=document.getElementById('newCommentText'); const start=input.selectionStart||input.value.length; input.value=input.value.slice(0,start)+emoji+input.value.slice(input.selectionEnd||start); input.focus(); input.selectionStart=input.selectionEnd=start+emoji.length; }
+        window.insertSpoilerTag = function(){ const input=document.getElementById('newCommentText'); const start=input.selectionStart||0,end=input.selectionEnd||start,selected=input.value.slice(start,end)||'isi spoiler'; input.value=input.value.slice(0,start)+`[spoiler]${selected}[/spoiler]`+input.value.slice(end); input.focus(); }
+        function renderCommentText(text){ return safeText(text).replace(/\[spoiler\]([\s\S]*?)\[\/spoiler\]/gi,'<span class="spoiler-content" onclick="this.classList.toggle(\'revealed\')">$1</span>').replace(/\n/g,'<br>'); }
+        function validateComment(text){
+            if(text.length<2) return 'Komentar terlalu pendek.';
+            if(text.length>800) return 'Komentar maksimal 800 karakter.';
+            if((text.match(/https?:\/\//gi)||[]).length>2) return 'Terlalu banyak tautan.';
+            if(/(.)\1{9,}/i.test(text)) return 'Komentar terdeteksi sebagai spam.';
+            const blocked=['anjing','bangsat','kontol','memek','ngentot','tolol','goblok'];
+            if(blocked.some(word=>new RegExp(`\\b${word}\\b`,'i').test(text))) return 'Komentar mengandung kata yang tidak diperbolehkan.';
+            const last=Number(localStorage.getItem('lastCommentAt')||0); if(Date.now()-last<15000) return 'Tunggu beberapa detik sebelum mengirim lagi.';
+            return '';
+        }
+        function setCommentMode(type, commentId=null, parentId=null, username=''){
+            window.commentMode={type,commentId,parentId,username}; const box=document.getElementById('commentContext');
+            box.classList.toggle('show',type!=='new'); document.getElementById('commentContextText').textContent=type==='reply'?`Membalas @${username}`:type==='edit'?'Mengedit komentar':'Komentar baru';
+            document.getElementById('newCommentText').focus();
+        }
+        window.cancelCommentMode=function(){ window.commentMode={type:'new',commentId:null,parentId:null,username:''}; document.getElementById('commentContext').classList.remove('show'); document.getElementById('newCommentText').value=''; }
+        window.replyComment=function(id,username){ setCommentMode('reply',null,id,decodeURIComponent(username)); }
+        window.editComment=function(id,encoded){ setCommentMode('edit',id,null,''); document.getElementById('newCommentText').value=decodeURIComponent(encoded); }
+
         async function fetchComments(comicId) {
             const container = document.getElementById('commentListContainer');
             const badge = document.getElementById('commentBadge');
@@ -1992,24 +2041,24 @@
                 const q = query(commentRef, orderBy("timestamp", "desc"));
                 const snapshot = await getDocs(q);
                 
-                let commentHTML = ''; let total = 0;
-                snapshot.forEach(doc => {
-                    const c = doc.data(); total++;
+                const all=snapshot.docs.map(commentDoc=>({id:commentDoc.id,...commentDoc.data()}));
+                const ids=new Set(all.map(c=>c.id)); const roots=all.filter(c=>!c.parentId||!ids.has(c.parentId)).sort((a,b)=>(b.isPinned===true)-(a.isPinned===true));
+                const renderOne=(c,isReply=false)=>{
                     const dateObj = c.timestamp ? c.timestamp.toDate() : new Date();
                     const dateStr = dateObj.toLocaleDateString('id-ID', {day:'numeric', month:'short'}) + ' ' + String(dateObj.getHours()).padStart(2, '0') + ':' + String(dateObj.getMinutes()).padStart(2, '0');
                     const initial = c.username ? c.username.charAt(0).toUpperCase() : 'U';
-                    
-                    commentHTML += `
-                        <div class="comment-item">
-                            <div class="comment-avatar">${initial}</div>
+                    const own=auth.currentUser?.uid===c.userId, liked=(c.likedBy||[]).includes(auth.currentUser?.uid), likes=(c.likedBy||[]).length;
+                    return `<div class="comment-item ${c.isPinned?'pinned':''} ${isReply?'reply':''}">
+                            <div class="comment-avatar">${safeText(initial)}</div>
                             <div class="comment-content">
-                                <div class="comment-user">${c.username} <span class="comment-time">${dateStr}</span></div>
-                                <div class="comment-text">${c.text}</div>
+                                <div class="comment-user">${safeText(c.username||'Pengguna')} ${c.isPinned?'<span class="pinned-badge"><i class="fa-solid fa-thumbtack"></i> Disematkan</span>':''}<span class="comment-time">${dateStr}</span>${c.editedAt?'<span class="edited-label">Diedit</span>':''}</div>
+                                <div class="comment-text">${renderCommentText(c.text||'')}</div>
+                                <div class="comment-actions"><button class="comment-action ${liked?'liked':''}" onclick="toggleCommentLike('${c.id}')"><i class="fa-${liked?'solid':'regular'} fa-heart"></i> ${likes}</button>${!isReply?`<button class="comment-action" onclick="replyComment('${c.id}','${encodeURIComponent(c.username||'Pengguna')}')"><i class="fa-solid fa-reply"></i> Balas</button>`:''}${own?`<button class="comment-action" onclick="editComment('${c.id}','${encodeURIComponent(c.text||'')}')">Edit</button><button class="comment-action" onclick="deleteOwnComment('${c.id}')">Hapus</button>`:''}<button class="comment-action report" onclick="reportComment('${c.id}')"><i class="fa-regular fa-flag"></i></button></div>
                             </div>
-                        </div>
-                    `;
-                });
-                
+                        </div>`;
+                };
+                let commentHTML=''; roots.forEach(root=>{ commentHTML+=renderOne(root); all.filter(c=>c.parentId===root.id).reverse().forEach(reply=>commentHTML+=renderOne(reply,true)); });
+                const total=all.length;
                 if(total > 0) {
                     container.innerHTML = commentHTML;
                     badge.innerText = total; badge.style.display = 'inline-block';
@@ -2024,28 +2073,30 @@
             const textInput = document.getElementById('newCommentText');
             const text = textInput.value.trim();
             if(text === "") return;
+            const validation=validateComment(text); if(validation){ window.showToast(validation); return; }
             const comicId = window.currentActiveComicId;
 
             try {
                 const btn = document.querySelector('.btn-send-comment');
                 btn.innerText = "..."; btn.disabled = true;
 
-                await addDoc(collection(db, "comics", comicId, "comments"), {
-                    userId: auth.currentUser.uid,
-                    username: auth.currentUser.email.split('@')[0],
-                    text: text,
-                    timestamp: serverTimestamp()
-                });
-                try {
-                    await updateDoc(doc(db, "comics", comicId), { commentCount: increment(1) });
-                    if(window.comicsData[comicId]) window.comicsData[comicId].commentCount = (window.comicsData[comicId].commentCount || 0) + 1;
-                } catch(counterError) {}
+                if(window.commentMode.type==='edit') {
+                    await updateDoc(doc(db,'comics',comicId,'comments',window.commentMode.commentId),{text,editedAt:serverTimestamp()});
+                } else {
+                    await addDoc(collection(db, "comics", comicId, "comments"), {userId:auth.currentUser.uid,username:auth.currentUser.email.split('@')[0],text,parentId:window.commentMode.type==='reply'?window.commentMode.parentId:null,likedBy:[],isPinned:false,timestamp:serverTimestamp()});
+                    try { await updateDoc(doc(db,"comics",comicId),{commentCount:increment(1)}); if(window.comicsData[comicId]) window.comicsData[comicId].commentCount=(window.comicsData[comicId].commentCount||0)+1; } catch(counterError) {}
+                }
+                localStorage.setItem('lastCommentAt',String(Date.now()));
 
                 textInput.value = "";
                 btn.innerText = "Kirim"; btn.disabled = false;
-                fetchComments(comicId);
-            } catch (e) { window.showToast("Gagal mengirim komentar. Pastikan Rules Firebase sudah diizinkan (write)."); }
+                cancelCommentMode(); fetchComments(comicId);
+            } catch (e) { btn.innerText='Kirim'; btn.disabled=false; window.showToast("Komentar gagal disimpan. Periksa izin Firebase."); }
         }
+        window.toggleCommentLike=async function(commentId){ if(!auth.currentUser){window.showToast('Login untuk menyukai komentar');return;} const ref=doc(db,'comics',window.currentActiveComicId,'comments',commentId); const snap=await getDoc(ref); if(!snap.exists())return; const liked=(snap.data().likedBy||[]).includes(auth.currentUser.uid); await updateDoc(ref,{likedBy:liked?arrayRemove(auth.currentUser.uid):arrayUnion(auth.currentUser.uid)}); fetchComments(window.currentActiveComicId); }
+        window.deleteOwnComment=async function(commentId){ if(!auth.currentUser)return; const ok=await modernConfirm({title:'Hapus komentar?',message:'Komentar yang dihapus tidak dapat dipulihkan.',confirmText:'Hapus',danger:true}); if(!ok)return; const ref=doc(db,'comics',window.currentActiveComicId,'comments',commentId); const snap=await getDoc(ref); if(!snap.exists()||snap.data().userId!==auth.currentUser.uid)return window.showToast('Anda tidak dapat menghapus komentar ini'); await deleteDoc(ref); try{await updateDoc(doc(db,'comics',window.currentActiveComicId),{commentCount:increment(-1)});}catch(e){} fetchComments(window.currentActiveComicId); }
+        window.reportComment=async function(commentId){ if(!auth.currentUser){window.showToast('Login untuk melaporkan komentar');return;} const ok=await modernConfirm({title:'Laporkan komentar?',message:'Laporan akan dikirim kepada admin untuk ditinjau.',confirmText:'Kirim laporan'}); if(!ok)return; await setDoc(doc(db,'commentReports',`${window.currentActiveComicId}_${commentId}_${auth.currentUser.uid}`),{comicId:window.currentActiveComicId,commentId,reporterId:auth.currentUser.uid,reason:'Konten tidak pantas atau spam',status:'open',createdAt:serverTimestamp()}); window.showToast('Laporan berhasil dikirim'); }
+        initEmojiPanel();
 
         // ================= FITUR RATING BINTANG =================
         async function loadUserRating(comicId) {

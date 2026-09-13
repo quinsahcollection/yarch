@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Admin Panel - Manga & Anime App</title>
+    <title>Admin Panel V14 - Manga & Anime App</title>
     <!-- Google Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <!-- Font Awesome -->
@@ -210,6 +210,12 @@
         .master-card { background: var(--white); border-radius: 12px; padding: 20px; border: 1px solid var(--border); }
         .master-card h3 { font-size: 15px; margin-bottom: 15px; color: var(--sidebar-bg); display: flex; align-items: center; gap: 8px; border-bottom: 1px solid var(--border); padding-bottom: 10px; }
         .master-card h3 i { color: var(--primary); }
+        .moderation-toolbar { display:flex; align-items:center; gap:10px; flex-wrap:wrap; margin-bottom:16px; }
+        .moderation-card { padding:15px; margin-bottom:10px; border:1px solid var(--border); border-radius:12px; background:#fff; }
+        .moderation-card.pinned { border-color:#8b82ff; background:#faf9ff; }
+        .moderation-head { display:flex; justify-content:space-between; gap:12px; margin-bottom:7px; }
+        .moderation-user { font-weight:700; font-size:13px; }.moderation-meta{color:#89909f;font-size:11px}.moderation-text{margin:9px 0;color:#333;font-size:13px;line-height:1.5;white-space:pre-wrap}.moderation-actions{display:flex;flex-wrap:wrap;gap:7px}
+        .mod-btn { border:0; padding:8px 11px; border-radius:8px; color:#4c5262; background:#edf0f5; font-size:11px; font-weight:650; cursor:pointer; }.mod-btn.primary{color:#fff;background:#625af2}.mod-btn.danger{color:#fff;background:#e94f68}.mod-btn.success{color:#fff;background:#15966b}.report-badge{display:inline-flex;padding:3px 7px;border-radius:8px;color:#d94158;background:#fff0f2;font-size:9px;font-weight:750}
         .master-input-group { display: flex; gap: 8px; margin-bottom: 15px; }
         .master-input-group input { padding: 10px; flex: 1; }
         .btn-add { background: var(--primary); color: white; border: none; padding: 0 15px; border-radius: 8px; cursor: pointer; font-weight: 600; }
@@ -305,6 +311,7 @@
                 <li><a onclick="switchView('view-daftar', this)"><i class="fa-solid fa-list"></i> Daftar Judul</a></li>
                 <li><a onclick="switchView('view-chapter', this)"><i class="fa-solid fa-layer-group"></i> Chapter & Episode</a></li>
                 <li><a onclick="switchView('view-kategori', this)"><i class="fa-solid fa-tags"></i> Kategori & Genre</a></li>
+                <li><a onclick="switchView('view-moderasi', this)"><i class="fa-solid fa-comments"></i> Moderasi Komentar</a></li>
                 <li><a onclick="switchView('view-pengaturan', this)"><i class="fa-solid fa-gear"></i> Pengaturan</a></li>
             </ul>
         </aside>
@@ -694,6 +701,7 @@
                 </div>
                 
                 <div id="view-pengaturan" class="admin-view"><h1 class="page-title">Pengaturan</h1><div class="card"><p>Pengaturan konfigurasi website utama.</p></div></div>
+                <div id="view-moderasi" class="admin-view"><h1 class="page-title">Moderasi Komentar</h1><div class="moderation-toolbar"><button class="mod-btn primary" onclick="loadModeration()"><i class="fa-solid fa-rotate"></i> Muat ulang</button><button class="mod-btn" onclick="setModerationFilter('all')">Semua</button><button class="mod-btn" onclick="setModerationFilter('reported')">Dilaporkan</button><button class="mod-btn" onclick="setModerationFilter('pinned')">Disematkan</button><span id="moderationCount" class="moderation-meta"></span></div><div id="moderationList"><div class="loading-text">Memuat moderasi...</div></div></div>
 
             </div>
         </main>
@@ -758,7 +766,7 @@
     <!-- ==================== SCRIPT FIREBASE LOGIC & UTAMA ==================== -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-        import { getFirestore, collection, addDoc, serverTimestamp, doc, getDoc, setDoc, updateDoc, arrayUnion, arrayRemove, onSnapshot, query, orderBy, getDocs, deleteDoc, where, limit } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+        import { getFirestore, collection, addDoc, serverTimestamp, doc, getDoc, setDoc, updateDoc, increment, arrayUnion, arrayRemove, onSnapshot, query, orderBy, getDocs, deleteDoc, where, limit } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
         import { getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
 
         const firebaseConfig = {
@@ -1673,6 +1681,31 @@
             });
         }
         
+        window.moderationItems=[]; window.moderationFilter='all';
+        function adminSafe(value){return String(value??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));}
+        window.loadModeration=async function(){
+            const list=document.getElementById('moderationList'); if(!list)return; list.innerHTML='<div class="loading-text"><i class="fa-solid fa-spinner fa-spin"></i> Memuat komentar...</div>';
+            try{
+                const [comicSnap,reportSnap]=await Promise.all([getDocs(collection(db,'comics')),getDocs(collection(db,'commentReports'))]);
+                const reports=reportSnap.docs.map(d=>({id:d.id,...d.data()})); const items=[];
+                for(const comicDoc of comicSnap.docs){
+                    const comments=await getDocs(collection(db,'comics',comicDoc.id,'comments'));
+                    comments.forEach(commentDoc=>{const data=commentDoc.data();items.push({id:commentDoc.id,comicId:comicDoc.id,comicTitle:comicDoc.data().title||'Tanpa judul',...data,reports:reports.filter(r=>r.comicId===comicDoc.id&&r.commentId===commentDoc.id)});});
+                }
+                window.moderationItems=items.sort((a,b)=>(b.timestamp?.seconds||0)-(a.timestamp?.seconds||0)); renderModeration();
+            }catch(e){list.innerHTML='<div class="alert alert-error">Gagal memuat komentar. Pastikan akun admin memiliki izin Firestore.</div>';}
+        }
+        function renderModeration(){
+            const list=document.getElementById('moderationList'); if(!list)return; let items=window.moderationItems;
+            if(window.moderationFilter==='reported')items=items.filter(x=>x.reports.length); if(window.moderationFilter==='pinned')items=items.filter(x=>x.isPinned);
+            document.getElementById('moderationCount').textContent=`${items.length} komentar`;
+            list.innerHTML=items.map(c=>`<div class="moderation-card ${c.isPinned?'pinned':''}"><div class="moderation-head"><div><div class="moderation-user">${adminSafe(c.username||'Pengguna')} ${c.isPinned?'<i class="fa-solid fa-thumbtack" style="color:#625af2"></i>':''}</div><div class="moderation-meta">${adminSafe(c.comicTitle)} • ${c.parentId?'Balasan':'Komentar utama'}</div></div>${c.reports.length?`<span class="report-badge"><i class="fa-solid fa-flag"></i>&nbsp; ${c.reports.length} laporan</span>`:''}</div><div class="moderation-text">${adminSafe(c.text||'')}</div><div class="moderation-actions"><button class="mod-btn primary" onclick="togglePinComment('${c.comicId}','${c.id}',${!c.isPinned})"><i class="fa-solid fa-thumbtack"></i> ${c.isPinned?'Lepas sematan':'Sematkan'}</button>${c.reports.length?`<button class="mod-btn success" onclick="resolveCommentReports('${c.comicId}','${c.id}')">Selesaikan laporan</button>`:''}<button class="mod-btn danger" onclick="adminDeleteComment('${c.comicId}','${c.id}')"><i class="fa-solid fa-trash"></i> Hapus</button></div></div>`).join('')||'<div class="card">Tidak ada komentar untuk filter ini.</div>';
+        }
+        window.setModerationFilter=function(filter){window.moderationFilter=filter;renderModeration();}
+        window.togglePinComment=async function(comicId,commentId,value){await updateDoc(doc(db,'comics',comicId,'comments',commentId),{isPinned:value,pinnedAt:value?serverTimestamp():null});const item=window.moderationItems.find(x=>x.comicId===comicId&&x.id===commentId);if(item)item.isPinned=value;renderModeration();}
+        window.resolveCommentReports=async function(comicId,commentId){const targets=window.moderationItems.find(x=>x.comicId===comicId&&x.id===commentId)?.reports||[];await Promise.all(targets.map(r=>updateDoc(doc(db,'commentReports',r.id),{status:'resolved',resolvedAt:serverTimestamp()})));window.moderationItems.find(x=>x.comicId===comicId&&x.id===commentId).reports=[];renderModeration();}
+        window.adminDeleteComment=async function(comicId,commentId){const result=await Swal.fire({title:'Hapus komentar?',text:'Tindakan ini tidak dapat dibatalkan.',icon:'warning',showCancelButton:true,confirmButtonText:'Hapus',cancelButtonText:'Batal',confirmButtonColor:'#e94f68'});if(!result.isConfirmed)return;await deleteDoc(doc(db,'comics',comicId,'comments',commentId));try{await updateDoc(doc(db,'comics',comicId),{commentCount:increment(-1)});}catch(e){}window.moderationItems=window.moderationItems.filter(x=>!(x.comicId===comicId&&x.id===commentId));renderModeration();}
+
         function switchView(viewId, element) {
             document.querySelectorAll('.sidebar-menu a').forEach(el => el.classList.remove('active'));
             if(element) element.classList.add('active');
@@ -1680,6 +1713,7 @@
             document.getElementById(viewId).classList.add('active');
             if(window.innerWidth <= 992) toggleSidebar();
             if(viewId === 'view-daftar' && typeof window.loadComicsList === 'function') { window.loadComicsList(); }
+            if(viewId === 'view-moderasi') window.loadModeration();
         }
 
         const sidebar = document.getElementById('sidebar');

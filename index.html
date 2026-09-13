@@ -3,12 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Komik & Anime — Update Manager V15</title>
+    <title>Komik & Anime — Update Manager V17</title>
     <meta name="theme-color" content="#625af2">
     <meta name="description" content="Aplikasi komik, manga, anime dan film dengan update terbaru.">
     <meta name="referrer" content="strict-origin-when-cross-origin">
-    <link rel="manifest" href="manifest-v15.webmanifest">
-    <link rel="icon" href="app-icon-v15.svg" type="image/svg+xml">
+    <link rel="manifest" href="manifest-v17.webmanifest">
+    <link rel="icon" href="app-icon-v17.svg" type="image/svg+xml">
     <link rel="preconnect" href="https://www.gstatic.com" crossorigin>
     <link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin>
     <!-- BUILD: FOUNDATION-V10 | updates + read state + safe rating/views/comment+ comment counter -->
@@ -515,6 +515,17 @@
         .toast-notification { max-width:calc(100% - 32px); width:max-content; text-align:center; bottom:calc(86px + env(safe-area-inset-bottom)); }
         @media (min-width:600px) { .app-container{margin:22px 0;min-height:calc(100vh - 44px);border-radius:28px;overflow:hidden}.bottom-nav{bottom:22px;border-radius:0 0 28px 28px}.detail-top-nav,.reader-header,.player-header{top:22px;border-radius:28px 28px 0 0} }
         @media (max-width:370px) { .slider-container{height:305px}.hero-content{width:61%}.hero-synopsis{-webkit-line-clamp:2}.manga-card-simple{min-width:124px;width:124px}.card-poster-wrap{height:168px}.discovery-toolbar{gap:7px;padding:10px 12px}.catalog-count{font-size:10px}.filter-toggle-btn{padding:0 10px}.discovery-grid{padding:12px;gap:10px}.discovery-grid.view-3{gap:7px}.discovery-grid.view-3 .discovery-card img{height:138px}#discovery-page.alphabet-active .discovery-grid{padding-left:12px}.alphabet-rail{width:calc(100% - 20px);margin-left:10px;margin-right:10px} }
+        /* V17: rekomendasi personal & smart search */
+        .smart-search-head{padding:12px 14px 7px;font-size:11px;font-weight:800;color:#8b91a7;text-transform:uppercase;letter-spacing:.07em}
+        .smart-search-chips{display:flex;gap:7px;flex-wrap:wrap;padding:3px 14px 13px}
+        .smart-chip{border:0;background:#f0efff;color:#5950d8;border-radius:999px;padding:8px 11px;font-size:11px;font-weight:700;cursor:pointer}
+        .search-match{font-size:10px;color:#7c72e8;font-weight:700;margin-top:2px}
+        .personal-section{background:linear-gradient(180deg,#f8f7ff 0,#fff 100%);border-top:1px solid #efedff;border-bottom:1px solid #efedff}
+        .recommendation-subtitle{font-size:10px;color:#898da0;margin-top:2px}
+        .smart-card-reason{position:absolute;left:7px;bottom:7px;z-index:3;max-width:calc(100% - 14px);padding:4px 7px;border-radius:7px;background:rgba(32,26,80,.78);backdrop-filter:blur(7px);color:#fff;font-size:9px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+        .similar-block{margin-top:24px;padding-top:20px;border-top:1px solid #eceef5}
+        .similar-block .horizontal-scroll{margin:0 -18px;padding:3px 18px 10px}
+        .smart-empty{width:100%;padding:20px;border:1px dashed #dcd9ff;border-radius:14px;background:#faf9ff;text-align:center;color:#777b90;font-size:12px;line-height:1.55}
     </style>
 </head>
 <body>
@@ -557,6 +568,14 @@
                     <div class="horizontal-scroll" id="history-container">
                         <div class="empty-history">Memuat histori...</div>
                     </div>
+                </section>
+
+                <section class="section-container personal-section" id="recommendationSection">
+                    <div class="section-header">
+                        <div class="section-title-wrapper"><i class="fa-solid fa-wand-magic-sparkles" style="color:#6558ef"></i><div><h2 class="section-title">Untuk Kamu</h2><div class="recommendation-subtitle" id="recommendationReason">Menyiapkan rekomendasi...</div></div></div>
+                        <a class="see-all" onclick="refreshRecommendations()"><i class="fa-solid fa-rotate"></i></a>
+                    </div>
+                    <div class="horizontal-scroll" id="recommendationContainer"><div class="loading-text"><i class="fa-solid fa-spinner fa-spin"></i> Menganalisis pilihan...</div></div>
                 </section>
 
                 <!-- Jadwal Hari Ini -->
@@ -765,6 +784,10 @@
                             <i class="fa-regular fa-star" data-val="5" onclick="submitRating(5)"></i>
                         </div>
                     </div>
+                    <div class="similar-block">
+                        <div class="section-header"><div><h3 class="synopsis-title" style="margin-bottom:2px">Judul Serupa</h3><div class="recommendation-subtitle">Berdasarkan genre, tipe, dan kreator</div></div></div>
+                        <div class="horizontal-scroll" id="similarTitlesContainer"><div class="loading-text">Mencari judul serupa...</div></div>
+                    </div>
                 </div>
 
                 <!-- TAB: CHAPTER / EPISODE -->
@@ -922,7 +945,7 @@
                     </li>
                 </ul>
             </div>
-            <div class="app-version-card"><div><strong>Versi Aplikasi</strong><span id="currentVersionLabel">V15.0.0 • Memeriksa pembaruan...</span></div><button class="version-check-btn" onclick="checkAppConfiguration(true)"><i class="fa-solid fa-rotate"></i> Periksa</button></div>
+            <div class="app-version-card"><div><strong>Versi Aplikasi</strong><span id="currentVersionLabel">V17.0.0 • Memeriksa pembaruan...</span></div><button class="version-check-btn" onclick="checkAppConfiguration(true)"><i class="fa-solid fa-rotate"></i> Periksa</button></div>
         </div>
 
         <!-- ================= BOTTOM NAVIGATION (DITAMBAHKAN DISCOVERY) ================= -->
@@ -944,7 +967,7 @@
             </a>
         </nav>
     </div>
-    <div class="update-modal-backdrop" id="updateModal"><div class="update-sheet"><div class="update-icon"><i class="fa-solid fa-cloud-arrow-down"></i></div><h2>Versi baru tersedia</h2><p>Pembaruan aplikasi sudah siap. Proses ini akan membersihkan cache antarmuka lama tanpa menghapus akun, bookmark, atau riwayat Anda.</p><div class="update-version-line"><span id="updateCurrentVersion">V15.0.0</span><i class="fa-solid fa-arrow-right"></i><span id="updateLatestVersion">V15.0.1</span></div><div class="update-changelog" id="updateChangelog">Peningkatan stabilitas dan tampilan.</div><div class="update-actions"><button class="update-action update-later" onclick="dismissAppUpdate()">Nanti</button><button class="update-action update-now" onclick="applyAppUpdate()"><i class="fa-solid fa-bolt"></i> Perbarui Sekarang</button></div></div></div>
+    <div class="update-modal-backdrop" id="updateModal"><div class="update-sheet"><div class="update-icon"><i class="fa-solid fa-cloud-arrow-down"></i></div><h2>Versi baru tersedia</h2><p>Pembaruan aplikasi sudah siap. Proses ini akan membersihkan cache antarmuka lama tanpa menghapus akun, bookmark, atau riwayat Anda.</p><div class="update-version-line"><span id="updateCurrentVersion">V17.0.0</span><i class="fa-solid fa-arrow-right"></i><span id="updateLatestVersion">V17.0.1</span></div><div class="update-changelog" id="updateChangelog">Peningkatan stabilitas dan tampilan.</div><div class="update-actions"><button class="update-action update-later" onclick="dismissAppUpdate()">Nanti</button><button class="update-action update-now" onclick="applyAppUpdate()"><i class="fa-solid fa-bolt"></i> Perbarui Sekarang</button></div></div></div>
 
     <div class="modern-modal-backdrop" id="modernConfirmModal" role="dialog" aria-modal="true" aria-labelledby="modernConfirmTitle">
         <div class="modern-modal">
@@ -976,7 +999,7 @@
         const app = initializeApp(firebaseConfig);
         const db = getFirestore(app);
         const auth = getAuth(app);
-        const APP_VERSION = '15.0.0';
+        const APP_VERSION = '17.0.0';
         const ADMIN_UID = 'dWUWpKAWQRRxMOzjzaOA3zXWZLp2';
 
         window.comicsData = {};
@@ -1075,6 +1098,7 @@
         window.safeText = function(value) {
             return String(value ?? '').replace(/[&<>'"]/g, char => ({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[char]));
         }
+        window.safeAttr = function(value) { return safeText(value).replace(/'/g,'&#39;').replace(/`/g,'&#96;'); }
         window.safeMediaUrl = function(value) {
             try {
                 const url = new URL(String(value || ''), location.href);
@@ -1115,73 +1139,36 @@
             const button=document.querySelector('.update-now');button.disabled=true;button.innerHTML='<i class="fa-solid fa-spinner fa-spin"></i> Memperbarui...';
             try{if('serviceWorker'in navigator){const regs=await navigator.serviceWorker.getRegistrations();await Promise.all(regs.map(reg=>reg.unregister()));}if('caches'in window){const keys=await caches.keys();await Promise.all(keys.map(key=>caches.delete(key)));}localStorage.removeItem('dismissedAppVersion');const url=new URL(location.href);url.searchParams.set('appVersion',Date.now());location.replace(url.href);}catch(e){button.disabled=false;button.innerHTML='<i class="fa-solid fa-bolt"></i> Perbarui Sekarang';window.showToast('Pembaruan gagal. Silakan muat ulang halaman.');}
         }
-        if('serviceWorker' in navigator && location.protocol !== 'file:') navigator.serviceWorker.register('./sw-v15.js',{updateViaCache:'none'}).then(reg=>reg.update()).catch(() => {});
+        if('serviceWorker' in navigator && location.protocol !== 'file:') navigator.serviceWorker.register('./sw-v17.js',{updateViaCache:'none'}).then(reg=>reg.update()).catch(() => {});
         document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible')window.checkAppConfiguration(false);});
 
         // ================= FITUR PENCARIAN (SEARCH) DINAMIS =================
         const searchInput = document.getElementById('searchInput');
         const searchResults = document.getElementById('searchResults');
 
+        const SEARCH_HISTORY_KEY = 'smartSearchHistoryV17';
+        function normalizeSearch(value) { return String(value || '').normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase().replace(/[^a-z0-9]+/g,' ').trim(); }
+        function editDistance(a,b) { const row=Array.from({length:b.length+1},(_,i)=>i); for(let i=1;i<=a.length;i++){let prev=row[0];row[0]=i;for(let j=1;j<=b.length;j++){const old=row[j];row[j]=Math.min(row[j]+1,row[j-1]+1,prev+(a[i-1]===b[j-1]?0:1));prev=old;}}return row[b.length]; }
+        function fuzzySimilarity(a,b) { if(!a||!b)return 0;if(a.includes(b)||b.includes(a))return .88;return 1-editDistance(a,b)/Math.max(a.length,b.length); }
+        function searchComicScore(comic, rawQuery) {
+            const q=normalizeSearch(rawQuery), title=normalizeSearch(comic.title), alt=normalizeSearch(comic.altTitle);
+            const fields=[['Judul',title],['Judul alternatif',alt],['Author',normalizeSearch(comic.author)],['Tipe',normalizeSearch(comic.type)],['Genre',normalizeSearch((comic.genres||[]).join(' '))],['Studio',normalizeSearch((comic.directors||[]).join(' '))],['Cast',normalizeSearch(comic.castCrew)]];
+            let score=0,reason='';
+            fields.forEach(([label,value],index)=>{if(!value)return;let current=0;if(value===q)current=120-index;else if(value.startsWith(q))current=100-index;else if(value.includes(q))current=82-index;else {const words=value.split(' ');const similarity=Math.max(fuzzySimilarity(value,q),...words.map(word=>fuzzySimilarity(word,q)));if(similarity>=.62)current=Math.round(similarity*70)-index;}if(current>score){score=current;reason=label;}});
+            return {score,reason};
+        }
+        function getSearchHistory(){try{return JSON.parse(localStorage.getItem(SEARCH_HISTORY_KEY)||'[]');}catch(e){return [];}}
+        function saveSearchHistory(term){const clean=String(term||'').trim();if(clean.length<2)return;const next=[clean,...getSearchHistory().filter(x=>normalizeSearch(x)!==normalizeSearch(clean))].slice(0,6);localStorage.setItem(SEARCH_HISTORY_KEY,JSON.stringify(next));}
+        function popularSearchTerms(){const count={};Object.values(window.comicsData).forEach(c=>[c.type,...(c.genres||[])].filter(Boolean).forEach(v=>count[v]=(count[v]||0)+1));return Object.entries(count).sort((a,b)=>b[1]-a[1]).slice(0,7).map(x=>x[0]);}
+        function encodedSearchTerm(value){return encodeURIComponent(String(value||'')).replace(/'/g,'%27');}
+        function renderSearchSuggestions(){const recent=getSearchHistory(),popular=popularSearchTerms();let html='';if(recent.length)html+=`<div class="smart-search-head">Pencarian terakhir</div><div class="smart-search-chips">${recent.map(x=>`<button class="smart-chip" onclick="useSearchSuggestion(decodeURIComponent('${encodedSearchTerm(x)}'))"><i class="fa-solid fa-clock-rotate-left"></i> ${safeText(x)}</button>`).join('')}</div>`;html+=`<div class="smart-search-head">Jelajahi populer</div><div class="smart-search-chips">${popular.map(x=>`<button class="smart-chip" onclick="useSearchSuggestion(decodeURIComponent('${encodedSearchTerm(x)}'))">${safeText(x)}</button>`).join('')||'<span class="recommendation-subtitle">Katalog sedang dimuat...</span>'}</div>`;searchResults.innerHTML=html;searchResults.style.display='block';}
+        window.useSearchSuggestion=function(term){searchInput.value=term;searchInput.dispatchEvent(new Event('input'));searchInput.focus();}
+        searchInput.addEventListener('focus',()=>{if(!searchInput.value.trim())renderSearchSuggestions();});
         searchInput.addEventListener('input', function(e) {
-            const queryText = e.target.value.toLowerCase().trim();
-            if(queryText === '') {
-                searchResults.style.display = 'none';
-                return;
-            }
-            
-            let html = '';
-            let count = 0;
-            
-            for(let id in window.comicsData) {
-                const comic = window.comicsData[id];
-                if(comic.title.toLowerCase().includes(queryText)) {
-                    
-                    const isVideoType = comic.format === 'film' || (comic.type && (comic.type.toLowerCase().includes("film") || comic.type.toLowerCase().includes("anime")));
-                    
-                    let latestChText = "Belum ada rilis";
-                    if (comic.realLatestChapter) {
-                        if (comic.realLatestChapter === 1 && comic.realLatestTitle === "Full Movie") {
-                            latestChText = "Full Movie";
-                        } else {
-                            const prefix = isVideoType ? 'Ep' : 'Ch';
-                            const titlePart = (comic.realLatestTitle && comic.realLatestTitle !== "Full Movie") ? ` - ${comic.realLatestTitle}` : '';
-                            latestChText = `${prefix} ${comic.realLatestChapter}${titlePart}`;
-                        }
-                    }
-
-                    const updateDateText = formatRelativeUpdateTime(comic.realUpdateDate);
-                    const typeStr = comic.type ? comic.type : "Manga";
-                    const ratingNum = comic.ratingCount ? (comic.ratingTotal / comic.ratingCount).toFixed(1) : "0.0";
-                    
-                    html += `
-                        <div class="search-item" onclick="selectSearchResult('${id}')">
-                            <img src="${comic.coverUrl}" onerror="this.src='https://placehold.co/42x56?text=No+Cover'">
-                            <div class="search-item-info">
-                                <div class="search-item-top-row">
-                                    <div class="search-item-title">${comic.title}</div>
-                                    <div class="search-item-badges">
-                                        <span class="badge-type">${typeStr}</span>
-                                        <span class="badge-rating"><i class="fa-solid fa-star"></i> ${ratingNum}</span>
-                                    </div>
-                                </div>
-                                <div class="search-item-bottom">
-                                    <span style="font-weight:700; color:var(--primary-blue); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; max-width:60%;">${latestChText}</span> • 
-                                    <span>${updateDateText}</span>
-                                </div>
-                            </div>
-                        </div>
-                    `;
-                    count++;
-                }
-            }
-            
-            if(count > 0) {
-                searchResults.innerHTML = html;
-                searchResults.style.display = 'block';
-            } else {
-                searchResults.innerHTML = '<div style="padding:20px; text-align:center; font-size:13px; color:#888;">Konten tidak ditemukan.</div>';
-                searchResults.style.display = 'block';
-            }
+            const queryText=e.target.value.trim();if(!queryText){renderSearchSuggestions();return;}
+            const matches=Object.entries(window.comicsData).map(([id,comic])=>({id,comic,...searchComicScore(comic,queryText)})).filter(x=>x.score>0).sort((a,b)=>b.score-a.score).slice(0,8);
+            searchResults.innerHTML=matches.map(({id,comic,reason})=>{const isVideo=comic.format==='film'||/film|anime/i.test(comic.type||'');const latest=comic.realLatestChapter?(comic.realLatestChapter===1&&comic.realLatestTitle==='Full Movie'?'Full Movie':`${isVideo?'Ep':'Ch'} ${comic.realLatestChapter}`):'Belum ada rilis';const rating=comic.ratingCount?(comic.ratingTotal/comic.ratingCount).toFixed(1):'0.0';return `<div class="search-item" onclick="selectSearchResult('${safeAttr(id)}')"><img src="${safeMediaUrl(comic.coverUrl)}" onerror="this.src='https://placehold.co/42x56?text=No+Cover'"><div class="search-item-info"><div class="search-item-top-row"><div class="search-item-title">${safeText(comic.title)}</div><div class="search-item-badges"><span class="badge-type">${safeText(comic.type||'Manga')}</span><span class="badge-rating"><i class="fa-solid fa-star"></i> ${rating}</span></div></div><div class="search-item-bottom"><span style="font-weight:700;color:var(--primary-blue)">${safeText(latest)}</span> • <span>${safeText(formatRelativeUpdateTime(comic.realUpdateDate))}</span></div><div class="search-match"><i class="fa-solid fa-wand-magic-sparkles"></i> Cocok melalui ${safeText(reason)}</div></div></div>`;}).join('')||'<div style="padding:20px;text-align:center;font-size:13px;color:#888"><i class="fa-solid fa-magnifying-glass"></i><br><br>Belum menemukan konten yang cocok.</div>';
+            searchResults.style.display='block';
         });
 
         document.addEventListener('click', function(e) {
@@ -1191,6 +1178,7 @@
         });
 
         window.selectSearchResult = function(comicId) {
+            saveSearchHistory(searchInput.value || window.comicsData[comicId]?.title);
             searchResults.style.display = 'none';
             searchInput.value = ''; 
             openDetail(comicId);
@@ -1311,6 +1299,36 @@
             `;
         }
 
+        function smartCard(docId,data,reason) {
+            const html=generateComicCard(docId,data);
+            return html.replace('</div>\n                    <div class="info-container">',`<span class="smart-card-reason">${safeText(reason)}</span></div><div class="info-container">`);
+        }
+        function getRecommendationProfile() {
+            let history={};try{history=JSON.parse(localStorage.getItem('comicHistoryDetail')||'{}');}catch(e){}
+            const seedWeights={};Object.keys(history).forEach(id=>seedWeights[id]=(seedWeights[id]||0)+3);(window.userBookmarks||[]).forEach(id=>seedWeights[id]=(seedWeights[id]||0)+5);
+            const genres={},types={};Object.entries(seedWeights).forEach(([id,weight])=>{const c=window.comicsData[id];if(!c)return;(c.genres||[]).forEach(g=>genres[g]=(genres[g]||0)+weight);if(c.type)types[c.type]=(types[c.type]||0)+weight;});
+            return {seedWeights,genres,types};
+        }
+        function calculateRecommendation(id,comic,profile) {
+            let score=0,reasons=[];(comic.genres||[]).forEach(g=>{if(profile.genres[g]){score+=profile.genres[g]*2;reasons.push(g);}});if(profile.types[comic.type]){score+=profile.types[comic.type];reasons.push(comic.type);}
+            const rating=comic.ratingCount?(comic.ratingTotal/comic.ratingCount):0;score+=rating*2+Math.log10((comic.views||0)+1);if(profile.seedWeights[id])score-=40;
+            return {score,reason:reasons.length?`Karena kamu suka ${reasons.slice(0,2).join(' & ')}`:(rating>=4?`Rating ${rating.toFixed(1)}`:'Sedang populer')};
+        }
+        window.refreshRecommendations=function(){renderRecommendations(true);}
+        function renderRecommendations(shuffle=false) {
+            const container=document.getElementById('recommendationContainer'),label=document.getElementById('recommendationReason');if(!container)return;
+            const profile=getRecommendationProfile(),personal=Object.keys(profile.seedWeights).length>0;
+            let items=Object.entries(window.comicsData).map(([id,comic])=>({id,comic,...calculateRecommendation(id,comic,profile)}));if(shuffle)items.forEach(x=>x.score+=Math.random()*2);items.sort((a,b)=>b.score-a.score);
+            let selected=items.filter(x=>!profile.seedWeights[x.id]).slice(0,8);if(selected.length<4)selected=items.slice(0,8);
+            label.textContent=personal?'Dipilih dari riwayat dan bookmark kamu':'Pilihan populer untuk memulai';
+            container.innerHTML=selected.map(x=>smartCard(x.id,x.comic,x.reason)).join('')||'<div class="smart-empty">Belum cukup konten untuk membuat rekomendasi.</div>';
+        }
+        function renderSimilarTitles(comicId) {
+            const container=document.getElementById('similarTitlesContainer'),base=window.comicsData[comicId];if(!container||!base)return;
+            const baseGenres=new Set(base.genres||[]);const items=Object.entries(window.comicsData).filter(([id])=>id!==comicId).map(([id,comic])=>{const overlap=(comic.genres||[]).filter(g=>baseGenres.has(g));let score=overlap.length*5;if(comic.type===base.type)score+=3;if(comic.format===base.format)score+=2;if(base.author&&comic.author===base.author)score+=4;return{id,comic,score,reason:overlap.length?overlap.slice(0,2).join(' • '):(comic.type||'Pilihan serupa')};}).sort((a,b)=>b.score-a.score).slice(0,6);
+            container.innerHTML=items.map(x=>smartCard(x.id,x.comic,x.reason)).join('')||'<div class="smart-empty">Belum ada judul serupa.</div>';
+        }
+
         async function fetchAllComics() {
             try {
                 const q = query(collection(db, "comics"), orderBy("createdAt", "desc"), limit(40));
@@ -1390,6 +1408,7 @@
                 renderReadingHistory();
                 renderBookmarks();
                 renderDiscoveryGrid();
+                renderRecommendations();
 
                 // Fetching Info Chapter terbaru untuk Slider & Discovery di background
                 Object.keys(window.comicsData).forEach(async (id) => {
@@ -1429,6 +1448,7 @@
                         }
                         renderDiscoveryGrid();
                         renderUpdatesFeed();
+                        renderRecommendations();
                     } catch(e) { }
                 });
 
@@ -2222,6 +2242,7 @@
                 fetchComments(comicId);
                 loadUserRating(comicId);
                 checkBookmarkStatus(comicId);
+                renderSimilarTitles(comicId);
 
                 document.getElementById('detailTitle').innerText = data.title;
                 document.getElementById('detailAltTitle').innerText = data.altTitle || "-";

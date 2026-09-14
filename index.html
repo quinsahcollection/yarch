@@ -1431,8 +1431,15 @@
 
         async function fetchAllComics() {
             try {
-                const q = query(collection(db, "comics"), where("isPublished", "==", true), orderBy("createdAt", "desc"), limit(40));
-                const querySnapshot = await getDocs(q);
+                let querySnapshot;
+                try {
+                    const indexedQuery = query(collection(db, "comics"), where("isPublished", "==", true), orderBy("createdAt", "desc"), limit(40));
+                    querySnapshot = await getDocs(indexedQuery);
+                } catch (indexError) {
+                    console.warn("Indeks Firestore belum siap, memakai query cadangan.", indexError);
+                    const fallbackQuery = query(collection(db, "comics"), where("isPublished", "==", true), limit(40));
+                    querySnapshot = await getDocs(fallbackQuery);
+                }
                 
                 let htmlUpdates = ''; let htmlJadwal = ''; let htmlManga = ''; let htmlManhwa = ''; let htmlManhua = ''; let htmlFilm = '';
                 
@@ -1441,7 +1448,8 @@
                 let sliderHtml = '';
                 let sliderDots = '';
                 
-                querySnapshot.forEach((docSnap) => {
+                const orderedComicDocs = [...querySnapshot.docs].sort((a, b) => getTimeValue(b.data().createdAt) - getTimeValue(a.data().createdAt));
+                orderedComicDocs.forEach((docSnap) => {
                     const data = docSnap.data();
                     const scheduledDue=data.publicationStatus==='scheduled'&&getTimeValue(data.publishAt)>0&&getTimeValue(data.publishAt)<=Date.now();
                     if (data.isPublished === false && !scheduledDue) return;

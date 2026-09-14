@@ -1759,10 +1759,31 @@
                 if(document.getElementById('filterChapterId').value === comicId) { window.loadChaptersList(); }
             } catch(e) { Swal.fire('Error', "Gagal aksi I/O: " + e.message, 'error'); }
         }
+
+        /*
+         * Jembatan API Firebase untuk script UI klasik di bawah.
+         * Import ES module tidak otomatis tersedia di window; tanpa jembatan
+         * ini dashboard/moderasi/backup memunculkan "getDocs is not defined".
+         */
+        window.AdminFirebase = Object.freeze({
+            db, auth,
+            collection, collectionGroup, addDoc, serverTimestamp,
+            doc, getDoc, setDoc, updateDoc, increment,
+            arrayUnion, arrayRemove, onSnapshot, query, orderBy,
+            getDocs, deleteDoc, where, limit, startAfter, writeBatch
+        });
     </script>
 
     <!-- SCRIPT TAMBAHAN (SEARCH & UI DINAMIS) -->
-    <script>
+    <script type="module">
+        const {
+            db, auth,
+            collection, collectionGroup, addDoc, serverTimestamp,
+            doc, getDoc, setDoc, updateDoc, increment,
+            arrayUnion, arrayRemove, onSnapshot, query, orderBy,
+            getDocs, deleteDoc, where, limit, startAfter, writeBatch
+        } = window.AdminFirebase;
+
         // Logika Mengubah Form UI Sesuai Pilihan Format (Komik vs Film)
         window.selectFormatEntry = function(tipe) {
             document.querySelectorAll('.format-btn').forEach(btn => btn.classList.remove('active', 'active-film'));
@@ -2120,6 +2141,18 @@
             document.getElementById('lightboxModal').classList.remove('show');
             setTimeout(() => { document.getElementById('lightboxContentArea').innerHTML = ''; }, 300);
         }
+
+        // Fungsi deklaratif yang dipanggil langsung oleh atribut HTML.
+        // Pada ES module fungsi-fungsi ini harus dipasang eksplisit ke window.
+        Object.assign(window, {
+            switchView,
+            toggleSidebar,
+            previewImage,
+            toggleCustomSelect,
+            filterCustomSelect,
+            openMediaGallery,
+            closeMediaGallery
+        });
     </script>
 </body>
 </html>

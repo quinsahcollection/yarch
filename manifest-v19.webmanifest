@@ -1,5 +1,5 @@
 {
-  "name": "Komik & Anime Pro V19",
+  "name": "Komik & Anime Pro V20",
   "short_name": "KomikAnime",
   "start_url": "./index.html",
   "scope": "./",
@@ -7,5 +7,5 @@
   "background_color": "#f8f9fc",
   "theme_color": "#625af2",
   "description": "Aplikasi komik dan anime dengan pembaruan otomatis.",
-  "icons": [{"src":"app-icon-v19.svg","sizes":"any","type":"image/svg+xml","purpose":"any maskable"}]
+  "icons": [{"src":"app-icon-v20.svg","sizes":"any","type":"image/svg+xml","purpose":"any maskable"}]
 }

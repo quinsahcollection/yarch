@@ -1,5 +1,5 @@
-const CACHE_VERSION = 'komik-anime-v19.0.0';
-const APP_SHELL = ['./', './index.html', './manifest-v19.webmanifest', './app-icon-v19.svg'];
+const CACHE_VERSION = 'komik-anime-v20.0.0';
+const APP_SHELL = ['./', './index.html', './manifest-v20.webmanifest', './app-icon-v20.svg'];
 
 self.addEventListener('install', event => {
   event.waitUntil(caches.open(CACHE_VERSION).then(cache => cache.addAll(APP_SHELL)).then(() => self.skipWaiting()));

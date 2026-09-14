@@ -158,6 +158,18 @@
         .btn-upload-cloud { background: var(--sidebar-bg); color: white; border: none; padding: 10px 20px; border-radius: 8px; cursor: pointer; font-weight: 600; font-size: 13px; display: flex; align-items: center; gap: 8px; }
         .btn-upload-cloud:hover { background: var(--sidebar-hover); }
 
+        .upload-progress-panel { padding: 14px 18px; background: #eff6ff; border-bottom: 1px solid #bfdbfe; color: #1e3a8a; }
+        .upload-progress-head, .upload-progress-meta { display: flex; align-items: center; justify-content: space-between; gap: 14px; }
+        .upload-progress-head { margin-bottom: 9px; font-size: 13px; font-weight: 700; }
+        .upload-progress-file { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+        .upload-progress-percent { flex: 0 0 auto; color: var(--primary); font-size: 15px; font-weight: 800; }
+        .upload-progress-track { width: 100%; height: 10px; overflow: hidden; border-radius: 999px; background: #dbeafe; box-shadow: inset 0 1px 2px rgba(15,23,42,.08); }
+        .upload-progress-bar { width: 0; height: 100%; border-radius: inherit; background: linear-gradient(90deg, #4f46e5, #2563eb, #06b6d4); transition: width .15s ease; }
+        .upload-progress-meta { margin-top: 8px; color: #64748b; font-size: 11px; font-weight: 600; }
+        .upload-progress-panel.success { background: #ecfdf5; border-color: #a7f3d0; color: #047857; }
+        .upload-progress-panel.success .upload-progress-bar { background: linear-gradient(90deg, #10b981, #22c55e); }
+        .upload-progress-panel.error { background: #fef2f2; border-color: #fecaca; color: #b91c1c; }
+
         .gallery-grid { flex-grow: 1; padding: 20px; overflow-y: auto; display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 15px; background: var(--bg-light); align-content: start; }
         
         .folder-card { background: var(--white); border-radius: 12px; border: 1px solid var(--border); padding: 20px; text-align: center; cursor: pointer; transition: 0.2s; display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 160px; box-shadow: 0 2px 8px rgba(0,0,0,0.03); position: relative; }
@@ -299,6 +311,8 @@
             .modal-toolbar { flex-direction: column; align-items: flex-start; }
             .gallery-search { max-width: 100%; margin: 0; }
             .btn-upload-cloud { width: 100%; justify-content: center; }
+            .upload-progress-meta { flex-wrap: wrap; gap: 5px 12px; }
+            .upload-progress-meta span:last-child { width: 100%; }
             .modal-actions { gap: 5px; }
             .btn-success-sm { padding: 8px 12px; font-size: 12px; }
             
@@ -871,6 +885,8 @@
         window.allComicsList = []; // Array universal menampung komik & film
         window.allComicsRaw = [];
         window.galleryState = { level: 'root', comicId: null, comicName: '', entryFormat: 'komik', chapterFolderId: null, chapterFolderName: '', currentChapterImages: [] };
+        // Hanya diisi setelah Langkah 1 berhasil pada sesi halaman saat ini.
+        window.pendingChapterFolder = null;
         window.editingComicId = null;
         document.getElementById('view-pengaturan')?.insertAdjacentHTML('beforeend',`<div class="card"><h3 style="margin-bottom:15px">Tampilan & Fitur Aplikasi</h3><div class="app-config-grid"><div class="form-group"><label>Nama Aplikasi</label><input id="configAppName" maxlength="60" placeholder="Komik & Anime"></div><div class="form-group"><label>Warna Utama</label><input id="configThemeColor" type="color" value="#625af2"></div><div class="form-group full"><label>Pengumuman Pengguna</label><textarea id="configAnnouncement" rows="3" maxlength="300" placeholder="Kosongkan jika tidak ada pengumuman"></textarea></div><div class="config-switch"><div><strong>Rekomendasi personal</strong><div class="config-help">Tampilkan bagian Untuk Kamu.</div></div><input id="configRecommendations" type="checkbox" checked></div><div class="config-switch"><div><strong>Gamifikasi</strong><div class="config-help">Aktifkan poin, misi, dan ranking.</div></div><input id="configGamification" type="checkbox" checked></div><div class="full"><button class="btn-submit" onclick="saveAppConfiguration()"><i class="fa-solid fa-floppy-disk"></i> Simpan Semua Pengaturan</button></div></div></div>`);
 
@@ -1397,10 +1413,12 @@
                 const snapshot = await getDocs(q);
 
                 let targetChapterId = "";
+                let targetChapterImages = [];
 
                 if (!snapshot.empty) {
                     const docSnap = snapshot.docs[0];
                     targetChapterId = docSnap.id;
+                    targetChapterImages = Array.isArray(docSnap.data().images) ? docSnap.data().images : [];
                     await updateDoc(doc(db, "comics", comicId, "chapters", targetChapterId), { title: chapterTitle, updatedAt: serverTimestamp() });
                     statusEl.innerHTML = "✅ Identitas Node (Folder) ini sudah ada dan datanya berhasil diupdate!<br>Silakan lanjut Buka File Manager di Langkah 2.";
                 } else {
@@ -1421,6 +1439,22 @@
                 localStorage.setItem('activeComicName', comicName);
                 localStorage.setItem('activeChapterFolderId', targetChapterId);
 
+                const selectedComic = window.allComicsList.find(item => item.id === comicId);
+                const entryFormat = selectedComic?.format === 'film' ? 'film' : 'komik';
+                const sectionName = parseFloat(chapterNum) === 1 && chapterTitle === 'Full Movie'
+                    ? 'Full Movie'
+                    : `${entryFormat === 'film' ? 'Episode' : 'Chapter'} ${chapterNum}`;
+
+                // Penanda ini membuktikan Langkah 1 baru saja berhasil.
+                window.pendingChapterFolder = {
+                    comicId,
+                    comicName,
+                    entryFormat,
+                    chapterId: targetChapterId,
+                    chapterName: sectionName,
+                    images: targetChapterImages
+                };
+
                 statusEl.style.color = "var(--success)"; statusEl.style.background = "#ecfdf5";
                 
                 if(document.getElementById('filterChapterId').value === comicId) { window.loadChaptersList(); }
@@ -1434,8 +1468,14 @@
            LANGKAH 2: LOGIKA FILE MANAGER & UPLOAD
            ========================================= */
         window.processCloudUpload = async function(inputElement) {
-            const files = inputElement.files;
+            const files = Array.from(inputElement.files || []);
             if(files.length === 0) return;
+
+            if (window.cloudUploadInProgress) {
+                Swal.fire('Upload Berjalan', 'Tunggu proses upload sebelumnya selesai.', 'info');
+                inputElement.value = '';
+                return;
+            }
             
             const comicId = window.galleryState.comicId || localStorage.getItem('activeComicId');
             const chapterId = window.galleryState.chapterFolderId || localStorage.getItem('activeChapterFolderId');
@@ -1446,21 +1486,93 @@
 
             const statusEl = document.getElementById('galleryUploadStatus');
             statusEl.style.display = 'block';
+            statusEl.removeAttribute('style');
+            statusEl.style.display = 'block';
+            statusEl.className = 'upload-progress-panel';
+            window.cloudUploadInProgress = true;
+            inputElement.disabled = true;
+
+            const totalBytes = files.reduce((sum, file) => sum + (file.size || 0), 0);
+            const startedAt = performance.now();
+            let completedBytes = 0;
+
+            const formatBytes = (bytes) => {
+                if (!Number.isFinite(bytes) || bytes <= 0) return '0 B';
+                const units = ['B', 'KB', 'MB', 'GB'];
+                const unit = Math.min(Math.floor(Math.log(bytes) / Math.log(1024)), units.length - 1);
+                return `${(bytes / Math.pow(1024, unit)).toFixed(unit === 0 ? 0 : 1)} ${units[unit]}`;
+            };
+
+            const formatEta = (seconds) => {
+                if (!Number.isFinite(seconds) || seconds < 0) return 'Menghitung...';
+                if (seconds < 60) return `${Math.max(1, Math.ceil(seconds))} detik`;
+                const minutes = Math.floor(seconds / 60);
+                const remain = Math.ceil(seconds % 60);
+                return `${minutes} mnt ${remain} dtk`;
+            };
+
+            statusEl.innerHTML = `
+                <div class="upload-progress-head">
+                    <span class="upload-progress-file" id="uploadProgressFile">Menyiapkan upload...</span>
+                    <span class="upload-progress-percent" id="uploadProgressPercent">0%</span>
+                </div>
+                <div class="upload-progress-track"><div class="upload-progress-bar" id="uploadProgressBar"></div></div>
+                <div class="upload-progress-meta">
+                    <span id="uploadProgressBytes">0 B / ${formatBytes(totalBytes)}</span>
+                    <span id="uploadProgressSpeed">Menghitung kecepatan...</span>
+                    <span id="uploadProgressEta">Sisa: Menghitung...</span>
+                </div>`;
+
+            const updateProgress = (file, fileIndex, currentLoaded, processing = false) => {
+                const sentBytes = Math.min(totalBytes, completedBytes + Math.min(currentLoaded, file.size || currentLoaded));
+                const percent = totalBytes > 0 ? Math.min(100, Math.round((sentBytes / totalBytes) * 100)) : 100;
+                const elapsed = Math.max((performance.now() - startedAt) / 1000, 0.1);
+                const speed = sentBytes / elapsed;
+                const eta = speed > 0 ? (totalBytes - sentBytes) / speed : Infinity;
+                document.getElementById('uploadProgressFile').textContent = processing
+                    ? `Memproses di server: ${file.name}`
+                    : `File ${fileIndex + 1} dari ${files.length}: ${file.name}`;
+                document.getElementById('uploadProgressPercent').textContent = `${percent}%`;
+                document.getElementById('uploadProgressBar').style.width = `${percent}%`;
+                document.getElementById('uploadProgressBytes').textContent = `${formatBytes(sentBytes)} / ${formatBytes(totalBytes)}`;
+                document.getElementById('uploadProgressSpeed').textContent = `${formatBytes(speed)}/dtk`;
+                document.getElementById('uploadProgressEta').textContent = processing ? 'Menyimpan...' : `Sisa: ${formatEta(eta)}`;
+            };
+
+            const uploadFile = (file, authHeaders, onProgress) => new Promise((resolve, reject) => {
+                const xhr = new XMLHttpRequest();
+                xhr.open('POST', WORKER_URL, true);
+                Object.entries(authHeaders).forEach(([key, value]) => xhr.setRequestHeader(key, value));
+                xhr.responseType = 'json';
+                xhr.upload.onprogress = (event) => {
+                    if (event.lengthComputable) onProgress(event.loaded, false);
+                };
+                xhr.upload.onload = () => onProgress(file.size, true);
+                xhr.onerror = () => reject(new Error('Koneksi upload terputus. Periksa internet lalu coba lagi.'));
+                xhr.onabort = () => reject(new Error('Upload dibatalkan.'));
+                xhr.onload = () => {
+                    let data = xhr.response;
+                    if (!data) {
+                        try { data = JSON.parse(xhr.responseText || '{}'); } catch (_) { data = {}; }
+                    }
+                    if (xhr.status >= 200 && xhr.status < 300 && data.url) resolve(data);
+                    else reject(new Error(data.error || `Server menolak upload (HTTP ${xhr.status}).`));
+                };
+                const formData = new FormData();
+                formData.append('coverImage', file);
+                xhr.send(formData);
+            });
 
             try {
                 let uploadedUrls = [];
+                const authHeaders = await getWorkerAuthHeaders();
                 for(let i = 0; i < files.length; i++) {
                     const file = files[i];
-                    statusEl.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i> Mengunggah media ${i+1} dari ${files.length}... (Proses file video memakan waktu lebih lama)`;
-                    
-                    const formData = new FormData();
-                    formData.append('coverImage', file);
-
-                    const workerResponse = await fetch(WORKER_URL, { method: 'POST', headers: await getWorkerAuthHeaders(), body: formData });
-                    const workerData = await workerResponse.json();
-                    if (!workerResponse.ok) throw new Error(workerData.error || "Gagal ke cloud storage.");
-                    
+                    updateProgress(file, i, 0);
+                    const workerData = await uploadFile(file, authHeaders, (loaded, processing) => updateProgress(file, i, loaded, processing));
                     uploadedUrls.push(workerData.url);
+                    completedBytes += file.size || 0;
+                    updateProgress(file, i, file.size || 0, i < files.length - 1);
                 }
 
                 const chapterDocRef = doc(db, "comics", comicId, "chapters", chapterId);
@@ -1472,12 +1584,22 @@
                     window.galleryState.currentChapterImages = updatedImages;
                 }
 
-                statusEl.style.display = 'none';
-                inputElement.value = ''; 
-                window.loadCloudGallery(); 
+                statusEl.className = 'upload-progress-panel success';
+                document.getElementById('uploadProgressFile').textContent = `${files.length} file berhasil diunggah`;
+                document.getElementById('uploadProgressPercent').textContent = '100%';
+                document.getElementById('uploadProgressBar').style.width = '100%';
+                document.getElementById('uploadProgressBytes').textContent = `${formatBytes(totalBytes)} terkirim`;
+                document.getElementById('uploadProgressSpeed').textContent = 'Selesai';
+                document.getElementById('uploadProgressEta').textContent = 'Tersimpan';
+                window.loadCloudGallery();
+                setTimeout(() => { statusEl.style.display = 'none'; }, 1800);
             } catch(e) {
-                statusEl.textContent = `Error Upload Cloud: ${e.message}`;
-                statusEl.style.color = "var(--danger)"; statusEl.style.background = "#fef2f2";
+                statusEl.className = 'upload-progress-panel error';
+                statusEl.innerHTML = `<div class="upload-progress-head"><span><i class="fa-solid fa-triangle-exclamation"></i> Upload gagal</span></div><div style="font-size:12px;font-weight:600">${adminSafe(e.message)}</div>`;
+            } finally {
+                window.cloudUploadInProgress = false;
+                inputElement.disabled = false;
+                inputElement.value = '';
             }
         }
 
@@ -2057,6 +2179,12 @@
             document.getElementById(viewId).classList.add('active');
             if(window.innerWidth <= 992) toggleSidebar();
             if(viewId === 'view-daftar' && typeof window.loadComicsList === 'function') { window.loadComicsList(); }
+            if(viewId === 'view-chapter') {
+                // Masuk ulang ke halaman dimulai sebagai sesi baru. Langkah 2
+                // akan membuka Root sampai Langkah 1 berhasil kembali.
+                window.pendingChapterFolder = null;
+                localStorage.removeItem('activeChapterFolderId');
+            }
             if(viewId === 'view-moderasi') window.loadModeration();
             if(viewId === 'view-pengaturan') window.loadAppConfiguration();
             if(viewId === 'view-dashboard') window.loadProfessionalDashboard();
@@ -2092,6 +2220,9 @@
             document.getElementById(listId).classList.remove('show');
             
             if(hiddenId === 'chapterComicId') {
+                // Pemilihan judul baru membatalkan target folder sebelumnya.
+                window.pendingChapterFolder = null;
+                localStorage.removeItem('activeChapterFolderId');
                 localStorage.setItem('activeComicId', id);
                 localStorage.setItem('activeComicName', title);
 
@@ -2138,23 +2269,24 @@
 
         function openMediaGallery() {
             document.getElementById('cloudGalleryModal').classList.remove('hidden');
-            const formComicId = document.getElementById('chapterComicId').value;
-            const formComicName = document.getElementById('chapterComicSearch').value;
-            
-            if (formComicId) {
-                const docRefInfo = window.allComicsList.find(c => c.id === formComicId);
-                const passFormat = docRefInfo ? docRefInfo.format : 'komik';
-                window.galleryState = { level: 'comic_folder', comicId: formComicId, comicName: formComicName, entryFormat: passFormat, chapterFolderId: null, chapterFolderName: '', currentChapterImages: [] };
-                localStorage.setItem('activeComicId', formComicId);
-                localStorage.setItem('activeComicName', formComicName);
-            } else if (localStorage.getItem('activeComicId')) {
-                const recId = localStorage.getItem('activeComicId');
-                const docRefInfo = window.allComicsList.find(c => c.id === recId);
-                const passFormat = docRefInfo ? docRefInfo.format : 'komik';
-                window.galleryState = { level: 'comic_folder', comicId: recId, comicName: localStorage.getItem('activeComicName') || 'Judul', entryFormat: passFormat, chapterFolderId: null, chapterFolderName: '', currentChapterImages: [] };
+            const pending = window.pendingChapterFolder;
+
+            if (pending?.comicId && pending?.chapterId) {
+                // Langkah 1 baru berhasil: langsung buka folder hasilnya.
+                window.galleryState = {
+                    level: 'chapter_folder',
+                    comicId: pending.comicId,
+                    comicName: pending.comicName,
+                    entryFormat: pending.entryFormat,
+                    chapterFolderId: pending.chapterId,
+                    chapterFolderName: pending.chapterName,
+                    currentChapterImages: Array.isArray(pending.images) ? [...pending.images] : []
+                };
             } else {
+                // Langkah 1 belum dilakukan: jangan memakai state lama.
                 window.galleryState = { level: 'root', comicId: null, comicName: '', entryFormat: 'komik', chapterFolderId: null, chapterFolderName: '', currentChapterImages: [] };
             }
+            window.selectedMediaGallery = [];
             if(document.getElementById('gallerySearchInput')) { document.getElementById('gallerySearchInput').value = ''; }
             window.loadCloudGallery();
         }

@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Admin Panel V20 - Manga & Anime App</title>
+    <title>Admin Panel V20.1 - Manga & Anime App</title>
     <!-- Google Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <!-- Font Awesome -->
@@ -277,7 +277,7 @@
             
             #modalFooterPublish { flex-direction: column; align-items: stretch; gap: 10px; text-align: left !important; }
         }
-        /* V20 professional dashboard */
+        /* V20.1 professional dashboard */
         .analytics-grid{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:18px;margin-bottom:20px}.chart-card{background:#fff;border-radius:14px;padding:18px;border:1px solid var(--border);min-width:0;overflow:hidden}.chart-card h3,.dashboard-list-card h3{font-size:14px;margin-bottom:14px;color:#1e293b}.chart-canvas-wrap{position:relative;width:100%;height:230px;min-height:230px;max-height:230px;overflow:hidden}.chart-canvas-wrap canvas{display:block!important;width:100%!important;height:230px!important;max-height:230px!important}.dashboard-columns{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:18px;margin-bottom:20px}.dashboard-list-card{background:#fff;border-radius:14px;padding:17px;border:1px solid var(--border)}.metric-list{display:flex;flex-direction:column;gap:9px}.metric-row{display:flex;align-items:center;gap:10px;padding:9px;border-radius:10px;background:#f8fafc}.metric-rank{width:25px;font-weight:800;color:var(--primary)}.metric-cover{width:37px;height:50px;border-radius:6px;object-fit:cover}.metric-copy{flex:1;min-width:0}.metric-copy strong{display:block;font-size:12px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.metric-copy span{font-size:10px;color:var(--text-muted)}.metric-value{font-size:11px;font-weight:800;color:var(--primary)}.ops-grid{display:grid;grid-template-columns:1fr 1fr;gap:18px}.ops-drop{border:2px dashed #bfdbfe;background:#eff6ff;border-radius:14px;padding:25px;text-align:center}.ops-actions{display:flex;gap:10px;flex-wrap:wrap}.ops-btn{border:0;border-radius:9px;padding:10px 14px;background:var(--primary);color:#fff;font-weight:700;cursor:pointer}.ops-btn.green{background:#059669}.audit-list{max-height:470px;overflow:auto}.audit-row{padding:10px 0;border-bottom:1px solid var(--border)}.audit-row strong{display:block;font-size:11px}.audit-row span{font-size:9px;color:var(--text-muted)}.status-pill{display:inline-flex;padding:4px 8px;border-radius:999px;font-size:9px;font-weight:800}.status-pill.draft{background:#fff3cd;color:#946200}.status-pill.scheduled{background:#e0ecff;color:#1d5db7}.status-pill.published{background:#dcfce7;color:#137547}@media(max-width:900px){.analytics-grid,.dashboard-columns,.ops-grid{grid-template-columns:1fr}.chart-canvas-wrap,.chart-canvas-wrap canvas{height:210px!important;min-height:210px;max-height:210px!important}}
     </style>
 </head>
@@ -410,8 +410,8 @@
                             
                             <div class="form-grid">
                                 <div class="form-group full-width">
-                                    <label style="color: var(--primary);"><i class="fa-solid fa-key"></i> Kunci Rahasia Worker (X-Admin-Key)</label>
-                                    <input type="password" id="secretKey" required placeholder="Masukkan Secret Key R2...">
+                                    <label style="color: var(--primary);"><i class="fa-solid fa-shield-halved"></i> Keamanan Upload Cloudflare R2</label>
+                                    <div class="alert alert-info" style="margin:0;">Upload menggunakan sesi Firebase admin. Kunci rahasia tidak lagi disimpan di browser.</div>
                                 </div>
                                 <div class="form-group full-width"><hr style="border: 0; border-top: 1px solid var(--border);"></div>
 
@@ -714,8 +714,8 @@
                     </div>
                 </div>
                 
-                <div id="view-pengaturan" class="admin-view"><h1 class="page-title">Update & Maintenance</h1><div class="card"><div class="app-config-grid"><div class="form-group"><label>Versi terbaru</label><input id="configLatestVersion" type="text" placeholder="20.0.0"><div class="config-help">Gunakan format angka seperti 20.0.1.</div></div><div class="form-group"><label>Judul maintenance</label><input id="configMaintenanceTitle" type="text" placeholder="Sedang dalam pemeliharaan"></div><div class="form-group full"><label>Changelog</label><textarea id="configChangelog" rows="5" placeholder="Tuliskan perubahan versi terbaru..."></textarea></div><div class="form-group full"><label>Pesan maintenance</label><textarea id="configMaintenanceMessage" rows="3" placeholder="Aplikasi akan segera kembali..."></textarea></div><div class="config-switch"><div><strong>Update wajib</strong><div class="config-help">Pengingat akan terus muncul sampai pengguna memperbarui.</div></div><input id="configUpdateRequired" type="checkbox"></div><div class="config-switch"><div><strong>Mode maintenance</strong><div class="config-help">Pengguna biasa melihat halaman maintenance; admin tetap dapat masuk.</div></div><input id="configMaintenanceMode" type="checkbox"></div><div class="full"><button class="btn-submit" onclick="saveAppConfiguration()"><i class="fa-solid fa-cloud-arrow-up"></i> Simpan Pengaturan Aplikasi</button><div class="config-status" id="configStatus"></div></div></div></div></div>
-                <div id="view-moderasi" class="admin-view"><h1 class="page-title">Moderasi Komentar</h1><div class="moderation-toolbar"><button class="mod-btn primary" onclick="loadModeration()"><i class="fa-solid fa-rotate"></i> Muat ulang</button><button class="mod-btn" onclick="setModerationFilter('all')">Semua</button><button class="mod-btn" onclick="setModerationFilter('reported')">Dilaporkan</button><button class="mod-btn" onclick="setModerationFilter('pinned')">Disematkan</button><span id="moderationCount" class="moderation-meta"></span></div><div id="moderationList"><div class="loading-text">Memuat moderasi...</div></div></div>
+                <div id="view-pengaturan" class="admin-view"><h1 class="page-title">Update & Maintenance</h1><div class="card"><div class="app-config-grid"><div class="form-group"><label>Versi terbaru</label><input id="configLatestVersion" type="text" placeholder="20.1.0"><div class="config-help">Gunakan format angka seperti 20.0.1.</div></div><div class="form-group"><label>Judul maintenance</label><input id="configMaintenanceTitle" type="text" placeholder="Sedang dalam pemeliharaan"></div><div class="form-group full"><label>Changelog</label><textarea id="configChangelog" rows="5" placeholder="Tuliskan perubahan versi terbaru..."></textarea></div><div class="form-group full"><label>Pesan maintenance</label><textarea id="configMaintenanceMessage" rows="3" placeholder="Aplikasi akan segera kembali..."></textarea></div><div class="config-switch"><div><strong>Update wajib</strong><div class="config-help">Pengingat akan terus muncul sampai pengguna memperbarui.</div></div><input id="configUpdateRequired" type="checkbox"></div><div class="config-switch"><div><strong>Mode maintenance</strong><div class="config-help">Pengguna biasa melihat halaman maintenance; admin tetap dapat masuk.</div></div><input id="configMaintenanceMode" type="checkbox"></div><div class="full"><button class="btn-submit" onclick="saveAppConfiguration()"><i class="fa-solid fa-cloud-arrow-up"></i> Simpan Pengaturan Aplikasi</button><div class="config-status" id="configStatus"></div></div></div></div></div>
+                <div id="view-moderasi" class="admin-view"><h1 class="page-title">Moderasi Komentar</h1><div class="moderation-toolbar"><button class="mod-btn primary" onclick="loadModeration(true)"><i class="fa-solid fa-rotate"></i> Muat ulang</button><button class="mod-btn" onclick="setModerationFilter('all')">Semua</button><button class="mod-btn" onclick="setModerationFilter('reported')">Dilaporkan</button><button class="mod-btn" onclick="setModerationFilter('pinned')">Disematkan</button><span id="moderationCount" class="moderation-meta"></span></div><div id="moderationList"><div class="loading-text">Memuat moderasi...</div></div><div style="text-align:center;margin-top:16px"><button id="moderationLoadMore" class="mod-btn primary" onclick="loadModeration(false)" style="display:none"><i class="fa-solid fa-chevron-down"></i> Muat 50 komentar berikutnya</button></div></div>
 
                 <div id="view-operasional" class="admin-view"><h1 class="page-title">Publikasi & Data</h1><div class="ops-grid"><div><div class="card"><h3 style="margin-bottom:14px">Upload Metadata Massal</h3><div class="ops-drop"><i class="fa-solid fa-file-arrow-up" style="font-size:34px;color:var(--primary)"></i><p style="margin:10px 0;font-size:12px">Pilih JSON berisi array metadata komik atau film.</p><input id="bulkMetadataInput" type="file" accept="application/json,.json" onchange="previewBulkMetadata(this.files[0])"><div id="bulkPreview" style="margin-top:12px;font-size:11px"></div></div></div><div class="card"><h3 style="margin-bottom:14px">Backup Metadata</h3><p style="font-size:11px;color:var(--text-muted);margin-bottom:14px">Unduh metadata komik beserta chapter sebagai JSON.</p><button class="ops-btn green" onclick="backupAllMetadata()"><i class="fa-solid fa-download"></i> Buat Backup</button></div><div class="card"><h3 style="margin-bottom:14px">Jadwal Publikasi & Draft</h3><div class="metric-list" id="publicationQueue"><div class="loading-text">Memuat...</div></div></div></div><div class="card"><h3 style="margin-bottom:14px">Audit Log Aktivitas Admin</h3><div class="audit-list" id="auditLogList"><div class="loading-text">Memuat...</div></div></div></div></div>
             </div>
@@ -781,7 +781,7 @@
     <!-- ==================== SCRIPT FIREBASE LOGIC & UTAMA ==================== -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-        import { getFirestore, collection, addDoc, serverTimestamp, doc, getDoc, setDoc, updateDoc, increment, arrayUnion, arrayRemove, onSnapshot, query, orderBy, getDocs, deleteDoc, where, limit } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+        import { getFirestore, collection, collectionGroup, addDoc, serverTimestamp, doc, getDoc, setDoc, updateDoc, increment, arrayUnion, arrayRemove, onSnapshot, query, orderBy, getDocs, deleteDoc, where, limit, startAfter, writeBatch } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
         import { getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
 
         const firebaseConfig = {
@@ -797,11 +797,11 @@
         const db = getFirestore(app);
         const auth = getAuth(app);
         const WORKER_URL = "https://yarch.hrmnkosasi.workers.dev/";
+        const ADMIN_UID = "dWUWpKAWQRRxMOzjzaOA3zXWZLp2";
 
         const loginSection = document.getElementById('loginSection');
         const dashboardSection = document.getElementById('dashboardSection');
         const uploadStatus = document.getElementById('uploadStatus');
-        const secretKeyInput = document.getElementById('secretKey');
         
         window.allComicsList = []; // Array universal menampung komik & film
         window.allComicsRaw = [];
@@ -809,14 +809,36 @@
         window.editingComicId = null;
         document.getElementById('view-pengaturan')?.insertAdjacentHTML('beforeend',`<div class="card"><h3 style="margin-bottom:15px">Tampilan & Fitur Aplikasi</h3><div class="app-config-grid"><div class="form-group"><label>Nama Aplikasi</label><input id="configAppName" maxlength="60" placeholder="Komik & Anime"></div><div class="form-group"><label>Warna Utama</label><input id="configThemeColor" type="color" value="#625af2"></div><div class="form-group full"><label>Pengumuman Pengguna</label><textarea id="configAnnouncement" rows="3" maxlength="300" placeholder="Kosongkan jika tidak ada pengumuman"></textarea></div><div class="config-switch"><div><strong>Rekomendasi personal</strong><div class="config-help">Tampilkan bagian Untuk Kamu.</div></div><input id="configRecommendations" type="checkbox" checked></div><div class="config-switch"><div><strong>Gamifikasi</strong><div class="config-help">Aktifkan poin, misi, dan ranking.</div></div><input id="configGamification" type="checkbox" checked></div><div class="full"><button class="btn-submit" onclick="saveAppConfiguration()"><i class="fa-solid fa-floppy-disk"></i> Simpan Semua Pengaturan</button></div></div></div>`);
 
-        if (localStorage.getItem('workerSecretKey') && secretKeyInput) {
-            secretKeyInput.value = localStorage.getItem('workerSecretKey');
+        localStorage.removeItem('workerSecretKey');
+
+        async function getWorkerAuthHeaders() {
+            const user = auth.currentUser;
+            if (!user || user.uid !== ADMIN_UID) throw new Error('Sesi admin tidak valid. Silakan login kembali.');
+            return { Authorization: `Bearer ${await user.getIdToken()}` };
         }
 
-        onAuthStateChanged(auth, (user) => {
+        async function migrateLegacyPublicationFields() {
+            const snapshot = await getDocs(collection(db, 'comics'));
+            const legacy = snapshot.docs.filter(item => typeof item.data().isPublished !== 'boolean');
+            for (let i = 0; i < legacy.length; i += 400) {
+                const batch = writeBatch(db);
+                legacy.slice(i, i + 400).forEach(item => batch.update(item.ref, { isPublished: true, publicationStatus: item.data().publicationStatus || 'published' }));
+                await batch.commit();
+            }
+            if (legacy.length) await writeAudit('MIGRATE_PUBLICATION_STATUS', 'comics', `${legacy.length} konten lama`);
+        }
+
+        onAuthStateChanged(auth, async (user) => {
             if (user) {
+                if (user.uid !== ADMIN_UID) {
+                    await signOut(auth);
+                    Swal.fire('Akses Ditolak', 'Akun ini bukan akun administrator.', 'error');
+                    return;
+                }
                 loginSection.classList.add('hidden');
                 dashboardSection.classList.remove('hidden');
+                try { await migrateLegacyPublicationFields(); }
+                catch (error) { Swal.fire('Migrasi data tertunda', `Status publikasi konten lama belum dapat diperbarui: ${error.message}`, 'warning'); }
                 initMasterData(); 
                 window.loadComicsList(); 
             } else {
@@ -869,13 +891,13 @@
                     const genreContainer = document.getElementById('genreCheckboxContainer');
                     genreContainer.innerHTML = '';
                     if(data.genres && data.genres.length > 0) {
-                        data.genres.forEach(genre => { genreContainer.innerHTML += `<label><input type="checkbox" value="${genre}" class="genre-check"> ${genre}</label>`; });
+                        data.genres.forEach(genre => { genreContainer.innerHTML += `<label><input type="checkbox" value="${adminSafe(genre)}" class="genre-check"> ${adminSafe(genre)}</label>`; });
                     } else { genreContainer.innerHTML = '<span class="help-text">Belum ada data genre.</span>'; }
 
                     const directorContainer = document.getElementById('directorCheckboxContainer');
                     directorContainer.innerHTML = '';
                     if(data.directors && data.directors.length > 0) {
-                        data.directors.forEach(dir => { directorContainer.innerHTML += `<label><input type="checkbox" value="${dir}" class="director-check"> ${dir}</label>`; });
+                        data.directors.forEach(dir => { directorContainer.innerHTML += `<label><input type="checkbox" value="${adminSafe(dir)}" class="director-check"> ${adminSafe(dir)}</label>`; });
                     } else { directorContainer.innerHTML = '<span class="help-text">Belum ada data sutradara.</span>'; }
                     
                     // Update Dashboard Stats for Master Data
@@ -889,7 +911,8 @@
             const el = document.getElementById(id);
             el.innerHTML = '';
             if(dataArray && dataArray.length > 0) {
-                dataArray.forEach(val => el.innerHTML += `<li>${val} <button type="button" class="btn-delete" onclick="window.removeMasterDataFirebase('${field}', '${val}')"><i class="fa-solid fa-trash-can"></i></button></li>`);
+                dataArray.forEach(val => el.innerHTML += `<li>${adminSafe(val)} <button type="button" class="btn-delete" data-field="${adminSafe(field)}" data-value="${adminSafe(val)}"><i class="fa-solid fa-trash-can"></i></button></li>`);
+                el.querySelectorAll('.btn-delete[data-field]').forEach(btn => btn.addEventListener('click', () => window.removeMasterDataFirebase(btn.dataset.field, btn.dataset.value)));
             } else { el.innerHTML = '<li style="color:#888; justify-content:center; font-size:12px;">Data kosong</li>'; }
         }
 
@@ -897,7 +920,7 @@
             const el = document.getElementById(id);
             const currentVal = el.value; 
             el.innerHTML = `<option value="">Pilih ${placeholder}</option>`;
-            if(dataArray) dataArray.forEach(val => el.innerHTML += `<option value="${val}">${val}</option>`);
+            if(dataArray) dataArray.forEach(val => el.innerHTML += `<option value="${adminSafe(val)}">${adminSafe(val)}</option>`);
             if(currentVal) el.value = currentVal;
         }
 
@@ -1002,13 +1025,13 @@
 
                     const trHtml = `
                         <tr>
-                            <td><img src="${data.coverUrl}" style="width: 50px; height: 70px; object-fit: cover; border-radius: 6px; box-shadow: 0 2px 5px rgba(0,0,0,0.1);" onerror="this.src='https://placehold.co/50x70?text=Error'"></td>
+                            <td><img src="${safeUrl(data.coverUrl)}" style="width: 50px; height: 70px; object-fit: cover; border-radius: 6px; box-shadow: 0 2px 5px rgba(0,0,0,0.1);" onerror="this.src='https://placehold.co/50x70?text=Error'"></td>
                             <td>
-                                <strong>${data.title}</strong><br>
-                                <span style="font-size: 11px; color: #888;">${data.type || '-'}${durationInfo}${releaseInfo}</span>
+                                <strong>${adminSafe(data.title)}</strong><br>
+                                <span style="font-size: 11px; color: #888;">${adminSafe((data.type || '-') + durationInfo + releaseInfo)}</span>
                             </td>
                             <td>${formatBadge}</td>
-                            <td>${creatorDisplay}</td>
+                            <td>${adminSafe(creatorDisplay)}</td>
                             <td><span style="font-size: 13px; font-weight: 500;">${date}</span></td>
                             <td>
                                 <label class="toggle-switch">
@@ -1029,8 +1052,8 @@
                     if(dashCount < 5) {
                         dashTbody.innerHTML += `
                             <tr>
-                                <td><img src="${data.coverUrl}" style="width: 40px; height: 55px; object-fit: cover; border-radius: 6px;" onerror="this.src='https://placehold.co/40x55?text=Error'"></td>
-                                <td><strong>${data.title}</strong><br><span style="font-size: 11px; color: #888;">${data.type || '-'}</span></td>
+                                <td><img src="${safeUrl(data.coverUrl)}" style="width: 40px; height: 55px; object-fit: cover; border-radius: 6px;" onerror="this.src='https://placehold.co/40x55?text=Error'"></td>
+                                <td><strong>${adminSafe(data.title)}</strong><br><span style="font-size: 11px; color: #888;">${adminSafe(data.type || '-')}</span></td>
                                 <td>${formatBadge}</td>
                                 <td><span style="font-size: 12px;">${date}</span></td>
                             </tr>
@@ -1048,13 +1071,41 @@
                 renderSearchableOptions('filterChapterList', 'filterChapterId', 'filterChapterSearch', window.allComicsList);
                 if(typeof window.loadProfessionalDashboard==='function') window.loadProfessionalDashboard();
 
-            } catch (e) { console.error(e); }
+            } catch (e) {
+                console.error(e);
+                tbody.innerHTML = `<tr><td colspan="7"><div class="alert alert-error">Gagal memuat daftar: ${adminSafe(e.message)}</div></td></tr>`;
+                dashTbody.innerHTML = '<tr><td colspan="4" style="text-align:center;color:var(--danger)">Data terbaru gagal dimuat.</td></tr>';
+            }
         };
 
         window.togglePublish = async function(id, status) {
             try { await updateDoc(doc(db, "comics", id), { isPublished:status, publicationStatus:status?'published':'draft', publishedAt:status?serverTimestamp():null }); await writeAudit(status?'PUBLISH_CONTENT':'UNPUBLISH_CONTENT',id); } catch (e) { Swal.fire('Error', e.message, 'error'); window.loadComicsList(); }
         };
         
+        async function deleteDocumentRefs(refs) {
+            for (let i = 0; i < refs.length; i += 450) {
+                const batch = writeBatch(db);
+                refs.slice(i, i + 450).forEach(ref => batch.delete(ref));
+                await batch.commit();
+            }
+        }
+
+        async function requestR2Deletion(urls) {
+            const uniqueUrls = [...new Set(urls.filter(Boolean))];
+            if (!uniqueUrls.length) return;
+            const response = await fetch(new URL('media/delete', WORKER_URL), {
+                method: 'POST',
+                headers: { ...(await getWorkerAuthHeaders()), 'Content-Type': 'application/json' },
+                body: JSON.stringify({ urls: uniqueUrls })
+            });
+            if (!response.ok) throw new Error((await response.json().catch(() => ({}))).error || 'Gagal menghapus media R2');
+        }
+
+        async function syncChapterCount(comicId) {
+            const snapshot = await getDocs(collection(db, 'comics', comicId, 'chapters'));
+            await updateDoc(doc(db, 'comics', comicId), { chaptersCount: snapshot.size });
+        }
+
         window.deleteComic = async function(id) {
             const result = await Swal.fire({
                 title: 'Hapus Data Keseluruhan?',
@@ -1068,13 +1119,27 @@
             });
             
             if(result.isConfirmed) {
-                try { 
-                    await deleteDoc(doc(db, "comics", id)); 
-                    await writeAudit('DELETE_CONTENT',id);
-                    Swal.fire('Terhapus!', 'Data berhasil dihapus.', 'success');
+                try {
+                    const comicRef = doc(db, "comics", id);
+                    const comicSnap = await getDoc(comicRef);
+                    const urls = comicSnap.exists() ? [comicSnap.data().coverUrl, ...(comicSnap.data().deletionMediaUrls || [])] : [];
+                    const childRefs = [];
+                    for (const childName of ['chapters', 'comments', 'ratings']) {
+                        const childSnap = await getDocs(collection(db, 'comics', id, childName));
+                        childSnap.forEach(item => {
+                            childRefs.push(item.ref);
+                            if (childName === 'chapters') urls.push(...(item.data().images || []));
+                        });
+                    }
+                    await updateDoc(comicRef, { isPublished:false, deletionStatus:'processing', deletionMediaUrls:[...new Set(urls.filter(Boolean))] });
+                    await deleteDocumentRefs(childRefs);
+                    await requestR2Deletion(urls);
+                    await writeAudit('DELETE_CONTENT', id, `${childRefs.length} dokumen turunan dan ${new Set(urls.filter(Boolean)).size} media`);
+                    await deleteDoc(comicRef);
+                    Swal.fire('Terhapus!', 'Judul, chapter, komentar, rating, dan media terkait berhasil dihapus.', 'success');
                     window.loadComicsList(); 
-                } catch(e) { 
-                    Swal.fire('Error', 'Gagal menghapus data.', 'error'); 
+                } catch(e) {
+                    Swal.fire('Penghapusan belum selesai', e.message || 'Gagal menghapus data.', 'error');
                 }
             }
         };
@@ -1141,8 +1206,8 @@
         function renderSearchableOptions(listId, hiddenId, inputId, listData) {
             let html = '';
             listData.forEach(c => {
-                const safeTitle = c.title.replace(/'/g, "\\'").replace(/"/g, '&quot;');
-                html += `<div onclick="window.selectCustomOption('${c.id}', '${safeTitle}', '${hiddenId}', '${inputId}', '${listId}')">${c.title}</div>`;
+                const safeTitle = encodeURIComponent(c.title || '');
+                html += `<div onclick="window.selectCustomOption('${c.id}', decodeURIComponent('${safeTitle}'), '${hiddenId}', '${inputId}', '${listId}')">${adminSafe(c.title)}</div>`;
             });
             document.getElementById(listId).innerHTML = html;
         }
@@ -1158,7 +1223,6 @@
             uploadStatus.innerText = "Memproses penyatuan data..."; 
             uploadStatus.style.display = "block"; uploadStatus.style.background = "#eff6ff"; uploadStatus.style.color = "var(--primary)";
             
-            const currentSecretKey = secretKeyInput.value;
             const coverFile = document.getElementById('coverImage').files[0];
             let finalCoverUrl = document.getElementById('coverPreview').src; 
 
@@ -1167,13 +1231,12 @@
                     uploadStatus.innerText = "Mengunggah poster cover ke Storage...";
                     const formData = new FormData();
                     formData.append('coverImage', coverFile);
-                    const workerResponse = await fetch(WORKER_URL, { method: 'POST', headers: { 'X-Admin-Key': currentSecretKey }, body: formData });
+                    const workerResponse = await fetch(WORKER_URL, { method: 'POST', headers: await getWorkerAuthHeaders(), body: formData });
                     const workerData = await workerResponse.json();
                     if (!workerResponse.ok) throw new Error(workerData.error || "Gagal upload R2");
                     finalCoverUrl = workerData.url;
                 }
 
-                localStorage.setItem('workerSecretKey', currentSecretKey);
                 uploadStatus.innerText = "Menyimpan ke Database Node...";
 
                 const genres = [];
@@ -1235,7 +1298,6 @@
 
                 uploadStatus.style.display = "none";
                 window.cancelEditComic();
-                secretKeyInput.value = currentSecretKey; 
                 window.loadComicsList(); 
 
             } catch (error) {
@@ -1284,6 +1346,8 @@
                         createdAt: serverTimestamp(),
                         updatedAt: serverTimestamp()
                     });
+                    await syncChapterCount(comicId);
+                    await writeAudit('CREATE_CHAPTER', newDocRef.id, `${comicId} • ${chapterNum}`);
                     targetChapterId = newDocRef.id;
                     statusEl.innerHTML = "✅ Folder sukses diregistrasi!<br>Silakan lanjut Buka File Manager di Langkah 2 untuk upload konten media.";
                 }
@@ -1296,7 +1360,7 @@
                 
                 if(document.getElementById('filterChapterId').value === comicId) { window.loadChaptersList(); }
             } catch(e) {
-                statusEl.innerHTML = "❌ Error sistem folder: " + e.message;
+                statusEl.textContent = "Error sistem folder: " + e.message;
                 statusEl.style.color = "var(--danger)"; statusEl.style.background = "#fef2f2";
             }
         }
@@ -1308,9 +1372,6 @@
             const files = inputElement.files;
             if(files.length === 0) return;
             
-            const currentSecretKey = secretKeyInput.value;
-            if(!currentSecretKey) { Swal.fire('Kunci Diperlukan', "Isi Kunci Rahasia Worker (X-Admin-Key) di form Tambah Data!", 'warning'); return; }
-
             const comicId = window.galleryState.comicId || localStorage.getItem('activeComicId');
             const chapterId = window.galleryState.chapterFolderId || localStorage.getItem('activeChapterFolderId');
 
@@ -1330,7 +1391,7 @@
                     const formData = new FormData();
                     formData.append('coverImage', file);
 
-                    const workerResponse = await fetch(WORKER_URL, { method: 'POST', headers: { 'X-Admin-Key': currentSecretKey }, body: formData });
+                    const workerResponse = await fetch(WORKER_URL, { method: 'POST', headers: await getWorkerAuthHeaders(), body: formData });
                     const workerData = await workerResponse.json();
                     if (!workerResponse.ok) throw new Error(workerData.error || "Gagal ke cloud storage.");
                     
@@ -1350,7 +1411,7 @@
                 inputElement.value = ''; 
                 window.loadCloudGallery(); 
             } catch(e) {
-                statusEl.innerHTML = `❌ Error Upload Cloud: ${e.message}`;
+                statusEl.textContent = `Error Upload Cloud: ${e.message}`;
                 statusEl.style.color = "var(--danger)"; statusEl.style.background = "#fef2f2";
             }
         }
@@ -1393,11 +1454,11 @@
 
             let bcHtml = `<span onclick="window.navGalleryToRoot()"><i class="fa-solid fa-server"></i> Root Server</span>`;
             if(window.galleryState.level !== 'root') {
-                const safeName = window.galleryState.comicName.replace(/'/g, "\\'");
-                bcHtml += ` <i class="fa-solid fa-chevron-right" style="font-size:10px;"></i> <span onclick="window.navGalleryToComic('${window.galleryState.comicId}', '${safeName}', '${window.galleryState.entryFormat}')">${window.galleryState.comicName}</span>`;
+                const safeName = encodeURIComponent(window.galleryState.comicName || '');
+                bcHtml += ` <i class="fa-solid fa-chevron-right" style="font-size:10px;"></i> <span onclick="window.navGalleryToComic('${window.galleryState.comicId}', decodeURIComponent('${safeName}'), '${window.galleryState.entryFormat === 'film' ? 'film' : 'komik'}')">${adminSafe(window.galleryState.comicName)}</span>`;
             }
             if(window.galleryState.level === 'chapter_folder') {
-                bcHtml += ` <i class="fa-solid fa-chevron-right" style="font-size:10px;"></i> <span class="active">${window.galleryState.chapterFolderName}</span>`;
+                bcHtml += ` <i class="fa-solid fa-chevron-right" style="font-size:10px;"></i> <span class="active">${adminSafe(window.galleryState.chapterFolderName)}</span>`;
                 document.getElementById('modalChapterUpdateDate').value = new Date().toISOString().split('T')[0];
             }
             breadcrumb.innerHTML = bcHtml;
@@ -1417,17 +1478,17 @@
                         return;
                     }
                     window.allComicsList.forEach(c => {
-                        const safeTitle = c.title.replace(/'/g, "\\'");
+                        const safeTitle = encodeURIComponent(c.title || '');
                         const formatLabel = c.format === 'film' ? 'Folder Film/Series' : 'Folder Komik';
                         const iconHtml = c.format === 'film' ? '<div style="position:absolute;top:-8px;right:-8px;background:var(--purple);color:white;border-radius:50%;width:25px;height:25px;display:flex;align-items:center;justify-content:center;font-size:12px;box-shadow:0 2px 5px rgba(0,0,0,0.2);"><i class="fa-solid fa-film"></i></div>' : '';
 
                         grid.innerHTML += `
-                            <div class="folder-card root-comic-card" onclick="window.navGalleryToComic('${c.id}', '${safeTitle}', '${c.format}')">
+                            <div class="folder-card root-comic-card" onclick="window.navGalleryToComic('${c.id}', decodeURIComponent('${safeTitle}'), '${c.format === 'film' ? 'film' : 'komik'}')">
                                 <div style="position:relative;">
-                                    <img src="${c.coverUrl}" class="folder-icon comic-cover" onerror="this.src='https://placehold.co/60x80?text=Cover'">
+                                    <img src="${safeUrl(c.coverUrl)}" class="folder-icon comic-cover" onerror="this.src='https://placehold.co/60x80?text=Cover'">
                                     ${iconHtml}
                                 </div>
-                                <div class="folder-title">${c.title}</div>
+                                <div class="folder-title">${adminSafe(c.title)}</div>
                                 <div class="folder-subtitle">${formatLabel}</div>
                             </div>
                         `;
@@ -1451,7 +1512,7 @@
                     } else {
                         chapters.forEach(ch => {
                             const totalMedia = ch.images ? ch.images.length : 0;
-                            const safeTitle = (ch.title || '').replace(/'/g, "\\'");
+                            const safeTitle = adminSafe(ch.title || '');
                             const folderLabel = ch.chapterNumber === 1 && ch.title === "Full Movie" ? "Full Movie" : `${term} ${ch.chapterNumber}`;
                             const folderColor = isFilm ? '#8b5cf6' : '#fbbf24';
                             
@@ -1476,27 +1537,29 @@
 
                     window.galleryState.currentChapterImages.forEach((url, index) => {
                         const isSelected = window.selectedMediaGallery.findIndex(m => m.url === url) !== -1;
+                        const encodedUrl = encodeURIComponent(url);
+                        const cleanUrl = safeUrl(url);
                         const orderIndex = isSelected ? window.selectedMediaGallery.findIndex(m => m.url === url) + 1 : '';
                         
                         // Deteksi Tipe Media untuk Thumbnail
                         const isVideo = url.split('?')[0].match(/\.(mp4|webm|ogg|mov|mkv)$/i);
                         const mediaHtml = isVideo 
-                            ? `<video src="${url}" style="width:100%; height:100%; object-fit:cover;" muted loop onmouseover="this.play()" onmouseout="this.pause()"></video><div class="video-indicator"><i class="fa-solid fa-play"></i> Video</div>`
-                            : `<img src="${url}" loading="lazy" style="width:100%; height:100%; object-fit:cover;">`;
+                            ? `<video src="${cleanUrl}" style="width:100%; height:100%; object-fit:cover;" muted loop onmouseover="this.play()" onmouseout="this.pause()"></video><div class="video-indicator"><i class="fa-solid fa-play"></i> Video</div>`
+                            : `<img src="${cleanUrl}" loading="lazy" style="width:100%; height:100%; object-fit:cover;">`;
 
                         grid.innerHTML += `
                             <div class="media-card ${isSelected ? 'selected' : ''}" id="gal-item-${index}">
-                                <div class="media-thumb" onclick="window.toggleSelectGalleryItem('${index}', '${url}')" title="Pilih File">
+                                <div class="media-thumb" onclick="window.toggleSelectGalleryItem('${index}', decodeURIComponent('${encodedUrl}'))" title="Pilih File">
                                     <div class="check-circle" id="badge-${index}">${orderIndex}</div>
                                     ${mediaHtml}
                                 </div>
                                 <div class="media-info">Media ${index + 1}</div>
                                 <div class="media-actions">
-                                    <button class="btn-pilih" onclick="window.toggleSelectGalleryItem('${index}', '${url}')">
+                                    <button class="btn-pilih" onclick="window.toggleSelectGalleryItem('${index}', decodeURIComponent('${encodedUrl}'))">
                                         ${isSelected ? '<i class="fa-solid fa-check"></i> Dipilih' : 'Pilih'}
                                     </button>
-                                    <button class="btn-icon-outline" onclick="openLightboxPreview('${url}')" title="Preview"><i class="fa-solid fa-eye"></i></button>
-                                    <button class="btn-icon-outline text-danger" onclick="window.deleteImageFromChapter('${index}', '${url}')" title="Hapus"><i class="fa-solid fa-trash-can"></i></button>
+                                    <button class="btn-icon-outline" onclick="openLightboxPreview(decodeURIComponent('${encodedUrl}'))" title="Preview"><i class="fa-solid fa-eye"></i></button>
+                                    <button class="btn-icon-outline text-danger" onclick="window.deleteImageFromChapter('${index}', decodeURIComponent('${encodedUrl}'))" title="Hapus"><i class="fa-solid fa-trash-can"></i></button>
                                 </div>
                             </div>
                         `;
@@ -1620,8 +1683,8 @@
 
                     tbody.innerHTML += `
                         <tr>
-                            <td><strong>${labelPart}</strong></td>
-                            <td>${ch.title || '-'}</td>
+                            <td><strong>${adminSafe(labelPart)}</strong></td>
+                            <td>${adminSafe(ch.title || '-')}</td>
                             <td>${ch.images ? ch.images.length : 0} File Media</td>
                             <td><span style="font-size: 13px;">${date}</span></td>
                             <td>
@@ -1636,7 +1699,16 @@
         window.deleteChapter = async function(comicId, chapterId) {
             const result = await Swal.fire({ title: 'Hapus Data?', text: "Yakin menghapus record ini dari sistem?", icon: 'warning', showCancelButton: true, confirmButtonColor: '#ef4444', cancelButtonColor: '#94a3b8', confirmButtonText: 'Ya, Eksekusi!' });
             if(result.isConfirmed) {
-                try { await deleteDoc(doc(db, "comics", comicId, "chapters", chapterId)); window.loadChaptersList(); } catch(e) { Swal.fire('Error','Gagal.','error'); }
+                try {
+                    const chapterRef = doc(db, "comics", comicId, "chapters", chapterId);
+                    const chapterSnap = await getDoc(chapterRef);
+                    if (chapterSnap.exists()) await requestR2Deletion(chapterSnap.data().images || []);
+                    await deleteDoc(chapterRef);
+                    await syncChapterCount(comicId);
+                    await writeAudit('DELETE_CHAPTER', chapterId, comicId);
+                    window.loadChaptersList();
+                    window.loadComicsList();
+                } catch(e) { Swal.fire('Error', e.message || 'Gagal menghapus chapter.', 'error'); }
             }
         }
 
@@ -1644,7 +1716,12 @@
             const result = await Swal.fire({ title: 'Hapus Folder & Media?', text: "⚠️ Peringatan: Seluruh media di dalam folder ini akan dibuang secara permanen.", icon: 'warning', showCancelButton: true, confirmButtonColor: '#ef4444', cancelButtonColor: '#94a3b8', confirmButtonText: 'Hapus Permanen' });
             if(!result.isConfirmed) return;
             try {
-                await deleteDoc(doc(db, "comics", comicId, "chapters", chapterId));
+                const chapterRef = doc(db, "comics", comicId, "chapters", chapterId);
+                const chapterSnap = await getDoc(chapterRef);
+                if (chapterSnap.exists()) await requestR2Deletion(chapterSnap.data().images || []);
+                await deleteDoc(chapterRef);
+                await syncChapterCount(comicId);
+                await writeAudit('DELETE_CHAPTER', chapterId, comicId);
                 window.loadCloudGallery(); 
                 if(document.getElementById('filterChapterId').value === comicId) { window.loadChaptersList(); }
             } catch(e) { Swal.fire('Error', "Gagal aksi I/O: " + e.message, 'error'); }
@@ -1713,6 +1790,9 @@
         
         window.moderationItems=[]; window.moderationFilter='all';
         function adminSafe(value){return String(value??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));}
+        function normalizeUrl(value){try{const u=new URL(String(value||''),location.href);return ['http:','https:'].includes(u.protocol)?u.href:'';}catch(e){return '';}}
+        function safeUrl(value){return adminSafe(normalizeUrl(value));}
+        window.safeAdminUrl = safeUrl;
         window.loadModeration=async function(){
             const list=document.getElementById('moderationList'); if(!list)return; list.innerHTML='<div class="loading-text"><i class="fa-solid fa-spinner fa-spin"></i> Memuat komentar...</div>';
             try{
@@ -1734,12 +1814,12 @@
         window.setModerationFilter=function(filter){window.moderationFilter=filter;renderModeration();}
         window.togglePinComment=async function(comicId,commentId,value){await updateDoc(doc(db,'comics',comicId,'comments',commentId),{isPinned:value,pinnedAt:value?serverTimestamp():null});await writeAudit(value?'PIN_COMMENT':'UNPIN_COMMENT',commentId,comicId);const item=window.moderationItems.find(x=>x.comicId===comicId&&x.id===commentId);if(item)item.isPinned=value;renderModeration();}
         window.resolveCommentReports=async function(comicId,commentId){const targets=window.moderationItems.find(x=>x.comicId===comicId&&x.id===commentId)?.reports||[];await Promise.all(targets.map(r=>updateDoc(doc(db,'commentReports',r.id),{status:'resolved',resolvedAt:serverTimestamp()})));await writeAudit('RESOLVE_REPORTS',commentId,`${targets.length} laporan`);window.moderationItems.find(x=>x.comicId===comicId&&x.id===commentId).reports=[];renderModeration();}
-        window.adminDeleteComment=async function(comicId,commentId){const result=await Swal.fire({title:'Hapus komentar?',text:'Tindakan ini tidak dapat dibatalkan.',icon:'warning',showCancelButton:true,confirmButtonText:'Hapus',cancelButtonText:'Batal',confirmButtonColor:'#e94f68'});if(!result.isConfirmed)return;await deleteDoc(doc(db,'comics',comicId,'comments',commentId));await writeAudit('DELETE_COMMENT',commentId,comicId);try{await updateDoc(doc(db,'comics',comicId),{commentCount:increment(-1)});}catch(e){}window.moderationItems=window.moderationItems.filter(x=>!(x.comicId===comicId&&x.id===commentId));renderModeration();}
+        window.adminDeleteComment=async function(comicId,commentId){const result=await Swal.fire({title:'Hapus komentar?',text:'Tindakan ini tidak dapat dibatalkan.',icon:'warning',showCancelButton:true,confirmButtonText:'Hapus',cancelButtonText:'Batal',confirmButtonColor:'#e94f68'});if(!result.isConfirmed)return;try{await deleteDoc(doc(db,'comics',comicId,'comments',commentId));const remaining=await getDocs(collection(db,'comics',comicId,'comments'));await updateDoc(doc(db,'comics',comicId),{commentCount:remaining.size});await writeAudit('DELETE_COMMENT',commentId,comicId);window.moderationItems=window.moderationItems.filter(x=>!(x.comicId===comicId&&x.id===commentId));window.dashboardCache=null;renderModeration();}catch(error){Swal.fire('Gagal menghapus',error.message,'error');}}
 
         window.loadAppConfiguration=async function(){
             const status=document.getElementById('configStatus');
-            try{const snap=await getDoc(doc(db,'settings','appConfig'));const c=snap.exists()?snap.data():{};document.getElementById('configLatestVersion').value=c.latestVersion||'20.0.0';document.getElementById('configChangelog').value=c.changelog||'';document.getElementById('configMaintenanceTitle').value=c.maintenanceTitle||'Sedang dalam pemeliharaan';document.getElementById('configMaintenanceMessage').value=c.maintenanceMessage||'Kami sedang melakukan peningkatan agar aplikasi menjadi lebih baik. Silakan coba kembali beberapa saat lagi.';document.getElementById('configUpdateRequired').checked=c.updateRequired===true;document.getElementById('configMaintenanceMode').checked=c.maintenanceMode===true;if(status)status.className='config-status';}catch(e){if(status){status.textContent='Gagal memuat pengaturan aplikasi.';status.className='config-status show error';}}
-            try{const snap=await getDoc(doc(db,'settings','appConfig')),c=snap.exists()?snap.data():{};document.getElementById('configAppName').value=c.appName||'Komik & Anime';document.getElementById('configThemeColor').value=c.themeColor||'#625af2';document.getElementById('configAnnouncement').value=c.announcement||'';document.getElementById('configRecommendations').checked=c.enableRecommendations!==false;document.getElementById('configGamification').checked=c.enableGamification!==false;}catch(e){}
+            try{const snap=await getDoc(doc(db,'settings','appConfig'));const c=snap.exists()?snap.data():{};document.getElementById('configLatestVersion').value=c.latestVersion||'20.1.0';document.getElementById('configChangelog').value=c.changelog||'';document.getElementById('configMaintenanceTitle').value=c.maintenanceTitle||'Sedang dalam pemeliharaan';document.getElementById('configMaintenanceMessage').value=c.maintenanceMessage||'Kami sedang melakukan peningkatan agar aplikasi menjadi lebih baik. Silakan coba kembali beberapa saat lagi.';document.getElementById('configUpdateRequired').checked=c.updateRequired===true;document.getElementById('configMaintenanceMode').checked=c.maintenanceMode===true;if(status)status.className='config-status';}catch(e){if(status){status.textContent='Gagal memuat pengaturan aplikasi.';status.className='config-status show error';}}
+            try{const snap=await getDoc(doc(db,'settings','appConfig')),c=snap.exists()?snap.data():{};document.getElementById('configAppName').value=c.appName||'Komik & Anime';document.getElementById('configThemeColor').value=c.themeColor||'#625af2';document.getElementById('configAnnouncement').value=c.announcement||'';document.getElementById('configRecommendations').checked=c.enableRecommendations!==false;document.getElementById('configGamification').checked=c.enableGamification!==false;}catch(e){console.error(e);if(status){status.textContent=`Sebagian pengaturan gagal dimuat: ${e.message}`;status.className='config-status show error';}}
         }
         window.saveBaseAppConfiguration=async function(){
             const status=document.getElementById('configStatus');const version=document.getElementById('configLatestVersion').value.trim().replace(/^v/i,'');if(!/^\d+\.\d+\.\d+$/.test(version)){status.textContent='Format versi harus seperti 20.0.1';status.className='config-status show error';return;}
@@ -1749,11 +1829,11 @@
 
         window.saveAppConfiguration=async function(){await window.saveBaseAppConfiguration();try{await setDoc(doc(db,'settings','appConfig'),{appName:document.getElementById('configAppName').value.trim()||'Komik & Anime',themeColor:document.getElementById('configThemeColor').value,announcement:document.getElementById('configAnnouncement').value.trim(),enableRecommendations:document.getElementById('configRecommendations').checked,enableGamification:document.getElementById('configGamification').checked,updatedAt:serverTimestamp(),updatedBy:auth.currentUser?.uid||''},{merge:true});await writeAudit('UPDATE_DISPLAY_SETTINGS','settings/appConfig','Tampilan dan fitur aplikasi');}catch(e){Swal.fire('Gagal','Pengaturan tampilan belum dapat disimpan.','error');}}
 
-        // ================= V20: DASHBOARD PROFESIONAL =================
+        // ================= V20.1: DASHBOARD PROFESIONAL =================
         window.adminCharts={};
         function dateKeyOffset(offset){const d=new Date();d.setDate(d.getDate()+offset);return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;}
         function timeMs(value){if(!value)return 0;if(value.toMillis)return value.toMillis();if(value.toDate)return value.toDate().getTime();const n=new Date(value).getTime();return Number.isFinite(n)?n:0;}
-        async function writeAudit(action,target='',detail=''){if(!auth.currentUser)return;try{await addDoc(collection(db,'adminAuditLogs'),{adminId:auth.currentUser.uid,adminEmail:auth.currentUser.email||'',action,target,detail:String(detail).slice(0,500),createdAt:serverTimestamp()});}catch(e){}}
+        async function writeAudit(action,target='',detail=''){if(!auth.currentUser)return;try{await addDoc(collection(db,'adminAuditLogs'),{adminId:auth.currentUser.uid,adminEmail:auth.currentUser.email||'',action,target,detail:String(detail).slice(0,500),createdAt:serverTimestamp()});}catch(e){console.warn('Audit log gagal disimpan:',e);}}
         function metricHTML(items,empty='Belum ada data'){return items.length?items.map((x,i)=>`<div class="metric-row">${x.cover?`<img class="metric-cover" src="${x.cover}">`:`<span class="metric-rank">#${i+1}</span>`}<div class="metric-copy"><strong>${adminSafe(x.title||'-')}</strong><span>${adminSafe(x.sub||'')}</span></div><span class="metric-value">${adminSafe(x.value||'')}</span></div>`).join(''):`<div class="loading-text">${empty}</div>`;}
         function drawAdminChart(id,labels,data,color){if(typeof Chart==='undefined')return;const canvas=document.getElementById(id);if(!canvas)return;if(window.adminCharts[id]){window.adminCharts[id].destroy();delete window.adminCharts[id];}canvas.removeAttribute('width');canvas.removeAttribute('height');window.adminCharts[id]=new Chart(canvas,{type:'line',data:{labels,datasets:[{data,borderColor:color,backgroundColor:color+'22',fill:true,tension:.35,pointRadius:2}]},options:{responsive:true,maintainAspectRatio:false,resizeDelay:150,animation:{duration:250},plugins:{legend:{display:false}},scales:{y:{beginAtZero:true,ticks:{precision:0}},x:{grid:{display:false}}}}});}
         window.loadProfessionalDashboard=async function(){const days=Array.from({length:30},(_,i)=>dateKeyOffset(i-29));const daily=await Promise.all(days.map(async day=>{try{const snap=await getDocs(collection(db,'analyticsDaily',day,'users'));let views=0;const users=new Set();snap.forEach(d=>{const x=d.data();users.add(x.userId||d.id);views+=Number(x.views||0);});return{day,views,users:users.size};}catch(e){return{day,views:0,users:0};}}));drawAdminChart('activeUsersChart',daily.slice(-7).map(x=>x.day.slice(5)),daily.slice(-7).map(x=>x.users),'#7c3aed');drawAdminChart('viewsChart',daily.map(x=>x.day.slice(5)),daily.map(x=>x.views),'#2563eb');const comics=window.allComicsRaw||[];document.getElementById('popularComicsList').innerHTML=metricHTML([...comics].sort((a,b)=>(b.views||0)-(a.views||0)).slice(0,5).map(x=>({cover:x.coverUrl,title:x.title,sub:x.type||x.format,value:`${Number(x.views||0).toLocaleString('id-ID')} views`})));const films=comics.filter(x=>x.format==='film');const watch=await Promise.all(films.map(async comic=>{let seconds=0;try{const s=await getDocs(collection(db,'contentWatch',comic.id,'users'));s.forEach(d=>seconds+=Number(d.data().watchSeconds||0));}catch(e){}return{cover:comic.coverUrl,title:comic.title,sub:'Total waktu tonton',value:`${Math.floor(seconds/3600)}j ${Math.floor(seconds%3600/60)}m`,seconds};}));document.getElementById('topWatchList').innerHTML=metricHTML(watch.sort((a,b)=>b.seconds-a.seconds).slice(0,5),'Belum ada waktu tonton.');const comments=[];for(const comic of comics.slice(0,40)){try{const s=await getDocs(query(collection(db,'comics',comic.id,'comments'),orderBy('timestamp','desc'),limit(8)));s.forEach(d=>comments.push({id:d.id,comicId:comic.id,comicTitle:comic.title,...d.data()}));}catch(e){}}comments.sort((a,b)=>timeMs(b.timestamp)-timeMs(a.timestamp));let reports=[];try{const s=await getDocs(query(collection(db,'commentReports'),orderBy('createdAt','desc'),limit(20)));s.forEach(d=>reports.push({id:d.id,...d.data()}));}catch(e){}document.getElementById('recentCommunityList').innerHTML=metricHTML([...comments.slice(0,5).map(x=>({title:x.username||'Pengguna',sub:`Komentar pada ${x.comicTitle}`,value:'Baru'})),...reports.slice(0,5).map(x=>({title:'Laporan komentar',sub:x.reason||'Perlu ditinjau',value:x.status||'open'}))].slice(0,8));const byUser={};comments.forEach(x=>{const uid=x.userId||x.username||'unknown';byUser[uid]=byUser[uid]||{name:x.username||uid,texts:[],links:0};const normalized=String(x.text||'').toLowerCase().replace(/\s+/g,' ').trim();byUser[uid].texts.push(normalized);byUser[uid].links+=(normalized.match(/https?:\/\//g)||[]).length;});const spam=Object.values(byUser).map(x=>{const duplicates=x.texts.length-new Set(x.texts).size,score=duplicates*3+x.links+(x.texts.length>=8?2:0);return{title:x.name,sub:`${x.texts.length} komentar • ${duplicates} duplikat • ${x.links} tautan`,value:`Skor ${score}`,score};}).filter(x=>x.score>=3).sort((a,b)=>b.score-a.score);document.getElementById('spamUsersList').innerHTML=metricHTML(spam,'Tidak ada indikasi spam.');renderPublicationQueue();loadAuditLogs();}
@@ -1762,8 +1842,126 @@
         window.previewBulkMetadata=async function(file){const box=document.getElementById('bulkPreview');if(!file)return;try{const data=JSON.parse(await file.text());if(!Array.isArray(data))throw new Error('JSON harus berupa array');window.bulkMetadata=data.slice(0,500);box.innerHTML=`${window.bulkMetadata.length} data siap. <button class="ops-btn" onclick="executeBulkMetadata()">Import Sekarang</button>`;}catch(e){box.textContent='File tidak valid: '+e.message;}}
         window.executeBulkMetadata=async function(){if(!window.bulkMetadata?.length)return;const result=await Swal.fire({title:`Import ${window.bulkMetadata.length} data?`,text:'Semua data ditambahkan sebagai draft.',icon:'warning',showCancelButton:true,confirmButtonText:'Import',cancelButtonText:'Batal'});if(!result.isConfirmed)return;let success=0;for(const item of window.bulkMetadata){if(!item?.title)continue;await addDoc(collection(db,'comics'),{title:String(item.title).slice(0,180),altTitle:String(item.altTitle||''),type:String(item.type||'Manga'),format:item.format==='film'?'film':'komik',status:String(item.status||'Ongoing'),ageRating:String(item.ageRating||''),releaseDate:String(item.releaseDate||''),genres:Array.isArray(item.genres)?item.genres.slice(0,20):[],synopsis:String(item.synopsis||''),coverUrl:String(item.coverUrl||''),author:String(item.author||''),directors:Array.isArray(item.directors)?item.directors:[],isPublished:false,publicationStatus:'draft',createdAt:serverTimestamp()});success++;}await writeAudit('BULK_IMPORT','comics',`${success} metadata`);window.bulkMetadata=[];document.getElementById('bulkPreview').textContent=`${success} data berhasil diimpor sebagai draft.`;await window.loadComicsList();renderPublicationQueue();}
         function exportValue(v){if(v?.toDate)return v.toDate().toISOString();if(Array.isArray(v))return v.map(exportValue);if(v&&typeof v==='object')return Object.fromEntries(Object.entries(v).map(([k,x])=>[k,exportValue(x)]));return v;}
-        window.backupAllMetadata=async function(){const output=[];const comics=await getDocs(collection(db,'comics'));for(const c of comics.docs){const chapters=[];const s=await getDocs(collection(db,'comics',c.id,'chapters'));s.forEach(ch=>chapters.push({id:ch.id,...exportValue(ch.data())}));output.push({id:c.id,...exportValue(c.data()),chapters});}const blob=new Blob([JSON.stringify({version:'20.0.0',exportedAt:new Date().toISOString(),comics:output},null,2)],{type:'application/json'});const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=`manga-backup-${dateKeyOffset(0)}.json`;a.click();URL.revokeObjectURL(a.href);await writeAudit('BACKUP_METADATA','comics',`${output.length} judul`);}
+        window.backupAllMetadata=async function(){const output=[];const comics=await getDocs(collection(db,'comics'));for(const c of comics.docs){const chapters=[];const s=await getDocs(collection(db,'comics',c.id,'chapters'));s.forEach(ch=>chapters.push({id:ch.id,...exportValue(ch.data())}));output.push({id:c.id,...exportValue(c.data()),chapters});}const blob=new Blob([JSON.stringify({version:'20.1.0',exportedAt:new Date().toISOString(),comics:output},null,2)],{type:'application/json'});const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=`manga-backup-${dateKeyOffset(0)}.json`;a.click();URL.revokeObjectURL(a.href);await writeAudit('BACKUP_METADATA','comics',`${output.length} judul`);}
         window.loadAuditLogs=async function(){const box=document.getElementById('auditLogList');if(!box)return;try{const snap=await getDocs(query(collection(db,'adminAuditLogs'),orderBy('createdAt','desc'),limit(100)));box.innerHTML=snap.docs.map(d=>{const x=d.data();return `<div class="audit-row"><strong>${adminSafe(x.action)} • ${adminSafe(x.target||'-')}</strong><span>${adminSafe(x.adminEmail||x.adminId||'Admin')} • ${timeMs(x.createdAt)?new Date(timeMs(x.createdAt)).toLocaleString('id-ID'):'Baru'}<br>${adminSafe(x.detail||'')}</span></div>`;}).join('')||'<div class="loading-text">Belum ada audit log.</div>';}catch(e){box.innerHTML='<div class="loading-text">Audit log gagal dimuat.</div>';}}
+
+        // V20.1: dashboard tunggal, cache lima menit, dan query komentar lintas koleksi.
+        window.dashboardCache = null;
+        window.dashboardLoadPromise = null;
+        function renderDashboardData(payload) {
+            drawAdminChart('activeUsersChart', payload.daily.slice(-7).map(x => x.day.slice(5)), payload.daily.slice(-7).map(x => x.users), '#7c3aed');
+            drawAdminChart('viewsChart', payload.daily.map(x => x.day.slice(5)), payload.daily.map(x => x.views), '#2563eb');
+            document.getElementById('popularComicsList').innerHTML = metricHTML(payload.popular);
+            document.getElementById('topWatchList').innerHTML = metricHTML(payload.watch, 'Belum ada waktu tonton.');
+            document.getElementById('recentCommunityList').innerHTML = metricHTML(payload.community);
+            document.getElementById('spamUsersList').innerHTML = metricHTML(payload.spam, 'Tidak ada indikasi spam.');
+            renderPublicationQueue();
+            loadAuditLogs();
+        }
+        async function loadDashboardV201(force = false) {
+            if (!force && window.dashboardCache && Date.now() - window.dashboardCache.savedAt < 300000) {
+                renderDashboardData(window.dashboardCache);
+                return;
+            }
+            if (window.dashboardLoadPromise) return window.dashboardLoadPromise;
+            const loadingTargets = ['popularComicsList','topWatchList','recentCommunityList','spamUsersList'];
+            loadingTargets.forEach(id => document.getElementById(id).innerHTML = '<div class="loading-text"><i class="fa-solid fa-spinner fa-spin"></i> Memuat...</div>');
+            window.dashboardLoadPromise = (async () => {
+                try {
+                    const days = Array.from({length:30}, (_,i) => dateKeyOffset(i - 29));
+                    const daily = await Promise.all(days.map(async day => {
+                        try {
+                            const snap = await getDocs(collection(db,'analyticsDaily',day,'users'));
+                            let views = 0; const users = new Set();
+                            snap.forEach(d => { const x=d.data(); users.add(x.userId||d.id); views += Number(x.views||0); });
+                            return {day, views, users:users.size};
+                        } catch (error) { console.warn('Analytics gagal:', day, error); return {day,views:0,users:0}; }
+                    }));
+                    const comics = window.allComicsRaw || [];
+                    const popular = [...comics].sort((a,b)=>(b.views||0)-(a.views||0)).slice(0,5).map(x=>({cover:safeUrl(x.coverUrl),title:x.title,sub:x.type||x.format,value:`${Number(x.views||0).toLocaleString('id-ID')} views`}));
+                    const watchRows = await Promise.all(comics.filter(x=>x.format==='film').map(async comic => {
+                        let seconds=0;
+                        try { const snap=await getDocs(collection(db,'contentWatch',comic.id,'users')); snap.forEach(d=>seconds+=Number(d.data().watchSeconds||0)); }
+                        catch(error){ console.warn('Watch time gagal:', comic.id, error); }
+                        return {cover:safeUrl(comic.coverUrl),title:comic.title,sub:'Total waktu tonton',value:`${Math.floor(seconds/3600)}j ${Math.floor(seconds%3600/60)}m`,seconds};
+                    }));
+                    let comments=[];
+                    try {
+                        const snap=await getDocs(query(collectionGroup(db,'comments'),orderBy('timestamp','desc'),limit(50)));
+                        comments=snap.docs.map(d=>{const comicId=d.ref.parent.parent?.id||'';const comic=comics.find(x=>x.id===comicId);return{id:d.id,comicId,comicTitle:comic?.title||'Konten',...d.data()};});
+                    } catch(error) { console.warn('Komentar dashboard gagal:',error); }
+                    let reports=[];
+                    try { const snap=await getDocs(query(collection(db,'commentReports'),orderBy('createdAt','desc'),limit(20))); reports=snap.docs.map(d=>({id:d.id,...d.data()})); }
+                    catch(error){ console.warn('Laporan dashboard gagal:',error); }
+                    const community=[...comments.slice(0,5).map(x=>({title:x.username||'Pengguna',sub:`Komentar pada ${x.comicTitle}`,value:'Baru'})),...reports.slice(0,5).map(x=>({title:'Laporan komentar',sub:x.reason||'Perlu ditinjau',value:x.status||'open'}))].slice(0,8);
+                    const byUser={};
+                    comments.forEach(x=>{const uid=x.userId||x.username||'unknown';byUser[uid]??={name:x.username||uid,texts:[],links:0};const normalized=String(x.text||'').toLowerCase().replace(/\s+/g,' ').trim();byUser[uid].texts.push(normalized);byUser[uid].links+=(normalized.match(/https?:\/\//g)||[]).length;});
+                    const spam=Object.values(byUser).map(x=>{const duplicates=x.texts.length-new Set(x.texts).size;const score=duplicates*3+x.links+(x.texts.length>=8?2:0);return{title:x.name,sub:`${x.texts.length} komentar • ${duplicates} duplikat • ${x.links} tautan`,value:`Skor ${score}`,score};}).filter(x=>x.score>=3).sort((a,b)=>b.score-a.score);
+                    window.dashboardCache={savedAt:Date.now(),daily,popular,watch:watchRows.sort((a,b)=>b.seconds-a.seconds).slice(0,5),community,spam};
+                    renderDashboardData(window.dashboardCache);
+                } catch(error) {
+                    console.error(error);
+                    loadingTargets.forEach(id => document.getElementById(id).innerHTML = `<div class="alert alert-error">Gagal memuat: ${adminSafe(error.message)}</div>`);
+                } finally { window.dashboardLoadPromise=null; }
+            })();
+            return window.dashboardLoadPromise;
+        }
+        window.loadProfessionalDashboard = loadDashboardV201;
+
+        // V20.1: moderasi dipaginasi 50 komentar agar tidak membaca seluruh database.
+        window.moderationCursor = null;
+        window.loadModeration = async function(reset = true) {
+            const list=document.getElementById('moderationList');
+            const more=document.getElementById('moderationLoadMore');
+            if(reset){window.moderationItems=[];window.moderationCursor=null;list.innerHTML='<div class="loading-text"><i class="fa-solid fa-spinner fa-spin"></i> Memuat komentar...</div>';}
+            more.disabled=true;
+            try {
+                let commentQuery=query(collectionGroup(db,'comments'),orderBy('timestamp','desc'),limit(50));
+                if(window.moderationCursor) commentQuery=query(collectionGroup(db,'comments'),orderBy('timestamp','desc'),startAfter(window.moderationCursor),limit(50));
+                const [commentSnap,reportSnap]=await Promise.all([getDocs(commentQuery),getDocs(query(collection(db,'commentReports'),where('status','==','open'),limit(200)))]);
+                const reports=reportSnap.docs.map(d=>({id:d.id,...d.data()}));
+                const comics=window.allComicsRaw||[];
+                const page=commentSnap.docs.map(d=>{const comicId=d.ref.parent.parent?.id||'';return{id:d.id,comicId,comicTitle:comics.find(x=>x.id===comicId)?.title||'Konten',...d.data(),reports:reports.filter(r=>r.comicId===comicId&&r.commentId===d.id)};});
+                window.moderationItems.push(...page);
+                window.moderationCursor=commentSnap.docs.at(-1)||null;
+                more.style.display=commentSnap.size===50?'inline-flex':'none';
+                renderModeration();
+            } catch(error) {
+                list.innerHTML=`<div class="alert alert-error">Gagal memuat moderasi: ${adminSafe(error.message)}</div>`;
+            } finally { more.disabled=false; }
+        };
+
+        // V20.1: semua pengaturan disimpan satu kali dan sukses hanya ditampilkan jika seluruh operasi berhasil.
+        window.saveAppConfiguration = async function() {
+            const status=document.getElementById('configStatus');
+            const version=document.getElementById('configLatestVersion').value.trim().replace(/^v/i,'');
+            if(!/^\d+\.\d+\.\d+$/.test(version)){status.textContent='Format versi harus seperti 20.1.0';status.className='config-status show error';return;}
+            status.textContent='Menyimpan...';status.className='config-status show';
+            try {
+                await setDoc(doc(db,'settings','appConfig'),{
+                    latestVersion:version,changelog:document.getElementById('configChangelog').value.trim(),maintenanceTitle:document.getElementById('configMaintenanceTitle').value.trim()||'Sedang dalam pemeliharaan',maintenanceMessage:document.getElementById('configMaintenanceMessage').value.trim()||'Kami sedang melakukan peningkatan aplikasi.',updateRequired:document.getElementById('configUpdateRequired').checked,maintenanceMode:document.getElementById('configMaintenanceMode').checked,appName:document.getElementById('configAppName').value.trim()||'Komik & Anime',themeColor:document.getElementById('configThemeColor').value,announcement:document.getElementById('configAnnouncement').value.trim(),enableRecommendations:document.getElementById('configRecommendations').checked,enableGamification:document.getElementById('configGamification').checked,updatedAt:serverTimestamp(),updatedBy:auth.currentUser.uid
+                },{merge:true});
+                await writeAudit('UPDATE_APP_SETTINGS','settings/appConfig',`Versi ${version}`);
+                status.textContent='Semua pengaturan berhasil disimpan.';status.className='config-status show success';
+            } catch(error) { status.textContent=`Gagal menyimpan: ${error.message}`;status.className='config-status show error'; }
+        };
+
+        // V20.1: import menggunakan batch, validasi dasar, progress, dan laporan kegagalan jelas.
+        window.executeBulkMetadata = async function() {
+            if(!window.bulkMetadata?.length)return;
+            const result=await Swal.fire({title:`Import ${window.bulkMetadata.length} data?`,text:'Semua data ditambahkan sebagai draft.',icon:'warning',showCancelButton:true,confirmButtonText:'Import',cancelButtonText:'Batal'});
+            if(!result.isConfirmed)return;
+            const valid=window.bulkMetadata.filter(x=>x&&typeof x.title==='string'&&x.title.trim()).slice(0,500);
+            const preview=document.getElementById('bulkPreview');let success=0;
+            try {
+                for(let i=0;i<valid.length;i+=400){
+                    const batch=writeBatch(db);
+                    valid.slice(i,i+400).forEach(item=>batch.set(doc(collection(db,'comics')),{title:item.title.trim().slice(0,180),altTitle:String(item.altTitle||'').slice(0,180),type:String(item.type||'Manga').slice(0,60),format:item.format==='film'?'film':'komik',status:String(item.status||'Ongoing').slice(0,40),ageRating:String(item.ageRating||'').slice(0,20),releaseDate:String(item.releaseDate||'').slice(0,30),genres:Array.isArray(item.genres)?item.genres.map(String).slice(0,20):[],synopsis:String(item.synopsis||'').slice(0,5000),coverUrl:normalizeUrl(item.coverUrl),author:String(item.author||'').slice(0,120),directors:Array.isArray(item.directors)?item.directors.map(String).slice(0,20):[],views:0,chaptersCount:0,isPublished:false,publicationStatus:'draft',createdAt:serverTimestamp()}));
+                    await batch.commit();success+=Math.min(400,valid.length-i);preview.textContent=`Mengimpor ${success}/${valid.length}...`;
+                }
+                await writeAudit('BULK_IMPORT','comics',`${success} metadata`);window.bulkMetadata=[];preview.textContent=`${success} data berhasil diimpor sebagai draft.`;window.dashboardCache=null;await window.loadComicsList();
+            } catch(error){preview.textContent=`Import berhenti setelah ${success} data: ${error.message}`;}
+        };
 
         function switchView(viewId, element) {
             document.querySelectorAll('.sidebar-menu a').forEach(el => el.classList.remove('active'));
@@ -1879,8 +2077,10 @@
         window.openLightboxPreview = function(url) {
             const isVideo = url.split('?')[0].match(/\.(mp4|webm|ogg|mov|mkv)$/i);
             const container = document.getElementById('lightboxContentArea');
-            if (isVideo) { container.innerHTML = `<video src="${url}" controls autoplay style="max-width: 100%; max-height: 90vh; border-radius: 8px; box-shadow: 0 10px 40px rgba(0,0,0,0.5);"></video>`; } 
-            else { container.innerHTML = `<img src="${url}" alt="Preview" style="max-width: 100%; max-height: 90vh; border-radius: 8px; box-shadow: 0 10px 40px rgba(0,0,0,0.5); object-fit: contain;">`; }
+            const cleanUrl = window.safeAdminUrl ? window.safeAdminUrl(url) : '';
+            if (!cleanUrl) return;
+            if (isVideo) { container.innerHTML = `<video src="${cleanUrl}" controls autoplay style="max-width: 100%; max-height: 90vh; border-radius: 8px; box-shadow: 0 10px 40px rgba(0,0,0,0.5);"></video>`; } 
+            else { container.innerHTML = `<img src="${cleanUrl}" alt="Preview" style="max-width: 100%; max-height: 90vh; border-radius: 8px; box-shadow: 0 10px 40px rgba(0,0,0,0.5); object-fit: contain;">`; }
             document.getElementById('lightboxModal').classList.add('show');
         }
         window.closeLightboxPreview = function() {

@@ -832,6 +832,38 @@
         const WORKER_URL = "https://yarch.hrmnkosasi.workers.dev/";
         const ADMIN_UID = "dWUWpKAWQRRxMOzjzaOA3zXWZLp2";
 
+        // Helper keamanan wajib tersedia di module Firebase utama karena
+        // daftar judul, master data, dan File Manager menggunakannya langsung.
+        function adminSafe(value) {
+            return String(value ?? '').replace(/[&<>"']/g, character => ({
+                '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'
+            }[character]));
+        }
+        function normalizeUrl(value) {
+            try {
+                const parsed = new URL(String(value || ''), location.href);
+                return ['http:', 'https:'].includes(parsed.protocol) ? parsed.href : '';
+            } catch (_) { return ''; }
+        }
+        function safeUrl(value) { return adminSafe(normalizeUrl(value)); }
+
+        // Audit juga dipanggil oleh operasi module utama (migrasi/hapus/upload).
+        async function writeAudit(action, target = '', detail = '') {
+            if (!auth.currentUser) return;
+            try {
+                await addDoc(collection(db, 'adminAuditLogs'), {
+                    adminId: auth.currentUser.uid,
+                    adminEmail: auth.currentUser.email || '',
+                    action,
+                    target,
+                    detail: String(detail).slice(0, 500),
+                    createdAt: serverTimestamp()
+                });
+            } catch (error) {
+                console.warn('Audit log gagal disimpan:', error);
+            }
+        }
+
         const loginSection = document.getElementById('loginSection');
         const dashboardSection = document.getElementById('dashboardSection');
         const uploadStatus = document.getElementById('uploadStatus');
@@ -1770,7 +1802,8 @@
             collection, collectionGroup, addDoc, serverTimestamp,
             doc, getDoc, setDoc, updateDoc, increment,
             arrayUnion, arrayRemove, onSnapshot, query, orderBy,
-            getDocs, deleteDoc, where, limit, startAfter, writeBatch
+            getDocs, deleteDoc, where, limit, startAfter, writeBatch,
+            adminSafe, normalizeUrl, safeUrl, writeAudit
         });
     </script>
 

@@ -850,7 +850,7 @@
             <div class="home-collection-tools">
                 <div class="home-collection-search"><i class="fa-solid fa-magnifying-glass"></i><input id="homeCollectionSearch" type="search" placeholder="Cari di bagian ini..." oninput="renderHomeCollectionPage()"></div>
                 <select class="home-sort-select" id="homeCollectionSort" onchange="renderHomeCollectionPage()" aria-label="Urutkan konten">
-                    <option value="default">Urutkan</option><option value="az">A–Z</option><option value="za">Z–A</option>
+                    <option value="default">Urutan utama</option><option value="az">A–Z</option><option value="za">Z–A</option>
                     <option value="rating-desc">Rating tertinggi</option><option value="rating-asc">Rating terendah</option>
                     <option value="views-desc">Views tertinggi</option><option value="views-asc">Views terendah</option>
                     <option value="comments-desc">Komentar terbanyak</option><option value="comments-asc">Komentar tersedikit</option>
@@ -1024,7 +1024,7 @@
 
             <div class="video-container" onclick="if(document.getElementById('qualityMenu').style.display==='flex') toggleQualityMenu();">
                 <div class="resume-banner" id="resumeBanner">Melanjutkan tontonan terakhir</div>
-                <video id="mainVideoPlayer" controls playsinline>
+                <video id="mainVideoPlayer" controls playsinline controlsList="nodownload noremoteplayback" oncontextmenu="return false;" disableRemotePlayback>
                     <source src="" type="video/mp4" id="videoSource">
                     Browser Anda tidak mendukung pemutar video html5.
                 </video>

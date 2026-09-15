@@ -186,6 +186,8 @@
 
         .btn-delete-folder { position: absolute; top: 10px; right: 10px; background: rgba(239, 68, 68, 0.1); color: var(--danger); border: none; width: 30px; height: 30px; border-radius: 6px; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: 0.2s; z-index: 10; }
         .btn-delete-folder:hover { background: var(--danger); color: white; transform: scale(1.1); }
+        .btn-edit-folder { position:absolute; top:10px; right:48px; background:#eef2ff; color:var(--primary); border:none; width:30px; height:30px; border-radius:6px; cursor:pointer; display:flex; align-items:center; justify-content:center; transition:.2s; z-index:10; }
+        .btn-edit-folder:hover { background:var(--primary); color:#fff; transform:scale(1.1); }
 
         /* Media Card */
         .media-card { background: var(--white); border-radius: 8px; border: 1px solid var(--border); overflow: hidden; display: flex; flex-direction: column; transition: 0.2s; position: relative; height: max-content; }
@@ -1857,6 +1859,7 @@
                             
                             grid.innerHTML += `
                                 <div class="folder-card" onclick="window.navGalleryToChapterFolder('${ch.id}', '${folderLabel}', window.encodeImgs('${encodeURIComponent(JSON.stringify(ch.images || []))}') )">
+                                    <button type="button" class="btn-edit-folder" onclick="event.stopPropagation(); window.editChapterFolder('${window.galleryState.comicId}', '${ch.id}')" title="Edit folder" aria-label="Edit folder"><i class="fa-solid fa-pen"></i></button>
                                     <button class="btn-delete-folder" onclick="event.stopPropagation(); window.deleteChapterFolder('${window.galleryState.comicId}', '${ch.id}')" title="Pindahkan ke Trash"><i class="fa-solid fa-trash-can-arrow-up"></i></button>
                                     <i class="fa-solid fa-folder-open folder-icon" style="color: ${folderColor};"></i>
                                     <div class="folder-title">${folderLabel}</div>
@@ -2028,6 +2031,7 @@
                             <td>${ch.images ? ch.images.length : 0} File Media</td>
                             <td><span style="font-size: 13px;">${date}</span></td>
                             <td>
+                                <button type="button" class="btn-icon-outline" style="display:inline-flex;margin-right:6px" onclick="window.editChapterFolder('${comicId}', '${ch.id}', true)" title="Edit folder"><i class="fa-solid fa-pen"></i></button>
                                 <button type="button" class="btn-delete" onclick="window.deleteChapter('${comicId}', '${ch.id}')" title="Hapus Data"><i class="fa-solid fa-trash-can"></i></button>
                             </td>
                         </tr>
@@ -2049,6 +2053,82 @@
             const result=await Swal.fire({title:'Pindahkan ke Trash?',text:'Chapter/episode dapat dipulihkan kembali dari menu Trash.',icon:'warning',showCancelButton:true,confirmButtonColor:'#f59e0b',cancelButtonColor:'#94a3b8',confirmButtonText:'Pindahkan ke Trash',cancelButtonText:'Batal'});
             if(!result.isConfirmed)return;
             try{await moveChapterToTrash(comicId,chapterId);window.loadChaptersList();window.loadComicsList();Swal.fire('Masuk Trash','Folder masih dapat dipulihkan.','success');}catch(e){Swal.fire('Gagal',e.message||'Gagal memindahkan folder.','error');}
+        }
+
+        window.editChapterFolder = async function(comicId, chapterId, fromTable = false) {
+            try {
+                const chapterRef = doc(db, 'comics', comicId, 'chapters', chapterId);
+                const chapterSnap = await getDoc(chapterRef);
+                if (!chapterSnap.exists()) throw new Error('Folder tidak ditemukan atau sudah dihapus.');
+
+                const chapter = chapterSnap.data();
+                const comic = window.allComicsList.find(item => item.id === comicId);
+                const isFilm = (comic?.format || window.galleryState?.entryFormat) === 'film';
+                const isFullMovie = isFilm && Number(chapter.chapterNumber) === 1 && chapter.title === 'Full Movie';
+                const term = isFilm ? 'Episode' : 'Chapter';
+
+                const result = await Swal.fire({
+                    title: `Edit Folder ${term}`,
+                    html: `
+                        ${isFilm ? `<label style="display:flex;align-items:center;gap:9px;text-align:left;padding:10px 12px;margin:0 0 12px;background:#f5f3ff;border:1px solid #ddd6fe;border-radius:10px"><input id="editFolderFullMovie" type="checkbox" ${isFullMovie ? 'checked' : ''} style="width:18px;height:18px;accent-color:#7c3aed"> Jadikan sebagai Full Movie</label>` : ''}
+                        <label for="editFolderNumber" style="text-align:left">Nomor ${term}</label>
+                        <input id="editFolderNumber" class="swal2-input" type="number" min="0.1" step="0.1" style="max-width:100%!important;margin:0 0 14px!important" placeholder="Contoh: 1 atau 1.5">
+                        <label for="editFolderTitle" style="text-align:left">Judul tambahan (opsional)</label>
+                        <input id="editFolderTitle" class="swal2-input" type="text" maxlength="150" style="max-width:100%!important;margin:0!important" placeholder="Judul chapter/episode">`,
+                    showCancelButton: true,
+                    confirmButtonText: '<i class="fa-solid fa-floppy-disk"></i> Simpan Perubahan',
+                    cancelButtonText: 'Batal',
+                    confirmButtonColor: '#2563eb',
+                    focusConfirm: false,
+                    didOpen: () => {
+                        document.getElementById('editFolderNumber').value = chapter.chapterNumber ?? '';
+                        document.getElementById('editFolderTitle').value = isFullMovie ? '' : (chapter.title || '');
+                    },
+                    preConfirm: () => {
+                        const fullMovie = isFilm && document.getElementById('editFolderFullMovie')?.checked;
+                        const chapterNumber = fullMovie ? 1 : Number(document.getElementById('editFolderNumber').value);
+                        const title = fullMovie ? 'Full Movie' : document.getElementById('editFolderTitle').value.trim();
+                        if (!Number.isFinite(chapterNumber) || chapterNumber <= 0) {
+                            Swal.showValidationMessage(`Nomor ${term.toLowerCase()} harus lebih besar dari 0.`);
+                            return false;
+                        }
+                        return { chapterNumber, title };
+                    }
+                });
+
+                if (!result.isConfirmed || !result.value) return;
+
+                const sameNumberQuery = query(
+                    collection(db, 'comics', comicId, 'chapters'),
+                    where('chapterNumber', '==', result.value.chapterNumber)
+                );
+                const sameNumberSnapshot = await getDocs(sameNumberQuery);
+                if (sameNumberSnapshot.docs.some(item => item.id !== chapterId)) {
+                    Swal.fire('Nomor Sudah Dipakai', `${term} ${result.value.chapterNumber} sudah tersedia. Gunakan nomor lain.`, 'warning');
+                    return;
+                }
+
+                await updateDoc(chapterRef, {
+                    chapterNumber: result.value.chapterNumber,
+                    title: result.value.title,
+                    updatedAt: serverTimestamp()
+                });
+                await writeAudit('UPDATE_CHAPTER_FOLDER', chapterId, `${comicId} • ${term} ${result.value.chapterNumber}`);
+
+                if (fromTable && document.getElementById('filterChapterId')?.value === comicId) {
+                    await window.loadChaptersList();
+                }
+                if (window.galleryState?.comicId === comicId) {
+                    window.galleryState.level = 'comic_folder';
+                    window.galleryState.chapterFolderId = null;
+                    window.galleryState.chapterFolderName = '';
+                    window.galleryState.currentChapterImages = [];
+                    await window.loadCloudGallery();
+                }
+                Swal.fire({title:'Berhasil',text:'Data folder diperbarui. Semua gambar/video tetap tersimpan.',icon:'success',timer:1800,showConfirmButton:false});
+            } catch (error) {
+                Swal.fire('Edit Gagal', error.message || 'Folder tidak dapat diperbarui.', 'error');
+            }
         }
 
         window.deleteChapterFolder = async function(comicId, chapterId) {

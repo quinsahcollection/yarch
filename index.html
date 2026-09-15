@@ -435,7 +435,7 @@
         .read-state { flex:0 0 auto; display:flex; align-items:center; gap:4px; color:#9a9eae; font-size:9px; font-weight:700; }
         .read-state.is-read { color:#23a777; }
         .chapter-item.is-read { background:#f1fbf7; }
-        .chapter-item.is-read .chapter-title::after { content:'Sudah dibaca'; display:inline-flex; margin-left:7px; padding:3px 6px; border-radius:7px; color:#16845d; background:#dff7ed; font-size:8px; vertical-align:middle; }
+        .chapter-item.is-read .chapter-title::after { content:attr(data-read-label); display:inline-flex; margin-left:7px; padding:3px 6px; border-radius:7px; color:#16845d; background:#dff7ed; font-size:8px; vertical-align:middle; }
         .updates-hero-row { display:flex; align-items:center; justify-content:space-between; gap:12px; }
         .notification-btn { position:relative; width:43px; height:43px; flex:0 0 43px; border:1px solid rgba(255,255,255,.28); border-radius:14px; color:#fff; background:rgba(255,255,255,.16); font-size:17px; cursor:pointer; }
         .notification-count { position:absolute; top:-5px; right:-5px; min-width:19px; height:19px; display:none; place-items:center; padding:0 5px; border:2px solid #6a5cf3; border-radius:10px; color:#fff; background:#ff5e73; font-size:9px; font-weight:850; }
@@ -1155,6 +1155,30 @@
             setTimeout(() => toast.classList.remove('show'), 3000);
         }
 
+        // Penentu tipe media terpusat agar label tidak berbeda antarhalaman.
+        function isVideoContent(record = {}) {
+            const format = String(record.format || '').trim().toLowerCase();
+            const type = String(record.type || '').trim().toLowerCase();
+            return format === 'film' || /film|movie|anime|series|serial|video/.test(type);
+        }
+
+        function isFullMovieChapter(record = {}, chapter = {}, totalChapters = 0) {
+            if(!isVideoContent(record)) return false;
+            const number = Number(chapter.chapterNumber ?? chapter.number ?? 0);
+            const title = String(chapter.title || '').trim().toLowerCase();
+            const type = String(record.type || '').trim().toLowerCase();
+            const explicit = title === 'full movie' || title === 'film penuh';
+            const standaloneType = /(^|\s)(movie|film)($|\s)/.test(type) && !/series|serial/.test(type);
+            return number === 1 && (explicit || standaloneType || (totalChapters === 1 && title.includes('movie')));
+        }
+
+        function getMediaPartLabel(record = {}, chapter = {}, totalChapters = 0, short = false) {
+            if(isFullMovieChapter(record, chapter, totalChapters)) return 'Full Movie';
+            const number = chapter.chapterNumber ?? chapter.number ?? '';
+            if(isVideoContent(record)) return `${short ? 'Ep.' : 'Episode'} ${number}`.trim();
+            return `${short ? 'Ch.' : 'Chapter'} ${number}`.trim();
+        }
+
         // ================= V12: SAFE OUTPUT, INSTALL & NETWORK =================
         window.safeText = function(value) {
             return String(value ?? '').replace(/[&<>'"]/g, char => ({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[char]));
@@ -1230,7 +1254,7 @@
         searchInput.addEventListener('input', function(e) {
             const queryText=e.target.value.trim();if(!queryText){renderSearchSuggestions();return;}
             const matches=Object.entries(window.comicsData).map(([id,comic])=>({id,comic,...searchComicScore(comic,queryText)})).filter(x=>x.score>0).sort((a,b)=>b.score-a.score).slice(0,8);
-            searchResults.innerHTML=matches.map(({id,comic,reason})=>{const isVideo=comic.format==='film'||/film|anime/i.test(comic.type||'');const latest=comic.realLatestChapter?(comic.realLatestChapter===1&&comic.realLatestTitle==='Full Movie'?'Full Movie':`${isVideo?'Ep':'Ch'} ${comic.realLatestChapter}`):'Belum ada rilis';const rating=comic.ratingCount?(comic.ratingTotal/comic.ratingCount).toFixed(1):'0.0';return `<div class="search-item" onclick="selectSearchResult('${safeAttr(id)}')"><img src="${safeMediaUrl(comic.coverUrl)}" onerror="this.src='https://placehold.co/42x56?text=No+Cover'"><div class="search-item-info"><div class="search-item-top-row"><div class="search-item-title">${safeText(comic.title)}</div><div class="search-item-badges"><span class="badge-type">${safeText(comic.type||'Manga')}</span><span class="badge-rating"><i class="fa-solid fa-star"></i> ${rating}</span></div></div><div class="search-item-bottom"><span style="font-weight:700;color:var(--primary-blue)">${safeText(latest)}</span> • <span>${safeText(formatRelativeUpdateTime(comic.realUpdateDate))}</span></div><div class="search-match"><i class="fa-solid fa-wand-magic-sparkles"></i> Cocok melalui ${safeText(reason)}</div></div></div>`;}).join('')||'<div style="padding:20px;text-align:center;font-size:13px;color:#888"><i class="fa-solid fa-magnifying-glass"></i><br><br>Belum menemukan konten yang cocok.</div>';
+            searchResults.innerHTML=matches.map(({id,comic,reason})=>{const latest=comic.realLatestChapter?getMediaPartLabel(comic,{chapterNumber:comic.realLatestChapter,title:comic.realLatestTitle},0,true):'Belum ada rilis';const rating=comic.ratingCount?(comic.ratingTotal/comic.ratingCount).toFixed(1):'0.0';return `<div class="search-item" onclick="selectSearchResult('${safeAttr(id)}')"><img src="${safeMediaUrl(comic.coverUrl)}" onerror="this.src='https://placehold.co/42x56?text=No+Cover'"><div class="search-item-info"><div class="search-item-top-row"><div class="search-item-title">${safeText(comic.title)}</div><div class="search-item-badges"><span class="badge-type">${safeText(comic.type||'Manga')}</span><span class="badge-rating"><i class="fa-solid fa-star"></i> ${rating}</span></div></div><div class="search-item-bottom"><span style="font-weight:700;color:var(--primary-blue)">${safeText(latest)}</span> • <span>${safeText(formatRelativeUpdateTime(comic.realUpdateDate))}</span></div><div class="search-match"><i class="fa-solid fa-wand-magic-sparkles"></i> Cocok melalui ${safeText(reason)}</div></div></div>`;}).join('')||'<div style="padding:20px;text-align:center;font-size:13px;color:#888"><i class="fa-solid fa-magnifying-glass"></i><br><br>Belum menemukan konten yang cocok.</div>';
             searchResults.style.display='block';
         });
 
@@ -1535,15 +1559,7 @@
                             
                             const badgeEl = document.getElementById(`slider-badge-${id}`);
                             if(badgeEl) {
-                                const isVideo = window.comicsData[id].format === 'film' || (window.comicsData[id].type && window.comicsData[id].type.toLowerCase().includes('film'));
-                                let tText = "";
-                                if (chData.chapterNumber === 1 && chData.title === "Full Movie") {
-                                    tText = "Full Movie";
-                                } else {
-                                    const prefix = isVideo ? 'Ep' : 'Ch';
-                                    tText = `${prefix} ${chData.chapterNumber}`;
-                                }
-                                badgeEl.innerText = tText;
+                                badgeEl.innerText = getMediaPartLabel(window.comicsData[id], chData, recentChapters.length, true);
                             }
                         } else {
                             const badgeEl = document.getElementById(`slider-badge-${id}`);
@@ -1654,14 +1670,14 @@
             const filtered = updates.filter(item => matchesUpdatePeriod(item.time, window.updatePeriod));
             container.innerHTML = filtered.map(({comicId,comic,chapter,time}) => {
                 const isVideo = comic.format === 'film' || /film|anime|series/i.test(comic.type || '');
-                const fullMovie = Number(chapter.chapterNumber) === 1 && chapter.title === 'Full Movie';
-                const releaseLabel = fullMovie ? 'Full Movie' : `${isVideo ? 'Episode' : 'Chapter'} ${chapter.chapterNumber}`;
+                const fullMovie = isFullMovieChapter(comic, chapter);
+                const releaseLabel = getMediaPartLabel(comic, chapter);
                 const read = isChapterRead(comicId, chapter.id);
                 return `<div class="update-feed-card" onclick="handleMediaOpen('${comicId}','${chapter.id}','${chapter.chapterNumber}')">
                     <img src="${safeMediaUrl(comic.coverUrl)}" loading="lazy" decoding="async" onerror="this.src='https://placehold.co/72x104?text=Cover'">
                     <div class="update-feed-info"><div class="update-feed-title">${getTimeValue(time) > seenAt ? '<span class="new-update-dot"></span> ' : ''}${safeText(comic.title)}</div>
                     <div class="update-feed-meta"><span>${safeText(comic.type || (isVideo ? 'Video' : 'Komik'))}</span><span>•</span><span>${safeText(formatRelativeUpdateTime(time))}</span></div>
-                    <div class="update-feed-release"><span class="update-release-btn">${safeText(releaseLabel + (chapter.title && !fullMovie ? ' — ' + chapter.title : ''))}</span><span class="read-state ${read ? 'is-read' : ''}"><i class="fa-solid ${read ? 'fa-circle-check' : 'fa-circle'}"></i>${read ? 'Dibaca' : 'Belum'}</span></div></div>
+                    <div class="update-feed-release"><span class="update-release-btn">${safeText(releaseLabel + (chapter.title && !fullMovie ? ' — ' + chapter.title : ''))}</span><span class="read-state ${read ? 'is-read' : ''}"><i class="fa-solid ${read ? 'fa-circle-check' : 'fa-circle'}"></i>${read ? (isVideo ? 'Ditonton' : 'Dibaca') : 'Belum'}</span></div></div>
                 </div>`;
             }).join('') || '<div class="empty-history">Belum ada update pada periode ini.</div>';
             updateNotificationBadge();
@@ -1849,17 +1865,11 @@
                 
                 let latestText = "Baru rilis";
                 if (comic.realLatestChapter) {
-                    if (comic.realLatestChapter === 1 && comic.realLatestTitle === "Full Movie") {
-                        latestText = "Full Movie";
-                    } else {
-                        const prefix = isVideoType ? 'Ep' : 'Ch';
-                        latestText = `${prefix} ${comic.realLatestChapter}`;
-                    }
+                    latestText = getMediaPartLabel(comic, {chapterNumber:comic.realLatestChapter, title:comic.realLatestTitle}, 0, true);
                 }
                 const updateDateText = formatRelativeUpdateTime(comic.realUpdateDate);
                 const recentRows = (comic.recentChapters || []).slice(0,3).map(ch => {
-                    const isFullMovie = Number(ch.chapterNumber) === 1 && ch.title === 'Full Movie';
-                    const label = isFullMovie ? 'Full Movie' : `${isVideoType ? 'Ep' : 'Ch'} ${ch.chapterNumber}`;
+                    const label = getMediaPartLabel(comic, ch, comic.recentChapters?.length || 0, true);
                     const relativeTime = formatRelativeUpdateTime(ch.updatedAt || ch.updateDate || ch.createdAt || '');
                     return `<div class="recent-release-row" onclick="event.stopPropagation(); handleMediaOpen('${id}','${ch.id}','${ch.chapterNumber}')"><span class="recent-release-label">${label}</span><span class="recent-release-time">${relativeTime}</span></div>`;
                 }).join('');
@@ -1993,7 +2003,7 @@
                 const comicRecord = window.comicsData[item.comicId] || {};
                 const isVideo = comicRecord.format === 'film' || (comicRecord.type && (comicRecord.type.toLowerCase().includes('film') || comicRecord.type.toLowerCase().includes('anime')));
                 
-                const chInfo = item.chapterNumber ? (isVideo ? `Ep. ${item.chapterNumber}` : `Ch. ${item.chapterNumber}`) : '';
+                const chInfo = item.chapterNumber ? getMediaPartLabel(comicRecord, {chapterNumber:item.chapterNumber, title:item.chapterTitle || ''}, 0, true) : '';
                 const pgInfo = !isVideo && item.pageIndex ? ` • Hal. ${item.pageIndex}` : '';
 
                 html += `
@@ -2477,7 +2487,8 @@
             container.innerHTML = '<div class="loading-text"><i class="fa-solid fa-spinner fa-spin"></i><br>Mencari daftar...</div>';
             badge.style.display = 'none';
 
-            const isVideo = window.comicsData[comicId].format === 'film' || (window.comicsData[comicId].type && (window.comicsData[comicId].type.toLowerCase().includes('film') || window.comicsData[comicId].type.toLowerCase().includes('anime')));
+            const comicRecord = window.comicsData[comicId] || {};
+            const isVideo = isVideoContent(comicRecord);
             const actionText = isVideo ? 'Tonton' : 'Baca';
             const actionClass = isVideo ? 'chapter-action tonton' : 'chapter-action';
             const chapterPrefix = isVideo ? 'Episode' : 'Chapter';
@@ -2491,14 +2502,15 @@
                 snapshot.forEach(doc => {
                     const ch = doc.data(); total++;
                     const date = ch.updateDate || "Baru";
-                    const title = ch.title && ch.title !== "Full Movie" ? `- ${ch.title}` : '';
-                    const titleDisplay = ch.chapterNumber === 1 && ch.title === "Full Movie" ? "Full Movie" : `${chapterPrefix} ${ch.chapterNumber} ${title}`;
+                    const fullMovie = isFullMovieChapter(comicRecord, ch, snapshot.size);
+                    const title = ch.title && !fullMovie ? ` - ${ch.title}` : '';
+                    const titleDisplay = `${getMediaPartLabel(comicRecord, ch, snapshot.size)}${title}`;
                     
                     const readClass = isChapterRead(comicId, doc.id) ? 'is-read' : '';
                     chapterHTML += `
                         <li class="chapter-item ${readClass}" onclick="handleMediaOpen('${comicId}', '${doc.id}', '${ch.chapterNumber}')">
                             <div class="chapter-info">
-                                <span class="chapter-title">${titleDisplay}</span>
+                                <span class="chapter-title" data-read-label="${isVideo ? 'Sudah ditonton' : 'Sudah dibaca'}">${titleDisplay}</span>
                                 <span class="chapter-date">${date}</span>
                             </div>
                             <div class="${actionClass}">${actionText}</div>
@@ -2673,8 +2685,8 @@
             document.querySelectorAll('.app-container > div').forEach(el => { if(el.id!=='mainBottomNav') el.style.display = 'none'; });
             document.getElementById('player-page').style.display = 'flex';
             
-            const titleDisplay = (chapterNum === "1" || chapterNum === 1) ? "Full Movie" : `Episode ${chapterNum}`;
-            document.getElementById('playerTitle').innerText = titleDisplay;
+            const comicRecord = window.comicsData[comicId] || {};
+            document.getElementById('playerTitle').innerText = getMediaPartLabel(comicRecord, {chapterNumber:chapterNum});
             document.getElementById('qualityMenu').style.display = 'none';
             
             const videoPlayer = document.getElementById('mainVideoPlayer');
@@ -2688,6 +2700,7 @@
                 const snap = await getDoc(doc(db, "comics", comicId, "chapters", chapterId));
                 if(snap.exists()) {
                     const data = snap.data();
+                    document.getElementById('playerTitle').innerText = getMediaPartLabel(comicRecord, data, window.currentChapterSequence.length);
                     const qualities = data.videoQualities || data.qualities || {};
                     window.currentVideoQualities = Array.isArray(qualities) ? Object.fromEntries(qualities.map(q => [String(q.label || q.quality || 'Auto'), q.url])) : qualities;
                     let targetUrl = data.videoUrl || data.streamUrl || (data.images && data.images[0]) || Object.values(window.currentVideoQualities)[0] || '';

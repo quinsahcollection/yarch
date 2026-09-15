@@ -119,7 +119,7 @@
         .nav-item.active i { margin-bottom: 0; }
 
         /* PAGE CONTROL */
-        #detail-page, #profile-page, #reader-page, #player-page, #bookmark-page, #discovery-page, #updates-page { display: none; background-color: #ffffff; min-height: 100vh; animation: fadeIn 0.3s ease-in-out; padding-bottom: 65px; }
+        #detail-page, #profile-page, #reader-page, #player-page, #bookmark-page, #discovery-page, #updates-page, #history-page, #home-collection-page { display: none; background-color: #ffffff; min-height: 100vh; animation: fadeIn 0.3s ease-in-out; padding-bottom: 65px; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 
         /* DETAIL PAGE */
@@ -294,7 +294,7 @@
         body { background:radial-gradient(circle at 50% -10%,#dfe2ff 0,#eef1f7 38%,#e9edf5 100%); }
         button,a,.manga-card-simple,.manga-card-history,.discovery-card,.chapter-item { touch-action:manipulation; }
         .app-container { max-width:520px; box-shadow:0 18px 60px rgba(23,27,55,.14); background:#f8f9fc; padding-bottom:calc(78px + env(safe-area-inset-bottom)); }
-        #home-page,#discovery-page,#bookmark-page,#profile-page { background:#f8f9fc; }
+        #home-page,#discovery-page,#bookmark-page,#profile-page,#history-page,#home-collection-page { background:#f8f9fc; }
         .header { min-height:68px; padding:12px 16px; gap:10px; background:rgba(255,255,255,.88); backdrop-filter:blur(18px); -webkit-backdrop-filter:blur(18px); border-bottom-color:rgba(231,233,242,.8); }
         .brand-mark { width:38px; height:38px; flex:0 0 38px; display:grid; place-items:center; border-radius:13px; color:#fff; background:linear-gradient(135deg,#6d5dfc,#ff6b35); box-shadow:0 8px 18px rgba(91,92,240,.28); font-size:16px; }
         .search-container { min-height:42px; padding:10px 14px; border-radius:14px; background:#f3f4f8; border-color:transparent; transition:.2s ease; }
@@ -440,6 +440,46 @@
         .notification-btn { position:relative; width:43px; height:43px; flex:0 0 43px; border:1px solid rgba(255,255,255,.28); border-radius:14px; color:#fff; background:rgba(255,255,255,.16); font-size:17px; cursor:pointer; }
         .notification-count { position:absolute; top:-5px; right:-5px; min-width:19px; height:19px; display:none; place-items:center; padding:0 5px; border:2px solid #6a5cf3; border-radius:10px; color:#fff; background:#ff5e73; font-size:9px; font-weight:850; }
         .notification-count.show { display:grid; }
+
+        /* Riwayat lengkap */
+        .history-page-header { position:sticky; top:0; z-index:30; display:flex; align-items:center; gap:13px; min-height:64px; padding:11px 16px; border-bottom:1px solid var(--border-color); background:rgba(255,255,255,.94); backdrop-filter:blur(16px); }
+        .history-back { width:39px; height:39px; display:grid; place-items:center; flex:0 0 39px; border:0; border-radius:12px; color:#4f556d; background:#f0f1f7; cursor:pointer; }
+        .history-page-title { min-width:0; flex:1; }
+        .history-page-title strong { display:block; font-size:16px; }
+        .history-page-title span { display:block; margin-top:2px; color:#858a9d; font-size:10px; }
+        .history-tabs { position:sticky; top:64px; z-index:25; display:grid; grid-template-columns:1fr 1fr; gap:6px; padding:10px 16px; background:rgba(248,249,252,.96); backdrop-filter:blur(14px); }
+        .history-tab { height:40px; border:0; border-radius:12px; color:#74798d; background:#eceef5; cursor:pointer; font-size:12px; font-weight:750; }
+        .history-tab.active { color:#fff; background:linear-gradient(135deg,#6d5dfc,#5153e8); box-shadow:0 6px 14px rgba(91,92,240,.22); }
+        .history-delete-actions { display:flex; padding:7px 16px 11px; }
+        .history-delete-actions::-webkit-scrollbar { display:none; }
+        .history-delete-btn { min-height:38px; width:100%; padding:0 12px; border:1px solid #ffd5da; border-radius:11px; color:#d94359; background:#fff3f5; cursor:pointer; font-size:11px; font-weight:750; }
+        .history-delete-btn i { margin-right:6px; }
+        .history-full-grid { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:9px; padding:5px 14px 24px; }
+        .history-full-card { min-width:0; overflow:hidden; border-radius:17px; background:#fff; box-shadow:0 8px 22px rgba(32,37,70,.08); cursor:pointer; }
+        .history-full-cover { position:relative; width:100%; aspect-ratio:2/3; background:#e9ebf2; }
+        .history-full-cover img { width:100%; height:100%; object-fit:cover; display:block; }
+        .history-kind { position:absolute; top:9px; left:9px; padding:5px 8px; border-radius:9px; color:#fff; background:rgba(17,20,39,.82); backdrop-filter:blur(8px); font-size:9px; font-weight:800; }
+        .history-full-info { padding:9px 8px 10px; }
+        .history-full-title { min-height:29px; display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden; color:var(--text-dark); font-size:10px; line-height:1.4; font-weight:800; }
+        .history-full-progress { margin-top:6px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; color:var(--primary-blue); font-size:8.5px; font-weight:750; }
+        @media(max-width:360px){.history-full-grid{gap:7px;padding-left:10px;padding-right:10px}.history-kind{font-size:7px;padding:4px 6px}}
+
+        /* Halaman Lihat Semua dari Home */
+        .home-collection-head { position:sticky; top:0; z-index:30; display:flex; align-items:center; gap:13px; min-height:68px; padding:11px 16px; border-bottom:1px solid var(--border-color); background:rgba(255,255,255,.95); backdrop-filter:blur(16px); }
+        .home-collection-copy { min-width:0; flex:1; }
+        .home-collection-copy h2 { overflow:hidden; text-overflow:ellipsis; white-space:nowrap; font-size:17px; letter-spacing:-.3px; }
+        .home-collection-copy p { margin-top:3px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; color:#858a9d; font-size:10px; }
+        .home-collection-grid { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:9px; padding:14px; }
+        .home-all-card { position:relative; min-width:0; overflow:hidden; border-radius:15px; background:#fff; box-shadow:0 7px 19px rgba(32,37,70,.08); cursor:pointer; }
+        .home-all-poster { position:relative; width:100%; aspect-ratio:2/3; overflow:hidden; background:#e9ebf2; }
+        .home-all-poster img { width:100%; height:100%; display:block; object-fit:cover; }
+        .home-all-rank { position:absolute; top:7px; left:7px; z-index:2; min-width:28px; height:28px; display:grid; place-items:center; padding:0 7px; border:2px solid rgba(255,255,255,.8); border-radius:10px; color:#fff; background:linear-gradient(135deg,#ff7548,#ef3f63); box-shadow:0 5px 12px rgba(34,27,60,.25); font-size:10px; font-weight:900; }
+        .home-all-rank.top-one { background:linear-gradient(135deg,#ffbd2e,#f07914); }
+        .home-all-type { position:absolute; right:7px; bottom:7px; max-width:calc(100% - 14px); padding:4px 6px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; border-radius:7px; color:#fff; background:rgba(18,21,40,.82); backdrop-filter:blur(7px); font-size:7.5px; font-weight:800; text-transform:uppercase; }
+        .home-all-info { padding:9px 8px 10px; }
+        .home-all-title { min-height:29px; display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden; font-size:10px; line-height:1.4; font-weight:800; }
+        .home-all-meta { display:flex; align-items:center; justify-content:space-between; gap:5px; margin-top:7px; color:#858a9d; font-size:8px; font-weight:650; }
+        .home-all-meta .rating { color:#e59a00; font-weight:800; }
         .notification-panel { display:none; margin:0 14px 12px; padding:16px; border:1px solid #e8e9f2; border-radius:18px; background:#fff; box-shadow:0 12px 30px rgba(32,37,70,.09); }
         .notification-panel.show { display:block; animation:fadeIn .2s ease; }
         .notification-panel h3 { font-size:14px; margin-bottom:4px; }
@@ -574,8 +614,8 @@
                 <!-- Lanjutkan Membaca / Menonton -->
                 <section class="section-container">
                     <div class="section-header">
-                        <div class="section-title-wrapper"><h2 class="section-title">Lanjutkan Membaca</h2></div>
-                        <a class="see-all" onclick="clearHistory()">Bersihkan</a>
+                            <div class="section-title-wrapper"><h2 class="section-title">Lanjutkan Baca & Tonton</h2></div>
+                        <a class="see-all" onclick="openHistoryPage()">Lihat Semua</a>
                     </div>
                     <div class="horizontal-scroll" id="history-container">
                         <div class="empty-history">Memuat histori...</div>
@@ -585,23 +625,23 @@
                 <section class="section-container personal-section" id="recommendationSection">
                     <div class="section-header">
                         <div class="section-title-wrapper"><i class="fa-solid fa-wand-magic-sparkles" style="color:#6558ef"></i><div><h2 class="section-title">Untuk Kamu</h2><div class="recommendation-subtitle" id="recommendationReason">Menyiapkan rekomendasi...</div></div></div>
-                        <a class="see-all" onclick="refreshRecommendations()"><i class="fa-solid fa-rotate"></i></a>
+                        <div style="display:flex;gap:6px"><a class="see-all" onclick="refreshRecommendations()" title="Acak ulang"><i class="fa-solid fa-rotate"></i></a><a class="see-all" onclick="openHomeCollection('recommendation')">Lihat Semua</a></div>
                     </div>
                     <div class="horizontal-scroll" id="recommendationContainer"><div class="loading-text"><i class="fa-solid fa-spinner fa-spin"></i> Menganalisis pilihan...</div></div>
                 </section>
 
                 <section class="section-container home-feature-section">
-                    <div class="section-header"><div class="section-title-wrapper"><i class="fa-solid fa-fire" style="color:#ff5b45"></i><div><h2 class="section-title">Trending Sekarang</h2><div class="recommendation-subtitle">Ramai dilihat dan dibicarakan</div></div></div><a class="see-all" onclick="openRankingDiscovery()">Lihat Semua</a></div>
+                    <div class="section-header"><div class="section-title-wrapper"><i class="fa-solid fa-fire" style="color:#ff5b45"></i><div><h2 class="section-title">Trending Sekarang</h2><div class="recommendation-subtitle">Ramai dilihat dan dibicarakan</div></div></div><a class="see-all" onclick="openHomeCollection('trending')">Lihat Semua</a></div>
                     <div class="ranking-scroll" id="trendingContainer"><div class="loading-text">Memuat trending...</div></div>
                 </section>
 
                 <section class="section-container home-feature-section">
-                    <div class="section-header"><div class="section-title-wrapper"><i class="fa-solid fa-trophy" style="color:#f2a700"></i><div><h2 class="section-title">Ranking Mingguan</h2><div class="recommendation-subtitle">Peringkat berdasarkan rating dan aktivitas</div></div></div></div>
+                    <div class="section-header"><div class="section-title-wrapper"><i class="fa-solid fa-trophy" style="color:#f2a700"></i><div><h2 class="section-title">Ranking Mingguan</h2><div class="recommendation-subtitle">Peringkat berdasarkan rating dan aktivitas</div></div></div><a class="see-all" onclick="openHomeCollection('weekly')">Lihat Semua</a></div>
                     <div class="ranking-scroll" id="weeklyRankingContainer"><div class="loading-text">Menghitung ranking...</div></div>
                 </section>
 
                 <section class="section-container home-feature-section">
-                    <div class="section-header"><div class="section-title-wrapper"><i class="fa-regular fa-calendar-check" style="color:#625af2"></i><div><h2 class="section-title">Jadwal Rilis</h2><div class="recommendation-subtitle">Jadwal dari update katalog terbaru</div></div></div></div>
+                    <div class="section-header"><div class="section-title-wrapper"><i class="fa-regular fa-calendar-check" style="color:#625af2"></i><div><h2 class="section-title">Jadwal Rilis</h2><div class="recommendation-subtitle">Jadwal dari update katalog terbaru</div></div></div><a class="see-all" onclick="openHomeCollection('schedule')">Lihat Semua</a></div>
                     <div class="schedule-days" id="scheduleDayTabs"></div>
                     <div class="horizontal-scroll" id="releaseScheduleContainer"><div class="loading-text">Menyiapkan jadwal...</div></div>
                 </section>
@@ -613,7 +653,7 @@
                             <i class="fa-regular fa-calendar-days" style="color: var(--primary-blue); font-size: 16px;"></i>
                             <h2 class="section-title">Pilihan Hari Ini</h2>
                         </div>
-                        <a class="see-all" onclick="switchNav('discovery')">Lihat Semua</a>
+                        <a class="see-all" onclick="openHomeCollection('today')">Lihat Semua</a>
                     </div>
                     <div class="horizontal-scroll" id="firebase-jadwal">
                         <div class="loading-text"><i class="fa-solid fa-spinner fa-spin"></i> Memuat...</div>
@@ -624,7 +664,7 @@
                 <section class="section-container">
                     <div class="section-header">
                         <div class="section-title-wrapper"><span>🎬</span><h2 class="section-title">Film & Anime</h2></div>
-                        <a class="see-all" onclick="switchNav('discovery')">Lihat Semua</a>
+                        <a class="see-all" onclick="openHomeCollection('film')">Lihat Semua</a>
                     </div>
                     <div class="horizontal-scroll" id="firebase-film"><div class="loading-text"><i class="fa-solid fa-spinner fa-spin"></i> Memuat...</div></div>
                 </section>
@@ -633,7 +673,7 @@
                 <section class="section-container">
                     <div class="section-header">
                         <div class="section-title-wrapper"><span style="color: var(--primary-blue); font-size: 10px;">●</span><h2 class="section-title">Manga</h2></div>
-                        <a class="see-all" onclick="switchNav('discovery')">Lihat Semua</a>
+                        <a class="see-all" onclick="openHomeCollection('manga')">Lihat Semua</a>
                     </div>
                     <div class="horizontal-scroll" id="firebase-manga"><div class="loading-text"><i class="fa-solid fa-spinner fa-spin"></i> Memuat...</div></div>
                 </section>
@@ -641,7 +681,7 @@
                 <section class="section-container">
                     <div class="section-header">
                         <div class="section-title-wrapper"><span>🇰🇷</span><h2 class="section-title">Manhwa</h2></div>
-                        <a class="see-all" onclick="switchNav('discovery')">Lihat Semua</a>
+                        <a class="see-all" onclick="openHomeCollection('manhwa')">Lihat Semua</a>
                     </div>
                     <div class="horizontal-scroll" id="firebase-manhwa"><div class="loading-text"><i class="fa-solid fa-spinner fa-spin"></i> Memuat...</div></div>
                 </section>
@@ -649,7 +689,7 @@
                 <section class="section-container">
                     <div class="section-header">
                         <div class="section-title-wrapper"><span>🇨🇳</span><h2 class="section-title">Manhua</h2></div>
-                        <a class="see-all" onclick="switchNav('discovery')">Lihat Semua</a>
+                        <a class="see-all" onclick="openHomeCollection('manhua')">Lihat Semua</a>
                     </div>
                     <div class="horizontal-scroll" id="firebase-manhua"><div class="loading-text"><i class="fa-solid fa-spinner fa-spin"></i> Memuat...</div></div>
                 </section>
@@ -658,7 +698,7 @@
                 <section class="section-container" style="padding-bottom: 30px;">
                     <div class="section-header">
                         <div class="section-title-wrapper"><h2 class="section-title">Semua Update Terbaru</h2></div>
-                        <a class="see-all" onclick="switchNav('discovery')">Lihat Semua</a>
+                        <a class="see-all" onclick="openHomeCollection('updates')">Lihat Semua</a>
                     </div>
                     <div class="horizontal-scroll" id="firebase-updates">
                         <div class="loading-text"><i class="fa-solid fa-spinner fa-spin"></i> Memuat...</div>
@@ -738,6 +778,31 @@
                 <div class="notification-setting"><span>Tandai semua sudah dilihat</span><button class="update-tab active" onclick="markAllUpdatesSeen()">Tandai</button></div>
             </div>
             <div class="updates-feed" id="updatesFeed"><div class="loading-text">Memuat update...</div></div>
+        </div>
+
+        <!-- ================= HALAMAN RIWAYAT LENGKAP ================= -->
+        <div id="history-page">
+            <div class="history-page-header">
+                <button class="history-back" onclick="history.back()" aria-label="Kembali"><i class="fa-solid fa-arrow-left"></i></button>
+                <div class="history-page-title"><strong>Riwayat Saya</strong><span id="historyFullCount">Memuat aktivitas...</span></div>
+            </div>
+            <div class="history-tabs">
+                <button class="history-tab active" data-history-tab="comic" onclick="setHistoryMediaTab('comic')"><i class="fa-solid fa-book-open"></i> Komik</button>
+                <button class="history-tab" data-history-tab="video" onclick="setHistoryMediaTab('video')"><i class="fa-solid fa-circle-play"></i> Film & Anime</button>
+            </div>
+            <div class="history-delete-actions">
+                <button class="history-delete-btn" id="historyDeleteCurrent" onclick="clearHistoryType(window.historyMediaTab)"><i class="fa-regular fa-trash-can"></i> Hapus Riwayat Baca</button>
+            </div>
+            <div class="history-full-grid" id="historyFullContainer"><div class="empty-history" style="grid-column:1/-1">Memuat riwayat...</div></div>
+        </div>
+
+        <!-- ================= LIHAT SEMUA BAGIAN HOME ================= -->
+        <div id="home-collection-page">
+            <div class="home-collection-head">
+                <button class="history-back" onclick="history.back()" aria-label="Kembali"><i class="fa-solid fa-arrow-left"></i></button>
+                <div class="home-collection-copy"><h2 id="homeCollectionTitle">Lihat Semua</h2><p id="homeCollectionSubtitle">Daftar konten pilihan</p></div>
+            </div>
+            <div class="home-collection-grid" id="homeCollectionGrid"><div class="empty-history" style="grid-column:1/-1">Memuat konten...</div></div>
         </div>
 
         <!-- ================= 3. HALAMAN DETAIL ================= -->
@@ -1135,6 +1200,8 @@
             if(state.view !== 'reader' && window.readerObserver) window.readerObserver.disconnect();
             if(state.view !== 'detail') document.getElementById('detailTrailer').src = '';
             if(['home','discovery','updates','bookmark','profile'].includes(state.view)) window.switchNav(state.view, null, true);
+            else if(state.view === 'history') await window.openHistoryPage(true);
+            else if(state.view === 'homeCollection') window.openHomeCollection(state.collectionMode || 'updates', true);
             else if(state.view === 'detail') await window.openDetail(state.comicId, true);
             else if(state.view === 'reader') await window.openReader(state.comicId, state.chapterId, state.chapterNum, state.pageIndex || 1, true);
             else if(state.view === 'player') await window.openPlayer(state.comicId, state.chapterId, state.chapterNum, true);
@@ -1450,6 +1517,80 @@
             renderReleaseSchedule();
         }
         window.openRankingDiscovery=function(){window.discoverySort='views-desc';switchNav('discovery');renderDiscoveryGrid(false);}
+
+        function primaryHomeGroup(comic = {}) {
+            const type = String(comic.type || '').toLowerCase();
+            const format = String(comic.format || '').toLowerCase();
+            if(type.includes('manhwa')) return 'manhwa';
+            if(type.includes('manhua')) return 'manhua';
+            if(type.includes('film') || type.includes('movie') || type.includes('anime') || type.includes('series') || format === 'film') return 'film';
+            return 'manga';
+        }
+
+        function getHomeCollection(mode) {
+            const all = Object.entries(window.comicsData).map(([id,comic]) => ({id,comic,score:activityScore(comic)}));
+            const configs = {
+                recommendation:['Untuk Kamu','Rekomendasi berdasarkan riwayat dan koleksi Anda'],
+                trending:['Trending Sekarang','Peringkat konten yang ramai dilihat dan dibicarakan'],
+                weekly:['Ranking Mingguan','Peringkat berdasarkan update terbaru dan aktivitas'],
+                schedule:['Jadwal Rilis','Jadwal konten untuk hari yang dipilih'],
+                today:['Pilihan Hari Ini','Pilihan terbaru untuk dibaca dan ditonton'],
+                film:['Film & Anime','Semua film, anime, dan serial'],
+                manga:['Manga','Semua judul manga'],
+                manhwa:['Manhwa','Semua komik Korea'],
+                manhua:['Manhua','Semua komik Tiongkok'],
+                updates:['Semua Update Terbaru','Konten terbaru dari seluruh katalog']
+            };
+            let items = [...all];
+            if(mode === 'recommendation') {
+                const profile = getRecommendationProfile();
+                items = all.map(item => ({...item,...calculateRecommendation(item.id,item.comic,profile)}))
+                    .sort((a,b) => b.score-a.score);
+            } else if(mode === 'trending') {
+                items.sort((a,b) => b.score-a.score);
+            } else if(mode === 'weekly') {
+                items.sort((a,b) => (getTimeValue(b.comic.realUpdateDate)-getTimeValue(a.comic.realUpdateDate)) || b.score-a.score);
+            } else if(mode === 'schedule') {
+                const names=['Min','Sen','Sel','Rab','Kam','Jum','Sab'];
+                items = items.filter(({comic}) => {
+                    const raw=comic.releaseDay ?? comic.scheduleDay;
+                    if(raw !== undefined && raw !== null) {
+                        const day=typeof raw === 'number' ? raw : names.findIndex(name => normalizeSearch(raw).startsWith(normalizeSearch(name)));
+                        return day === window.scheduleDay;
+                    }
+                    const time=getTimeValue(comic.realUpdateDate);
+                    return time && new Date(time).getDay() === window.scheduleDay;
+                }).sort((a,b) => b.score-a.score);
+                configs.schedule[0] = `Jadwal Rilis • ${names[window.scheduleDay]}`;
+            } else if(['film','manga','manhwa','manhua'].includes(mode)) {
+                items = items.filter(({comic}) => primaryHomeGroup(comic) === mode)
+                    .sort((a,b) => getTimeValue(b.comic.createdAt)-getTimeValue(a.comic.createdAt));
+            } else {
+                items.sort((a,b) => (getTimeValue(b.comic.realUpdateDate || b.comic.createdAt)-getTimeValue(a.comic.realUpdateDate || a.comic.createdAt)) || b.score-a.score);
+            }
+            return {items, title:(configs[mode] || configs.updates)[0], subtitle:(configs[mode] || configs.updates)[1], ranked:mode === 'trending' || mode === 'weekly'};
+        }
+
+        window.openHomeCollection = function(mode = 'updates', fromHistory = false) {
+            if(!fromHistory) pushAppState('homeCollection', {collectionMode:mode});
+            document.querySelectorAll('.app-container > div').forEach(el => { if(el.id !== 'mainBottomNav') el.style.display='none'; });
+            document.getElementById('home-collection-page').style.display='block';
+            document.getElementById('mainBottomNav').style.display='none';
+            const result=getHomeCollection(mode);
+            document.getElementById('homeCollectionTitle').textContent=result.title;
+            document.getElementById('homeCollectionSubtitle').textContent=`${result.items.length} konten • ${result.subtitle}`;
+            document.getElementById('homeCollectionGrid').innerHTML=result.items.map((item,index) => {
+                const comic=item.comic;
+                const rating=comic.ratingCount ? (comic.ratingTotal/comic.ratingCount).toFixed(1) : 'Baru';
+                const rank=result.ranked ? `<span class="home-all-rank ${index===0?'top-one':''}">#${index+1}</span>` : '';
+                return `<article class="home-all-card" onclick="openDetail('${safeAttr(item.id)}')">
+                    <div class="home-all-poster">${rank}<img src="${safeMediaUrl(comic.coverUrl)}" loading="lazy" decoding="async" alt="${safeText(comic.title)}" onerror="this.src='https://placehold.co/220x330?text=No+Cover'"><span class="home-all-type">${safeText(comic.type || (isVideoContent(comic)?'Video':'Komik'))}</span></div>
+                    <div class="home-all-info"><div class="home-all-title">${safeText(comic.title)}</div><div class="home-all-meta"><span class="rating"><i class="fa-solid fa-star"></i> ${rating}</span><span><i class="fa-regular fa-eye"></i> ${Number(comic.views||0).toLocaleString('id-ID')}</span></div></div>
+                </article>`;
+            }).join('') || '<div class="empty-history" style="grid-column:1/-1;padding-top:70px">Belum ada konten pada bagian ini.</div>';
+            window.scrollTo(0,0);
+        }
+
         window.setScheduleDay=function(day){window.scheduleDay=Number(day);document.querySelectorAll('.schedule-day').forEach(x=>x.classList.toggle('active',Number(x.dataset.day)===window.scheduleDay));renderReleaseSchedule();}
         function renderReleaseSchedule(){const tabs=document.getElementById('scheduleDayTabs'),container=document.getElementById('releaseScheduleContainer');if(!tabs||!container)return;const names=['Min','Sen','Sel','Rab','Kam','Jum','Sab'];tabs.innerHTML=names.map((name,i)=>`<button class="schedule-day ${i===window.scheduleDay?'active':''}" data-day="${i}" onclick="setScheduleDay(${i})">${name}</button>`).join('');let items=Object.entries(window.comicsData).filter(([,comic])=>{const raw=comic.releaseDay??comic.scheduleDay;if(raw!==undefined&&raw!==null){const normalized=typeof raw==='number'?raw:names.findIndex(x=>normalizeSearch(raw).startsWith(normalizeSearch(x)));return normalized===window.scheduleDay;}const time=getTimeValue(comic.realUpdateDate);return time&&new Date(time).getDay()===window.scheduleDay;});if(!items.length)items=Object.entries(window.comicsData).slice(0,6);container.innerHTML=items.slice(0,8).map(([id,comic])=>smartCard(id,comic,`Jadwal ${names[window.scheduleDay]}`)).join('')||'<div class="smart-empty">Belum ada jadwal hari ini.</div>';}
 
@@ -2098,6 +2239,125 @@
                 }
                 renderReadingHistory();
             }
+        }
+
+        // ================= RIWAYAT LENGKAP: KOMIK & VIDEO TERPISAH =================
+        window.historyMediaTab = 'comic';
+        window.fullHistoryItems = [];
+
+        async function loadFullHistoryItems() {
+            const merged = new Map();
+            const localItems = Object.values(JSON.parse(localStorage.getItem('comicHistoryDetail') || '{}'));
+            localItems.forEach(item => item?.comicId && merged.set(item.comicId, item));
+
+            if(auth.currentUser) {
+                try {
+                    const snap = await getDocs(query(collection(db, 'users', auth.currentUser.uid, 'history'), orderBy('updatedAt', 'desc')));
+                    snap.forEach(historyDoc => {
+                        const remote = historyDoc.data();
+                        if(!remote?.comicId) return;
+                        const local = merged.get(remote.comicId);
+                        if(!local || getTimeValue(remote.updatedAt) >= getTimeValue(local.updatedAt)) merged.set(remote.comicId, remote);
+                    });
+                } catch(error) { }
+            }
+
+            const resolved = [];
+            for(const item of merged.values()) {
+                let comic = window.comicsData[item.comicId] || null;
+                if(!comic) {
+                    try {
+                        const comicSnap = await getDoc(doc(db, 'comics', item.comicId));
+                        if(!comicSnap.exists() || comicSnap.data().isPublished !== true) continue;
+                        comic = comicSnap.data();
+                        window.comicsData[item.comicId] = comic;
+                    } catch(error) {
+                        if(item.coverUrl) comic = {title:item.comicTitle, coverUrl:item.coverUrl, format:item.mediaFormat, type:item.mediaType};
+                    }
+                }
+                if(comic) resolved.push({...item, _comic:comic, _isVideo:isVideoContent(comic)});
+            }
+            return resolved.sort((a,b) => getTimeValue(b.updatedAt) - getTimeValue(a.updatedAt));
+        }
+
+        window.openHistoryPage = async function(fromHistory = false) {
+            if(!fromHistory) pushAppState('history');
+            document.querySelectorAll('.app-container > div').forEach(el => { if(el.id !== 'mainBottomNav') el.style.display = 'none'; });
+            document.getElementById('history-page').style.display = 'block';
+            document.getElementById('mainBottomNav').style.display = 'none';
+            document.getElementById('historyFullContainer').innerHTML = '<div class="empty-history" style="grid-column:1/-1"><i class="fa-solid fa-spinner fa-spin"></i><br><br>Memuat riwayat...</div>';
+            window.fullHistoryItems = await loadFullHistoryItems();
+            window.setHistoryMediaTab(window.historyMediaTab);
+            window.scrollTo(0,0);
+        }
+
+        window.setHistoryMediaTab = function(tab) {
+            window.historyMediaTab = tab === 'video' ? 'video' : 'comic';
+            document.querySelectorAll('.history-tab').forEach(btn => btn.classList.toggle('active', btn.dataset.historyTab === window.historyMediaTab));
+            const deleteButton = document.getElementById('historyDeleteCurrent');
+            if(deleteButton) deleteButton.innerHTML = window.historyMediaTab === 'video'
+                ? '<i class="fa-regular fa-trash-can"></i> Hapus Riwayat Tonton'
+                : '<i class="fa-regular fa-trash-can"></i> Hapus Riwayat Baca';
+            window.renderFullHistoryPage();
+        }
+
+        window.renderFullHistoryPage = function() {
+            const container = document.getElementById('historyFullContainer');
+            if(!container) return;
+            const isVideoTab = window.historyMediaTab === 'video';
+            const items = window.fullHistoryItems.filter(item => item._isVideo === isVideoTab);
+            const comicCount = window.fullHistoryItems.filter(item => !item._isVideo).length;
+            const videoCount = window.fullHistoryItems.length - comicCount;
+            document.getElementById('historyFullCount').textContent = `${comicCount} komik • ${videoCount} film/anime`;
+
+            container.innerHTML = items.map(item => {
+                const comic = item._comic || {};
+                const cover = safeMediaUrl(item.coverUrl || comic.coverUrl || '');
+                const title = safeText(item.comicTitle || comic.title || 'Konten');
+                const part = getMediaPartLabel(comic, {chapterNumber:item.chapterNumber, title:item.chapterTitle || ''}, 0, true);
+                const page = !item._isVideo && item.pageIndex ? ` • Hal. ${Number(item.pageIndex)}` : '';
+                return `<article class="history-full-card" onclick="continueReading('${safeAttr(item.comicId)}','${safeAttr(item.chapterId || '')}','${safeAttr(item.chapterNumber || '')}',${Number(item.pageIndex || 1)})">
+                    <div class="history-full-cover"><img src="${cover}" loading="lazy" decoding="async" alt="${title}" onerror="this.src='https://placehold.co/240x340?text=No+Cover'"><span class="history-kind">${item._isVideo ? 'FILM / ANIME' : 'KOMIK'}</span></div>
+                    <div class="history-full-info"><div class="history-full-title">${title}</div><div class="history-full-progress">${safeText(part + page)}</div></div>
+                </article>`;
+            }).join('') || `<div class="empty-history" style="grid-column:1/-1;padding-top:70px"><i class="fa-solid ${isVideoTab ? 'fa-film' : 'fa-book-open'}" style="font-size:30px;color:#c5c8d5"></i><br><br>Belum ada riwayat ${isVideoTab ? 'tontonan' : 'bacaan'}.</div>`;
+        }
+
+        window.clearHistoryType = async function(type) {
+            const isVideoTarget = type === 'video';
+            const targets = window.fullHistoryItems.filter(item => item._isVideo === isVideoTarget);
+            if(!targets.length) return window.showToast(`Riwayat ${isVideoTarget ? 'tontonan' : 'bacaan'} sudah kosong`);
+            const confirmed = await window.showModernConfirm({
+                title:isVideoTarget ? 'Hapus riwayat tontonan?' : 'Hapus riwayat bacaan?',
+                message:`${targets.length} riwayat ${isVideoTarget ? 'film/anime' : 'komik'} akan dihapus. Tindakan ini tidak menghapus bookmark.`,
+                confirmText:'Ya, hapus', danger:true, icon:'fa-trash-can'
+            });
+            if(!confirmed) return;
+
+            const targetIds = new Set(targets.map(item => item.comicId));
+            const localMap = JSON.parse(localStorage.getItem('comicHistoryDetail') || '{}');
+            targetIds.forEach(id => delete localMap[id]);
+            localStorage.setItem('comicHistoryDetail', JSON.stringify(localMap));
+
+            const readMap = getReadChapterMap();
+            Object.keys(readMap).forEach(key => {
+                if([...targetIds].some(id => key.startsWith(`${id}__`))) delete readMap[key];
+            });
+            localStorage.setItem('readChapterMap', JSON.stringify(readMap));
+            if(isVideoTarget) {
+                Object.keys(localStorage).forEach(key => {
+                    if(key.startsWith('videoResume_') && [...targetIds].some(id => key.startsWith(`videoResume_${id}_`))) localStorage.removeItem(key);
+                });
+            }
+
+            if(auth.currentUser) {
+                await Promise.all([...targetIds].map(id => deleteDoc(doc(db, 'users', auth.currentUser.uid, 'history', id)).catch(() => {})));
+            }
+            window.fullHistoryItems = window.fullHistoryItems.filter(item => !targetIds.has(item.comicId));
+            window.renderFullHistoryPage();
+            renderReadingHistory();
+            renderUpdatesFeed();
+            window.showToast(`Riwayat ${isVideoTarget ? 'tontonan' : 'bacaan'} berhasil dihapus`);
         }
 
         // ================= FITUR BOOKMARK =================

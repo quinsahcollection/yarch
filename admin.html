@@ -224,10 +224,17 @@
         .master-card h3 { font-size: 15px; margin-bottom: 15px; color: var(--sidebar-bg); display: flex; align-items: center; gap: 8px; border-bottom: 1px solid var(--border); padding-bottom: 10px; }
         .master-card h3 i { color: var(--primary); }
         .moderation-toolbar { display:flex; align-items:center; gap:10px; flex-wrap:wrap; margin-bottom:16px; }
-        .moderation-card { padding:15px; margin-bottom:10px; border:1px solid var(--border); border-radius:12px; background:#fff; }
+        #moderationList { display:grid; grid-template-columns:repeat(auto-fit,minmax(min(100%,340px),1fr)); gap:14px; align-items:start; }
+        .moderation-card { padding:16px; margin:0; border:1px solid var(--border); border-radius:14px; background:#fff; box-shadow:0 4px 16px rgba(15,23,42,.04); min-width:0; }
         .moderation-card.pinned { border-color:#8b82ff; background:#faf9ff; }
         .moderation-head { display:flex; justify-content:space-between; gap:12px; margin-bottom:7px; }
         .moderation-user { font-weight:700; font-size:13px; }.moderation-meta{color:#89909f;font-size:11px}.moderation-text{margin:9px 0;color:#333;font-size:13px;line-height:1.5;white-space:pre-wrap}.moderation-actions{display:flex;flex-wrap:wrap;gap:7px}
+        .trash-toolbar { display:flex; align-items:center; justify-content:space-between; gap:12px; margin-bottom:16px; padding:14px 16px; border:1px solid #fed7aa; border-radius:14px; background:#fff7ed; }
+        .trash-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(260px,1fr)); gap:15px; }
+        .trash-card { display:flex; gap:13px; min-width:0; padding:14px; border:1px solid var(--border); border-radius:14px; background:#fff; box-shadow:0 4px 16px rgba(15,23,42,.04); }
+        .trash-cover { width:60px; height:82px; flex:0 0 60px; object-fit:cover; border-radius:9px; background:#eef2f7; }
+        .trash-info { flex:1; min-width:0; }.trash-info strong{display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.trash-info p{margin:5px 0 10px;color:var(--text-muted);font-size:11px;line-height:1.45}.trash-actions{display:flex;gap:7px;flex-wrap:wrap}
+        @media(max-width:600px){#moderationList,.trash-grid{grid-template-columns:1fr}.trash-toolbar{align-items:flex-start;flex-direction:column}}
         .mod-btn { border:0; padding:8px 11px; border-radius:8px; color:#4c5262; background:#edf0f5; font-size:11px; font-weight:650; cursor:pointer; }.mod-btn.primary{color:#fff;background:#625af2}.mod-btn.danger{color:#fff;background:#e94f68}.mod-btn.success{color:#fff;background:#15966b}.report-badge{display:inline-flex;padding:3px 7px;border-radius:8px;color:#d94158;background:#fff0f2;font-size:9px;font-weight:750}
         .app-config-grid { display:grid; grid-template-columns:1fr 1fr; gap:16px; }.app-config-grid .full{grid-column:1/-1}.config-switch{display:flex;align-items:center;justify-content:space-between;gap:15px;padding:14px;border:1px solid var(--border);border-radius:10px;background:#f8fafc}.config-switch input{width:20px;height:20px;accent-color:#625af2}.config-help{margin-top:5px;color:var(--text-muted);font-size:11px;line-height:1.5}.config-status{display:none;margin-top:14px;padding:11px;border-radius:9px;font-size:12px;font-weight:600}.config-status.show{display:block}.config-status.success{color:#087a55;background:#e5f8f1}.config-status.error{color:#c53045;background:#fff0f2}@media(max-width:700px){.app-config-grid{grid-template-columns:1fr}.app-config-grid .full{grid-column:auto}}
         .master-input-group { display: flex; gap: 8px; margin-bottom: 15px; }
@@ -363,6 +370,7 @@
                 <li><a onclick="switchView('view-chapter', this)"><i class="fa-solid fa-layer-group"></i> Chapter & Episode</a></li>
                 <li><a onclick="switchView('view-kategori', this)"><i class="fa-solid fa-tags"></i> Kategori & Genre</a></li>
                 <li><a onclick="switchView('view-moderasi', this)"><i class="fa-solid fa-comments"></i> Moderasi Komentar</a></li>
+                <li><a onclick="switchView('view-trash', this); loadTrash()"><i class="fa-solid fa-trash-arrow-up"></i> Trash</a></li>
                 <li><a onclick="switchView('view-operasional', this)"><i class="fa-solid fa-database"></i> Publikasi & Data</a></li>
                 <li><a onclick="switchView('view-pengaturan', this)"><i class="fa-solid fa-gear"></i> Pengaturan</a></li>
             </ul>
@@ -763,6 +771,7 @@
                 
                 <div id="view-pengaturan" class="admin-view"><h1 class="page-title">Update & Maintenance</h1><div class="card"><div class="app-config-grid"><div class="form-group"><label>Versi terbaru</label><input id="configLatestVersion" type="text" placeholder="20.1.0"><div class="config-help">Gunakan format angka seperti 20.0.1.</div></div><div class="form-group"><label>Judul maintenance</label><input id="configMaintenanceTitle" type="text" placeholder="Sedang dalam pemeliharaan"></div><div class="form-group full"><label>Changelog</label><textarea id="configChangelog" rows="5" placeholder="Tuliskan perubahan versi terbaru..."></textarea></div><div class="form-group full"><label>Pesan maintenance</label><textarea id="configMaintenanceMessage" rows="3" placeholder="Aplikasi akan segera kembali..."></textarea></div><div class="config-switch"><div><strong>Update wajib</strong><div class="config-help">Pengingat akan terus muncul sampai pengguna memperbarui.</div></div><input id="configUpdateRequired" type="checkbox"></div><div class="config-switch"><div><strong>Mode maintenance</strong><div class="config-help">Pengguna biasa melihat halaman maintenance; admin tetap dapat masuk.</div></div><input id="configMaintenanceMode" type="checkbox"></div><div class="full"><button class="btn-submit" onclick="saveAppConfiguration()"><i class="fa-solid fa-cloud-arrow-up"></i> Simpan Pengaturan Aplikasi</button><div class="config-status" id="configStatus"></div></div></div></div></div>
                 <div id="view-moderasi" class="admin-view"><h1 class="page-title">Moderasi Komentar</h1><div class="moderation-toolbar"><button class="mod-btn primary" onclick="loadModeration(true)"><i class="fa-solid fa-rotate"></i> Muat ulang</button><button class="mod-btn" onclick="setModerationFilter('all')">Semua</button><button class="mod-btn" onclick="setModerationFilter('reported')">Dilaporkan</button><button class="mod-btn" onclick="setModerationFilter('pinned')">Disematkan</button><span id="moderationCount" class="moderation-meta"></span></div><div id="moderationList"><div class="loading-text">Memuat moderasi...</div></div><div style="text-align:center;margin-top:16px"><button id="moderationLoadMore" class="mod-btn primary" onclick="loadModeration(false)" style="display:none"><i class="fa-solid fa-chevron-down"></i> Muat 50 komentar berikutnya</button></div></div>
+                <div id="view-trash" class="admin-view"><h1 class="page-title">Trash</h1><div class="trash-toolbar"><div><strong><i class="fa-solid fa-recycle"></i> Penghapusan aman</strong><div style="margin-top:4px;color:#9a5b16;font-size:11px">Judul dan folder dapat dipulihkan sebelum dihapus permanen beserta medianya.</div></div><button class="mod-btn primary" onclick="loadTrash()"><i class="fa-solid fa-rotate"></i> Muat ulang</button></div><div class="trash-grid" id="trashList"><div class="loading-text">Memuat Trash...</div></div></div>
 
                 <div id="view-operasional" class="admin-view"><h1 class="page-title">Publikasi & Data</h1><div class="ops-grid"><div><div class="card"><h3 style="margin-bottom:14px">Upload Metadata Massal</h3><div class="ops-drop"><i class="fa-solid fa-file-arrow-up" style="font-size:34px;color:var(--primary)"></i><p style="margin:10px 0;font-size:12px">Pilih JSON berisi array metadata komik atau film.</p><input id="bulkMetadataInput" type="file" accept="application/json,.json" onchange="previewBulkMetadata(this.files[0])"><div id="bulkPreview" style="margin-top:12px;font-size:11px"></div></div></div><div class="card"><h3 style="margin-bottom:14px">Backup Metadata</h3><p style="font-size:11px;color:var(--text-muted);margin-bottom:14px">Unduh metadata komik beserta chapter sebagai JSON.</p><button class="ops-btn green" onclick="backupAllMetadata()"><i class="fa-solid fa-download"></i> Buat Backup</button></div><div class="card"><h3 style="margin-bottom:14px">Jadwal Publikasi & Draft</h3><div class="metric-list" id="publicationQueue"><div class="loading-text">Memuat...</div></div></div></div><div class="card"><h3 style="margin-bottom:14px">Audit Log Aktivitas Admin</h3><div class="audit-list" id="auditLogList"><div class="loading-text">Memuat...</div></div></div></div></div>
             </div>
@@ -1080,6 +1089,7 @@
                 
                 snapshot.forEach(docSnap => {
                     const data = docSnap.data();
+                    if(data.isDeleted === true) return;
                     window.allComicsRaw.push({id:docSnap.id,...data});
                     const isPub = data.isPublished !== false; 
                     const date = data.createdAt ? data.createdAt.toDate().toLocaleDateString('id-ID', {day:'numeric', month:'short', year:'numeric'}) : '-';
@@ -1189,41 +1199,39 @@
 
         window.deleteComic = async function(id) {
             const result = await Swal.fire({
-                title: 'Hapus Data Keseluruhan?',
-                text: "Yakin ingin menghapus judul ini permanen beserta seluruh chapter/episodenya?",
+                title: 'Pindahkan ke Trash?',
+                text: "Judul akan disembunyikan dari aplikasi, tetapi masih dapat dipulihkan dari menu Trash.",
                 icon: 'warning',
                 showCancelButton: true,
-                confirmButtonColor: '#ef4444',
+                confirmButtonColor: '#f59e0b',
                 cancelButtonColor: '#94a3b8',
-                confirmButtonText: 'Ya, Hapus Semua!',
+                confirmButtonText: 'Pindahkan ke Trash',
                 cancelButtonText: 'Batal'
             });
-            
-            if(result.isConfirmed) {
-                try {
-                    const comicRef = doc(db, "comics", id);
-                    const comicSnap = await getDoc(comicRef);
-                    const urls = comicSnap.exists() ? [comicSnap.data().coverUrl, ...(comicSnap.data().deletionMediaUrls || [])] : [];
-                    const childRefs = [];
-                    for (const childName of ['chapters', 'comments', 'ratings']) {
-                        const childSnap = await getDocs(collection(db, 'comics', id, childName));
-                        childSnap.forEach(item => {
-                            childRefs.push(item.ref);
-                            if (childName === 'chapters') urls.push(...(item.data().images || []));
-                        });
-                    }
-                    await updateDoc(comicRef, { isPublished:false, deletionStatus:'processing', deletionMediaUrls:[...new Set(urls.filter(Boolean))] });
-                    await deleteDocumentRefs(childRefs);
-                    await requestR2Deletion(urls);
-                    await writeAudit('DELETE_CONTENT', id, `${childRefs.length} dokumen turunan dan ${new Set(urls.filter(Boolean)).size} media`);
-                    await deleteDoc(comicRef);
-                    Swal.fire('Terhapus!', 'Judul, chapter, komentar, rating, dan media terkait berhasil dihapus.', 'success');
-                    window.loadComicsList(); 
-                } catch(e) {
-                    Swal.fire('Penghapusan belum selesai', e.message || 'Gagal menghapus data.', 'error');
-                }
-            }
+            if(!result.isConfirmed) return;
+            try {
+                const comicRef=doc(db,'comics',id),comicSnap=await getDoc(comicRef);
+                if(!comicSnap.exists()) throw new Error('Judul tidak ditemukan.');
+                await updateDoc(comicRef,{isDeleted:true,deletedAt:serverTimestamp(),deletedBy:auth.currentUser?.uid||'',publishedBeforeDelete:comicSnap.data().isPublished!==false,isPublished:false});
+                await writeAudit('MOVE_CONTENT_TO_TRASH',id,comicSnap.data().title||'');
+                Swal.fire('Masuk Trash','Judul berhasil dipindahkan dan masih dapat dipulihkan.','success');
+                window.loadComicsList();
+            }catch(e){Swal.fire('Gagal memindahkan',e.message||'Terjadi kesalahan.','error');}
         };
+
+        window.loadTrash = async function(){
+            const box=document.getElementById('trashList');if(!box)return;box.innerHTML='<div class="loading-text"><i class="fa-solid fa-spinner fa-spin"></i> Memuat Trash...</div>';
+            try{
+                const [comicSnap,itemSnap]=await Promise.all([getDocs(collection(db,'comics')),getDocs(collection(db,'settings','adminTrash','items'))]);
+                const items=[];
+                comicSnap.forEach(d=>{if(d.data().isDeleted===true)items.push({trashType:'comic',id:d.id,...d.data()});});
+                itemSnap.forEach(d=>items.push({trashType:'chapter',trashId:d.id,...d.data()}));
+                items.sort((a,b)=>(b.deletedAt?.seconds||0)-(a.deletedAt?.seconds||0));
+                box.innerHTML=items.map(item=>{const chapter=item.trashType==='chapter';const title=chapter?(item.comicTitle||'Konten'):(item.title||'Tanpa judul');const sub=chapter?`${item.payload?.title||'Folder'} • Bagian ${item.payload?.chapterNumber||'-'}`:`${item.format==='film'?'Film/Anime':'Komik'} • Seluruh isi tetap tersimpan`;const cover=chapter?'':safeUrl(item.coverUrl);return `<div class="trash-card">${cover?`<img class="trash-cover" src="${cover}" onerror="this.style.display='none'">`:`<div class="trash-cover" style="display:grid;place-items:center;font-size:26px;color:#94a3b8"><i class="fa-solid fa-folder"></i></div>`}<div class="trash-info"><strong>${adminSafe(title)}</strong><p>${adminSafe(sub)}</p><div class="trash-actions"><button class="mod-btn success" onclick="restoreTrashItem('${item.trashType}','${chapter?item.trashId:item.id}')"><i class="fa-solid fa-rotate-left"></i> Restore</button><button class="mod-btn danger" onclick="permanentDeleteTrashItem('${item.trashType}','${chapter?item.trashId:item.id}')"><i class="fa-solid fa-trash"></i> Hapus permanen</button></div></div></div>`}).join('')||'<div class="card" style="grid-column:1/-1;text-align:center">Trash masih kosong.</div>';
+            }catch(e){box.innerHTML=`<div class="alert alert-error">Gagal memuat Trash: ${adminSafe(e.message)}</div>`;}
+        };
+        window.restoreTrashItem=async function(type,id){try{if(type==='comic'){const ref=doc(db,'comics',id),snap=await getDoc(ref);if(!snap.exists())throw new Error('Judul tidak ditemukan');await updateDoc(ref,{isDeleted:false,deletedAt:null,deletedBy:null,isPublished:snap.data().publishedBeforeDelete===true,publishedBeforeDelete:null});}else{const trashRef=doc(db,'settings','adminTrash','items',id),snap=await getDoc(trashRef);if(!snap.exists())throw new Error('Data Trash tidak ditemukan');const data=snap.data();await setDoc(doc(db,'comics',data.comicId,'chapters',data.chapterId),data.payload);await deleteDoc(trashRef);await syncChapterCount(data.comicId);}await writeAudit('RESTORE_FROM_TRASH',id,type);await window.loadComicsList();await loadTrash();Swal.fire('Dipulihkan','Data berhasil dikembalikan.','success');}catch(e){Swal.fire('Restore gagal',e.message,'error');}};
+        window.permanentDeleteTrashItem=async function(type,id){const ask=await Swal.fire({title:'Hapus permanen?',text:'Data dan media tidak dapat dipulihkan setelah tindakan ini.',icon:'error',showCancelButton:true,confirmButtonText:'Hapus permanen',cancelButtonText:'Batal',confirmButtonColor:'#dc2626'});if(!ask.isConfirmed)return;try{if(type==='comic'){const comicRef=doc(db,'comics',id),comicSnap=await getDoc(comicRef);if(!comicSnap.exists())throw new Error('Judul tidak ditemukan');const urls=[comicSnap.data().coverUrl,...(comicSnap.data().deletionMediaUrls||[])],refs=[];for(const childName of ['chapters','comments','ratings']){const childSnap=await getDocs(collection(db,'comics',id,childName));childSnap.forEach(item=>{refs.push(item.ref);if(childName==='chapters')urls.push(...(item.data().images||[]));});}await deleteDocumentRefs(refs);await requestR2Deletion(urls);await deleteDoc(comicRef);}else{const trashRef=doc(db,'settings','adminTrash','items',id),snap=await getDoc(trashRef);if(!snap.exists())throw new Error('Data Trash tidak ditemukan');await requestR2Deletion(snap.data().payload?.images||[]);await deleteDoc(trashRef);}await writeAudit('PERMANENT_DELETE',id,type);await loadTrash();Swal.fire('Terhapus permanen','Data dan media telah dihapus.','success');}catch(e){Swal.fire('Penghapusan gagal',e.message,'error');}};
 
         window.editComic = async function(id) {
             try {
@@ -1525,7 +1533,8 @@
 
             const updateProgress = (file, fileIndex, currentLoaded, processing = false) => {
                 const sentBytes = Math.min(totalBytes, completedBytes + Math.min(currentLoaded, file.size || currentLoaded));
-                const percent = totalBytes > 0 ? Math.min(100, Math.round((sentBytes / totalBytes) * 100)) : 100;
+                const rawPercent = totalBytes > 0 ? Math.min(100, (sentBytes / totalBytes) * 100) : 100;
+                const percent = rawPercent < 10 ? rawPercent.toFixed(1) : Math.round(rawPercent);
                 const elapsed = Math.max((performance.now() - startedAt) / 1000, 0.1);
                 const speed = sentBytes / elapsed;
                 const eta = speed > 0 ? (totalBytes - sentBytes) / speed : Infinity;
@@ -1563,13 +1572,72 @@
                 xhr.send(formData);
             });
 
+            const workerJson = async (path, options = {}) => {
+                const response = await fetch(new URL(path, WORKER_URL), options);
+                const data = await response.json().catch(() => ({}));
+                if(!response.ok) throw new Error(data.error || `Worker menolak permintaan (HTTP ${response.status}).`);
+                return data;
+            };
+
+            const uploadChunk = (blob, endpoint, authHeaders, progressBase, onProgress, attempt = 1) => new Promise((resolve, reject) => {
+                const xhr = new XMLHttpRequest();
+                xhr.open('PUT', endpoint, true);
+                Object.entries(authHeaders).forEach(([key, value]) => xhr.setRequestHeader(key, value));
+                xhr.setRequestHeader('Content-Type', 'application/octet-stream');
+                xhr.responseType = 'json';
+                xhr.timeout = 180000;
+                xhr.upload.onprogress = event => { if(event.lengthComputable) onProgress(progressBase + event.loaded, false); };
+                const fail = () => {
+                    if(attempt < 3) setTimeout(() => uploadChunk(blob, endpoint, authHeaders, progressBase, onProgress, attempt + 1).then(resolve, reject), attempt * 1200);
+                    else reject(new Error('Bagian video gagal setelah 3 percobaan. Periksa koneksi lalu unggah kembali.'));
+                };
+                xhr.onerror = fail; xhr.ontimeout = fail;
+                xhr.onload = () => {
+                    const data = xhr.response || (()=>{try{return JSON.parse(xhr.responseText||'{}')}catch(_){return{}}})();
+                    if(xhr.status >= 200 && xhr.status < 300 && data.etag) resolve(data); else fail();
+                };
+                xhr.send(blob);
+            });
+
+            const uploadLargeFile = async (file, authHeaders, onProgress) => {
+                const init = await workerJson('media/multipart/init', {
+                    method:'POST', headers:{...authHeaders,'Content-Type':'application/json'},
+                    body:JSON.stringify({fileName:file.name,contentType:file.type||'application/octet-stream'})
+                });
+                const chunkSize = 20 * 1024 * 1024;
+                const totalParts = Math.ceil(file.size / chunkSize);
+                const parts = [];
+                try {
+                    for(let partNumber=1; partNumber<=totalParts; partNumber++) {
+                        const start=(partNumber-1)*chunkSize, end=Math.min(file.size,start+chunkSize);
+                        document.getElementById('uploadProgressFile').textContent=`${file.name} • bagian ${partNumber}/${totalParts}`;
+                        const endpoint=new URL('media/multipart/part',WORKER_URL);
+                        endpoint.searchParams.set('key',init.key); endpoint.searchParams.set('uploadId',init.uploadId); endpoint.searchParams.set('partNumber',String(partNumber));
+                        const part=await uploadChunk(file.slice(start,end),endpoint.href,authHeaders,start,onProgress);
+                        parts.push({partNumber:part.partNumber,etag:part.etag});
+                        onProgress(end,false);
+                    }
+                    onProgress(file.size,true);
+                    return await workerJson('media/multipart/complete', {
+                        method:'POST',headers:{...authHeaders,'Content-Type':'application/json'},
+                        body:JSON.stringify({key:init.key,uploadId:init.uploadId,parts})
+                    });
+                } catch(error) {
+                    workerJson('media/multipart/abort',{method:'POST',headers:{...authHeaders,'Content-Type':'application/json'},body:JSON.stringify({key:init.key,uploadId:init.uploadId})}).catch(()=>{});
+                    throw error;
+                }
+            };
+
             try {
                 let uploadedUrls = [];
                 const authHeaders = await getWorkerAuthHeaders();
                 for(let i = 0; i < files.length; i++) {
                     const file = files[i];
                     updateProgress(file, i, 0);
-                    const workerData = await uploadFile(file, authHeaders, (loaded, processing) => updateProgress(file, i, loaded, processing));
+                    const onFileProgress=(loaded,processing)=>updateProgress(file,i,loaded,processing);
+                    const workerData = file.size > 40 * 1024 * 1024
+                        ? await uploadLargeFile(file,authHeaders,onFileProgress)
+                        : await uploadFile(file,authHeaders,onFileProgress);
                     uploadedUrls.push(workerData.url);
                     completedBytes += file.size || 0;
                     updateProgress(file, i, file.size || 0, i < files.length - 1);
@@ -1705,7 +1773,7 @@
                             
                             grid.innerHTML += `
                                 <div class="folder-card" onclick="window.navGalleryToChapterFolder('${ch.id}', '${folderLabel}', window.encodeImgs('${encodeURIComponent(JSON.stringify(ch.images || []))}') )">
-                                    <button class="btn-delete-folder" onclick="event.stopPropagation(); window.deleteChapterFolder('${window.galleryState.comicId}', '${ch.id}')" title="Hapus Permanen"><i class="fa-solid fa-trash-can"></i></button>
+                                    <button class="btn-delete-folder" onclick="event.stopPropagation(); window.deleteChapterFolder('${window.galleryState.comicId}', '${ch.id}')" title="Pindahkan ke Trash"><i class="fa-solid fa-trash-can-arrow-up"></i></button>
                                     <i class="fa-solid fa-folder-open folder-icon" style="color: ${folderColor};"></i>
                                     <div class="folder-title">${folderLabel}</div>
                                     <div class="folder-subtitle">${safeTitle}<br>${totalMedia} File Media</div>
@@ -1883,34 +1951,29 @@
             } catch(e) { console.error(e); }
         }
 
+        async function moveChapterToTrash(comicId,chapterId){
+            const chapterRef=doc(db,'comics',comicId,'chapters',chapterId),chapterSnap=await getDoc(chapterRef);
+            if(!chapterSnap.exists())throw new Error('Folder tidak ditemukan.');
+            const comicSnap=await getDoc(doc(db,'comics',comicId));
+            const trashId=`${comicId}__${chapterId}`;
+            await setDoc(doc(db,'settings','adminTrash','items',trashId),{trashType:'chapter',comicId,chapterId,comicTitle:comicSnap.exists()?(comicSnap.data().title||'Konten'):'Konten',payload:chapterSnap.data(),deletedAt:serverTimestamp(),deletedBy:auth.currentUser?.uid||''});
+            await deleteDoc(chapterRef);await syncChapterCount(comicId);await writeAudit('MOVE_CHAPTER_TO_TRASH',chapterId,comicId);
+        }
+
         window.deleteChapter = async function(comicId, chapterId) {
-            const result = await Swal.fire({ title: 'Hapus Data?', text: "Yakin menghapus record ini dari sistem?", icon: 'warning', showCancelButton: true, confirmButtonColor: '#ef4444', cancelButtonColor: '#94a3b8', confirmButtonText: 'Ya, Eksekusi!' });
-            if(result.isConfirmed) {
-                try {
-                    const chapterRef = doc(db, "comics", comicId, "chapters", chapterId);
-                    const chapterSnap = await getDoc(chapterRef);
-                    if (chapterSnap.exists()) await requestR2Deletion(chapterSnap.data().images || []);
-                    await deleteDoc(chapterRef);
-                    await syncChapterCount(comicId);
-                    await writeAudit('DELETE_CHAPTER', chapterId, comicId);
-                    window.loadChaptersList();
-                    window.loadComicsList();
-                } catch(e) { Swal.fire('Error', e.message || 'Gagal menghapus chapter.', 'error'); }
-            }
+            const result=await Swal.fire({title:'Pindahkan ke Trash?',text:'Chapter/episode dapat dipulihkan kembali dari menu Trash.',icon:'warning',showCancelButton:true,confirmButtonColor:'#f59e0b',cancelButtonColor:'#94a3b8',confirmButtonText:'Pindahkan ke Trash',cancelButtonText:'Batal'});
+            if(!result.isConfirmed)return;
+            try{await moveChapterToTrash(comicId,chapterId);window.loadChaptersList();window.loadComicsList();Swal.fire('Masuk Trash','Folder masih dapat dipulihkan.','success');}catch(e){Swal.fire('Gagal',e.message||'Gagal memindahkan folder.','error');}
         }
 
         window.deleteChapterFolder = async function(comicId, chapterId) {
-            const result = await Swal.fire({ title: 'Hapus Folder & Media?', text: "⚠️ Peringatan: Seluruh media di dalam folder ini akan dibuang secara permanen.", icon: 'warning', showCancelButton: true, confirmButtonColor: '#ef4444', cancelButtonColor: '#94a3b8', confirmButtonText: 'Hapus Permanen' });
+            const result = await Swal.fire({ title: 'Pindahkan Folder ke Trash?', text: "Media tidak dihapus dan folder masih dapat dipulihkan.", icon: 'warning', showCancelButton: true, confirmButtonColor: '#f59e0b', cancelButtonColor: '#94a3b8', confirmButtonText: 'Pindahkan ke Trash', cancelButtonText:'Batal' });
             if(!result.isConfirmed) return;
             try {
-                const chapterRef = doc(db, "comics", comicId, "chapters", chapterId);
-                const chapterSnap = await getDoc(chapterRef);
-                if (chapterSnap.exists()) await requestR2Deletion(chapterSnap.data().images || []);
-                await deleteDoc(chapterRef);
-                await syncChapterCount(comicId);
-                await writeAudit('DELETE_CHAPTER', chapterId, comicId);
+                await moveChapterToTrash(comicId,chapterId);
                 window.loadCloudGallery(); 
                 if(document.getElementById('filterChapterId').value === comicId) { window.loadChaptersList(); }
+                Swal.fire('Masuk Trash','Folder masih dapat dipulihkan.','success');
             } catch(e) { Swal.fire('Error', "Gagal aksi I/O: " + e.message, 'error'); }
         }
 
@@ -2018,7 +2081,7 @@
             const list=document.getElementById('moderationList'); if(!list)return; let items=window.moderationItems;
             if(window.moderationFilter==='reported')items=items.filter(x=>x.reports.length); if(window.moderationFilter==='pinned')items=items.filter(x=>x.isPinned);
             document.getElementById('moderationCount').textContent=`${items.length} komentar`;
-            list.innerHTML=items.map(c=>`<div class="moderation-card ${c.isPinned?'pinned':''}"><div class="moderation-head"><div><div class="moderation-user">${adminSafe(c.username||'Pengguna')} ${c.isPinned?'<i class="fa-solid fa-thumbtack" style="color:#625af2"></i>':''}</div><div class="moderation-meta">${adminSafe(c.comicTitle)} • ${c.parentId?'Balasan':'Komentar utama'}</div></div>${c.reports.length?`<span class="report-badge"><i class="fa-solid fa-flag"></i>&nbsp; ${c.reports.length} laporan</span>`:''}</div><div class="moderation-text">${adminSafe(c.text||'')}</div><div class="moderation-actions"><button class="mod-btn primary" onclick="togglePinComment('${c.comicId}','${c.id}',${!c.isPinned})"><i class="fa-solid fa-thumbtack"></i> ${c.isPinned?'Lepas sematan':'Sematkan'}</button>${c.reports.length?`<button class="mod-btn success" onclick="resolveCommentReports('${c.comicId}','${c.id}')">Selesaikan laporan</button>`:''}<button class="mod-btn danger" onclick="adminDeleteComment('${c.comicId}','${c.id}')"><i class="fa-solid fa-trash"></i> Hapus</button></div></div>`).join('')||'<div class="card">Tidak ada komentar untuk filter ini.</div>';
+            list.innerHTML=items.map(c=>{const initial=adminSafe((c.username||'P').charAt(0).toUpperCase());const when=c.timestamp?.toDate?c.timestamp.toDate().toLocaleString('id-ID',{dateStyle:'medium',timeStyle:'short'}):'Baru';return `<div class="moderation-card ${c.isPinned?'pinned':''}"><div class="moderation-head"><div style="display:flex;gap:10px;min-width:0"><div style="width:38px;height:38px;flex:0 0 38px;border-radius:12px;background:#eeecff;color:#625af2;display:grid;place-items:center;font-weight:800">${initial}</div><div style="min-width:0"><div class="moderation-user">${adminSafe(c.username||'Pengguna')} ${c.isPinned?'<i class="fa-solid fa-thumbtack" style="color:#625af2"></i>':''}</div><div class="moderation-meta">${adminSafe(c.comicTitle)} • ${c.parentId?'Balasan':'Komentar utama'}<br>${adminSafe(when)}</div></div></div>${c.reports.length?`<span class="report-badge"><i class="fa-solid fa-flag"></i>&nbsp; ${c.reports.length}</span>`:''}</div><div class="moderation-text">${adminSafe(c.text||'')}</div><div class="moderation-actions"><button class="mod-btn primary" onclick="togglePinComment('${c.comicId}','${c.id}',${!c.isPinned})"><i class="fa-solid fa-thumbtack"></i> ${c.isPinned?'Lepas sematan':'Sematkan'}</button>${c.reports.length?`<button class="mod-btn success" onclick="resolveCommentReports('${c.comicId}','${c.id}')">Selesaikan laporan</button>`:''}<button class="mod-btn danger" onclick="adminDeleteComment('${c.comicId}','${c.id}')"><i class="fa-solid fa-trash"></i> Hapus</button></div></div>`}).join('')||'<div class="card" style="grid-column:1/-1">Tidak ada komentar untuk filter ini.</div>';
         }
         window.setModerationFilter=function(filter){window.moderationFilter=filter;renderModeration();}
         window.togglePinComment=async function(comicId,commentId,value){await updateDoc(doc(db,'comics',comicId,'comments',commentId),{isPinned:value,pinnedAt:value?serverTimestamp():null});await writeAudit(value?'PIN_COMMENT':'UNPIN_COMMENT',commentId,comicId);const item=window.moderationItems.find(x=>x.comicId===comicId&&x.id===commentId);if(item)item.isPinned=value;renderModeration();}

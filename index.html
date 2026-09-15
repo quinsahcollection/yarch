@@ -459,6 +459,10 @@
         .updates-tabs::-webkit-scrollbar { display:none; }
         .update-tab { flex:0 0 auto; padding:8px 13px; border:0; border-radius:99px; color:#74798d; background:#eceef5; font-size:11px; font-weight:750; cursor:pointer; }
         .update-tab.active { color:#fff; background:linear-gradient(135deg,#6d5dfc,#5153e8); box-shadow:0 6px 14px rgba(91,92,240,.22); }
+        .update-calendar-wrap { position:relative; flex:0 0 auto; }
+        .update-calendar-input { position:absolute; width:1px; height:1px; opacity:0; pointer-events:none; }
+        .update-calendar-label { display:flex; align-items:center; gap:6px; padding:8px 13px; border:1px solid #dedff0; border-radius:99px; color:#686d82; background:#fff; font-size:11px; font-weight:750; cursor:pointer; }
+        .update-calendar-wrap.active .update-calendar-label { color:#fff; border-color:#625af2; background:linear-gradient(135deg,#6d5dfc,#5153e8); box-shadow:0 6px 14px rgba(91,92,240,.22); }
         .updates-feed { display:flex; flex-direction:column; gap:11px; padding:4px 14px 20px; }
         .update-feed-card { display:grid; grid-template-columns:72px minmax(0,1fr); gap:12px; min-height:104px; padding:10px; border-radius:17px; background:#fff; box-shadow:0 7px 20px rgba(32,37,70,.07); cursor:pointer; }
         .update-feed-card img { width:72px; height:104px; object-fit:cover; border-radius:12px; }
@@ -623,7 +627,7 @@
         .smart-empty{width:100%;padding:20px;border:1px dashed #dcd9ff;border-radius:14px;background:#faf9ff;text-align:center;color:#777b90;font-size:12px;line-height:1.55}
         /* V20.1: koleksi, ranking, jadwal, dan notifikasi pengikut */
         .home-bell{position:relative;cursor:pointer}.home-notification-count{position:absolute;right:-7px;top:-8px;min-width:17px;height:17px;padding:0 4px;border-radius:9px;background:#f04461;color:#fff;font-size:9px;font-weight:800;display:none;place-items:center;border:2px solid #fff}.home-notification-count.show{display:grid}
-        .home-feature-section{background:#fff}.ranking-scroll{display:flex;gap:10px;overflow-x:auto;scrollbar-width:none;padding-bottom:8px}.ranking-scroll::-webkit-scrollbar{display:none}.ranking-card{min-width:210px;border-radius:17px;padding:13px;background:linear-gradient(135deg,#242842,#5a50d8);color:#fff;display:flex;gap:12px;cursor:pointer;box-shadow:0 9px 23px rgba(58,52,141,.18)}.ranking-card:nth-child(2n){background:linear-gradient(135deg,#172c3c,#168e8c)}.ranking-number{font-size:28px;font-weight:900;opacity:.55;align-self:center}.ranking-card img{width:55px;height:78px;border-radius:9px;object-fit:cover}.ranking-info{min-width:0;display:flex;flex-direction:column;justify-content:center}.ranking-title{font-size:12px;font-weight:800;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.ranking-meta{font-size:10px;opacity:.78;margin-top:6px}.schedule-days,.library-tabs{display:flex;gap:7px;overflow-x:auto;scrollbar-width:none;padding-bottom:11px}.schedule-day,.library-tab{border:1px solid #e5e5f0;background:#fff;color:#777c91;border-radius:999px;padding:8px 12px;white-space:nowrap;font-size:10px;font-weight:800;cursor:pointer}.schedule-day.active,.library-tab.active{background:#625af2;color:#fff;border-color:#625af2;box-shadow:0 5px 13px rgba(98,90,242,.22)}
+        .home-feature-section{background:#fff}.ranking-scroll{display:flex;gap:10px;overflow-x:auto;scrollbar-width:none;padding-bottom:8px}.ranking-scroll::-webkit-scrollbar{display:none}.ranking-card{min-width:210px;border-radius:17px;padding:13px;background:linear-gradient(135deg,#3e35a8,#7468ff);color:#fff;display:flex;gap:12px;cursor:pointer;box-shadow:0 9px 23px rgba(58,52,141,.18);position:relative;overflow:hidden}.ranking-card::after{content:"";position:absolute;right:-22px;top:-30px;width:95px;height:95px;border-radius:50%;background:rgba(255,255,255,.1)}.ranking-card:nth-child(8n+2){background:linear-gradient(135deg,#087a78,#24b89e)}.ranking-card:nth-child(8n+3){background:linear-gradient(135deg,#d14b65,#ff7a79)}.ranking-card:nth-child(8n+4){background:linear-gradient(135deg,#c16a05,#f6aa27)}.ranking-card:nth-child(8n+5){background:linear-gradient(135deg,#1669ac,#3aa9e9)}.ranking-card:nth-child(8n+6){background:linear-gradient(135deg,#7637a6,#c05cda)}.ranking-card:nth-child(8n+7){background:linear-gradient(135deg,#257044,#54b86f)}.ranking-card:nth-child(8n){background:linear-gradient(135deg,#a33d1d,#e7743b)}.ranking-number{position:relative;z-index:1;font-size:28px;font-weight:900;opacity:.75;align-self:center}.ranking-card img,.ranking-info{position:relative;z-index:1}.ranking-card img{width:55px;height:78px;border-radius:9px;object-fit:cover}.ranking-info{min-width:0;display:flex;flex-direction:column;justify-content:center}.ranking-title{font-size:12px;font-weight:800;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.ranking-meta{font-size:10px;opacity:.82;margin-top:6px}.schedule-days,.library-tabs{display:flex;gap:7px;overflow-x:auto;scrollbar-width:none;padding-bottom:11px}.schedule-day,.library-tab{border:1px solid #e5e5f0;background:#fff;color:#777c91;border-radius:999px;padding:8px 12px;white-space:nowrap;font-size:10px;font-weight:800;cursor:pointer}.schedule-day.active,.library-tab.active{background:#625af2;color:#fff;border-color:#625af2;box-shadow:0 5px 13px rgba(98,90,242,.22)}
         .collection-action-box{margin:0 0 18px;padding:13px;border-radius:15px;background:linear-gradient(135deg,#f2f0ff,#fafaff);border:1px solid #e4e1ff;display:flex;align-items:center;gap:10px}.collection-action-box i{color:#625af2}.collection-action-box>div{flex:1}.collection-action-box strong{display:block;font-size:12px}.collection-action-box small{color:#85899c;font-size:10px}.collection-select{border:1px solid #dcd9f7;background:#fff;border-radius:10px;padding:9px 8px;color:#4c466f;font-size:10px;font-weight:700;max-width:130px}
         .library-status-badge{position:absolute;left:7px;bottom:7px;background:rgba(38,34,77,.84);color:#fff;padding:4px 7px;border-radius:7px;font-size:9px;font-weight:800;z-index:4}.bookmark-grid .manga-card-simple{position:relative}
         /* V20.1: profil sosial dan gamifikasi */
@@ -824,6 +828,7 @@
                 <button class="update-tab" data-period="today" onclick="setUpdatePeriod('today')">Hari ini</button>
                 <button class="update-tab" data-period="yesterday" onclick="setUpdatePeriod('yesterday')">Kemarin</button>
                 <button class="update-tab" data-period="week" onclick="setUpdatePeriod('week')">Minggu ini</button>
+                <span class="update-calendar-wrap" id="updateCalendarWrap"><input class="update-calendar-input" id="updateCalendar" type="date" onchange="setUpdateCalendarDate(this.value)"><button class="update-calendar-label" type="button" onclick="openUpdateCalendar()"><i class="fa-regular fa-calendar"></i><span id="updateCalendarLabel">Pilih tanggal</span></button></span>
             </div>
             <div class="notification-panel" id="notificationPanel">
                 <h3>Pengaturan Update</h3><p>Pilihan tersimpan pada perangkat ini dan dapat diubah kapan saja.</p>
@@ -1573,12 +1578,14 @@
         }
         function getRecommendationProfile() {
             let history={};try{history=JSON.parse(localStorage.getItem('comicHistoryDetail')||'{}');}catch(e){}
-            const seedWeights={};Object.keys(history).forEach(id=>seedWeights[id]=(seedWeights[id]||0)+3);(window.userBookmarks||[]).forEach(id=>seedWeights[id]=(seedWeights[id]||0)+5);
-            const genres={},types={};Object.entries(seedWeights).forEach(([id,weight])=>{const c=window.comicsData[id];if(!c)return;(c.genres||[]).forEach(g=>genres[g]=(genres[g]||0)+weight);if(c.type)types[c.type]=(types[c.type]||0)+weight;});
-            return {seedWeights,genres,types};
+            const seedWeights={},genreNames={},now=Date.now();
+            Object.entries(history).forEach(([id,item])=>{const ageDays=Math.max(0,(now-getTimeValue(item?.updatedAt))/86400000);const recencyBonus=ageDays<=3?3:ageDays<=14?2:ageDays<=60?1:0;seedWeights[id]=(seedWeights[id]||0)+3+recencyBonus;});
+            (window.userBookmarks||[]).forEach(id=>seedWeights[id]=(seedWeights[id]||0)+6);
+            const genres={},types={};Object.entries(seedWeights).forEach(([id,weight])=>{const c=window.comicsData[id];if(!c)return;(c.genres||[]).forEach(g=>{const key=normalizeSearch(g);if(!key)return;genreNames[key]=g;genres[key]=(genres[key]||0)+weight;});if(c.type){const type=normalizeSearch(c.type);types[type]=(types[type]||0)+weight;}});
+            return {seedWeights,genres,genreNames,types,historyCount:Object.keys(history).length,bookmarkCount:(window.userBookmarks||[]).length};
         }
         function calculateRecommendation(id,comic,profile) {
-            let score=0,reasons=[];(comic.genres||[]).forEach(g=>{if(profile.genres[g]){score+=profile.genres[g]*2;reasons.push(g);}});if(profile.types[comic.type]){score+=profile.types[comic.type];reasons.push(comic.type);}
+            let score=0,reasons=[];(comic.genres||[]).forEach(g=>{const key=normalizeSearch(g);if(profile.genres[key]){score+=profile.genres[key]*2;reasons.push(g);}});const typeKey=normalizeSearch(comic.type||'');if(profile.types[typeKey]){score+=profile.types[typeKey];reasons.push(comic.type);}
             const rating=comic.ratingCount?(comic.ratingTotal/comic.ratingCount):0;score+=rating*2+Math.log10((comic.views||0)+1);if(profile.seedWeights[id])score-=40;
             return {score,reason:reasons.length?`Karena kamu suka ${reasons.slice(0,2).join(' & ')}`:(rating>=4?`Rating ${rating.toFixed(1)}`:'Sedang populer')};
         }
@@ -1588,7 +1595,8 @@
             const profile=getRecommendationProfile(),personal=Object.keys(profile.seedWeights).length>0;
             let items=Object.entries(window.comicsData).map(([id,comic])=>({id,comic,...calculateRecommendation(id,comic,profile)}));if(shuffle)items.forEach(x=>x.score+=Math.random()*2);items.sort((a,b)=>b.score-a.score);
             let selected=items.filter(x=>!profile.seedWeights[x.id]).slice(0,8);if(selected.length<4)selected=items.slice(0,8);
-            label.textContent=personal?'Dipilih dari riwayat dan bookmark kamu':'Pilihan populer untuk memulai';
+            const favorite=Object.entries(profile.genres).sort((a,b)=>b[1]-a[1])[0]?.[0];
+            label.textContent=personal?(favorite?`Berdasarkan riwayat • Sering menikmati ${profile.genreNames[favorite]}`:'Dipilih dari riwayat dan koleksi kamu'):'Pilihan populer untuk memulai';
             container.innerHTML=selected.map(x=>smartCard(x.id,x.comic,x.reason)).join('')||'<div class="smart-empty">Belum cukup konten untuk membuat rekomendasi.</div>';
         }
         function renderSimilarTitles(comicId) {
@@ -1912,6 +1920,7 @@
 
         // ================= UPDATE FEED & STATUS SUDAH DIBACA =================
         window.updatePeriod = 'all';
+        window.updateSelectedDate = '';
         window.notificationSettings = JSON.parse(localStorage.getItem('notificationSettings') || '{"comic":true,"video":true,"followedOnly":true}');
         window.toggleNotificationPanel = function() {
             document.getElementById('notificationPanel')?.classList.toggle('show');
@@ -1973,12 +1982,32 @@
         window.setUpdatePeriod = function(period) {
             window.updatePeriod = ['all','today','yesterday','week'].includes(period) ? period : 'all';
             document.querySelectorAll('.update-tab').forEach(btn => btn.classList.toggle('active', btn.dataset.period === window.updatePeriod));
+            document.getElementById('updateCalendarWrap')?.classList.remove('active');
+            renderUpdatesFeed();
+        }
+        window.openUpdateCalendar = function() {
+            const input=document.getElementById('updateCalendar');
+            if(!input)return;
+            if(typeof input.showPicker==='function') input.showPicker(); else input.click();
+        }
+        window.setUpdateCalendarDate = function(value) {
+            if(!/^\d{4}-\d{2}-\d{2}$/.test(value||''))return;
+            window.updateSelectedDate=value;window.updatePeriod='calendar';
+            document.querySelectorAll('.update-tab').forEach(btn=>btn.classList.remove('active'));
+            document.getElementById('updateCalendarWrap')?.classList.add('active');
+            const date=new Date(`${value}T00:00:00`);
+            document.getElementById('updateCalendarLabel').textContent=new Intl.DateTimeFormat('id-ID',{day:'numeric',month:'short',year:'numeric'}).format(date);
             renderUpdatesFeed();
         }
         function matchesUpdatePeriod(timestamp, period) {
             if(period === 'all') return true;
             const ms = getTimeValue(timestamp);
             if(!ms) return period === 'all';
+            if(period === 'calendar') {
+                const selected=new Date(`${window.updateSelectedDate}T00:00:00`);
+                if(Number.isNaN(selected.getTime()))return false;
+                const start=selected.getTime();return ms>=start&&ms<start+86400000;
+            }
             const now = new Date();
             const startToday = new Date(now.getFullYear(), now.getMonth(), now.getDate()).getTime();
             if(period === 'today') return ms >= startToday;

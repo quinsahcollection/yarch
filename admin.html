@@ -1604,7 +1604,9 @@
                     method:'POST', headers:{...authHeaders,'Content-Type':'application/json'},
                     body:JSON.stringify({fileName:file.name,contentType:file.type||'application/octet-stream'})
                 });
-                const chunkSize = 20 * 1024 * 1024;
+                // 50 MB: tetap aman di bawah batas 100 MB Worker Free,
+                // tetapi mengurangi jeda konfirmasi antarbagian.
+                const chunkSize = 50 * 1024 * 1024;
                 const totalParts = Math.ceil(file.size / chunkSize);
                 const parts = [];
                 try {

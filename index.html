@@ -1455,6 +1455,8 @@
 
         async function fetchAllComics() {
             try {
+                // Buang cache katalog lama agar konten yang baru saja di-unpublish tidak tetap muncul.
+                window.comicsData = {};
                 let querySnapshot;
                 try {
                     const indexedQuery = query(collection(db, "comics"), where("isPublished", "==", true), orderBy("createdAt", "desc"), limit(40));
@@ -1517,10 +1519,16 @@
                     const type = (data.type || "").toLowerCase();
                     const format = (data.format || "").toLowerCase();
 
-                    if (type.includes("manga") || format === "komik") htmlManga += cardHTML;
-                    if (type.includes("manhwa")) htmlManhwa += cardHTML;
-                    if (type.includes("manhua")) htmlManhua += cardHTML;
-                    if (type.includes("film") || type.includes("anime") || format === "film") htmlFilm += cardHTML;
+                    // Kategori eksklusif: Manhwa/Manhua tidak ikut masuk ke Manga.
+                    if (type.includes("manhwa")) {
+                        htmlManhwa += cardHTML;
+                    } else if (type.includes("manhua")) {
+                        htmlManhua += cardHTML;
+                    } else if (type.includes("film") || type.includes("movie") || type.includes("anime") || type.includes("series") || format === "film") {
+                        htmlFilm += cardHTML;
+                    } else if (type.includes("manga") || format === "komik") {
+                        htmlManga += cardHTML;
+                    }
                 });
                 
                 if (sliderHtml !== '') {
@@ -1943,6 +1951,8 @@
                 chapterId: chapterId || "",
                 chapterNumber: chapterNum || "1",
                 pageIndex: pageIndex || 1,
+                mediaFormat: comicData.format || '',
+                mediaType: comicData.type || '',
                 updatedAt: new Date().getTime()
             };
 
@@ -1986,6 +1996,45 @@
                 const localHist = JSON.parse(localStorage.getItem('comicHistoryDetail')) || {};
                 historyList = Object.values(localHist).sort((a,b) => (b.updatedAt || 0) - (a.updatedAt || 0));
             }
+
+            // Jangan tampilkan riwayat untuk judul yang sudah di-unpublish/dihapus admin.
+            const localHistoryMap = JSON.parse(localStorage.getItem('comicHistoryDetail') || '{}');
+            const visibleHistory = [];
+            for (const item of historyList) {
+                if(!item?.comicId) continue;
+                let comicRecord = window.comicsData[item.comicId] || null;
+                let confirmedHidden = false;
+
+                if(!comicRecord) {
+                    try {
+                        const comicSnapshot = await getDoc(doc(db, 'comics', item.comicId));
+                        if(comicSnapshot.exists() && comicSnapshot.data().isPublished === true) {
+                            comicRecord = comicSnapshot.data();
+                            window.comicsData[item.comicId] = comicRecord;
+                        } else {
+                            confirmedHidden = true;
+                        }
+                    } catch(error) {
+                        // Jika sedang offline, gunakan metadata riwayat agar kartu tidak menjadi putih.
+                        comicRecord = item.coverUrl ? {
+                            title:item.comicTitle || 'Konten', coverUrl:item.coverUrl,
+                            format:item.mediaFormat || '', type:item.mediaType || ''
+                        } : null;
+                    }
+                }
+
+                if(confirmedHidden) {
+                    delete localHistoryMap[item.comicId];
+                    if(auth.currentUser) {
+                        try { await deleteDoc(doc(db, 'users', auth.currentUser.uid, 'history', item.comicId)); }
+                        catch(error) { }
+                    }
+                    continue;
+                }
+                if(comicRecord) visibleHistory.push(item);
+            }
+            historyList = visibleHistory;
+            localStorage.setItem('comicHistoryDetail', JSON.stringify(localHistoryMap));
 
             const statHistEl = document.getElementById('statHistoryCount');
             if(statHistEl) statHistEl.innerText = historyList.length;

@@ -1145,7 +1145,9 @@
 
                     if(dbFormat === 'film') countFilm++; else countKomik++;
 
-                    window.allComicsList.push({ id: docSnap.id, title: data.title, coverUrl: data.coverUrl, format: dbFormat });
+                    // Simpan metadata lengkap agar form Chapter/Episode memperoleh
+                    // totalSeasons dan seasonTotals tanpa kehilangan field saat cache dibuat.
+                    window.allComicsList.push({ id: docSnap.id, ...data, format: dbFormat });
                     totalChaptersEstimasi += (data.chaptersCount || 0);
 
                     const formatBadge = dbFormat === 'film' ? '<span style="background:var(--purple);color:white;padding:3px 8px;border-radius:4px;font-size:11px;font-weight:600;"><i class="fa-solid fa-film"></i> Film/Series</span>' : '<span style="background:var(--primary);color:white;padding:3px 8px;border-radius:4px;font-size:11px;font-weight:600;"><i class="fa-solid fa-book-open"></i> Komik</span>';
@@ -2253,11 +2255,35 @@
             return {totalSeasons, seasonTotals, totalParts};
         };
 
-        window.syncChapterSeasonOptions = function(comic) {
+        window.syncChapterSeasonOptions = async function(comic) {
             const select = document.getElementById('chapterSeasonNumber');
             if (!select) return;
-            const count = Math.max(1, Number(comic?.totalSeasons || 1));
-            select.innerHTML = Array.from({length:count}, (_, index) => `<option value="${index + 1}">Season ${index + 1}</option>`).join('');
+            const previousValue = select.value || '1';
+            select.innerHTML = '<option value="1">Memuat season...</option>';
+            try {
+                let latest = comic || {};
+                if (comic?.id) {
+                    const latestSnap = await getDoc(doc(db, 'comics', comic.id));
+                    if (latestSnap.exists()) {
+                        latest = {id:comic.id, ...latestSnap.data()};
+                        const cacheIndex = window.allComicsList.findIndex(item => item.id === comic.id);
+                        if (cacheIndex >= 0) window.allComicsList[cacheIndex] = latest;
+                    }
+                }
+                const seasonKeys = Object.keys(latest.seasonTotals || {}).map(Number).filter(Number.isFinite);
+                let highestExistingSeason = 1;
+                if (latest.id) {
+                    const chapterSnapshot = await getDocs(collection(db, 'comics', latest.id, 'chapters'));
+                    chapterSnapshot.forEach(item => { highestExistingSeason = Math.max(highestExistingSeason, Number(item.data().seasonNumber || 1)); });
+                }
+                const count = Math.max(1, Number(latest.totalSeasons || 1), highestExistingSeason, ...seasonKeys);
+                select.innerHTML = Array.from({length:count}, (_, index) => `<option value="${index + 1}">Season ${index + 1}</option>`).join('');
+                select.value = Number(previousValue) <= count ? previousValue : '1';
+            } catch (error) {
+                const fallbackCount = Math.max(1, Number(comic?.totalSeasons || 1), ...Object.keys(comic?.seasonTotals || {}).map(Number).filter(Number.isFinite));
+                select.innerHTML = Array.from({length:fallbackCount}, (_, index) => `<option value="${index + 1}">Season ${index + 1}</option>`).join('');
+                console.warn('Metadata season gagal dimuat ulang:', error);
+            }
         };
 
         window.renderSeasonTotalInputs();

@@ -931,6 +931,8 @@
                         <div class="detail-info-row" id="rowAuthorStudio"><span class="label" id="lblAuthor">Author / Studio</span><span class="val" id="detailAuthor">-</span></div>
                         <div class="detail-info-row"><span class="label">Tipe</span><span class="val" id="detailType">-</span></div>
                         <div class="detail-info-row"><span class="label">Tanggal Rilis</span><span class="val" id="detailRelease">-</span></div>
+                        <div class="detail-info-row"><span class="label">Jumlah Season</span><span class="val" id="detailTotalSeasons">1 Season</span></div>
+                        <div class="detail-info-row"><span class="label" id="lblDetailTotalParts">Total per Season</span><span class="val" id="detailTotalParts">Belum ditentukan</span></div>
                         
                         <!-- Ekstra Row Khusus Film/Anime -->
                         <div class="detail-info-row movie-extra-info" style="display:none;"><span class="label">Durasi</span><span class="val" id="detailDuration">-</span></div>
@@ -2937,6 +2939,18 @@
 
                 const isVideo = data.format === 'film' || (data.type && (data.type.toLowerCase().includes('film') || data.type.toLowerCase().includes('anime')));
                 const movieExtras = document.querySelectorAll('.movie-extra-info');
+                const totalParts = isVideo
+                    ? Number(data.totalEpisodes || data.totalParts || 0)
+                    : Number(data.totalChapters || data.totalParts || 0);
+                const totalSeasons = Math.max(1, Number(data.totalSeasons || 1));
+                const seasonTotals = data.seasonTotals || {};
+                document.getElementById('detailTotalSeasons').innerText = `${totalSeasons} Season`;
+                document.getElementById('lblDetailTotalParts').innerText = `Total ${isVideo ? 'Episode' : 'Chapter'} per Season`;
+                const seasonLines = Array.from({length:totalSeasons}, (_,i) => {
+                    const count = Number(seasonTotals[i+1] || seasonTotals[String(i+1)] || (totalSeasons === 1 ? totalParts : 0));
+                    return count > 0 ? `S${i+1}: ${count}` : `S${i+1}: -`;
+                });
+                document.getElementById('detailTotalParts').innerText = seasonLines.join(' • ');
                 
                 if (isVideo) {
                     document.getElementById('rowAuthorStudio').style.display = 'none';
@@ -3012,16 +3026,23 @@
                 const snapshot = await getDocs(q);
                 
                 let chapterHTML = ''; let total = 0;
-                snapshot.forEach(doc => {
-                    const ch = doc.data(); total++;
+                const chapterDocs = snapshot.docs.map(item => ({id:item.id, ...item.data()})).sort((a,b) => (Number(b.seasonNumber||1)-Number(a.seasonNumber||1)) || (Number(b.chapterNumber||0)-Number(a.chapterNumber||0)));
+                let renderedSeason = null;
+                chapterDocs.forEach(ch => {
+                    total++;
                     const date = ch.updateDate || "Baru";
-                    const fullMovie = isFullMovieChapter(comicRecord, ch, snapshot.size);
+                    const seasonNumber = Number(ch.seasonNumber || 1);
+                    if (renderedSeason !== seasonNumber && Number(comicRecord.totalSeasons || 1) > 1) {
+                        renderedSeason = seasonNumber;
+                        chapterHTML += `<li style="list-style:none;padding:10px 14px;background:#f1f5f9;color:#475569;font-size:12px;font-weight:800">SEASON ${seasonNumber}</li>`;
+                    }
+                    const fullMovie = isFullMovieChapter(comicRecord, ch, chapterDocs.length);
                     const title = ch.title && !fullMovie ? ` - ${ch.title}` : '';
-                    const titleDisplay = `${getMediaPartLabel(comicRecord, ch, snapshot.size)}${title}`;
+                    const titleDisplay = `${getMediaPartLabel(comicRecord, ch, chapterDocs.length)}${title}`;
                     
-                    const readClass = isChapterRead(comicId, doc.id) ? 'is-read' : '';
+                    const readClass = isChapterRead(comicId, ch.id) ? 'is-read' : '';
                     chapterHTML += `
-                        <li class="chapter-item ${readClass}" onclick="handleMediaOpen('${comicId}', '${doc.id}', '${ch.chapterNumber}')">
+                        <li class="chapter-item ${readClass}" onclick="handleMediaOpen('${comicId}', '${ch.id}', '${ch.chapterNumber}')">
                             <div class="chapter-info">
                                 <span class="chapter-title" data-read-label="${isVideo ? 'Sudah ditonton' : 'Sudah dibaca'}">${titleDisplay}</span>
                                 <span class="chapter-date">${date}</span>

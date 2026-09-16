@@ -1416,7 +1416,7 @@
             const button=document.querySelector('.update-now');button.disabled=true;button.innerHTML='<i class="fa-solid fa-spinner fa-spin"></i> Memperbarui...';
             try{if('serviceWorker'in navigator){const regs=await navigator.serviceWorker.getRegistrations();await Promise.all(regs.map(reg=>reg.unregister()));}if('caches'in window){const keys=await caches.keys();await Promise.all(keys.map(key=>caches.delete(key)));}localStorage.removeItem('dismissedAppVersion');const url=new URL(location.href);url.searchParams.set('appVersion',Date.now());location.replace(url.href);}catch(e){button.disabled=false;button.innerHTML='<i class="fa-solid fa-bolt"></i> Perbarui Sekarang';window.showToast('Pembaruan gagal. Silakan muat ulang halaman.');}
         }
-        if('serviceWorker' in navigator && location.protocol !== 'file:') navigator.serviceWorker.register('./sw-v20.1.js',{updateViaCache:'none'}).then(reg=>reg.update()).catch(() => {});
+        if('serviceWorker' in navigator && location.protocol !== 'file:') navigator.serviceWorker.register('./sw-v20.1.js?v=20260916-duration-hms',{updateViaCache:'none'}).then(reg=>reg.update()).catch(() => {});
         document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible'){window.checkAppConfiguration(false);recordDailyAnalytics({});}});
         async function applyRemoteDisplayConfig(){try{const snap=await getDoc(doc(db,'settings','appConfig'));if(!snap.exists())return;const c=snap.data();if(c.appName)document.title=c.appName;if(/^#[0-9a-f]{6}$/i.test(c.themeColor||''))document.documentElement.style.setProperty('--primary-blue',c.themeColor);const recommendation=document.getElementById('recommendationSection');if(recommendation)recommendation.style.display=c.enableRecommendations===false?'none':'block';document.body.classList.toggle('gamification-off',c.enableGamification===false);if(c.announcement&&localStorage.getItem('seenAnnouncementV20.1')!==c.announcement){localStorage.setItem('seenAnnouncementV20.1',c.announcement);setTimeout(()=>window.showToast(c.announcement),1200);}}catch(e){}}
         applyRemoteDisplayConfig();
@@ -3038,6 +3038,15 @@
             button.setAttribute('aria-expanded', String(!collapsed));
         };
 
+        function formatEpisodeDuration(totalSeconds) {
+            const seconds = Math.max(0, Math.round(Number(totalSeconds || 0)));
+            if (!seconds) return '';
+            const hours = Math.floor(seconds / 3600);
+            const minutes = Math.floor((seconds % 3600) / 60);
+            const remainingSeconds = seconds % 60;
+            return `${hours}:${String(minutes).padStart(2, '0')}:${String(remainingSeconds).padStart(2, '0')}`;
+        }
+
         async function fetchChapters(comicId) {
             const container = document.getElementById('chapterListContainer');
             const badge = document.getElementById('chapterBadge');
@@ -3069,11 +3078,11 @@
                     const completed = episodes.filter(ch => isChapterRead(comicId, ch.id)).length;
                     const episodeHtml = episodes.map(ch => {
                         const date = ch.updateDate || 'Baru';
-                        const durationSeconds = Number(ch.durationSeconds || 0);
-                        const durationMinutes = durationSeconds > 0 ? Math.max(1, Math.round(durationSeconds / 60)) : Math.max(0, Math.round(Number(ch.durationMinutes || 0)));
+                        const durationSeconds = Number(ch.durationSeconds || 0) || (Math.max(0, Number(ch.durationMinutes || 0)) * 60);
+                        const durationText = formatEpisodeDuration(durationSeconds);
                         const pageCount = Math.max(0, Math.floor(Number(ch.pageCount || (Array.isArray(ch.images) ? ch.images.filter(url => !/\.(mp4|webm|ogv|ogg|mov|m4v|mkv)(?:$|[?#])/i.test(String(url))).length : 0))));
                         const mediaMeta = isVideo
-                            ? (durationMinutes > 0 ? `<span class="episode-media-meta"><i class="fa-regular fa-clock"></i> Durasi: ${durationMinutes} menit</span>` : '')
+                            ? (durationText ? `<span class="episode-media-meta"><i class="fa-regular fa-clock"></i> Durasi: ${durationText}</span>` : '')
                             : (pageCount > 0 ? `<span class="episode-media-meta"><i class="fa-regular fa-images"></i> ${pageCount} halaman</span>` : '');
                         const fullMovie = isFullMovieChapter(comicRecord, ch, chapterDocs.length);
                         const title = ch.title && !fullMovie ? ` — ${ch.title}` : '';

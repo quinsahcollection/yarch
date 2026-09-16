@@ -1233,6 +1233,12 @@
         window.sliderInterval = null;
         
         window.currentVideoQualities = {};
+        window.autoQualityEnabled = true;
+        window.currentAutoQualityUrl = '';
+
+        function reportBackgroundError(context, error) {
+            console.warn(`[${context}]`, error);
+        }
 
         // ================= V20.1: PROFIL SOSIAL & GAMIFIKASI =================
         function localDateKey(date=new Date()){return `${date.getFullYear()}-${String(date.getMonth()+1).padStart(2,'0')}-${String(date.getDate()).padStart(2,'0')}`;}
@@ -1488,6 +1494,7 @@
                 document.getElementById('commentInputArea').style.display = 'none';
 
                 window.userBookmarks = [];
+                window.userFollows = [];
                 window.userLibrary = {};
                 document.body.dataset.appTheme = 'default';
                 window.socialProfile = {displayName:'',bio:'',photoData:'',privacy:{publicProfile:true,showStats:true,showFavorites:true},theme:'default'};
@@ -1495,6 +1502,8 @@
                 renderBookmarks();
                 renderReadingHistory();
                 renderDiscoveryGrid(false);
+                updateNotificationBadge();
+                if(window.currentActiveComicId) updateFollowButton(window.currentActiveComicId);
             }
             window.checkAppConfiguration(false);
         });
@@ -2366,8 +2375,11 @@
                 updatedAt: new Date().getTime()
             };
 
-            let localHist = JSON.parse(localStorage.getItem('comicHistoryDetail')) || {};
-            localHist[comicId] = historyItem;
+            let localHist = {};
+            try { localHist = JSON.parse(localStorage.getItem('comicHistoryDetail') || '{}'); }
+            catch(error) { reportBackgroundError('Riwayat lokal rusak dan dibuat ulang', error); }
+            const previousHistory = localHist[comicId] || {};
+            localHist[comicId] = {...previousHistory, ...historyItem};
             localStorage.setItem('comicHistoryDetail', JSON.stringify(localHist));
 
             if (auth.currentUser) {
@@ -2375,8 +2387,8 @@
                     await setDoc(doc(db, "users", auth.currentUser.uid, "history", comicId), {
                         ...historyItem,
                         updatedAt: serverTimestamp()
-                    });
-                } catch(e) { }
+                    }, {merge:true});
+                } catch(e) { reportBackgroundError('Sinkronisasi riwayat baca/tonton gagal', e); }
                 if(window.userLibrary[comicId]?.status === 'want') {
                     window.setCollectionStatus(comicId,'reading');
                 }
@@ -2402,7 +2414,8 @@
             localStorage.setItem('comicHistoryDetail', JSON.stringify(localHist));
             localStorage.setItem(`videoResume_${comicId}_${chapterId}`, String(second));
             if(auth.currentUser) {
-                try { await setDoc(doc(db,'users',auth.currentUser.uid,'history',comicId), {...historyItem,updatedAt:serverTimestamp()}, {merge:true}); } catch(e) {}
+                try { await setDoc(doc(db,'users',auth.currentUser.uid,'history',comicId), {...historyItem,updatedAt:serverTimestamp()}, {merge:true}); }
+                catch(e) { reportBackgroundError('Sinkronisasi progres video gagal', e); }
             }
         }
 
@@ -3381,11 +3394,13 @@
                     if (targetUrl) {
                         videoPlayer.src = safeMediaUrl(targetUrl);
                         videoPlayer.onloadedmetadata = () => {
+                            videoPlayer.onloadedmetadata = null;
                             const saved = syncedResumeSecond;
                             if(saved > 5 && saved < videoPlayer.duration - 10) {
                                 videoPlayer.currentTime = saved;
                                 const banner = document.getElementById('resumeBanner'); banner.classList.add('show'); setTimeout(()=>banner.classList.remove('show'),2600);
                             }
+                            window.saveVideoProgress(comicId, chapterId, chapterNum, saved, videoPlayer.duration || 0);
                             videoPlayer.playbackRate = Number(localStorage.getItem('playbackSpeed') || 1);
                             videoPlayer.play().catch(() => {});
                         };
@@ -3410,11 +3425,11 @@
             videoPlayer.onpause=()=>{syncPlayerPlayButton();if(auth.currentUser)syncGamification();};
             videoPlayer.onended = () => {
                 syncPlayerPlayButton();
-                localStorage.removeItem(`videoResume_${comicId}_${chapterId}`);
-                saveReadingProgress(comicId, chapterId, chapterNum, 1);
+                markChapterRead(comicId, chapterId);
+                window.saveVideoProgress(comicId, chapterId, chapterNum, videoPlayer.duration || 0, videoPlayer.duration || 0)
+                    .finally(()=>localStorage.removeItem(`videoResume_${comicId}_${chapterId}`));
                 if(document.getElementById('autoplayNext').checked) startAutoplayNext();
             };
-            saveReadingProgress(comicId, chapterId, chapterNum, 1);
         }
 
         window.togglePlayerSettings = function(event) {
@@ -3432,17 +3447,40 @@
             if(icon) icon.className=`fa-solid ${player.paused?'fa-play':'fa-pause'}`;
         }
 
-        function renderQualityMenu(fallbackUrl) {
-            const menu = document.getElementById('qualityMenu');
-            const sourceEntries = Object.entries(window.currentVideoQualities || {}).filter(([,url]) => url && String(url).startsWith('http'));
+        function pickAutoQualityEntry(fallbackUrl) {
+            const sourceEntries = Object.entries(window.currentVideoQualities || {}).filter(([,url]) => url && /^https?:\/\//i.test(String(url)));
             const connection = navigator.connection || navigator.mozConnection || navigator.webkitConnection || {};
             const desired = connection.saveData || /(^|-)2g/.test(connection.effectiveType || '') ? 360 : (connection.effectiveType === '3g' ? 480 : 9999);
             const ranked = sourceEntries.map(entry => ({entry,pixels:Number(String(entry[0]).match(/\d+/)?.[0] || 0)})).sort((a,b)=>a.pixels-b.pixels);
-            const autoChoice = desired === 9999 ? ranked.at(-1) : (ranked.filter(item=>item.pixels&&item.pixels<=desired).at(-1) || ranked[0]);
-            const entries = [['Auto', autoChoice?.entry?.[1] || fallbackUrl], ...sourceEntries.filter(([label])=>String(label).toLowerCase()!=='auto')];
+            return desired === 9999
+                ? (ranked.at(-1)?.entry || ['Auto', fallbackUrl])
+                : ((ranked.filter(item=>item.pixels && item.pixels<=desired).at(-1) || ranked[0])?.entry || ['Auto', fallbackUrl]);
+        }
+
+        function renderQualityMenu(fallbackUrl) {
+            const menu = document.getElementById('qualityMenu');
+            const sourceEntries = Object.entries(window.currentVideoQualities || {}).filter(([,url]) => url && /^https?:\/\//i.test(String(url)));
+            const autoChoice = pickAutoQualityEntry(fallbackUrl);
+            const entries = [['Auto', autoChoice?.[1] || fallbackUrl], ...sourceEntries.filter(([label])=>String(label).toLowerCase()!=='auto')];
             window.currentQualityEntries = entries;
+            window.currentAutoQualityUrl = entries[0][1] || '';
+            window.autoQualityEnabled = true;
             menu.innerHTML = entries.map(([label,url],i) => `<button class="quality-btn ${i===0?'active':''}" onclick="changeQualityByIndex(${i})">${safeText(label)}</button>`).join('');
         }
+
+        function refreshAutoQuality() {
+            if(!window.autoQualityEnabled || !window.currentQualityEntries?.length) return;
+            const fallback = window.currentQualityEntries[0][1];
+            const next = pickAutoQualityEntry(fallback)?.[1] || fallback;
+            if(!next || next === window.currentAutoQualityUrl) return;
+            window.currentAutoQualityUrl = next;
+            window.currentQualityEntries[0][1] = next;
+            const player = document.getElementById('mainVideoPlayer');
+            if(player?.src) changeVideoSource(next, false);
+        }
+
+        const networkConnection = navigator.connection || navigator.mozConnection || navigator.webkitConnection;
+        networkConnection?.addEventListener?.('change', refreshAutoQuality);
         async function loadSubtitles(data) {
             const player = document.getElementById('mainVideoPlayer');
             const select = document.getElementById('subtitleSelect');
@@ -3455,12 +3493,14 @@
                 const url = typeof sub === 'string' ? sub : sub.url;
                 if(!safeMediaUrl(url)) continue;
                 let trackUrl = safeMediaUrl(url);
-                if(/\.srt(?:\?|$)/i.test(trackUrl)) {
-                    try {
-                        const srt = await fetch(trackUrl).then(response => response.text());
-                        const vtt = 'WEBVTT\n\n' + srt.replace(/\r+/g,'').replace(/(\d{2}:\d{2}:\d{2}),([0-9]{3})/g,'$1.$2');
-                        trackUrl = URL.createObjectURL(new Blob([vtt],{type:'text/vtt'}));
-                    } catch(e) { console.warn('Subtitle SRT tidak dapat dikonversi',e); }
+                try {
+                    const response = await fetch(trackUrl, {mode:'cors'});
+                    if(!response.ok) throw new Error(`HTTP ${response.status}`);
+                    let subtitleText = await response.text();
+                    if(/\.srt(?:\?|$)/i.test(trackUrl)) subtitleText = 'WEBVTT\n\n' + subtitleText.replace(/\r+/g,'').replace(/(\d{2}:\d{2}:\d{2}),([0-9]{3})/g,'$1.$2');
+                    trackUrl = URL.createObjectURL(new Blob([subtitleText],{type:'text/vtt'}));
+                } catch(e) {
+                    reportBackgroundError('Subtitle lintas domain tidak dapat diproses; mencoba URL langsung',e);
                 }
                 const track = document.createElement('track'); track.kind='subtitles'; track.label=typeof sub==='string'?`Subtitle ${index+1}`:(sub.label||`Subtitle ${index+1}`); track.srclang=sub.srclang||sub.lang||'id'; track.src=trackUrl; player.appendChild(track);
                 select.insertAdjacentHTML('beforeend', `<option value="${player.textTracks.length-1}">${safeText(track.label)}</option>`);
@@ -3499,9 +3539,26 @@
             menu.style.display = menu.style.display === 'none' || menu.style.display === '' ? 'flex' : 'none';
         }
 
+        function changeVideoSource(url, showMessage=true) {
+            const normalizedUrl = safeMediaUrl(url);
+            if(!normalizedUrl) return false;
+            const player=document.getElementById('mainVideoPlayer');
+            const time=Number(player.currentTime || 0);
+            const paused=player.paused;
+            player.src=normalizedUrl;
+            player.addEventListener('loadedmetadata',()=>{
+                player.currentTime=Math.min(time,Math.max(0,(player.duration||time)-0.1));
+                player.playbackRate=Number(localStorage.getItem('playbackSpeed')||1);
+                if(!paused) player.play().catch(error=>reportBackgroundError('Pemutaran setelah mengganti kualitas gagal',error));
+            },{once:true});
+            if(showMessage) window.showToast('Kualitas video diperbarui');
+            return true;
+        }
+
         window.changeQuality = function(quality, isInitial = false) {
             const url = window.currentVideoQualities?.[quality];
             if(!url) { document.getElementById('qualityMenu').style.display = 'none'; return; }
+            window.autoQualityEnabled = String(quality).toLowerCase() === 'auto';
             const player = document.getElementById('mainVideoPlayer'); const time=player.currentTime; const paused=player.paused;
             player.src=safeMediaUrl(url); player.currentTime=time; player.playbackRate=Number(localStorage.getItem('playbackSpeed')||1); if(!paused) player.play().catch(()=>{});
             document.querySelectorAll('.quality-btn').forEach(btn=>btn.classList.toggle('active',btn.textContent.trim()===String(quality)));
@@ -3510,15 +3567,20 @@
         window.changeQualityByIndex = function(index) {
             const entry = window.currentQualityEntries?.[Number(index)];
             if(!entry) return;
-            const [label,url] = entry; const player=document.getElementById('mainVideoPlayer'); const time=player.currentTime; const paused=player.paused;
-            player.src=safeMediaUrl(url); player.addEventListener('loadedmetadata',()=>{ player.currentTime=Math.min(time,player.duration||time); player.playbackRate=Number(localStorage.getItem('playbackSpeed')||1); if(!paused) player.play().catch(()=>{}); },{once:true});
+            const [label,url] = entry;
+            window.autoQualityEnabled = Number(index) === 0;
+            changeVideoSource(url, false);
             document.querySelectorAll('.quality-btn').forEach((btn,i)=>btn.classList.toggle('active',i===Number(index))); document.getElementById('qualityMenu').style.display='none'; window.showToast(`Resolusi ${label} dipilih`);
         }
 
         window.closePlayer = function() {
             cancelAutoplayNext();
-            document.getElementById('mainVideoPlayer').pause();
-            document.getElementById('mainVideoPlayer').src = "";
+            const player = document.getElementById('mainVideoPlayer');
+            if(window.currentActiveComicId && window.currentActiveChapterId && player.currentTime > 0 && !player.ended) {
+                window.saveVideoProgress(window.currentActiveComicId, window.currentActiveChapterId, window.currentActiveChapterNum, player.currentTime, player.duration || 0);
+            }
+            player.pause();
+            player.src = "";
             if(history.state?.comicApp && history.state.view === 'player') history.back();
             else window.switchNav('home');
         }

@@ -109,6 +109,11 @@
         .format-btn.active { border-color: var(--primary); background: #eff6ff; color: var(--primary); box-shadow: 0 4px 10px rgba(37, 99, 235, 0.1); }
         .format-btn.active-film { border-color: var(--purple); background: #f5f3ff; color: var(--purple); box-shadow: 0 4px 10px rgba(139, 92, 246, 0.1); }
 
+        .content-type-badge { display:inline-flex; align-items:center; justify-content:center; gap:6px; width:max-content; min-width:78px; padding:6px 10px; border:1px solid transparent; border-radius:999px; white-space:nowrap; font-size:11px; line-height:1; font-weight:750; letter-spacing:.01em; vertical-align:middle; }
+        .content-type-badge i { width:13px; flex:0 0 13px; text-align:center; font-size:10px; }
+        .content-type-badge.film { color:#6842cf; background:#f2edff; border-color:#ded2ff; box-shadow:0 2px 7px rgba(104,66,207,.09); }
+        .content-type-badge.comic { color:#165ec9; background:#edf5ff; border-color:#cfe2ff; box-shadow:0 2px 7px rgba(22,94,201,.08); }
+
         /* ==================== DASHBOARD STATS ==================== */
         .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 20px; margin-bottom: 30px; }
         .stat-card { background: var(--white); border-radius: 12px; padding: 20px; border: 1px solid var(--border); box-shadow: 0 4px 15px rgba(0,0,0,0.03); display: flex; align-items: center; gap: 15px; transition: 0.3s; }
@@ -1155,7 +1160,9 @@
                     window.allComicsList.push({ id: docSnap.id, ...data, format: dbFormat });
                     totalChaptersEstimasi += (data.chaptersCount || 0);
 
-                    const formatBadge = dbFormat === 'film' ? '<span style="background:var(--purple);color:white;padding:3px 8px;border-radius:4px;font-size:11px;font-weight:600;"><i class="fa-solid fa-film"></i> Film/Series</span>' : '<span style="background:var(--primary);color:white;padding:3px 8px;border-radius:4px;font-size:11px;font-weight:600;"><i class="fa-solid fa-book-open"></i> Komik</span>';
+                    const formatBadge = dbFormat === 'film'
+                        ? '<span class="content-type-badge film"><i class="fa-solid fa-film"></i><span>Film / Series</span></span>'
+                        : '<span class="content-type-badge comic"><i class="fa-solid fa-book-open"></i><span>Komik</span></span>';
                     
                     let creatorDisplay = data.author || '-';
                     if (dbFormat === 'film' && data.directors && data.directors.length > 0) {

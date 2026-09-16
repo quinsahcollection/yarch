@@ -1262,6 +1262,17 @@
             if (!response.ok) throw new Error((await response.json().catch(() => ({}))).error || 'Gagal menghapus media R2');
         }
 
+        function collectStoredMediaUrls(data = {}) {
+            const urls = [];
+            const add = value => {
+                if(typeof value === 'string' && /^https?:\/\//i.test(value)) urls.push(value);
+                else if(Array.isArray(value)) value.forEach(add);
+                else if(value && typeof value === 'object') Object.values(value).forEach(add);
+            };
+            ['coverUrl','videoUrl','streamUrl','subtitleUrl','images','deletionMediaUrls','videoQualities','qualities','subtitles'].forEach(field => add(data[field]));
+            return urls;
+        }
+
         async function syncChapterCount(comicId) {
             const snapshot = await getDocs(collection(db, 'comics', comicId, 'chapters'));
             await updateDoc(doc(db, 'comics', comicId), { chaptersCount: snapshot.size });
@@ -1301,7 +1312,43 @@
             }catch(e){box.innerHTML=`<div class="alert alert-error">Gagal memuat Trash: ${adminSafe(e.message)}</div>`;}
         };
         window.restoreTrashItem=async function(type,id){try{if(type==='comic'){const ref=doc(db,'comics',id),snap=await getDoc(ref);if(!snap.exists())throw new Error('Judul tidak ditemukan');await updateDoc(ref,{isDeleted:false,deletedAt:null,deletedBy:null,isPublished:snap.data().publishedBeforeDelete===true,publishedBeforeDelete:null});}else{const trashRef=doc(db,'settings','adminTrash','items',id),snap=await getDoc(trashRef);if(!snap.exists())throw new Error('Data Trash tidak ditemukan');const data=snap.data();await setDoc(doc(db,'comics',data.comicId,'chapters',data.chapterId),data.payload);await deleteDoc(trashRef);await syncChapterCount(data.comicId);}await writeAudit('RESTORE_FROM_TRASH',id,type);await window.loadComicsList();await loadTrash();Swal.fire('Dipulihkan','Data berhasil dikembalikan.','success');}catch(e){Swal.fire('Restore gagal',e.message,'error');}};
-        window.permanentDeleteTrashItem=async function(type,id){const ask=await Swal.fire({title:'Hapus permanen?',text:'Data dan media tidak dapat dipulihkan setelah tindakan ini.',icon:'error',showCancelButton:true,confirmButtonText:'Hapus permanen',cancelButtonText:'Batal',confirmButtonColor:'#dc2626'});if(!ask.isConfirmed)return;try{if(type==='comic'){const comicRef=doc(db,'comics',id),comicSnap=await getDoc(comicRef);if(!comicSnap.exists())throw new Error('Judul tidak ditemukan');const urls=[comicSnap.data().coverUrl,...(comicSnap.data().deletionMediaUrls||[])],refs=[];for(const childName of ['chapters','comments','ratings']){const childSnap=await getDocs(collection(db,'comics',id,childName));childSnap.forEach(item=>{refs.push(item.ref);if(childName==='chapters')urls.push(...(item.data().images||[]));});}await deleteDocumentRefs(refs);await requestR2Deletion(urls);await deleteDoc(comicRef);}else{const trashRef=doc(db,'settings','adminTrash','items',id),snap=await getDoc(trashRef);if(!snap.exists())throw new Error('Data Trash tidak ditemukan');await requestR2Deletion(snap.data().payload?.images||[]);await deleteDoc(trashRef);}await writeAudit('PERMANENT_DELETE',id,type);await loadTrash();Swal.fire('Terhapus permanen','Data dan media telah dihapus.','success');}catch(e){Swal.fire('Penghapusan gagal',e.message,'error');}};
+        window.permanentDeleteTrashItem = async function(type,id) {
+            const ask=await Swal.fire({title:'Hapus permanen?',text:'Data dan media tidak dapat dipulihkan setelah tindakan ini.',icon:'error',showCancelButton:true,confirmButtonText:'Hapus permanen',cancelButtonText:'Batal',confirmButtonColor:'#dc2626'});
+            if(!ask.isConfirmed) return;
+            try {
+                if(type==='comic') {
+                    const comicRef=doc(db,'comics',id),comicSnap=await getDoc(comicRef);
+                    if(!comicSnap.exists()) throw new Error('Judul tidak ditemukan');
+                    const urls=collectStoredMediaUrls(comicSnap.data()),refs=[];
+                    for(const childName of ['chapters','comments','ratings']) {
+                        const childSnap=await getDocs(collection(db,'comics',id,childName));
+                        childSnap.forEach(item=>{refs.push(item.ref);if(childName==='chapters')urls.push(...collectStoredMediaUrls(item.data()));});
+                    }
+                    const uniqueUrls=[...new Set(urls.filter(Boolean))];
+                    await updateDoc(comicRef,{purgeStatus:'processing',purgeStartedAt:serverTimestamp(),purgeMediaUrls:uniqueUrls});
+                    await requestR2Deletion(uniqueUrls);
+                    await deleteDocumentRefs(refs);
+                    await deleteDoc(comicRef);
+                } else {
+                    const trashRef=doc(db,'settings','adminTrash','items',id),snap=await getDoc(trashRef);
+                    if(!snap.exists()) throw new Error('Data Trash tidak ditemukan');
+                    const urls=[...new Set(collectStoredMediaUrls(snap.data().payload||{}))];
+                    await updateDoc(trashRef,{purgeStatus:'processing',purgeStartedAt:serverTimestamp(),purgeMediaUrls:urls});
+                    await requestR2Deletion(urls);
+                    await deleteDoc(trashRef);
+                }
+                await writeAudit('PERMANENT_DELETE',id,type);
+                await loadTrash();
+                Swal.fire('Terhapus permanen','Data, kualitas video, subtitle, dan media R2 telah dihapus.','success');
+            } catch(e) {
+                try {
+                    if(type==='comic') await updateDoc(doc(db,'comics',id),{purgeStatus:'failed',purgeError:String(e.message||e).slice(0,300),purgeFailedAt:serverTimestamp()});
+                    else await updateDoc(doc(db,'settings','adminTrash','items',id),{purgeStatus:'failed',purgeError:String(e.message||e).slice(0,300),purgeFailedAt:serverTimestamp()});
+                } catch(statusError) { console.warn('Status kegagalan purge tidak dapat disimpan:',statusError); }
+                await writeAudit('PERMANENT_DELETE_FAILED',id,`${type} • ${e.message}`);
+                Swal.fire('Penghapusan belum selesai',`${e.message}. Item tetap berada di Trash dan aman untuk dicoba kembali.`,'error');
+            }
+        };
 
         window.editComic = async function(id) {
             try {
@@ -1724,11 +1771,13 @@
                 xhr.open('POST', WORKER_URL, true);
                 Object.entries(authHeaders).forEach(([key, value]) => xhr.setRequestHeader(key, value));
                 xhr.responseType = 'json';
+                xhr.timeout = 300000;
                 xhr.upload.onprogress = (event) => {
                     if (event.lengthComputable) onProgress(event.loaded, false);
                 };
                 xhr.upload.onload = () => onProgress(file.size, true);
                 xhr.onerror = () => reject(new Error('Koneksi upload terputus. Periksa internet lalu coba lagi.'));
+                xhr.ontimeout = () => reject(new Error('Upload terlalu lama tanpa respons. Silakan coba kembali.'));
                 xhr.onabort = () => reject(new Error('Upload dibatalkan.'));
                 xhr.onload = () => {
                     let data = xhr.response;
@@ -2454,6 +2503,13 @@
         
         window.moderationItems=[]; window.moderationFilter='all';
         function adminSafe(value){return String(value??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));}
+        async function mapInBatches(items, batchSize, mapper) {
+            const results=[];
+            for(let start=0;start<items.length;start+=batchSize) {
+                results.push(...await Promise.all(items.slice(start,start+batchSize).map(mapper)));
+            }
+            return results;
+        }
         window.loadContentHealth = async function(force=false) {
             const summary = document.getElementById('healthSummary');
             const list = document.getElementById('healthList');
@@ -2462,9 +2518,8 @@
             list.innerHTML='<div class="loading-text">Memeriksa judul, folder, dan media...</div>';
             try {
                 const comicSnap = await getDocs(collection(db,'comics'));
-                const rows=[];
                 let totalFolders=0, healthy=0, critical=0;
-                for(const comicDoc of comicSnap.docs) {
+                const rows=await mapInBatches(comicSnap.docs,8,async comicDoc=>{
                     const comic={id:comicDoc.id,...comicDoc.data()};
                     const chapterSnap=await getDocs(collection(db,'comics',comic.id,'chapters'));
                     const chapters=chapterSnap.docs.map(item=>({id:item.id,...item.data()}));
@@ -2486,8 +2541,8 @@
                         if(Number(count)>0&&actual<Number(count)) issues.push({text:`Season ${season}: ${actual}/${count} tersedia`,level:'warning'});
                     });
                     if(!issues.length) healthy++; else if(issues.some(issue=>issue.level==='critical')) critical++;
-                    rows.push({comic,issues});
-                }
+                    return {comic,issues};
+                });
                 const warningCount=rows.reduce((sum,row)=>sum+row.issues.length,0);
                 summary.innerHTML=`<div class="health-stat"><strong>${comicSnap.size}</strong><span>Total judul</span></div><div class="health-stat"><strong>${totalFolders}</strong><span>Total folder</span></div><div class="health-stat"><strong style="color:#07825e">${healthy}</strong><span>Judul sehat</span></div><div class="health-stat"><strong style="color:#d9485f">${warningCount}</strong><span>Masalah ditemukan</span></div>`;
                 rows.sort((a,b)=>(b.issues.some(x=>x.level==='critical')?2:b.issues.length?1:0)-(a.issues.some(x=>x.level==='critical')?2:a.issues.length?1:0));
@@ -2500,18 +2555,6 @@
         function normalizeUrl(value){try{const u=new URL(String(value||''),location.href);return ['http:','https:'].includes(u.protocol)?u.href:'';}catch(e){return '';}}
         function safeUrl(value){return adminSafe(normalizeUrl(value));}
         window.safeAdminUrl = safeUrl;
-        window.loadModeration=async function(){
-            const list=document.getElementById('moderationList'); if(!list)return; list.innerHTML='<div class="loading-text"><i class="fa-solid fa-spinner fa-spin"></i> Memuat komentar...</div>';
-            try{
-                const [comicSnap,reportSnap]=await Promise.all([getDocs(collection(db,'comics')),getDocs(collection(db,'commentReports'))]);
-                const reports=reportSnap.docs.map(d=>({id:d.id,...d.data()})); const items=[];
-                for(const comicDoc of comicSnap.docs){
-                    const comments=await getDocs(collection(db,'comics',comicDoc.id,'comments'));
-                    comments.forEach(commentDoc=>{const data=commentDoc.data();items.push({id:commentDoc.id,comicId:comicDoc.id,comicTitle:comicDoc.data().title||'Tanpa judul',...data,reports:reports.filter(r=>r.comicId===comicDoc.id&&r.commentId===commentDoc.id)});});
-                }
-                window.moderationItems=items.sort((a,b)=>(b.timestamp?.seconds||0)-(a.timestamp?.seconds||0)); renderModeration();
-            }catch(e){list.innerHTML='<div class="alert alert-error">Gagal memuat komentar. Pastikan akun admin memiliki izin Firestore.</div>';}
-        }
         function renderModeration(){
             const list=document.getElementById('moderationList'); if(!list)return; let items=window.moderationItems;
             if(window.moderationFilter==='reported')items=items.filter(x=>x.reports.length); if(window.moderationFilter==='pinned')items=items.filter(x=>x.isPinned);

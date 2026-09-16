@@ -688,6 +688,11 @@
                                     <label id="lblChapterTitle">Judul Tambahan (Opsional)</label>
                                     <input type="text" id="chapterTitle" placeholder="Contoh: Awal Petualangan">
                                 </div>
+                                <div class="form-group" id="groupEpisodeDuration" style="display:none">
+                                    <label>Durasi Episode (Menit)</label>
+                                    <input type="number" min="1" step="1" inputmode="numeric" id="episodeDurationMinutes" placeholder="Contoh: 27">
+                                    <div class="help-text">Opsional. Jika kosong, sistem mencoba membaca durasi video otomatis.</div>
+                                </div>
                             </div>
                             
                             <div style="margin-bottom: 25px; padding-bottom: 20px; border-bottom: 2px dashed var(--border);">
@@ -1461,6 +1466,9 @@
             const seasonNumber = Math.max(1, Number(document.getElementById('chapterSeasonNumber').value || 1));
             const chapterNum = document.getElementById('chapterNumber').value;
             const chapterTitle = document.getElementById('chapterTitle').value;
+            const selectedComic = window.allComicsList.find(item => item.id === comicId);
+            const entryFormat = selectedComic?.format === 'film' ? 'film' : 'komik';
+            const durationMinutes = Math.max(0, Math.floor(Number(document.getElementById('episodeDurationMinutes')?.value || 0)));
             const statusEl = document.getElementById('saveFolderStatus');
 
             if(!comicId) { Swal.fire('Peringatan', "Pilih judul terlebih dahulu dari daftar pencarian!", 'warning'); return; }
@@ -1484,17 +1492,21 @@
                     const docSnap = matchingDoc;
                     targetChapterId = docSnap.id;
                     targetChapterImages = Array.isArray(docSnap.data().images) ? docSnap.data().images : [];
-                    await updateDoc(doc(db, "comics", comicId, "chapters", targetChapterId), { title: chapterTitle, seasonNumber, updatedAt: serverTimestamp() });
+                    const folderUpdate = { title: chapterTitle, seasonNumber, updatedAt: serverTimestamp() };
+                    if (entryFormat === 'film' && durationMinutes > 0) folderUpdate.durationMinutes = durationMinutes;
+                    await updateDoc(doc(db, "comics", comicId, "chapters", targetChapterId), folderUpdate);
                     statusEl.innerHTML = "✅ Identitas Node (Folder) ini sudah ada dan datanya berhasil diupdate!<br>Silakan lanjut Buka File Manager di Langkah 2.";
                 } else {
-                    const newDocRef = await addDoc(chaptersRef, {
+                    const newChapterData = {
                         chapterNumber: parseFloat(chapterNum),
                         seasonNumber,
                         title: chapterTitle,
                         images: [],
                         createdAt: serverTimestamp(),
                         updatedAt: serverTimestamp()
-                    });
+                    };
+                    if (entryFormat === 'film' && durationMinutes > 0) newChapterData.durationMinutes = durationMinutes;
+                    const newDocRef = await addDoc(chaptersRef, newChapterData);
                     await syncChapterCount(comicId);
                     await writeAudit('CREATE_CHAPTER', newDocRef.id, `${comicId} • S${seasonNumber} • ${chapterNum}`);
                     targetChapterId = newDocRef.id;
@@ -1505,8 +1517,6 @@
                 localStorage.setItem('activeComicName', comicName);
                 localStorage.setItem('activeChapterFolderId', targetChapterId);
 
-                const selectedComic = window.allComicsList.find(item => item.id === comicId);
-                const entryFormat = selectedComic?.format === 'film' ? 'film' : 'komik';
                 const sectionName = parseFloat(chapterNum) === 1 && chapterTitle === 'Full Movie'
                     ? 'Full Movie'
                     : `Season ${seasonNumber} • ${entryFormat === 'film' ? 'Episode' : 'Chapter'} ${chapterNum}`;
@@ -1973,6 +1983,26 @@
         /* =========================================
            PUBLIKASI FINAL CHAPTER/EPISODE
            ========================================= */
+        function readVideoDurationSeconds(url) {
+            return new Promise(resolve => {
+                const video = document.createElement('video');
+                let finished = false;
+                const finish = value => {
+                    if (finished) return;
+                    finished = true;
+                    clearTimeout(timer);
+                    video.removeAttribute('src');
+                    video.load();
+                    resolve(Number.isFinite(value) && value > 0 ? Math.round(value) : 0);
+                };
+                const timer = setTimeout(() => finish(0), 10000);
+                video.preload = 'metadata';
+                video.onloadedmetadata = () => finish(video.duration);
+                video.onerror = () => finish(0);
+                video.src = url;
+            });
+        }
+
         window.confirmAndPublishChapter = async function() {
             const comicId = document.getElementById('chapterComicId').value || window.galleryState.comicId || localStorage.getItem('activeComicId');
             const chapterId = window.galleryState.chapterFolderId || localStorage.getItem('activeChapterFolderId');
@@ -1993,13 +2023,31 @@
             try {
                 const chapterDocRef = doc(db, "comics", comicId, "chapters", chapterId);
                 const title = document.getElementById('chapterTitle').value;
-
-                await updateDoc(chapterDocRef, {
+                const selectedComic = window.allComicsList.find(item => item.id === comicId);
+                const isFilm = (selectedComic?.format || window.galleryState.entryFormat) === 'film';
+                const chapterSnapshot = await getDoc(chapterDocRef);
+                const previousChapter = chapterSnapshot.exists() ? chapterSnapshot.data() : {};
+                const publishData = {
                     images: finalUrls,
                     title: title,
                     updateDate: finalUpdateDate,
                     updatedAt: serverTimestamp()
-                });
+                };
+                if (isFilm) {
+                    const manualMinutes = Math.max(0, Math.floor(Number(document.getElementById('episodeDurationMinutes')?.value || previousChapter.durationMinutes || 0)));
+                    const firstVideo = finalUrls.find(url => isCloudVideo(url));
+                    const detectedSeconds = firstVideo ? await readVideoDurationSeconds(firstVideo) : 0;
+                    if (detectedSeconds > 0) {
+                        publishData.durationSeconds = detectedSeconds;
+                        publishData.durationMinutes = Math.max(1, Math.round(detectedSeconds / 60));
+                    } else if (manualMinutes > 0) {
+                        publishData.durationMinutes = manualMinutes;
+                    }
+                } else {
+                    publishData.pageCount = finalUrls.filter(url => !isCloudVideo(url)).length;
+                }
+
+                await updateDoc(chapterDocRef, publishData);
 
                 closeMediaGallery();
                 Swal.fire('Selesai!', 'Integrasi Database Berhasil Dipublikasikan!', 'success');
@@ -2106,7 +2154,8 @@
                         <label for="editFolderNumber" style="text-align:left">Nomor ${term}</label>
                         <input id="editFolderNumber" class="swal2-input" type="number" min="0.1" step="0.1" style="max-width:100%!important;margin:0 0 14px!important" placeholder="Contoh: 1 atau 1.5">
                         <label for="editFolderTitle" style="text-align:left">Judul tambahan (opsional)</label>
-                        <input id="editFolderTitle" class="swal2-input" type="text" maxlength="150" style="max-width:100%!important;margin:0!important" placeholder="Judul chapter/episode">`,
+                        <input id="editFolderTitle" class="swal2-input" type="text" maxlength="150" style="max-width:100%!important;margin:0 0 ${isFilm ? '14px' : '0'}!important" placeholder="Judul chapter/episode">
+                        ${isFilm ? `<label for="editFolderDuration" style="text-align:left">Durasi (menit)</label><input id="editFolderDuration" class="swal2-input" type="number" min="1" step="1" style="max-width:100%!important;margin:0!important" placeholder="Contoh: 27">` : ''}`,
                     showCancelButton: true,
                     confirmButtonText: '<i class="fa-solid fa-floppy-disk"></i> Simpan Perubahan',
                     cancelButtonText: 'Batal',
@@ -2116,6 +2165,7 @@
                         document.getElementById('editFolderSeason').value = String(chapter.seasonNumber || 1);
                         document.getElementById('editFolderNumber').value = chapter.chapterNumber ?? '';
                         document.getElementById('editFolderTitle').value = isFullMovie ? '' : (chapter.title || '');
+                        if (isFilm) document.getElementById('editFolderDuration').value = chapter.durationMinutes || (chapter.durationSeconds ? Math.max(1, Math.round(chapter.durationSeconds / 60)) : '');
                     },
                     preConfirm: () => {
                         const fullMovie = isFilm && document.getElementById('editFolderFullMovie')?.checked;
@@ -2126,7 +2176,8 @@
                             Swal.showValidationMessage(`Nomor ${term.toLowerCase()} harus lebih besar dari 0.`);
                             return false;
                         }
-                        return { chapterNumber, title, seasonNumber };
+                        const durationMinutes = isFilm ? Math.max(0, Math.floor(Number(document.getElementById('editFolderDuration')?.value || 0))) : 0;
+                        return { chapterNumber, title, seasonNumber, durationMinutes };
                     }
                 });
 
@@ -2142,12 +2193,14 @@
                     return;
                 }
 
-                await updateDoc(chapterRef, {
+                const editData = {
                     chapterNumber: result.value.chapterNumber,
                     seasonNumber: result.value.seasonNumber,
                     title: result.value.title,
                     updatedAt: serverTimestamp()
-                });
+                };
+                if (isFilm && result.value.durationMinutes > 0) editData.durationMinutes = result.value.durationMinutes;
+                await updateDoc(chapterRef, editData);
                 await writeAudit('UPDATE_CHAPTER_FOLDER', chapterId, `${comicId} • ${term} ${result.value.chapterNumber}`);
 
                 if (fromTable && document.getElementById('filterChapterId')?.value === comicId) {
@@ -2562,6 +2615,8 @@
                     
                     // Tampilkan atau sembunyikan Opsi Full Movie
                     document.getElementById('groupFullMovie').style.display = isFilm ? 'block' : 'none';
+                    document.getElementById('groupEpisodeDuration').style.display = isFilm ? 'block' : 'none';
+                    document.getElementById('episodeDurationMinutes').value = '';
                     document.getElementById('chkFullMovie').checked = false;
                     window.toggleFullMovie(false);
                 }

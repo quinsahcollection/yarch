@@ -174,6 +174,26 @@
         .chapter-date { font-size: 11px; color: #999; }
         .chapter-action { color: var(--primary-blue); font-size: 12px; font-weight: 700; background: var(--light-blue); padding: 6px 12px; border-radius: 16px; }
         .chapter-action.tonton { color: #fff; background: var(--primary-orange); box-shadow: 0 2px 5px rgba(234, 88, 12, 0.4); }
+        .season-list { display:flex; flex-direction:column; gap:14px; }
+        .season-card { overflow:hidden; border:1px solid #e7e9f2; border-radius:18px; background:#fff; box-shadow:0 8px 24px rgba(35,39,70,.06); }
+        .season-header { width:100%; border:0; padding:15px 16px; display:flex; align-items:center; gap:12px; text-align:left; color:#fff; background:linear-gradient(135deg,#625af2,#806cf5); cursor:pointer; }
+        .season-number { width:42px; height:42px; flex:0 0 42px; display:grid; place-items:center; border-radius:13px; background:rgba(255,255,255,.17); font-size:17px; font-weight:850; }
+        .season-heading { flex:1; min-width:0; }
+        .season-heading strong { display:block; font-size:14px; }
+        .season-heading small { display:block; margin-top:3px; color:rgba(255,255,255,.78); font-size:10px; font-weight:600; }
+        .season-progress { flex:0 0 auto; padding:5px 9px; border-radius:999px; background:rgba(255,255,255,.16); font-size:9px; font-weight:800; }
+        .season-chevron { width:25px; text-align:center; transition:transform .25s ease; }
+        .season-card.collapsed .season-chevron { transform:rotate(-90deg); }
+        .season-episodes { display:flex; flex-direction:column; gap:8px; padding:10px; background:linear-gradient(180deg,#fbfbfe,#f6f7fb); }
+        .season-card.collapsed .season-episodes { display:none; }
+        .season-card .chapter-item { margin:0; padding:13px 12px; gap:10px; align-items:flex-start; border:1px solid transparent; border-radius:13px; background:#fff; box-shadow:0 3px 10px rgba(35,39,70,.035); }
+        .season-card .chapter-item:hover { border-color:#d9d7ff; transform:translateY(-1px); }
+        .episode-index { width:38px; height:38px; flex:0 0 38px; display:grid; place-items:center; border-radius:11px; color:#625af2; background:#efeeff; font-size:11px; font-weight:850; }
+        .season-card .chapter-info { flex:1; min-width:0; }
+        .season-card .chapter-title { display:block; overflow:visible; text-overflow:clip; white-space:normal; overflow-wrap:anywhere; word-break:normal; font-size:13px; font-weight:750; line-height:1.45; }
+        .season-card .chapter-date { display:flex; align-items:center; gap:5px; margin-top:3px; line-height:1.35; }
+        .season-card .chapter-action { flex:0 0 auto; margin-top:1px; white-space:nowrap; }
+        @media(max-width:420px){.season-header{padding:13px 12px;gap:9px}.season-progress{display:none}.season-episodes{padding:8px}.season-card .chapter-item{padding:11px 9px;gap:8px}.episode-index{width:34px;height:34px;flex-basis:34px;font-size:10px}.season-card .chapter-title{font-size:12.5px;line-height:1.42}.season-card .chapter-action{padding:6px 8px;font-size:9.5px}}
 
         /* COMMENT UI */
         .comment-wrapper { display: flex; flex-direction: column; height: 100%; min-height: 50vh; position: relative;}
@@ -970,9 +990,9 @@
 
                 <!-- TAB: CHAPTER / EPISODE -->
                 <div class="tab-content" id="tab-chapter">
-                    <ul class="chapter-list" id="chapterListContainer">
+                    <div class="chapter-list season-list" id="chapterListContainer">
                         <div class="loading-text"><i class="fa-solid fa-spinner fa-spin"></i><br>Mencari daftar...</div>
-                    </ul>
+                    </div>
                 </div>
 
                 <!-- TAB: KOMENTAR -->
@@ -2948,7 +2968,9 @@
                 document.getElementById('lblDetailTotalParts').innerText = `Total ${isVideo ? 'Episode' : 'Chapter'} per Season`;
                 const seasonLines = Array.from({length:totalSeasons}, (_,i) => {
                     const count = Number(seasonTotals[i+1] || seasonTotals[String(i+1)] || (totalSeasons === 1 ? totalParts : 0));
-                    return count > 0 ? `S${i+1}: ${count}` : `S${i+1}: -`;
+                    return count > 0
+                        ? `Season ${i+1}: ${count.toLocaleString('id-ID')} ${isVideo ? 'Episode' : 'Chapter'}`
+                        : `Season ${i+1}: Belum ditentukan`;
                 });
                 document.getElementById('detailTotalParts').innerText = seasonLines.join(' • ');
                 
@@ -3008,6 +3030,13 @@
             document.getElementById('tab-' + tabName).classList.add('active');
         }
 
+        window.toggleSeasonCard = function(button) {
+            const card = button?.closest('.season-card');
+            if (!card) return;
+            const collapsed = card.classList.toggle('collapsed');
+            button.setAttribute('aria-expanded', String(!collapsed));
+        };
+
         async function fetchChapters(comicId) {
             const container = document.getElementById('chapterListContainer');
             const badge = document.getElementById('chapterBadge');
@@ -3025,31 +3054,30 @@
                 const q = query(chaptersRef, orderBy("chapterNumber", "desc"));
                 const snapshot = await getDocs(q);
                 
-                let chapterHTML = ''; let total = 0;
+                let chapterHTML = '';
                 const chapterDocs = snapshot.docs.map(item => ({id:item.id, ...item.data()})).sort((a,b) => (Number(b.seasonNumber||1)-Number(a.seasonNumber||1)) || (Number(b.chapterNumber||0)-Number(a.chapterNumber||0)));
-                let renderedSeason = null;
+                const groupedSeasons = new Map();
                 chapterDocs.forEach(ch => {
-                    total++;
-                    const date = ch.updateDate || "Baru";
-                    const seasonNumber = Number(ch.seasonNumber || 1);
-                    if (renderedSeason !== seasonNumber && Number(comicRecord.totalSeasons || 1) > 1) {
-                        renderedSeason = seasonNumber;
-                        chapterHTML += `<li style="list-style:none;padding:10px 14px;background:#f1f5f9;color:#475569;font-size:12px;font-weight:800">SEASON ${seasonNumber}</li>`;
-                    }
-                    const fullMovie = isFullMovieChapter(comicRecord, ch, chapterDocs.length);
-                    const title = ch.title && !fullMovie ? ` - ${ch.title}` : '';
-                    const titleDisplay = `${getMediaPartLabel(comicRecord, ch, chapterDocs.length)}${title}`;
-                    
-                    const readClass = isChapterRead(comicId, ch.id) ? 'is-read' : '';
-                    chapterHTML += `
-                        <li class="chapter-item ${readClass}" onclick="handleMediaOpen('${comicId}', '${ch.id}', '${ch.chapterNumber}')">
-                            <div class="chapter-info">
-                                <span class="chapter-title" data-read-label="${isVideo ? 'Sudah ditonton' : 'Sudah dibaca'}">${titleDisplay}</span>
-                                <span class="chapter-date">${date}</span>
-                            </div>
-                            <div class="${actionClass}">${actionText}</div>
-                        </li>`;
+                    const season = Number(ch.seasonNumber || 1);
+                    if (!groupedSeasons.has(season)) groupedSeasons.set(season, []);
+                    groupedSeasons.get(season).push(ch);
                 });
+                const seasonEntries = [...groupedSeasons.entries()].sort((a,b) => b[0] - a[0]);
+                seasonEntries.forEach(([seasonNumber, episodes], seasonIndex) => {
+                    const planned = Number(comicRecord.seasonTotals?.[seasonNumber] || comicRecord.seasonTotals?.[String(seasonNumber)] || 0);
+                    const completed = episodes.filter(ch => isChapterRead(comicId, ch.id)).length;
+                    const episodeHtml = episodes.map(ch => {
+                        const date = ch.updateDate || 'Baru';
+                        const fullMovie = isFullMovieChapter(comicRecord, ch, chapterDocs.length);
+                        const title = ch.title && !fullMovie ? ` — ${ch.title}` : '';
+                        const titleDisplay = `${getMediaPartLabel(comicRecord, ch, chapterDocs.length)}${title}`;
+                        const readClass = isChapterRead(comicId, ch.id) ? 'is-read' : '';
+                        const shortPrefix = fullMovie ? '<i class="fa-solid fa-film"></i>' : `${isVideo ? 'E' : 'C'}${ch.chapterNumber}`;
+                        return `<div class="chapter-item ${readClass}" onclick="handleMediaOpen('${safeAttr(comicId)}','${safeAttr(ch.id)}','${safeAttr(ch.chapterNumber)}')"><div class="episode-index">${shortPrefix}</div><div class="chapter-info"><span class="chapter-title" data-read-label="${isVideo ? 'Sudah ditonton' : 'Sudah dibaca'}">${safeText(titleDisplay)}</span><span class="chapter-date"><i class="fa-regular fa-calendar"></i> ${safeText(date)}</span></div><div class="${actionClass}"><i class="fa-solid ${isVideo ? 'fa-play' : 'fa-book-open'}"></i> ${actionText}</div></div>`;
+                    }).join('');
+                    chapterHTML += `<section class="season-card ${seasonIndex === 0 ? '' : 'collapsed'}"><button type="button" class="season-header" onclick="toggleSeasonCard(this)" aria-expanded="${seasonIndex === 0 ? 'true' : 'false'}"><span class="season-number">${seasonNumber}</span><span class="season-heading"><strong>Season ${seasonNumber}</strong><small>${episodes.length} ${isVideo ? 'episode' : 'chapter'} tersedia${completed ? ` • ${completed} selesai` : ''}</small></span><span class="season-progress">${episodes.length}${planned ? ` / ${planned}` : ''}</span><span class="season-chevron"><i class="fa-solid fa-chevron-down"></i></span></button><div class="season-episodes">${episodeHtml}</div></section>`;
+                });
+                const total = chapterDocs.length;
                 if(total > 0) {
                     container.innerHTML = chapterHTML;
                     badge.innerText = total; badge.style.display = 'inline-block';

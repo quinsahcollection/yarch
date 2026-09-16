@@ -2071,14 +2071,16 @@
 
             try {
                 const chapterDocRef = doc(db, "comics", comicId, "chapters", chapterId);
-                const title = document.getElementById('chapterTitle').value;
+                const formTitle = document.getElementById('chapterTitle').value.trim();
                 const selectedComic = window.allComicsList.find(item => item.id === comicId);
                 const isFilm = (selectedComic?.format || window.galleryState.entryFormat) === 'film';
                 const chapterSnapshot = await getDoc(chapterDocRef);
                 const previousChapter = chapterSnapshot.exists() ? chapterSnapshot.data() : {};
+                if(!chapterSnapshot.exists()) throw new Error('Folder chapter/episode tidak ditemukan. Muat ulang file manager lalu coba kembali.');
+                const preservedTitle = formTitle || String(previousChapter.title || '').trim();
                 const publishData = {
                     images: finalUrls,
-                    title: title,
+                    title: preservedTitle,
                     updateDate: finalUpdateDate,
                     updatedAt: serverTimestamp()
                 };

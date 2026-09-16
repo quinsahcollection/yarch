@@ -1191,7 +1191,7 @@
     <!-- SCRIPT FIREBASE & LOGIKA UTAMA -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-        import { getFirestore, collection, getDocs, getDoc, getCountFromServer, doc, query, where, orderBy, limit, updateDoc, increment, setDoc, deleteDoc, addDoc, serverTimestamp, runTransaction, arrayUnion, arrayRemove } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+        import { getFirestore, collection, getDocs, getDoc, getCountFromServer, doc, query, where, orderBy, limit, updateDoc, increment, setDoc, deleteDoc, addDoc, serverTimestamp, runTransaction } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
         import { getAuth, onAuthStateChanged, signInWithEmailAndPassword, createUserWithEmailAndPassword, signOut } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
 
         const firebaseConfig = {
@@ -1225,9 +1225,9 @@
 
         // V20.1 analytics ringan: hanya pengguna login, tanpa Cloud Functions.
         async function recordDailyAnalytics(delta={}){
-            if(!auth.currentUser)return;const day=localDateKey();const ref=doc(db,'analyticsDaily',day,'users',auth.currentUser.uid);const payload={userId:auth.currentUser.uid,lastActiveAt:serverTimestamp()};Object.entries(delta).forEach(([key,value])=>payload[key]=increment(Number(value)||0));try{await setDoc(ref,payload,{merge:true});}catch(e){}
+            if(!auth.currentUser)return;const day=localDateKey();const ref=doc(db,'analyticsDaily',day,'users',auth.currentUser.uid);const payload={userId:auth.currentUser.uid,lastActiveAt:serverTimestamp()};Object.entries(delta).forEach(([key,value])=>payload[key]=increment(Number(value)||0));try{await setDoc(ref,payload,{merge:true});}catch(e){reportBackgroundError('Analytics harian gagal',e);}
         }
-        async function recordContentWatch(comicId,seconds){if(!auth.currentUser||!comicId||seconds<=0)return;try{await setDoc(doc(db,'contentWatch',comicId,'users',auth.currentUser.uid),{userId:auth.currentUser.uid,comicId,watchSeconds:increment(seconds),updatedAt:serverTimestamp()},{merge:true});}catch(e){}}
+        async function recordContentWatch(comicId,seconds){if(!auth.currentUser||!comicId||seconds<=0)return;try{await setDoc(doc(db,'contentWatch',comicId,'users',auth.currentUser.uid),{userId:auth.currentUser.uid,comicId,watchSeconds:increment(seconds),updatedAt:serverTimestamp()},{merge:true});}catch(e){reportBackgroundError('Pencatatan waktu tonton gagal',e);}}
         window.isAuthModeLogin = true;
         window.readerObserver = null; 
         window.sliderInterval = null;
@@ -1235,9 +1235,19 @@
         window.currentVideoQualities = {};
         window.autoQualityEnabled = true;
         window.currentAutoQualityUrl = '';
+        window.subtitleObjectUrls = [];
 
         function reportBackgroundError(context, error) {
             console.warn(`[${context}]`, error);
+        }
+
+        function safeJsonParse(value, fallback) {
+            if(value == null || value === '') return fallback;
+            try { return JSON.parse(value); }
+            catch(error) {
+                reportBackgroundError('Data lokal tidak valid dan diabaikan', error);
+                return fallback;
+            }
         }
 
         // ================= V20.1: PROFIL SOSIAL & GAMIFIKASI =================
@@ -1246,13 +1256,13 @@
         function defaultAvatar(name){const initial=String(name||'U').trim().charAt(0).toUpperCase()||'U';return `data:image/svg+xml,${encodeURIComponent(`<svg xmlns="http://www.w3.org/2000/svg" width="256" height="256"><defs><linearGradient id="g" x2="1" y2="1"><stop stop-color="#776cff"/><stop offset="1" stop-color="#f06ea9"/></linearGradient></defs><rect width="256" height="256" rx="72" fill="url(#g)"/><text x="128" y="154" text-anchor="middle" font-family="Arial" font-size="112" font-weight="700" fill="white">${initial}</text></svg>`)}`;}
         function gameLevel(points=0){const level=Math.floor(points/100)+1;const names=['Pemula','Penjelajah','Pembaca Aktif','Kolektor','Ahli Cerita','Legenda'];return {level,name:names[Math.min(names.length-1,Math.floor((level-1)/3))],progress:points%100};}
         function ensureWeekly(){const key=weekKey();if(!window.gameData.weekly||window.gameData.weekly.key!==key)window.gameData.weekly={key,chapters:0,watchMinutes:0,comments:0};}
-        async function syncGamification(){if(!auth.currentUser)return;ensureWeekly();const payload={...window.gameData,updatedAt:serverTimestamp()};try{await setDoc(doc(db,'users',auth.currentUser.uid,'gamification','main'),payload,{merge:true});await publishPublicProfile();}catch(e){}localStorage.setItem('gameData_'+auth.currentUser.uid,JSON.stringify(window.gameData));renderSocialProfile();}
+        async function syncGamification(){if(!auth.currentUser)return;ensureWeekly();const payload={...window.gameData,updatedAt:serverTimestamp()};try{await setDoc(doc(db,'users',auth.currentUser.uid,'gamification','main'),payload,{merge:true});await publishPublicProfile();}catch(e){reportBackgroundError('Sinkronisasi gamifikasi gagal',e);}localStorage.setItem('gameData_'+auth.currentUser.uid,JSON.stringify(window.gameData));renderSocialProfile();}
         async function loadSocialData(uid){
             try{window.socialProfile=JSON.parse(localStorage.getItem('socialProfile_'+uid)||'null')||window.socialProfile;window.gameData=JSON.parse(localStorage.getItem('gameData_'+uid)||'null')||window.gameData;}catch(e){}
             try{const [profileSnap,gameSnap]=await Promise.all([getDoc(doc(db,'users',uid,'profile','main')),getDoc(doc(db,'users',uid,'gamification','main'))]);if(profileSnap.exists())window.socialProfile={...window.socialProfile,...profileSnap.data()};if(gameSnap.exists())window.gameData={...window.gameData,...gameSnap.data()};}catch(e){}
             ensureWeekly();const legacyReads=getReadChapterMap();const legacyKeys=Object.keys(legacyReads);window.gameData.awardedChapters=window.gameData.awardedChapters||{};let migrated=0;legacyKeys.forEach(key=>{if(!window.gameData.awardedChapters[key]){window.gameData.awardedChapters[key]=legacyReads[key];migrated++;}});window.gameData.chapterCount=Object.keys(window.gameData.awardedChapters).length;if(migrated)window.gameData.points=(window.gameData.points||0)+(migrated*5);localStorage.setItem('socialProfile_'+uid,JSON.stringify(window.socialProfile));localStorage.setItem('gameData_'+uid,JSON.stringify(window.gameData));renderSocialProfile();loadReaderLeaderboard();if(migrated)syncGamification();
         }
-        async function publishPublicProfile(){if(!auth.currentUser)return;const p=window.socialProfile,g=window.gameData;const favorites=p.privacy?.showFavorites?window.userBookmarks.slice(0,30):[];try{await setDoc(doc(db,'publicProfiles',auth.currentUser.uid),{userId:auth.currentUser.uid,displayName:p.displayName||auth.currentUser.email.split('@')[0],bio:p.bio||'',photoData:p.photoData||'',publicProfile:p.privacy?.publicProfile!==false,showStats:p.privacy?.showStats!==false,showFavorites:p.privacy?.showFavorites!==false,favorites,points:g.points||0,level:gameLevel(g.points||0).level,chapterCount:g.chapterCount||0,watchSeconds:g.watchSeconds||0,streak:g.streak||0,updatedAt:serverTimestamp()},{merge:true});}catch(e){}}
+        async function publishPublicProfile(){if(!auth.currentUser)return;const p=window.socialProfile,g=window.gameData;const favorites=p.privacy?.showFavorites?window.userBookmarks.slice(0,30):[];try{await setDoc(doc(db,'publicProfiles',auth.currentUser.uid),{userId:auth.currentUser.uid,displayName:p.displayName||auth.currentUser.email.split('@')[0],bio:p.bio||'',photoData:p.photoData||'',publicProfile:p.privacy?.publicProfile!==false,showStats:p.privacy?.showStats!==false,showFavorites:p.privacy?.showFavorites!==false,favorites,points:g.points||0,level:gameLevel(g.points||0).level,chapterCount:g.chapterCount||0,watchSeconds:g.watchSeconds||0,streak:g.streak||0,updatedAt:serverTimestamp()},{merge:true});}catch(e){reportBackgroundError('Publikasi profil gagal',e);}}
         window.dailyCheckIn=async function(){if(!auth.currentUser)return;const today=localDateKey();if(window.gameData.lastCheckIn===today)return window.showToast('Check-in hari ini sudah diambil');const yesterday=new Date();yesterday.setDate(yesterday.getDate()-1);window.gameData.streak=window.gameData.lastCheckIn===localDateKey(yesterday)?(window.gameData.streak||0)+1:1;window.gameData.lastCheckIn=today;window.gameData.points=(window.gameData.points||0)+10;await syncGamification();window.showToast('Check-in berhasil: +10 poin');}
         function awardChapter(comicId,chapterId){if(!auth.currentUser||!chapterId)return;const key=`${comicId}__${chapterId}`;window.gameData.awardedChapters=window.gameData.awardedChapters||{};if(window.gameData.awardedChapters[key])return;window.gameData.awardedChapters[key]=Date.now();window.gameData.chapterCount=Object.keys(window.gameData.awardedChapters).length;window.gameData.points=(window.gameData.points||0)+5;ensureWeekly();window.gameData.weekly.chapters=(window.gameData.weekly.chapters||0)+1;recordDailyAnalytics({chapters:1});syncGamification();}
         function trackWatchSeconds(seconds){if(!auth.currentUser||seconds<=0||seconds>5)return;window.gameData.watchSeconds=(window.gameData.watchSeconds||0)+seconds;ensureWeekly();window.gameData.weekly.watchSeconds=(window.gameData.weekly.watchSeconds||0)+seconds;window.gameData.weekly.watchMinutes=Math.floor(window.gameData.weekly.watchSeconds/60);localStorage.setItem('gameData_'+auth.currentUser.uid,JSON.stringify(window.gameData));if(Math.floor(window.gameData.watchSeconds)%30===0){recordDailyAnalytics({watchSeconds:30});recordContentWatch(window.currentActiveComicId,30);syncGamification();}}
@@ -1552,7 +1562,7 @@
         }
 
         async function syncUserData(uid) {
-            const localBms = JSON.parse(localStorage.getItem('localBookmarks_' + uid)) || [];
+            const localBms = safeJsonParse(localStorage.getItem('localBookmarks_' + uid), []);
             window.userBookmarks = localBms;
             
             try {
@@ -1995,7 +2005,7 @@
         // ================= UPDATE FEED & STATUS SUDAH DIBACA =================
         window.updatePeriod = 'all';
         window.updateSelectedDate = '';
-        window.notificationSettings = JSON.parse(localStorage.getItem('notificationSettings') || '{"comic":true,"video":true,"followedOnly":true}');
+        window.notificationSettings = safeJsonParse(localStorage.getItem('notificationSettings'), {comic:true,video:true,followedOnly:true});
         window.toggleNotificationPanel = function() {
             document.getElementById('notificationPanel')?.classList.toggle('show');
         }
@@ -2409,7 +2419,7 @@
                 comicTitle:comicData.title || 'Konten', coverUrl:comicData.coverUrl || '',
                 mediaFormat:comicData.format || 'film', mediaType:comicData.type || '', updatedAt:Date.now()
             };
-            const localHist = JSON.parse(localStorage.getItem('comicHistoryDetail') || '{}');
+            const localHist = safeJsonParse(localStorage.getItem('comicHistoryDetail'), {});
             localHist[comicId] = {...(localHist[comicId] || {}), ...historyItem};
             localStorage.setItem('comicHistoryDetail', JSON.stringify(localHist));
             localStorage.setItem(`videoResume_${comicId}_${chapterId}`, String(second));
@@ -2437,12 +2447,12 @@
             }
 
             if (historyList.length === 0) {
-                const localHist = JSON.parse(localStorage.getItem('comicHistoryDetail')) || {};
+                const localHist = safeJsonParse(localStorage.getItem('comicHistoryDetail'), {});
                 historyList = Object.values(localHist).sort((a,b) => (b.updatedAt || 0) - (a.updatedAt || 0));
             }
 
             // Jangan tampilkan riwayat untuk judul yang sudah di-unpublish/dihapus admin.
-            const localHistoryMap = JSON.parse(localStorage.getItem('comicHistoryDetail') || '{}');
+            const localHistoryMap = safeJsonParse(localStorage.getItem('comicHistoryDetail'), {});
             const visibleHistory = [];
             for (const item of historyList) {
                 if(!item?.comicId) continue;
@@ -2490,8 +2500,8 @@
 
             let html = '';
             historyList.forEach(item => {
-                const cover = item.coverUrl || (window.comicsData[item.comicId] ? window.comicsData[item.comicId].coverUrl : '');
-                const title = item.comicTitle || (window.comicsData[item.comicId] ? window.comicsData[item.comicId].title : 'Konten');
+                const cover = safeMediaUrl(item.coverUrl || (window.comicsData[item.comicId] ? window.comicsData[item.comicId].coverUrl : ''));
+                const title = safeText(item.comicTitle || (window.comicsData[item.comicId] ? window.comicsData[item.comicId].title : 'Konten'));
                 
                 const comicRecord = window.comicsData[item.comicId] || {};
                 const isVideo = comicRecord.format === 'film' || (comicRecord.type && (comicRecord.type.toLowerCase().includes('film') || comicRecord.type.toLowerCase().includes('anime')));
@@ -2500,11 +2510,11 @@
                 const pgInfo = !isVideo && item.pageIndex ? ` • Hal. ${item.pageIndex}` : '';
 
                 html += `
-                    <div class="manga-card-history" onclick="continueReading('${item.comicId}', '${item.chapterId}', '${item.chapterNumber}', ${item.pageIndex || 1})">
+                    <div class="manga-card-history" onclick="continueReading('${safeAttr(item.comicId)}', '${safeAttr(item.chapterId || '')}', '${safeAttr(item.chapterNumber || '')}', ${Math.max(1,Number(item.pageIndex)||1)})">
                         <img src="${cover}" onerror="this.src='https://placehold.co/130x170?text=No+Cover'">
                         <div class="info">
                             <div class="title">${title}</div>
-                            <div class="chapter">${chInfo}${pgInfo}</div>
+                            <div class="chapter">${safeText(chInfo + pgInfo)}</div>
                         </div>
                     </div>
                 `;
@@ -2535,12 +2545,13 @@
                 if(auth.currentUser) {
                     try {
                         const snap = await getDocs(collection(db, "users", auth.currentUser.uid, "history"));
-                        snap.forEach(async (d) => {
-                            await deleteDoc(doc(db, "users", auth.currentUser.uid, "history", d.id));
-                        });
-                    } catch(e) {}
+                        await Promise.all(snap.docs.map(historyDoc => deleteDoc(historyDoc.ref)));
+                    } catch(e) {
+                        reportBackgroundError('Penghapusan riwayat akun gagal', e);
+                        window.showToast('Riwayat perangkat dihapus, tetapi sinkronisasi akun belum selesai.');
+                    }
                 }
-                renderReadingHistory();
+                await renderReadingHistory();
             }
         }
 
@@ -2550,7 +2561,7 @@
 
         async function loadFullHistoryItems() {
             const merged = new Map();
-            const localItems = Object.values(JSON.parse(localStorage.getItem('comicHistoryDetail') || '{}'));
+            const localItems = Object.values(safeJsonParse(localStorage.getItem('comicHistoryDetail'), {}));
             localItems.forEach(item => item?.comicId && merged.set(item.comicId, item));
 
             if(auth.currentUser) {
@@ -2638,7 +2649,7 @@
             if(!confirmed) return;
 
             const targetIds = new Set(targets.map(item => item.comicId));
-            const localMap = JSON.parse(localStorage.getItem('comicHistoryDetail') || '{}');
+            const localMap = safeJsonParse(localStorage.getItem('comicHistoryDetail'), {});
             targetIds.forEach(id => delete localMap[id]);
             localStorage.setItem('comicHistoryDetail', JSON.stringify(localMap));
 
@@ -2891,9 +2902,9 @@
             if(text === "") return;
             const validation=validateComment(text); if(validation){ window.showToast(validation); return; }
             const comicId = window.currentActiveComicId;
+            const btn = document.querySelector('.btn-send-comment');
 
             try {
-                const btn = document.querySelector('.btn-send-comment');
                 btn.innerText = "..."; btn.disabled = true;
 
                 if(window.commentMode.type==='edit') {
@@ -2908,9 +2919,27 @@
                 textInput.value = "";
                 btn.innerText = "Kirim"; btn.disabled = false;
                 cancelCommentMode(); fetchComments(comicId);
-            } catch (e) { btn.innerText='Kirim'; btn.disabled=false; window.showToast("Komentar gagal disimpan. Periksa izin Firebase."); }
+            } catch (e) { btn.innerText='Kirim'; btn.disabled=false; reportBackgroundError('Komentar gagal disimpan',e); window.showToast("Komentar gagal disimpan. Periksa izin Firebase."); }
         }
-        window.toggleCommentLike=async function(commentId){ if(!auth.currentUser){window.showToast('Login untuk menyukai komentar');return;} const ref=doc(db,'comics',window.currentActiveComicId,'comments',commentId); const snap=await getDoc(ref); if(!snap.exists())return; const liked=(snap.data().likedBy||[]).includes(auth.currentUser.uid); await updateDoc(ref,{likedBy:liked?arrayRemove(auth.currentUser.uid):arrayUnion(auth.currentUser.uid)}); fetchComments(window.currentActiveComicId); }
+        window.toggleCommentLike = async function(commentId) {
+            if(!auth.currentUser){window.showToast('Login untuk menyukai komentar');return;}
+            const comicId=window.currentActiveComicId;
+            const ref=doc(db,'comics',comicId,'comments',commentId);
+            try {
+                await runTransaction(db,async transaction=>{
+                    const snap=await transaction.get(ref);
+                    if(!snap.exists()) throw new Error('Komentar sudah tidak tersedia.');
+                    const likedBy=Array.isArray(snap.data().likedBy)?snap.data().likedBy:[];
+                    const liked=likedBy.includes(auth.currentUser.uid);
+                    if(!liked && likedBy.length>=5000) throw new Error('Batas reaksi komentar telah tercapai.');
+                    transaction.update(ref,{likedBy:liked?likedBy.filter(uid=>uid!==auth.currentUser.uid):[...likedBy,auth.currentUser.uid]});
+                });
+                await fetchComments(comicId);
+            } catch(error) {
+                reportBackgroundError('Like komentar gagal',error);
+                window.showToast(error.message||'Like belum dapat disimpan.');
+            }
+        }
         window.deleteOwnComment=async function(commentId){ if(!auth.currentUser)return; const ok=await modernConfirm({title:'Hapus komentar?',message:'Komentar yang dihapus tidak dapat dipulihkan.',confirmText:'Hapus',danger:true}); if(!ok)return; const ref=doc(db,'comics',window.currentActiveComicId,'comments',commentId); const snap=await getDoc(ref); if(!snap.exists()||snap.data().userId!==auth.currentUser.uid)return window.showToast('Anda tidak dapat menghapus komentar ini'); await deleteDoc(ref); try{await updateDoc(doc(db,'comics',window.currentActiveComicId),{commentCount:increment(-1)});}catch(e){} fetchComments(window.currentActiveComicId); }
         window.reportComment=async function(commentId){ if(!auth.currentUser){window.showToast('Login untuk melaporkan komentar');return;} const ok=await modernConfirm({title:'Laporkan komentar?',message:'Laporan akan dikirim kepada admin untuk ditinjau.',confirmText:'Kirim laporan'}); if(!ok)return; await setDoc(doc(db,'commentReports',`${window.currentActiveComicId}_${commentId}_${auth.currentUser.uid}`),{comicId:window.currentActiveComicId,commentId,reporterId:auth.currentUser.uid,reason:'Konten tidak pantas atau spam',status:'open',createdAt:serverTimestamp()}); window.showToast('Laporan berhasil dikirim'); }
         initEmojiPanel();
@@ -3484,6 +3513,8 @@
         async function loadSubtitles(data) {
             const player = document.getElementById('mainVideoPlayer');
             const select = document.getElementById('subtitleSelect');
+            window.subtitleObjectUrls.forEach(url => URL.revokeObjectURL(url));
+            window.subtitleObjectUrls = [];
             select.innerHTML = '<option value="off">Subtitle mati</option>';
             let subtitles = data.subtitles || [];
             if(!Array.isArray(subtitles)) subtitles = Object.entries(subtitles).map(([label,url]) => ({label,url}));
@@ -3499,6 +3530,7 @@
                     let subtitleText = await response.text();
                     if(/\.srt(?:\?|$)/i.test(trackUrl)) subtitleText = 'WEBVTT\n\n' + subtitleText.replace(/\r+/g,'').replace(/(\d{2}:\d{2}:\d{2}),([0-9]{3})/g,'$1.$2');
                     trackUrl = URL.createObjectURL(new Blob([subtitleText],{type:'text/vtt'}));
+                    window.subtitleObjectUrls.push(trackUrl);
                 } catch(e) {
                     reportBackgroundError('Subtitle lintas domain tidak dapat diproses; mencoba URL langsung',e);
                 }
@@ -3513,7 +3545,7 @@
             if(!file) return;
             let text = await file.text();
             if(/\.srt$/i.test(file.name)) text = 'WEBVTT\n\n' + text.replace(/\r+/g,'').replace(/(\d{2}:\d{2}:\d{2}),([0-9]{3})/g,'$1.$2');
-            const player=document.getElementById('mainVideoPlayer'); const track=document.createElement('track'); track.kind='subtitles'; track.label=file.name; track.srclang='id'; track.src=URL.createObjectURL(new Blob([text],{type:'text/vtt'})); player.appendChild(track);
+            const player=document.getElementById('mainVideoPlayer'); const track=document.createElement('track'); track.kind='subtitles'; track.label=file.name; track.srclang='id'; track.src=URL.createObjectURL(new Blob([text],{type:'text/vtt'})); window.subtitleObjectUrls.push(track.src); player.appendChild(track);
             const select=document.getElementById('subtitleSelect'); const index=player.textTracks.length-1; select.insertAdjacentHTML('beforeend',`<option value="${index}">${safeText(file.name)}</option>`); select.value=String(index); window.selectSubtitle(index); window.showToast('Subtitle berhasil dimuat');
         }
         window.setPlaybackSpeed = function(value) { const speed=Number(value)||1; document.getElementById('mainVideoPlayer').playbackRate=speed; localStorage.setItem('playbackSpeed',String(speed)); }
@@ -3581,6 +3613,8 @@
             }
             player.pause();
             player.src = "";
+            window.subtitleObjectUrls.forEach(url => URL.revokeObjectURL(url));
+            window.subtitleObjectUrls = [];
             if(history.state?.comicApp && history.state.view === 'player') history.back();
             else window.switchNav('home');
         }

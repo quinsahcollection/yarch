@@ -821,6 +821,18 @@
                         </div>
                     </div>
                 </div>
+
+                <div id="view-health" class="admin-view">
+                    <h1 class="page-title">Kesehatan Konten</h1>
+                    <div class="health-summary" id="healthSummary"><div class="health-stat"><strong>–</strong><span>Memindai katalog...</span></div></div>
+                    <div class="card">
+                        <div style="display:flex;justify-content:space-between;gap:12px;align-items:center;margin-bottom:15px;flex-wrap:wrap">
+                            <div><h3>Pemeriksaan Judul & Media</h3><div class="help-text">Mendeteksi cover rusak/kosong, folder tanpa media, durasi, subtitle, kualitas video, dan season tidak lengkap.</div></div>
+                            <button class="mod-btn primary" onclick="loadContentHealth(true)"><i class="fa-solid fa-rotate"></i> Pindai ulang</button>
+                        </div>
+                        <div class="health-list" id="healthList"><div class="loading-text">Memuat pemeriksaan...</div></div>
+                    </div>
+                </div>
                 
                 <div id="view-pengaturan" class="admin-view"><h1 class="page-title">Update & Maintenance</h1><div class="card"><div class="app-config-grid"><div class="form-group"><label>Versi terbaru</label><input id="configLatestVersion" type="text" placeholder="20.1.0"><div class="config-help">Gunakan format angka seperti 20.0.1.</div></div><div class="form-group"><label>Judul maintenance</label><input id="configMaintenanceTitle" type="text" placeholder="Sedang dalam pemeliharaan"></div><div class="form-group full"><label>Changelog</label><textarea id="configChangelog" rows="5" placeholder="Tuliskan perubahan versi terbaru..."></textarea></div><div class="form-group full"><label>Pesan maintenance</label><textarea id="configMaintenanceMessage" rows="3" placeholder="Aplikasi akan segera kembali..."></textarea></div><div class="config-switch"><div><strong>Update wajib</strong><div class="config-help">Pengingat akan terus muncul sampai pengguna memperbarui.</div></div><input id="configUpdateRequired" type="checkbox"></div><div class="config-switch"><div><strong>Mode maintenance</strong><div class="config-help">Pengguna biasa melihat halaman maintenance; admin tetap dapat masuk.</div></div><input id="configMaintenanceMode" type="checkbox"></div><div class="full"><button class="btn-submit" onclick="saveAppConfiguration()"><i class="fa-solid fa-cloud-arrow-up"></i> Simpan Pengaturan Aplikasi</button><div class="config-status" id="configStatus"></div></div></div></div></div>
                 <div id="view-moderasi" class="admin-view"><h1 class="page-title">Moderasi Komentar</h1><div class="moderation-toolbar"><button class="mod-btn primary" onclick="loadModeration(true)"><i class="fa-solid fa-rotate"></i> Muat ulang</button><button class="mod-btn" onclick="setModerationFilter('all')">Semua</button><button class="mod-btn" onclick="setModerationFilter('reported')">Dilaporkan</button><button class="mod-btn" onclick="setModerationFilter('pinned')">Disematkan</button><span id="moderationCount" class="moderation-meta"></span></div><div id="moderationList"><div class="loading-text">Memuat moderasi...</div></div><div style="text-align:center;margin-top:16px"><button id="moderationLoadMore" class="mod-btn primary" onclick="loadModeration(false)" style="display:none"><i class="fa-solid fa-chevron-down"></i> Muat 50 komentar berikutnya</button></div></div>
@@ -857,11 +869,6 @@
                     <div id="cloudMediaTypeHint" class="media-type-hint" style="display:none"></div>
                 </div>
 
-                <div id="view-health" class="admin-view">
-                    <h1 class="page-title">Kesehatan Konten</h1>
-                    <div class="health-summary" id="healthSummary"><div class="health-stat"><strong>–</strong><span>Memindai katalog...</span></div></div>
-                    <div class="card"><div style="display:flex;justify-content:space-between;gap:12px;align-items:center;margin-bottom:15px"><div><h3>Pemeriksaan Judul & Media</h3><div class="help-text">Mendeteksi cover rusak/kosong, folder tanpa media, durasi, subtitle, kualitas video, dan season tidak lengkap.</div></div><button class="mod-btn primary" onclick="loadContentHealth(true)"><i class="fa-solid fa-rotate"></i> Pindai ulang</button></div><div class="health-list" id="healthList"><div class="loading-text">Memuat pemeriksaan...</div></div></div>
-                </div>
             </div>
             
             <div id="galleryUploadStatus" style="display:none; padding:12px; background:#eff6ff; color:var(--primary); text-align:center; font-weight:600; font-size:14px; border-bottom: 1px solid #bfdbfe;">

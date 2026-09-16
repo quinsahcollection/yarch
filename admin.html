@@ -544,6 +544,13 @@
                                         <button type="button" class="btn-quick-add" onclick="quickAddMasterData('statuses', 'Status')" title="Tambah Status Baru"><i class="fa-solid fa-plus"></i></button>
                                     </div>
                                 </div>
+
+                                <div class="form-group full-width" id="seasonMetadataGroup">
+                                    <label>Jumlah Season</label>
+                                    <input type="number" id="totalSeasons" min="1" max="100" step="1" value="1" inputmode="numeric" onchange="window.renderSeasonTotalInputs()">
+                                    <span class="help-text">Judul tanpa pembagian season tetap menggunakan Season 1.</span>
+                                    <div id="seasonTotalsContainer" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:10px;margin-top:12px"></div>
+                                </div>
                                 
                                 <div class="form-group">
                                     <label id="lblTglRilis">Tanggal Rilis</label>
@@ -669,6 +676,10 @@
                                     </label>
                                 </div>
 
+                                <div class="form-group">
+                                    <label id="lblSeasonNumber">Season *</label>
+                                    <select id="chapterSeasonNumber" required><option value="1">Season 1</option></select>
+                                </div>
                                 <div class="form-group">
                                     <label id="lblChapterNum">Nomor Chapter / Episode *</label>
                                     <input type="number" step="0.1" id="chapterNumber" required placeholder="Contoh: 1 atau 1.5">
@@ -1281,6 +1292,10 @@
                     document.getElementById('author').value = data.author || '';
                     document.getElementById('type').value = data.type || '';
                     document.getElementById('status').value = data.status || '';
+                    document.getElementById('totalSeasons').value = Math.max(1, Number(data.totalSeasons || 1));
+                    window.renderSeasonTotalInputs?.(data.totalSeasons || 1, data.seasonTotals || {
+                        1: data.format === 'film' ? (data.totalEpisodes || data.totalParts || '') : (data.totalChapters || data.totalParts || '')
+                    });
                     document.getElementById('releaseDate').value = data.releaseDate || '';
                     document.getElementById('scheduleDay').value = data.scheduleDay ?? '';
                     document.getElementById('publicationStatus').value = data.publicationStatus || (data.isPublished === false ? 'draft' : 'published');
@@ -1314,6 +1329,8 @@
             document.getElementById('uploadForm').reset();
             document.querySelector(`input[name="entryFormat"][value="komik"]`).checked = true;
             window.selectFormatEntry('komik');
+            document.getElementById('totalSeasons').value = 1;
+            window.renderSeasonTotalInputs?.(1, {});
 
             document.getElementById('coverPreview').style.display = 'none';
             document.getElementById('coverImage').setAttribute('required', 'true');
@@ -1365,6 +1382,7 @@
                 document.querySelectorAll('.director-check:checked').forEach(cb => directors.push(cb.value));
 
                 const entryFormat = document.querySelector('input[name="entryFormat"]:checked').value;
+                const seasonMeta = window.collectSeasonTotals ? window.collectSeasonTotals() : {totalSeasons:1,seasonTotals:{},totalParts:0};
 
                 const dbData = {
                     title: document.getElementById('title').value,
@@ -1380,7 +1398,12 @@
                     genres: genres,
                     synopsis: document.getElementById('synopsis').value,
                     coverUrl: finalCoverUrl,
-                    format: entryFormat
+                    format: entryFormat,
+                    totalSeasons: seasonMeta.totalSeasons,
+                    seasonTotals: seasonMeta.seasonTotals,
+                    totalParts: seasonMeta.totalParts || null,
+                    totalChapters: entryFormat === 'komik' && seasonMeta.totalParts > 0 ? seasonMeta.totalParts : null,
+                    totalEpisodes: entryFormat === 'film' && seasonMeta.totalParts > 0 ? seasonMeta.totalParts : null
                 };
 
                 // Mapping field khusus berdasarkan format yang dipilih
@@ -1433,6 +1456,7 @@
         window.saveChapterFolder = async function() {
             const comicId = document.getElementById('chapterComicId').value;
             const comicName = document.getElementById('chapterComicSearch').value;
+            const seasonNumber = Math.max(1, Number(document.getElementById('chapterSeasonNumber').value || 1));
             const chapterNum = document.getElementById('chapterNumber').value;
             const chapterTitle = document.getElementById('chapterTitle').value;
             const statusEl = document.getElementById('saveFolderStatus');
@@ -1449,26 +1473,28 @@
                 const chaptersRef = collection(db, "comics", comicId, "chapters");
                 const q = query(chaptersRef, where("chapterNumber", "==", parseFloat(chapterNum)));
                 const snapshot = await getDocs(q);
+                const matchingDoc = snapshot.docs.find(item => Number(item.data().seasonNumber || 1) === seasonNumber);
 
                 let targetChapterId = "";
                 let targetChapterImages = [];
 
-                if (!snapshot.empty) {
-                    const docSnap = snapshot.docs[0];
+                if (matchingDoc) {
+                    const docSnap = matchingDoc;
                     targetChapterId = docSnap.id;
                     targetChapterImages = Array.isArray(docSnap.data().images) ? docSnap.data().images : [];
-                    await updateDoc(doc(db, "comics", comicId, "chapters", targetChapterId), { title: chapterTitle, updatedAt: serverTimestamp() });
+                    await updateDoc(doc(db, "comics", comicId, "chapters", targetChapterId), { title: chapterTitle, seasonNumber, updatedAt: serverTimestamp() });
                     statusEl.innerHTML = "✅ Identitas Node (Folder) ini sudah ada dan datanya berhasil diupdate!<br>Silakan lanjut Buka File Manager di Langkah 2.";
                 } else {
                     const newDocRef = await addDoc(chaptersRef, {
                         chapterNumber: parseFloat(chapterNum),
+                        seasonNumber,
                         title: chapterTitle,
                         images: [],
                         createdAt: serverTimestamp(),
                         updatedAt: serverTimestamp()
                     });
                     await syncChapterCount(comicId);
-                    await writeAudit('CREATE_CHAPTER', newDocRef.id, `${comicId} • ${chapterNum}`);
+                    await writeAudit('CREATE_CHAPTER', newDocRef.id, `${comicId} • S${seasonNumber} • ${chapterNum}`);
                     targetChapterId = newDocRef.id;
                     statusEl.innerHTML = "✅ Folder sukses diregistrasi!<br>Silakan lanjut Buka File Manager di Langkah 2 untuk upload konten media.";
                 }
@@ -1481,13 +1507,14 @@
                 const entryFormat = selectedComic?.format === 'film' ? 'film' : 'komik';
                 const sectionName = parseFloat(chapterNum) === 1 && chapterTitle === 'Full Movie'
                     ? 'Full Movie'
-                    : `${entryFormat === 'film' ? 'Episode' : 'Chapter'} ${chapterNum}`;
+                    : `Season ${seasonNumber} • ${entryFormat === 'film' ? 'Episode' : 'Chapter'} ${chapterNum}`;
 
                 // Penanda ini membuktikan Langkah 1 baru saja berhasil.
                 window.pendingChapterFolder = {
                     comicId,
                     comicName,
                     entryFormat,
+                    seasonNumber,
                     chapterId: targetChapterId,
                     chapterName: sectionName,
                     images: targetChapterImages
@@ -1846,7 +1873,7 @@
                     const snapshot = await getDocs(chaptersRef);
                     let chapters = [];
                     snapshot.forEach(doc => chapters.push({ id: doc.id, ...doc.data() }));
-                    chapters.sort((a, b) => b.chapterNumber - a.chapterNumber);
+                    chapters.sort((a, b) => (Number(b.seasonNumber || 1) - Number(a.seasonNumber || 1)) || (b.chapterNumber - a.chapterNumber));
 
                     if (chapters.length === 0) {
                         grid.innerHTML = `<div style="grid-column: 1/-1; text-align:center; padding:40px; color:var(--text-muted);">Belum ada folder diregistrasi.<br>Tutup file manager dan klik tombol "Simpan & Buat Folder" di form Kelola Chapter/Episode terlebih dahulu.</div>`;
@@ -1854,7 +1881,8 @@
                         chapters.forEach(ch => {
                             const totalMedia = ch.images ? ch.images.length : 0;
                             const safeTitle = adminSafe(ch.title || '');
-                            const folderLabel = ch.chapterNumber === 1 && ch.title === "Full Movie" ? "Full Movie" : `${term} ${ch.chapterNumber}`;
+                            const seasonNumber = Number(ch.seasonNumber || 1);
+                            const folderLabel = ch.chapterNumber === 1 && ch.title === "Full Movie" ? "Full Movie" : `Season ${seasonNumber} • ${term} ${ch.chapterNumber}`;
                             const folderColor = isFilm ? '#8b5cf6' : '#fbbf24';
                             
                             grid.innerHTML += `
@@ -2015,14 +2043,14 @@
                 let chapters = [];
                 snapshot.forEach(doc => chapters.push({ id: doc.id, ...doc.data() }));
                 
-                chapters.sort((a, b) => b.chapterNumber - a.chapterNumber);
+                chapters.sort((a, b) => (Number(b.seasonNumber || 1) - Number(a.seasonNumber || 1)) || (b.chapterNumber - a.chapterNumber));
                 
                 tbody.innerHTML = '';
                 if(chapters.length === 0) { tbody.innerHTML = '<tr><td colspan="5" style="text-align: center;">Belum ada integrasi folder.</td></tr>'; return; }
                 
                 chapters.forEach(ch => {
                     const date = ch.updateDate || (ch.createdAt ? ch.createdAt.toDate().toLocaleDateString('id-ID', {day:'numeric', month:'short', year:'numeric'}) : '-');
-                    const labelPart = ch.chapterNumber === 1 && ch.title === "Full Movie" ? "Full Movie" : `${term} ${ch.chapterNumber}`;
+                    const labelPart = ch.chapterNumber === 1 && ch.title === "Full Movie" ? "Full Movie" : `Season ${Number(ch.seasonNumber || 1)} • ${term} ${ch.chapterNumber}`;
 
                     tbody.innerHTML += `
                         <tr>
@@ -2071,6 +2099,8 @@
                     title: `Edit Folder ${term}`,
                     html: `
                         ${isFilm ? `<label style="display:flex;align-items:center;gap:9px;text-align:left;padding:10px 12px;margin:0 0 12px;background:#f5f3ff;border:1px solid #ddd6fe;border-radius:10px"><input id="editFolderFullMovie" type="checkbox" ${isFullMovie ? 'checked' : ''} style="width:18px;height:18px;accent-color:#7c3aed"> Jadikan sebagai Full Movie</label>` : ''}
+                        <label for="editFolderSeason" style="text-align:left">Season</label>
+                        <select id="editFolderSeason" class="swal2-select" style="display:block;width:100%;margin:0 0 14px">${Array.from({length:Math.max(1,Number(comic?.totalSeasons||1))},(_,i)=>`<option value="${i+1}">Season ${i+1}</option>`).join('')}</select>
                         <label for="editFolderNumber" style="text-align:left">Nomor ${term}</label>
                         <input id="editFolderNumber" class="swal2-input" type="number" min="0.1" step="0.1" style="max-width:100%!important;margin:0 0 14px!important" placeholder="Contoh: 1 atau 1.5">
                         <label for="editFolderTitle" style="text-align:left">Judul tambahan (opsional)</label>
@@ -2081,6 +2111,7 @@
                     confirmButtonColor: '#2563eb',
                     focusConfirm: false,
                     didOpen: () => {
+                        document.getElementById('editFolderSeason').value = String(chapter.seasonNumber || 1);
                         document.getElementById('editFolderNumber').value = chapter.chapterNumber ?? '';
                         document.getElementById('editFolderTitle').value = isFullMovie ? '' : (chapter.title || '');
                     },
@@ -2088,11 +2119,12 @@
                         const fullMovie = isFilm && document.getElementById('editFolderFullMovie')?.checked;
                         const chapterNumber = fullMovie ? 1 : Number(document.getElementById('editFolderNumber').value);
                         const title = fullMovie ? 'Full Movie' : document.getElementById('editFolderTitle').value.trim();
+                        const seasonNumber = fullMovie ? 1 : Number(document.getElementById('editFolderSeason').value || 1);
                         if (!Number.isFinite(chapterNumber) || chapterNumber <= 0) {
                             Swal.showValidationMessage(`Nomor ${term.toLowerCase()} harus lebih besar dari 0.`);
                             return false;
                         }
-                        return { chapterNumber, title };
+                        return { chapterNumber, title, seasonNumber };
                     }
                 });
 
@@ -2103,13 +2135,14 @@
                     where('chapterNumber', '==', result.value.chapterNumber)
                 );
                 const sameNumberSnapshot = await getDocs(sameNumberQuery);
-                if (sameNumberSnapshot.docs.some(item => item.id !== chapterId)) {
-                    Swal.fire('Nomor Sudah Dipakai', `${term} ${result.value.chapterNumber} sudah tersedia. Gunakan nomor lain.`, 'warning');
+                if (sameNumberSnapshot.docs.some(item => item.id !== chapterId && Number(item.data().seasonNumber || 1) === result.value.seasonNumber)) {
+                    Swal.fire('Nomor Sudah Dipakai', `${term} ${result.value.chapterNumber} sudah tersedia di Season ${result.value.seasonNumber}.`, 'warning');
                     return;
                 }
 
                 await updateDoc(chapterRef, {
                     chapterNumber: result.value.chapterNumber,
+                    seasonNumber: result.value.seasonNumber,
                     title: result.value.title,
                     updatedAt: serverTimestamp()
                 });
@@ -2180,6 +2213,7 @@
             document.getElementById('lblTipe').innerText = isFilm ? 'Tipe Rilis Film *' : 'Tipe Rilis Komik *';
             document.getElementById('lblTglRilis').innerText = isFilm ? 'Tanggal Rilis Penayangan' : 'Tanggal Rilis Terbitan';
             document.getElementById('lblSinopsis').innerText = isFilm ? 'Sinopsis Cerita Film' : 'Sinopsis Plot Komik';
+            window.renderSeasonTotalInputs?.();
 
             // Menampilkan/Menyembunyikan Kolom Khusus
             document.getElementById('groupAuthor').style.display = isFilm ? 'none' : 'block';
@@ -2190,6 +2224,43 @@
             document.getElementById('groupCast').style.display = isFilm ? 'block' : 'none';
             document.getElementById('groupTrailer').style.display = isFilm ? 'block' : 'none';
         }
+
+        window.renderSeasonTotalInputs = function(forcedCount, forcedTotals) {
+            const countInput = document.getElementById('totalSeasons');
+            const container = document.getElementById('seasonTotalsContainer');
+            if (!countInput || !container) return;
+            const previous = {};
+            container.querySelectorAll('[data-season-total]').forEach(input => previous[input.dataset.seasonTotal] = input.value);
+            const count = Math.max(1, Math.min(100, Number(forcedCount || countInput.value || 1)));
+            countInput.value = count;
+            const totals = forcedTotals || previous;
+            const isFilm = document.querySelector('input[name="entryFormat"]:checked')?.value === 'film';
+            container.innerHTML = Array.from({length:count}, (_, index) => {
+                const season = index + 1;
+                const value = Number(totals?.[season] || totals?.[String(season)] || 0) || '';
+                return `<div style="padding:10px;border:1px solid var(--border);border-radius:9px;background:#f8fafc"><label style="margin-bottom:6px">Season ${season} — Total ${isFilm ? 'Episode' : 'Chapter'}</label><input type="number" min="1" step="1" inputmode="numeric" data-season-total="${season}" value="${value}" placeholder="Contoh: 12"></div>`;
+            }).join('');
+        };
+
+        window.collectSeasonTotals = function() {
+            const totalSeasons = Math.max(1, Math.min(100, Number(document.getElementById('totalSeasons')?.value || 1)));
+            const seasonTotals = {};
+            let totalParts = 0;
+            document.querySelectorAll('[data-season-total]').forEach(input => {
+                const value = Math.max(0, Math.floor(Number(input.value || 0)));
+                if (value > 0) { seasonTotals[input.dataset.seasonTotal] = value; totalParts += value; }
+            });
+            return {totalSeasons, seasonTotals, totalParts};
+        };
+
+        window.syncChapterSeasonOptions = function(comic) {
+            const select = document.getElementById('chapterSeasonNumber');
+            if (!select) return;
+            const count = Math.max(1, Number(comic?.totalSeasons || 1));
+            select.innerHTML = Array.from({length:count}, (_, index) => `<option value="${index + 1}">Season ${index + 1}</option>`).join('');
+        };
+
+        window.renderSeasonTotalInputs();
 
         // Fungsi Otomatis Mengisi "Full Movie"
         window.toggleFullMovie = function(isChecked) {
@@ -2393,7 +2464,7 @@
             try {
                 for(let i=0;i<valid.length;i+=400){
                     const batch=writeBatch(db);
-                    valid.slice(i,i+400).forEach(item=>batch.set(doc(collection(db,'comics')),{title:item.title.trim().slice(0,180),altTitle:String(item.altTitle||'').slice(0,180),type:String(item.type||'Manga').slice(0,60),format:item.format==='film'?'film':'komik',status:String(item.status||'Ongoing').slice(0,40),ageRating:String(item.ageRating||'').slice(0,20),releaseDate:String(item.releaseDate||'').slice(0,30),genres:Array.isArray(item.genres)?item.genres.map(String).slice(0,20):[],synopsis:String(item.synopsis||'').slice(0,5000),coverUrl:normalizeUrl(item.coverUrl),author:String(item.author||'').slice(0,120),directors:Array.isArray(item.directors)?item.directors.map(String).slice(0,20):[],views:0,chaptersCount:0,isPublished:false,publicationStatus:'draft',createdAt:serverTimestamp()}));
+                    valid.slice(i,i+400).forEach(item=>{const format=item.format==='film'?'film':'komik';const seasonTotals=item.seasonTotals&&typeof item.seasonTotals==='object'?item.seasonTotals:{};const calculated=Object.values(seasonTotals).reduce((sum,value)=>sum+Math.max(0,Number(value)||0),0);const total=calculated||Number(item.totalParts||item.totalEpisodes||item.totalChapters||0);const totalSeasons=Math.max(1,Math.min(100,Number(item.totalSeasons||Object.keys(seasonTotals).length||1)));batch.set(doc(collection(db,'comics')),{title:item.title.trim().slice(0,180),altTitle:String(item.altTitle||'').slice(0,180),type:String(item.type||'Manga').slice(0,60),format,status:String(item.status||'Ongoing').slice(0,40),ageRating:String(item.ageRating||'').slice(0,20),releaseDate:String(item.releaseDate||'').slice(0,30),genres:Array.isArray(item.genres)?item.genres.map(String).slice(0,20):[],synopsis:String(item.synopsis||'').slice(0,5000),coverUrl:normalizeUrl(item.coverUrl),author:String(item.author||'').slice(0,120),directors:Array.isArray(item.directors)?item.directors.map(String).slice(0,20):[],totalSeasons,seasonTotals,totalParts:total>0?Math.floor(total):null,totalChapters:format==='komik'&&total>0?Math.floor(total):null,totalEpisodes:format==='film'&&total>0?Math.floor(total):null,views:0,chaptersCount:0,isPublished:false,publicationStatus:'draft',createdAt:serverTimestamp()});});
                     await batch.commit();success+=Math.min(400,valid.length-i);preview.textContent=`Mengimpor ${success}/${valid.length}...`;
                 }
                 await writeAudit('BULK_IMPORT','comics',`${success} metadata`);window.bulkMetadata=[];preview.textContent=`${success} data berhasil diimpor sebagai draft.`;window.dashboardCache=null;await window.loadComicsList();
@@ -2457,6 +2528,7 @@
                 // Update UI Kelola Chapter
                 const selectedData = window.allComicsList.find(c => c.id === id);
                 if (selectedData) {
+                    window.syncChapterSeasonOptions?.(selectedData);
                     const isFilm = selectedData.format === 'film';
                     document.getElementById('lblChapterNum').innerText = isFilm ? 'Nomor Episode *' : 'Nomor Chapter *';
                     document.getElementById('lblChapterTitle').innerText = isFilm ? 'Judul Tambahan Episode (Opsional)' : 'Judul Tambahan Chapter (Opsional)';

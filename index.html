@@ -115,6 +115,7 @@
         .discovery-status-stat { color:#16845d; background:#e5f8f0; }
         .discovery-type-stat { display:none; color:#5c55d8; background:#eeecff; }
         .discovery-latest-status { display:none; padding-left:6px; border-left:1px solid rgba(91,92,240,.2); color:#16845d; font-weight:850; }
+        .discovery-list-status { display:none; align-self:flex-start; padding:4px 8px; border-radius:8px; color:#16845d; background:#e5f8f0; font-size:8.5px; font-weight:850; }
 
         /* TOMBOL DELETE DI BOOKMARK CARD */
         .bookmark-delete-btn { position: absolute; top: 6px; right: 6px; background: rgba(0, 0, 0, 0.6); color: white; border: none; width: 26px; height: 26px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 12px; cursor: pointer; z-index: 5; transition: background 0.2s; }
@@ -487,8 +488,8 @@
         .discovery-grid.view-list .discovery-stats { justify-content:flex-start; gap:12px; font-size:11px; }
         .discovery-grid.view-list .discovery-extra-meta { display:none; }
         .discovery-grid.view-list .discovery-status-stat { display:none; }
-        .discovery-grid.view-list .discovery-type-stat { display:inline-flex; }
-        .discovery-grid.view-list .discovery-latest-status { display:inline; }
+        .discovery-grid.view-list .discovery-type-stat { display:inline-flex; padding:4px 7px; font-size:10px; }
+        .discovery-grid.view-list .discovery-list-status { display:inline-flex; }
         .discovery-grid.view-list .discovery-latest { width:max-content; max-width:calc(100% + 34px); margin:1px 0 4px; padding:6px 9px; }
         .discovery-grid.view-list .recent-releases { display:flex; flex-direction:column; gap:4px; width:calc(100% + 34px); margin-top:0; padding-bottom:1px; }
         .recent-release-row { min-width:0; display:flex; align-items:center; justify-content:space-between; gap:7px; padding:6px 9px; border-radius:8px; background:#f4f5fb; color:#555b72; font-size:9.5px; }
@@ -2399,7 +2400,7 @@
                     const label = getMediaPartLabel(comic, ch, comic.recentChapters?.length || 0, true);
                     const releaseTitle = ch.title && !isFullMovieChapter(comic, ch, comic.recentChapters?.length || 0) ? ch.title : '';
                     const relativeTime = formatRelativeUpdateTime(ch.updatedAt || ch.updateDate || ch.createdAt || '');
-                    return `<div class="recent-release-row" onclick="event.stopPropagation(); handleMediaOpen('${safeAttr(id)}','${safeAttr(ch.id)}','${safeAttr(ch.chapterNumber)}')"><span class="recent-release-main"><span class="recent-release-label">${safeText(label)}</span>${releaseTitle?`<span class="recent-release-title">— ${safeText(releaseTitle)}</span>`:''}</span><span class="recent-release-time">${safeText(relativeTime)}</span></div>`;
+                    return `<div class="recent-release-row" onclick="event.stopPropagation(); handleMediaOpen('${safeAttr(id)}','${safeAttr(ch.id)}','${safeAttr(ch.chapterNumber)}')"><span class="recent-release-main"><span class="recent-release-label">${safeText(label)}</span>${releaseTitle?`<span class="recent-release-title">| ${safeText(releaseTitle)}</span>`:''}</span><span class="recent-release-time">${safeText(relativeTime)}</span></div>`;
                 }).join('');
                 const bookmarkActive = window.userBookmarks.includes(id);
                 const statusText = comic.status || 'Belum diketahui';
@@ -2420,7 +2421,8 @@
                                 <span class="discovery-status-stat">${safeText(statusText)}</span>
                                 <span class="discovery-type-stat">${safeText(typeText)}</span>
                             </div>
-                            <div class="discovery-latest"><span>${safeText(latestText)}</span><span class="discovery-update-date"><i class="fa-regular fa-calendar"></i> ${safeText(updateDateText)}</span><span class="discovery-latest-status">${safeText(statusText)}</span></div>
+                            <div class="discovery-latest"><span>${safeText(latestText)}</span><span class="discovery-update-date"><i class="fa-regular fa-calendar"></i> ${safeText(updateDateText)}</span></div>
+                            <span class="discovery-list-status">${safeText(statusText)}</span>
                             <div class="recent-releases">${recentRows || '<div class="recent-release-row"><span>Belum ada rilis</span></div>'}</div>
                         </div>
                     </div>

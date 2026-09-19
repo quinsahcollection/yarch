@@ -375,11 +375,11 @@
         .section-header { margin-bottom:13px; }
         .section-title { font-size:17px; letter-spacing:-.3px; }
         .see-all { font-size:12px; padding:7px 10px; border-radius:10px; background:var(--light-blue); }
-        .horizontal-scroll { gap:12px; padding:2px 1px 12px; scroll-snap-type:x proximity; }
+        .horizontal-scroll { gap:9px; padding:2px 1px 12px; scroll-snap-type:x proximity; }
         .manga-card-simple,.manga-card-history { scroll-snap-align:start; min-width:132px; width:132px; border:0; border-radius:16px; background:#fff; box-shadow:0 7px 20px rgba(32,37,70,.08); transition:transform .2s ease,box-shadow .2s ease; }
         .manga-card-history { min-width:145px; width:145px; }
         .manga-card-simple:active,.manga-card-history:active { transform:scale(.97); }
-        .card-poster-wrap { position:relative; height:178px; overflow:hidden; background:#e9ebf2; }
+        .card-poster-wrap { position:relative; width:100%; aspect-ratio:2/3; height:auto; overflow:hidden; background:#e9ebf2; border-radius:16px 16px 0 0; }
         .manga-card-simple img { height:100%; border:0; object-fit:contain; background:#eef0f5; transition:transform .3s ease; }
         .manga-card-simple:hover img { transform:scale(1.035); }
         .card-format-badge { position:absolute; left:8px; top:8px; padding:4px 7px; border-radius:8px; color:white; background:rgba(13,16,30,.78); backdrop-filter:blur(8px); font-size:9px; font-weight:800; text-transform:uppercase; letter-spacing:.35px; }
@@ -390,9 +390,9 @@
         .card-status { color:var(--primary-blue); font-weight:700; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
         .manga-card-history img { height:184px; border:0; }
         .manga-card-history .chapter { margin-top:5px; }
-        .discovery-grid,.bookmark-grid { grid-template-columns:repeat(2,minmax(0,1fr)); gap:14px; padding:16px; background:transparent; align-content:start; align-items:start; grid-auto-rows:max-content; }
+        .discovery-grid,.bookmark-grid { grid-template-columns:repeat(2,minmax(0,1fr)); gap:10px; padding:14px; background:transparent; align-content:start; align-items:start; grid-auto-rows:max-content; }
         .discovery-card { position:relative; width:100%; height:auto; align-self:start; border:0; border-radius:16px; box-shadow:0 8px 22px rgba(32,37,70,.08); }
-        .discovery-card img { height:218px; object-fit:contain; background:#eef0f5; border:0; }
+        .discovery-card img { width:100%; aspect-ratio:2/3; height:auto; object-fit:cover; object-position:center top; background:#eef0f5; border:0; }
         .discovery-info { padding:11px; gap:6px; }
         .discovery-title { font-size:12px; min-height:32px; }
         .discovery-latest { min-width:0; display:flex; align-items:center; justify-content:center; gap:5px; border-radius:8px; padding:5px 7px; }
@@ -659,9 +659,11 @@
         .shared-profile-backdrop{position:fixed;inset:0;background:rgba(17,19,35,.58);z-index:10000;display:none;align-items:flex-end;justify-content:center;backdrop-filter:blur(6px)}.shared-profile-backdrop.show{display:flex}.shared-profile-sheet{width:100%;max-width:520px;max-height:88vh;overflow:auto;background:#f7f8fc;border-radius:26px 26px 0 0;padding:20px}.shared-profile-close{float:right;width:34px;height:34px;border:0;border-radius:50%;background:#ececf4}.shared-profile-head{text-align:center;padding:15px}.shared-profile-head img{width:88px;height:88px;border-radius:28px;object-fit:cover}.shared-profile-head h2{font-size:19px;margin-top:10px}.shared-profile-head p{font-size:11px;color:#85899b;margin-top:5px}.shared-favorites{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}.shared-favorite{background:#fff;border-radius:12px;padding:7px;font-size:9px;font-weight:750}.shared-favorite img{width:100%;height:110px;object-fit:cover;border-radius:8px;margin-bottom:5px}
         body[data-app-theme="sunset"]{--primary-blue:#ef6a51;--light-blue:#fff0eb;--dark-blue:#c64336}body[data-app-theme="forest"]{--primary-blue:#15956e;--light-blue:#e5f8f1;--dark-blue:#087454}body[data-app-theme="midnight"]{--primary-blue:#7669ff;--light-blue:#eeecff;--dark-blue:#4037bd}
         body.gamification-off .daily-checkin,body.gamification-off #achievementGrid,body.gamification-off #weeklyMissionList,body.gamification-off #rewardList,body.gamification-off #readerLeaderboard{display:none}
-        /* Cover ditampilkan utuh; ruang sisa memakai latar netral agar rasio asli tidak terpotong. */
+        /* Cover full-bleed seperti katalog Webtoon: memenuhi bidang sampai sudut kartu. */
         .card-poster-wrap,.home-all-poster,.history-full-cover,.discovery-card,.shared-favorite{background:#eef0f5}
-        .card-poster-wrap>img,.discovery-card>img,.home-all-poster>img,.history-full-cover>img,.bookmark-grid .manga-card-simple img,.shared-favorite img,.ranking-card img{object-fit:contain!important;object-position:center;background:#eef0f5}
+        .card-poster-wrap>img,.discovery-card>img,.home-all-poster>img,.history-full-cover>img,.bookmark-grid .manga-card-simple img,.shared-favorite img,.ranking-card img{object-fit:cover!important;object-position:center top;background:#eef0f5}
+        .manga-card-simple,.manga-card-history,.discovery-card,.home-all-card,.history-full-card{isolation:isolate}
+        .manga-card-simple>img,.manga-card-history>img{width:100%;aspect-ratio:2/3;height:auto!important;object-fit:cover!important;object-position:center top}
     </style>
 </head>
 <body>

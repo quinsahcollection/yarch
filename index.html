@@ -661,7 +661,9 @@
         body.gamification-off .daily-checkin,body.gamification-off #achievementGrid,body.gamification-off #weeklyMissionList,body.gamification-off #rewardList,body.gamification-off #readerLeaderboard{display:none}
         /* Cover full-bleed seperti katalog Webtoon: memenuhi bidang sampai sudut kartu. */
         .card-poster-wrap,.home-all-poster,.history-full-cover,.discovery-card,.shared-favorite{background:#eef0f5}
-        .card-poster-wrap>img,.discovery-card>img,.home-all-poster>img,.history-full-cover>img,.bookmark-grid .manga-card-simple img,.shared-favorite img,.ranking-card img{object-fit:cover!important;object-position:center top;background:#eef0f5}
+        .card-poster-wrap>img,.home-all-poster>img,.history-full-cover>img,.bookmark-grid .manga-card-simple img,.shared-favorite img,.ranking-card img{object-fit:cover!important;object-position:center top;background:#eef0f5}
+        /* Discovery memakai full-stretch agar seluruh bidang poster terisi tanpa letterbox/ruang kosong. */
+        .discovery-card>img{width:100%;display:block;object-fit:fill!important;object-position:center;background:#eef0f5}
         .manga-card-simple,.manga-card-history,.discovery-card,.home-all-card,.history-full-card{isolation:isolate}
         .manga-card-simple>img,.manga-card-history>img{width:100%;aspect-ratio:2/3;height:auto!important;object-fit:cover!important;object-position:center top}
     </style>
@@ -1113,7 +1115,7 @@
                     <button class="view-btn bookmark-view-btn" data-bookmark-view="list" onclick="setBookmarkView('list')" title="Daftar"><i class="fa-solid fa-list"></i></button>
                 </div>
             </div>
-            <div class="library-tabs" style="padding:0 15px 12px"><button class="library-tab active" data-library-filter="all" onclick="setLibraryFilter('all')">Semua</button><button class="library-tab" data-library-filter="want" onclick="setLibraryFilter('want')">Ingin dibaca</button><button class="library-tab" data-library-filter="reading" onclick="setLibraryFilter('reading')">Sedang dibaca</button><button class="library-tab" data-library-filter="completed" onclick="setLibraryFilter('completed')">Selesai</button><button class="library-tab" data-library-filter="paused" onclick="setLibraryFilter('paused')">Ditunda</button></div>
+            <div class="library-tabs" style="padding:0 15px 12px"><button class="library-tab active" data-library-filter="all" onclick="setLibraryFilter('all')">Semua</button><button class="library-tab" data-library-filter="want" onclick="setLibraryFilter('want')">Ingin</button><button class="library-tab" data-library-filter="reading" onclick="setLibraryFilter('reading')">Sedang dinikmati</button><button class="library-tab" data-library-filter="completed" onclick="setLibraryFilter('completed')">Selesai</button><button class="library-tab" data-library-filter="paused" onclick="setLibraryFilter('paused')">Ditunda</button></div>
             <div class="bookmark-grid" id="bookmarkContainer">
                 <div class="empty-history">Anda belum login atau belum ada bookmark.</div>
             </div>
@@ -2140,7 +2142,7 @@
                     <img src="${safeMediaUrl(comic.coverUrl)}" loading="lazy" decoding="async" onerror="this.src='https://placehold.co/72x104?text=Cover'">
                     <div class="update-feed-info"><div class="update-feed-title">${getTimeValue(time) > seenAt ? '<span class="new-update-dot"></span> ' : ''}${safeText(comic.title)}</div>
                     <div class="update-feed-meta"><span>${safeText(comic.type || (isVideo ? 'Video' : 'Komik'))}</span><span>•</span><span>${safeText(formatRelativeUpdateTime(time))}</span></div>
-                    <div class="update-feed-release"><span class="update-release-btn">${safeText(releaseLabel + (chapter.title && !fullMovie ? ' — ' + chapter.title : ''))}</span><span class="read-state ${read ? 'is-read' : ''}"><i class="fa-solid ${read ? 'fa-circle-check' : 'fa-circle'}"></i>${read ? (isVideo ? 'Ditonton' : 'Dibaca') : 'Belum'}</span></div></div>
+                    <div class="update-feed-release"><span class="update-release-btn">${safeText(releaseLabel + (chapter.title && !fullMovie ? ' — ' + chapter.title : ''))}</span><span class="read-state ${read ? 'is-read' : ''}"><i class="fa-solid ${read ? 'fa-circle-check' : 'fa-circle'}"></i>${read ? (isVideo ? 'Ditonton' : 'Dibaca') : (isVideo ? 'Belum ditonton' : 'Belum dibaca')}</span></div></div>
                 </div>`;
             }).join('') || '<div class="empty-history">Belum ada update pada periode ini.</div>';
             updateNotificationBadge();
@@ -2802,13 +2804,23 @@
         }
 
         window.bookmarkView = localStorage.getItem('bookmarkView') || '2';
-        const LIBRARY_STATUS_LABELS={want:'Ingin dibaca',reading:'Sedang dibaca',completed:'Selesai',paused:'Ditunda'};
+        function getLibraryStatusLabels(comic={}) {
+            return isVideoContent(comic)
+                ? {want:'Ingin ditonton',reading:'Sedang ditonton',completed:'Selesai ditonton',paused:'Ditunda menonton'}
+                : {want:'Ingin dibaca',reading:'Sedang dibaca',completed:'Selesai dibaca',paused:'Ditunda membaca'};
+        }
         window.setLibraryFilter=function(filter){window.libraryFilter=['all','want','reading','completed','paused'].includes(filter)?filter:'all';document.querySelectorAll('.library-tab').forEach(btn=>btn.classList.toggle('active',btn.dataset.libraryFilter===window.libraryFilter));renderBookmarks();}
-        window.updateDetailCollectionStatus=function(comicId){const select=document.getElementById('detailCollectionStatus');if(select)select.value=window.userLibrary[comicId]?.status||'';}
+        window.updateDetailCollectionStatus=function(comicId){
+            const select=document.getElementById('detailCollectionStatus');
+            if(!select)return;
+            const labels=getLibraryStatusLabels(window.comicsData[comicId]||{});
+            select.innerHTML=`<option value="">Belum disimpan</option><option value="want">${labels.want}</option><option value="reading">${labels.reading}</option><option value="completed">${labels.completed}</option><option value="paused">${labels.paused}</option>`;
+            select.value=window.userLibrary[comicId]?.status||'';
+        }
         window.setCollectionStatus=async function(comicId,status){
             if(!auth.currentUser){window.showToast('Login untuk menggunakan Koleksi Saya');document.getElementById('detailCollectionStatus').value='';switchNav('profile');return;}
             if(!comicId)return;
-            if(status){window.userLibrary[comicId]={comicId,status,updatedAt:Date.now()};if(!window.userBookmarks.includes(comicId))window.userBookmarks.push(comicId);try{await Promise.all([setDoc(doc(db,'users',auth.currentUser.uid,'library',comicId),{comicId,status,updatedAt:serverTimestamp()}),setDoc(doc(db,'users',auth.currentUser.uid,'bookmarks',comicId),{comicId,addedAt:serverTimestamp()})]);}catch(e){window.showToast('Koleksi disimpan di perangkat; sinkronisasi tertunda.');}window.showToast(`Masuk ke ${LIBRARY_STATUS_LABELS[status]}`);}else{delete window.userLibrary[comicId];window.userBookmarks=window.userBookmarks.filter(id=>id!==comicId);try{await Promise.all([deleteDoc(doc(db,'users',auth.currentUser.uid,'library',comicId)),deleteDoc(doc(db,'users',auth.currentUser.uid,'bookmarks',comicId))]);}catch(e){}window.showToast('Dihapus dari koleksi');}
+            if(status){window.userLibrary[comicId]={comicId,status,updatedAt:Date.now()};if(!window.userBookmarks.includes(comicId))window.userBookmarks.push(comicId);try{await Promise.all([setDoc(doc(db,'users',auth.currentUser.uid,'library',comicId),{comicId,status,updatedAt:serverTimestamp()}),setDoc(doc(db,'users',auth.currentUser.uid,'bookmarks',comicId),{comicId,addedAt:serverTimestamp()})]);}catch(e){window.showToast('Koleksi disimpan di perangkat; sinkronisasi tertunda.');}window.showToast(`Masuk ke ${getLibraryStatusLabels(window.comicsData[comicId]||{})[status]}`);}else{delete window.userLibrary[comicId];window.userBookmarks=window.userBookmarks.filter(id=>id!==comicId);try{await Promise.all([deleteDoc(doc(db,'users',auth.currentUser.uid,'library',comicId)),deleteDoc(doc(db,'users',auth.currentUser.uid,'bookmarks',comicId))]);}catch(e){}window.showToast('Dihapus dari koleksi');}
             localStorage.setItem('userLibrary_'+auth.currentUser.uid,JSON.stringify(window.userLibrary));localStorage.setItem('localBookmarks_'+auth.currentUser.uid,JSON.stringify(window.userBookmarks));checkBookmarkStatus(comicId);renderBookmarks();renderDiscoveryGrid(false);renderRecommendations();updateNotificationBadge();const stat=document.getElementById('statBookmarkCount');if(stat)stat.textContent=window.userBookmarks.length;
         }
         window.setBookmarkView = function(view) {
@@ -2841,11 +2853,12 @@
                 if(window.comicsData[id]) {
                     const data = window.comicsData[id];
                     const status=window.userLibrary[id]?.status||'want';
+                    const statusLabels=getLibraryStatusLabels(data);
                     bmHTML += `
                         <div class="manga-card-simple" onclick="openDetail('${id}')" style="width:100%;">
                             <button class="bookmark-delete-btn" onclick="removeBookmarkDirect(event, '${id}')" title="Hapus Bookmark"><i class="fa-solid fa-trash-can"></i></button>
-                            <div style="position:relative"><img src="${safeMediaUrl(data.coverUrl)}" loading="lazy" onerror="this.src='https://placehold.co/120x150?text=No+Cover'"><span class="library-status-badge">${safeText(LIBRARY_STATUS_LABELS[status])}</span></div>
-                            <div class="info-container"><div class="title">${safeText(data.title)}</div><select class="collection-select" style="margin-top:8px;max-width:100%;width:100%" onclick="event.stopPropagation()" onchange="event.stopPropagation();setCollectionStatus('${id}',this.value)"><option value="want" ${status==='want'?'selected':''}>Ingin dibaca</option><option value="reading" ${status==='reading'?'selected':''}>Sedang dibaca</option><option value="completed" ${status==='completed'?'selected':''}>Selesai</option><option value="paused" ${status==='paused'?'selected':''}>Ditunda</option></select></div>
+                            <div style="position:relative"><img src="${safeMediaUrl(data.coverUrl)}" loading="lazy" onerror="this.src='https://placehold.co/120x150?text=No+Cover'"><span class="library-status-badge">${safeText(statusLabels[status])}</span></div>
+                            <div class="info-container"><div class="title">${safeText(data.title)}</div><select class="collection-select" style="margin-top:8px;max-width:100%;width:100%" onclick="event.stopPropagation()" onchange="event.stopPropagation();setCollectionStatus('${id}',this.value)"><option value="want" ${status==='want'?'selected':''}>${statusLabels.want}</option><option value="reading" ${status==='reading'?'selected':''}>${statusLabels.reading}</option><option value="completed" ${status==='completed'?'selected':''}>${statusLabels.completed}</option><option value="paused" ${status==='paused'?'selected':''}>${statusLabels.paused}</option></select></div>
                         </div>
                     `;
                 }

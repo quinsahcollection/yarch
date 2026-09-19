@@ -86,6 +86,12 @@
 
         .btn-quick-add { background: var(--light-blue); color: var(--primary); border: 1px solid #bfdbfe; border-radius: 8px; width: 44px; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: 0.2s; flex-shrink: 0; }
         .btn-quick-add:hover { background: var(--primary); color: white; border-color: var(--primary); }
+        .title-ai-row { display:flex; align-items:stretch; gap:9px; }
+        .title-ai-row input { flex:1; min-width:0; }
+        .btn-ai-fill { min-width:132px; padding:0 14px; border:0; border-radius:9px; color:#fff; background:linear-gradient(135deg,#7c3aed,#4f46e5); box-shadow:0 5px 14px rgba(79,70,229,.22); cursor:pointer; font-size:12px; font-weight:750; }
+        .btn-ai-fill:disabled { opacity:.65; cursor:wait; }
+        .ai-fill-note { margin-top:7px; color:#777d91; font-size:10.5px; line-height:1.45; }
+        @media(max-width:620px){.title-ai-row{align-items:stretch}.btn-ai-fill{min-width:104px;padding:0 10px;font-size:11px}}
 
         .upload-area { border: 2px dashed var(--border); border-radius: 8px; padding: 20px; text-align: center; background: #f8fafc; cursor: pointer; position: relative;}
         .upload-area input { position: absolute; width: 100%; height: 100%; top: 0; left: 0; opacity: 0; cursor: pointer; }
@@ -509,7 +515,8 @@
 
                                 <div class="form-group full-width">
                                     <label id="lblJudulUtama">Judul Utama Komik *</label>
-                                    <input type="text" id="title" required placeholder="Contoh: One Piece, Solo Leveling...">
+                                    <div class="title-ai-row"><input type="text" id="title" required placeholder="Contoh: One Piece, Solo Leveling..."><button type="button" id="btnAiMetadata" class="btn-ai-fill" onclick="fillMetadataWithAI()"><i class="fa-solid fa-wand-magic-sparkles"></i> Isi dengan AI</button></div>
+                                    <span class="ai-fill-note">Masukkan judul, lalu klik AI. Periksa kembali hasil sebelum dipublikasikan; cover tetap diunggah manual.</span>
                                 </div>
 
                                 <div class="form-group">
@@ -973,6 +980,95 @@
             if (!user || user.uid !== ADMIN_UID) throw new Error('Sesi admin tidak valid. Silakan login kembali.');
             return { Authorization: `Bearer ${await user.getIdToken()}` };
         }
+
+        function setAiSelectValue(id, value) {
+            const select = document.getElementById(id);
+            const clean = String(value || '').trim();
+            if (!select || !clean) return;
+            const existing = [...select.options].find(option => option.value.toLowerCase() === clean.toLowerCase());
+            if (existing) select.value = existing.value;
+            else {
+                const option = new Option(clean, clean);
+                option.dataset.aiGenerated = 'true';
+                select.add(option);
+                select.value = clean;
+            }
+        }
+
+        function setAiCheckboxValues(containerId, checkboxClass, values) {
+            const container = document.getElementById(containerId);
+            if (!container || !Array.isArray(values)) return;
+            values.map(value => String(value || '').trim()).filter(Boolean).slice(0, 20).forEach(value => {
+                let checkbox = [...container.querySelectorAll(`.${checkboxClass}`)].find(item => item.value.toLowerCase() === value.toLowerCase());
+                if (!checkbox) {
+                    const label = document.createElement('label');
+                    checkbox = document.createElement('input');
+                    checkbox.type = 'checkbox';
+                    checkbox.value = value;
+                    checkbox.className = checkboxClass;
+                    checkbox.dataset.aiGenerated = 'true';
+                    label.append(checkbox, document.createTextNode(` ${value}`));
+                    container.appendChild(label);
+                }
+                checkbox.checked = true;
+            });
+        }
+
+        window.fillMetadataWithAI = async function() {
+            const titleInput = document.getElementById('title');
+            const title = titleInput.value.trim();
+            if (title.length < 2) return Swal.fire('Judul belum lengkap', 'Masukkan judul komik, film, atau anime terlebih dahulu.', 'info');
+            const button = document.getElementById('btnAiMetadata');
+            const originalHtml = button.innerHTML;
+            try {
+                button.disabled = true;
+                button.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Mencari...';
+                const format = document.querySelector('input[name="entryFormat"]:checked')?.value || 'komik';
+                const response = await fetch(new URL('ai/metadata', WORKER_URL), {
+                    method: 'POST',
+                    headers: { ...(await getWorkerAuthHeaders()), 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ title, format, language: 'id' })
+                });
+                const result = await response.json().catch(() => ({}));
+                if (!response.ok) throw new Error(result.error || `AI metadata gagal (HTTP ${response.status})`);
+                const data = result.metadata || result.data || result;
+                if (!data || typeof data !== 'object') throw new Error('Respons AI tidak berisi metadata yang valid.');
+
+                if (data.format === 'film' || data.format === 'komik') {
+                    document.querySelector(`input[name="entryFormat"][value="${data.format}"]`).checked = true;
+                    window.selectFormatEntry?.(data.format);
+                }
+                document.getElementById('altTitle').value = String(data.altTitle || data.alternativeTitle || '').slice(0, 180);
+                setAiSelectValue('type', data.type);
+                setAiSelectValue('status', data.status);
+                setAiSelectValue('ageRating', data.ageRating);
+                setAiSelectValue('author', data.author);
+                const releaseDate = String(data.releaseDate || '').match(/^\d{4}-\d{2}-\d{2}$/)?.[0] || '';
+                if (releaseDate) document.getElementById('releaseDate').value = releaseDate;
+                document.getElementById('synopsis').value = String(data.synopsis || '').slice(0, 5000);
+                setAiCheckboxValues('genreCheckboxContainer', 'genre-check', data.genres);
+                setAiCheckboxValues('directorCheckboxContainer', 'director-check', data.directors);
+                if (data.durationMinutesTotal || data.durationMinutes) {
+                    const totalMinutes = Math.max(0, Number(data.durationMinutesTotal || data.durationMinutes) || 0);
+                    document.getElementById('durationHours').value = Math.floor(totalMinutes / 60);
+                    document.getElementById('durationMinutes').value = Math.floor(totalMinutes % 60);
+                }
+                document.getElementById('trailerUrl').value = String(data.trailerUrl || '').slice(0, 500);
+                document.getElementById('castCrew').value = Array.isArray(data.castCrew) ? data.castCrew.join(', ') : String(data.castCrew || '');
+                if (data.totalSeasons) {
+                    document.getElementById('totalSeasons').value = Math.max(1, Math.min(100, Number(data.totalSeasons) || 1));
+                    window.renderSeasonTotalInputs?.(undefined, data.seasonTotals && typeof data.seasonTotals === 'object' ? data.seasonTotals : undefined);
+                }
+                await writeAudit('AI_METADATA_FILL', 'content-form', title);
+                Swal.fire({ title:'Metadata terisi', text:'Silakan periksa hasil AI dan unggah cover sebelum menyimpan.', icon:'success', timer:2300, showConfirmButton:false });
+            } catch (error) {
+                console.error(error);
+                Swal.fire('AI belum dapat digunakan', `${error.message}\n\nPastikan rute /ai/metadata sudah dipasang pada Worker.`, 'error');
+            } finally {
+                button.disabled = false;
+                button.innerHTML = originalHtml;
+            }
+        };
 
         async function migrateLegacyPublicationFields() {
             const snapshot = await getDocs(collection(db, 'comics'));

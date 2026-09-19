@@ -363,12 +363,12 @@
         .home-welcome strong { display:block; margin-top:2px; color:var(--text-dark); font-size:18px; font-weight:850; letter-spacing:-.35px; }
         .slider-container { height:292px; margin:10px 12px 4px; width:calc(100% - 24px); border-radius:22px; box-shadow:0 14px 30px rgba(18,21,40,.2); }
         .slide-bg-blur { filter:blur(20px); opacity:.58; transform:scale(1.04); }
-        .slide-img { width:54%; left:auto; right:0; background-size:cover; background-position:center top; }
-        .slide-overlay { background:linear-gradient(90deg,#101223 0%,rgba(16,18,35,.98) 43%,rgba(16,18,35,.78) 56%,rgba(16,18,35,.14) 100%),linear-gradient(0deg,rgba(8,10,20,.72),transparent 60%); }
-        .hero-content { left:18px; width:46%; max-width:220px; gap:9px; }
-        .hero-title { font-size:clamp(18px,4.7vw,23px); letter-spacing:-.5px; line-height:1.14; }
+        .slide-img { width:56%; left:auto; right:0; background-size:cover; background-position:center top; }
+        .slide-overlay { background:linear-gradient(90deg,rgba(16,18,35,.96) 0%,rgba(16,18,35,.9) 38%,rgba(16,18,35,.42) 55%,rgba(16,18,35,.03) 100%),linear-gradient(0deg,rgba(8,10,20,.42),transparent 58%); }
+        .hero-content { left:18px; width:40%; max-width:196px; gap:8px; }
+        .hero-title { font-size:clamp(17px,4.35vw,22px); letter-spacing:-.45px; line-height:1.14; }
         .hero-chapter-badge { font-size:10px; padding:5px 9px; border-radius:99px; background:linear-gradient(135deg,#ff7a45,#ff4f46); box-shadow:none; }
-        .hero-synopsis { font-size:10.5px; line-height:1.5; color:#d6d8e5; -webkit-line-clamp:3; }
+        .hero-synopsis { font-size:10px; line-height:1.45; color:#d6d8e5; -webkit-line-clamp:2; }
         .hero-footer-row { justify-content:flex-start; gap:11px; flex-wrap:wrap; }
         .hero-btn-read { padding:9px 15px; border-radius:12px; color:#fff; background:linear-gradient(135deg,#6d5dfc,#5153e8); box-shadow:0 8px 18px rgba(91,92,240,.32); }
         .slider-indicators { bottom:16px; right:18px; }
@@ -449,14 +449,14 @@
         .discovery-grid.view-3 .discovery-latest { gap:3px; padding:5px 3px; white-space:nowrap; }
         .discovery-grid.view-3 .discovery-update-date { padding-left:4px; }
         .discovery-grid.view-list { grid-template-columns:1fr; gap:11px; align-content:start; grid-auto-rows:max-content; }
-        .discovery-grid.view-list .discovery-card { display:grid; grid-template-columns:112px minmax(0,1fr); height:196px; min-height:0; overflow:hidden; }
-        .discovery-grid.view-list .discovery-card>img { width:112px; height:196px; }
-        .discovery-grid.view-list .discovery-info { padding:15px 52px 14px 15px; justify-content:center; }
+        .discovery-grid.view-list .discovery-card { display:grid; grid-template-columns:132px minmax(0,1fr); min-height:210px; height:auto; overflow:hidden; align-items:stretch; }
+        .discovery-grid.view-list .discovery-card>img { width:132px; height:100%; min-height:210px; object-fit:cover!important; object-position:center top; }
+        .discovery-grid.view-list .discovery-info { min-width:0; padding:18px 50px 17px 16px; justify-content:center; gap:7px; }
         .discovery-grid.view-list .discovery-title { font-size:14px; min-height:auto; }
         .discovery-grid.view-list .discovery-stats { justify-content:flex-start; gap:18px; font-size:11px; }
-        .discovery-grid.view-list .discovery-latest { width:max-content; max-width:100%; padding:6px 10px; }
-        .discovery-grid.view-list .recent-releases { display:flex; flex-direction:column; gap:6px; margin-top:10px; }
-        .recent-release-row { min-width:0; display:flex; align-items:center; justify-content:space-between; gap:8px; padding:7px 9px; border-radius:9px; background:#f4f5fb; color:#555b72; font-size:10px; }
+        .discovery-grid.view-list .discovery-latest { width:max-content; max-width:100%; margin:3px 0 7px; padding:7px 10px; }
+        .discovery-grid.view-list .recent-releases { display:flex; flex-direction:column; gap:8px; margin-top:2px; padding-bottom:2px; }
+        .recent-release-row { min-width:0; display:flex; align-items:center; justify-content:space-between; gap:8px; padding:8px 10px; border-radius:9px; background:#f4f5fb; color:#555b72; font-size:10px; }
         .recent-release-label { color:var(--primary-blue); font-weight:800; white-space:nowrap; }
         .recent-release-time { overflow:hidden; text-overflow:ellipsis; white-space:nowrap; color:#85899a; }
         .discovery-grid:not(.view-list) .quick-bookmark-btn { width:30px; height:30px; top:8px; right:8px; border-radius:10px; font-size:12px; }
@@ -637,7 +637,7 @@
         .auth-form-card input { border-radius:12px; }
         .toast-notification { max-width:calc(100% - 32px); width:max-content; text-align:center; bottom:calc(86px + env(safe-area-inset-bottom)); }
         @media (min-width:600px) { .app-container{margin:22px 0;min-height:calc(100vh - 44px);border-radius:28px;overflow:hidden}.bottom-nav{bottom:22px;border-radius:0 0 28px 28px}.detail-top-nav,.reader-header,.player-header{top:22px;border-radius:28px 28px 0 0} }
-        @media (max-width:370px) { .slider-container{height:276px}.hero-content{width:47%;left:15px}.hero-synopsis{-webkit-line-clamp:2}.manga-card-simple{min-width:124px;width:124px}.card-poster-wrap{height:168px}.discovery-toolbar{gap:7px;padding:10px 12px}.catalog-count{font-size:10px}.filter-toggle-btn{padding:0 10px}.discovery-grid{padding:12px;gap:10px}.discovery-grid.view-3{gap:7px}#discovery-page.alphabet-active .discovery-grid{padding-left:12px}.alphabet-rail{width:calc(100% - 20px);margin-left:10px;margin-right:10px} }
+        @media (max-width:370px) { .slider-container{height:276px}.hero-content{width:40%;left:15px}.hero-synopsis{-webkit-line-clamp:2}.manga-card-simple{min-width:124px;width:124px}.card-poster-wrap{height:168px}.discovery-toolbar{gap:7px;padding:10px 12px}.catalog-count{font-size:10px}.filter-toggle-btn{padding:0 10px}.discovery-grid{padding:12px;gap:10px}.discovery-grid.view-3{gap:7px}.discovery-grid.view-list .discovery-card{grid-template-columns:124px minmax(0,1fr)}.discovery-grid.view-list .discovery-card>img{width:124px}#discovery-page.alphabet-active .discovery-grid{padding-left:12px}.alphabet-rail{width:calc(100% - 20px);margin-left:10px;margin-right:10px} }
         /* V20.1: rekomendasi personal & smart search */
         .smart-search-head{padding:12px 14px 7px;font-size:11px;font-weight:800;color:#8b91a7;text-transform:uppercase;letter-spacing:.07em}
         .smart-search-chips{display:flex;gap:7px;flex-wrap:wrap;padding:3px 14px 13px}
@@ -1983,12 +1983,19 @@
                     document.getElementById('hero-slider').innerHTML = '<div class="loading-text" style="color:white; margin:auto;">Belum ada konten diupload.</div>';
                 }
 
-                document.getElementById('firebase-updates').innerHTML = htmlUpdates || '<div class="empty-history">Kosong</div>';
-                document.getElementById('firebase-jadwal').innerHTML = htmlJadwal || '<div class="empty-history">Kosong</div>';
-                document.getElementById('firebase-manga').innerHTML = htmlManga || '<div class="empty-history">Kosong</div>';
-                document.getElementById('firebase-manhwa').innerHTML = htmlManhwa || '<div class="empty-history">Kosong</div>';
-                document.getElementById('firebase-manhua').innerHTML = htmlManhua || '<div class="empty-history">Kosong</div>';
-                document.getElementById('firebase-film').innerHTML = htmlFilm || '<div class="empty-history">Kosong</div>';
+                const renderOptionalHomeSection = (containerId, html) => {
+                    const container=document.getElementById(containerId);
+                    if(!container)return;
+                    const section=container.closest('.section-container');
+                    container.innerHTML=html;
+                    if(section)section.style.display=html.trim() ? '' : 'none';
+                };
+                renderOptionalHomeSection('firebase-updates', htmlUpdates);
+                renderOptionalHomeSection('firebase-jadwal', htmlJadwal);
+                renderOptionalHomeSection('firebase-manga', htmlManga);
+                renderOptionalHomeSection('firebase-manhwa', htmlManhwa);
+                renderOptionalHomeSection('firebase-manhua', htmlManhua);
+                renderOptionalHomeSection('firebase-film', htmlFilm);
 
                 renderReadingHistory();
                 renderBookmarks();

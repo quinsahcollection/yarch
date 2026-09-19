@@ -110,6 +110,11 @@
         .discovery-meta-status { color:#16845d; background:#e5f8f0; }
         .discovery-meta-age { color:#c96a17; background:#fff1e4; }
         .discovery-meta-type { display:none; color:#5c55d8; background:#eeecff; }
+        .discovery-age-overlay { position:absolute; top:9px; left:9px; z-index:5; min-width:34px; height:27px; display:grid; place-items:center; padding:0 8px; border:1px solid rgba(255,255,255,.72); border-radius:9px; color:#fff; background:rgba(21,24,40,.78); backdrop-filter:blur(9px); box-shadow:0 4px 12px rgba(0,0,0,.2); font-size:9px; font-weight:900; }
+        .discovery-status-stat,.discovery-type-stat { display:inline-flex; align-items:center; gap:3px; padding:3px 5px; border-radius:7px; font-size:8px; font-weight:850; white-space:nowrap; }
+        .discovery-status-stat { color:#16845d; background:#e5f8f0; }
+        .discovery-type-stat { display:none; color:#5c55d8; background:#eeecff; }
+        .discovery-latest-status { display:none; padding-left:6px; border-left:1px solid rgba(91,92,240,.2); color:#16845d; font-weight:850; }
 
         /* TOMBOL DELETE DI BOOKMARK CARD */
         .bookmark-delete-btn { position: absolute; top: 6px; right: 6px; background: rgba(0, 0, 0, 0.6); color: white; border: none; width: 26px; height: 26px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 12px; cursor: pointer; z-index: 5; transition: background 0.2s; }
@@ -469,22 +474,24 @@
         .discovery-grid.view-3 .discovery-title { font-size:10px; min-height:27px; }
         .discovery-grid.view-3 .discovery-stats,.discovery-grid.view-3 .discovery-latest { font-size:8.5px; }
         .discovery-grid.view-3 .discovery-comment-stat { display:inline-flex; align-items:center; gap:2px; }
-        .discovery-grid.view-3 .discovery-extra-meta { gap:3px; }
-        .discovery-grid.view-3 .discovery-meta-status,.discovery-grid.view-3 .discovery-meta-type { display:none; }
-        .discovery-grid.view-3 .discovery-meta-age { display:inline-flex; padding:3px 5px; font-size:7.5px; }
+        .discovery-grid.view-3 .discovery-extra-meta { display:none; }
+        .discovery-grid.view-3 .discovery-status-stat,.discovery-grid.view-3 .discovery-type-stat { display:none; }
+        .discovery-grid.view-3 .discovery-age-overlay { top:7px; left:7px; min-width:30px; height:24px; padding:0 6px; font-size:8px; }
         .discovery-grid.view-3 .discovery-latest { gap:3px; padding:5px 3px; white-space:nowrap; }
         .discovery-grid.view-3 .discovery-update-date { padding-left:4px; }
         .discovery-grid.view-list { grid-template-columns:1fr; gap:11px; align-content:start; grid-auto-rows:max-content; }
-        .discovery-grid.view-list .discovery-card { display:grid; grid-template-columns:132px minmax(0,1fr); min-height:210px; height:auto; overflow:hidden; align-items:stretch; }
-        .discovery-grid.view-list .discovery-card>img { width:132px; height:100%; min-height:210px; object-fit:cover!important; object-position:center top; }
-        .discovery-grid.view-list .discovery-info { min-width:0; padding:18px 50px 17px 16px; justify-content:center; gap:7px; }
+        .discovery-grid.view-list .discovery-card { display:grid; grid-template-columns:132px minmax(0,1fr); min-height:190px; height:auto; overflow:hidden; align-items:stretch; }
+        .discovery-grid.view-list .discovery-card>img { width:132px; height:100%; min-height:190px; object-fit:cover!important; object-position:center top; }
+        .discovery-grid.view-list .discovery-info { min-width:0; padding:15px 50px 14px 15px; justify-content:center; gap:5px; }
         .discovery-grid.view-list .discovery-title { font-size:14px; min-height:auto; }
-        .discovery-grid.view-list .discovery-stats { justify-content:flex-start; gap:18px; font-size:11px; }
-        .discovery-grid.view-list .discovery-extra-meta { margin:2px 0 1px; }
-        .discovery-grid.view-list .discovery-meta-chip { display:inline-flex; padding:5px 8px; font-size:8.5px; }
-        .discovery-grid.view-list .discovery-latest { width:max-content; max-width:100%; margin:3px 0 7px; padding:7px 10px; }
-        .discovery-grid.view-list .recent-releases { display:flex; flex-direction:column; gap:8px; width:calc(100% + 34px); margin-top:2px; padding-bottom:2px; }
-        .recent-release-row { min-width:0; display:flex; align-items:center; justify-content:space-between; gap:8px; padding:8px 10px; border-radius:9px; background:#f4f5fb; color:#555b72; font-size:10px; }
+        .discovery-grid.view-list .discovery-stats { justify-content:flex-start; gap:12px; font-size:11px; }
+        .discovery-grid.view-list .discovery-extra-meta { display:none; }
+        .discovery-grid.view-list .discovery-status-stat { display:none; }
+        .discovery-grid.view-list .discovery-type-stat { display:inline-flex; }
+        .discovery-grid.view-list .discovery-latest-status { display:inline; }
+        .discovery-grid.view-list .discovery-latest { width:max-content; max-width:calc(100% + 34px); margin:1px 0 4px; padding:6px 9px; }
+        .discovery-grid.view-list .recent-releases { display:flex; flex-direction:column; gap:4px; width:calc(100% + 34px); margin-top:0; padding-bottom:1px; }
+        .recent-release-row { min-width:0; display:flex; align-items:center; justify-content:space-between; gap:7px; padding:6px 9px; border-radius:8px; background:#f4f5fb; color:#555b72; font-size:9.5px; }
         .recent-release-main { min-width:0; display:flex; align-items:center; gap:5px; overflow:hidden; }
         .recent-release-label { color:var(--primary-blue); font-weight:800; white-space:nowrap; }
         .recent-release-title { min-width:0; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; color:#5f6478; font-weight:700; }
@@ -2403,15 +2410,17 @@
                     <div class="discovery-card" onclick="openDetail('${id}')">
                         <button class="quick-bookmark-btn ${bookmarkActive ? 'active' : ''}" data-bookmark-id="${id}" onclick="toggleBookmarkFromCard(event,'${id}')" title="${bookmarkActive ? 'Hapus bookmark' : 'Simpan bookmark'}"><i class="fa-${bookmarkActive ? 'solid' : 'regular'} fa-bookmark"></i></button>
                         <img src="${safeMediaUrl(comic.coverUrl)}" loading="lazy" decoding="async" alt="${safeText(comic.title)}" onerror="this.src='https://placehold.co/120x140?text=No+Cover'">
+                        <span class="discovery-age-overlay">${safeText(ageText)}</span>
                         <div class="discovery-info">
                             <div class="discovery-title">${safeText(comic.title)}</div>
                             <div class="discovery-stats">
                                 <span class="discovery-rating"><i class="fa-solid fa-star"></i> ${ratingNum}</span>
                                 <span><i class="fa-regular fa-eye"></i> ${viewsCount}</span>
                                 <span class="discovery-comment-stat"><i class="fa-regular fa-comment"></i> ${comic.commentCount || 0}</span>
+                                <span class="discovery-status-stat">${safeText(statusText)}</span>
+                                <span class="discovery-type-stat">${safeText(typeText)}</span>
                             </div>
-                            <div class="discovery-extra-meta"><span class="discovery-meta-chip discovery-meta-status"><i class="fa-solid fa-circle-check"></i> ${safeText(statusText)}</span><span class="discovery-meta-chip discovery-meta-age"><i class="fa-solid fa-shield-halved"></i> ${safeText(ageText)}</span><span class="discovery-meta-chip discovery-meta-type"><i class="fa-solid ${isVideoType?'fa-circle-play':'fa-book-open'}"></i> ${safeText(typeText)}</span></div>
-                            <div class="discovery-latest"><span>${safeText(latestText)}</span><span class="discovery-update-date"><i class="fa-regular fa-calendar"></i> ${safeText(updateDateText)}</span></div>
+                            <div class="discovery-latest"><span>${safeText(latestText)}</span><span class="discovery-update-date"><i class="fa-regular fa-calendar"></i> ${safeText(updateDateText)}</span><span class="discovery-latest-status">${safeText(statusText)}</span></div>
                             <div class="recent-releases">${recentRows || '<div class="recent-release-row"><span>Belum ada rilis</span></div>'}</div>
                         </div>
                     </div>

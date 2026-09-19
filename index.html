@@ -480,6 +480,7 @@
         .discovery-grid.view-3 .discovery-age-overlay { top:7px; left:7px; min-width:30px; height:24px; padding:0 6px; font-size:8px; }
         .discovery-grid.view-3 .discovery-latest { gap:3px; padding:5px 3px; white-space:nowrap; }
         .discovery-grid.view-3 .discovery-update-date { padding-left:4px; }
+        .discovery-grid.view-3 .quick-bookmark-btn { width:27px; height:27px; top:7px; right:7px; border-radius:9px; font-size:10px; }
         .discovery-grid.view-list { grid-template-columns:1fr; gap:11px; align-content:start; grid-auto-rows:max-content; }
         .discovery-grid.view-list .discovery-card { display:grid; grid-template-columns:132px minmax(0,1fr); min-height:190px; height:auto; overflow:hidden; align-items:stretch; }
         .discovery-grid.view-list .discovery-card>img { width:132px; height:100%; min-height:190px; object-fit:cover!important; object-position:center top; }
@@ -489,8 +490,10 @@
         .discovery-grid.view-list .discovery-extra-meta { display:none; }
         .discovery-grid.view-list .discovery-status-stat { display:none; }
         .discovery-grid.view-list .discovery-type-stat { display:inline-flex; padding:4px 7px; font-size:10px; }
-        .discovery-grid.view-list .discovery-list-status { display:inline-flex; }
-        .discovery-grid.view-list .discovery-latest { width:max-content; max-width:calc(100% + 34px); margin:1px 0 4px; padding:6px 9px; }
+        .discovery-list-head { display:contents; }
+        .discovery-grid.view-list .discovery-list-head { display:flex; align-items:center; gap:7px; width:calc(100% + 34px); margin:1px 0 4px; }
+        .discovery-grid.view-list .discovery-list-status { display:inline-flex; flex:0 0 auto; align-self:center; }
+        .discovery-grid.view-list .discovery-latest { flex:1; width:auto; max-width:none; min-width:0; margin:0; padding:6px 9px; }
         .discovery-grid.view-list .recent-releases { display:flex; flex-direction:column; gap:4px; width:calc(100% + 34px); margin-top:0; padding-bottom:1px; }
         .recent-release-row { min-width:0; display:flex; align-items:center; justify-content:space-between; gap:7px; padding:6px 9px; border-radius:8px; background:#f4f5fb; color:#555b72; font-size:9.5px; }
         .recent-release-main { min-width:0; display:flex; align-items:center; gap:5px; overflow:hidden; }
@@ -2236,7 +2239,10 @@
         function renderAlphabetRail() {
             const rail = document.getElementById('alphabetRail');
             if(!rail) return;
-            const letters = ['', '#', ...'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split('')];
+            const alphabet = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split('');
+            const letters = window.discoverySort === 'title-desc'
+                ? ['', ...alphabet.reverse(), '#']
+                : ['', '#', ...alphabet];
             rail.innerHTML = letters.map(letter => `<button class="alphabet-btn ${letter === '' ? 'all-letters' : ''} ${window.discoveryLetter === letter ? 'active' : ''}" data-letter="${letter}" onclick="selectAlphabetLetter('${letter}')" title="${letter ? 'Judul ' + letter : 'Semua judul'}">${letter || 'Semua'}</button>`).join('');
             requestAnimationFrame(() => rail.querySelector('.alphabet-btn.active')?.scrollIntoView({ behavior:'smooth', block:'nearest', inline:'center' }));
         }
@@ -2421,8 +2427,7 @@
                                 <span class="discovery-status-stat">${safeText(statusText)}</span>
                                 <span class="discovery-type-stat">${safeText(typeText)}</span>
                             </div>
-                            <div class="discovery-latest"><span>${safeText(latestText)}</span><span class="discovery-update-date"><i class="fa-regular fa-calendar"></i> ${safeText(updateDateText)}</span></div>
-                            <span class="discovery-list-status">${safeText(statusText)}</span>
+                            <div class="discovery-list-head"><div class="discovery-latest"><span>${safeText(latestText)}</span><span class="discovery-update-date"><i class="fa-regular fa-calendar"></i> ${safeText(updateDateText)}</span></div><span class="discovery-list-status">${safeText(statusText)}</span></div>
                             <div class="recent-releases">${recentRows || '<div class="recent-release-row"><span>Belum ada rilis</span></div>'}</div>
                         </div>
                     </div>

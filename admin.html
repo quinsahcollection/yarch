@@ -935,6 +935,7 @@
             } catch (_) { return ''; }
         }
         function safeUrl(value) { return adminSafe(normalizeUrl(value)); }
+        function encodeInlineValue(value) { return encodeURIComponent(String(value ?? '')).replace(/'/g, '%27'); }
 
         // Audit juga dipanggil oleh operasi module utama (migrasi/hapus/upload).
         async function writeAudit(action, target = '', detail = '') {
@@ -1254,12 +1255,14 @@
         async function requestR2Deletion(urls) {
             const uniqueUrls = [...new Set(urls.filter(Boolean))];
             if (!uniqueUrls.length) return;
-            const response = await fetch(new URL('media/delete', WORKER_URL), {
-                method: 'POST',
-                headers: { ...(await getWorkerAuthHeaders()), 'Content-Type': 'application/json' },
-                body: JSON.stringify({ urls: uniqueUrls })
-            });
-            if (!response.ok) throw new Error((await response.json().catch(() => ({}))).error || 'Gagal menghapus media R2');
+            const headers = { ...(await getWorkerAuthHeaders()), 'Content-Type': 'application/json' };
+            for (let start = 0; start < uniqueUrls.length; start += 250) {
+                const response = await fetch(new URL('media/delete', WORKER_URL), {
+                    method: 'POST', headers,
+                    body: JSON.stringify({ urls: uniqueUrls.slice(start, start + 250) })
+                });
+                if (!response.ok) throw new Error((await response.json().catch(() => ({}))).error || `Gagal menghapus media R2 batch ${Math.floor(start / 250) + 1}`);
+            }
         }
 
         function collectStoredMediaUrls(data = {}) {
@@ -1418,7 +1421,7 @@
         function renderSearchableOptions(listId, hiddenId, inputId, listData) {
             let html = '';
             listData.forEach(c => {
-                const safeTitle = encodeURIComponent(c.title || '');
+                const safeTitle = encodeInlineValue(c.title || '');
                 html += `<div onclick="window.selectCustomOption('${c.id}', decodeURIComponent('${safeTitle}'), '${hiddenId}', '${inputId}', '${listId}')">${adminSafe(c.title)}</div>`;
             });
             document.getElementById(listId).innerHTML = html;
@@ -1850,8 +1853,8 @@
                 }
             };
 
+            const uploadedUrls = [];
             try {
-                let uploadedUrls = [];
                 const authHeaders = await getWorkerAuthHeaders();
                 for(let i = 0; i < files.length; i++) {
                     const file = files[i];
@@ -1884,6 +1887,13 @@
                 window.loadCloudGallery();
                 setTimeout(() => { statusEl.style.display = 'none'; }, 1800);
             } catch(e) {
+                if (uploadedUrls.length) {
+                    try { await requestR2Deletion(uploadedUrls); }
+                    catch (rollbackError) {
+                        await writeAudit('UPLOAD_ROLLBACK_FAILED', chapterId, `${uploadedUrls.length} file • ${rollbackError.message}`);
+                        console.warn('Rollback media upload gagal:', rollbackError);
+                    }
+                }
                 statusEl.className = 'upload-progress-panel error';
                 statusEl.innerHTML = `<div class="upload-progress-head"><span><i class="fa-solid fa-triangle-exclamation"></i> Upload gagal</span></div><div style="font-size:12px;font-weight:600">${adminSafe(e.message)}</div>`;
             } finally {
@@ -1911,12 +1921,13 @@
             const chapterId = window.galleryState.chapterFolderId || localStorage.getItem('activeChapterFolderId');
 
             try {
-                window.galleryState.currentChapterImages.splice(index, 1);
+                const nextImages = window.galleryState.currentChapterImages.filter((item, itemIndex) => itemIndex !== Number(index));
+                await requestR2Deletion([url]);
+                const chapterDocRef = doc(db, "comics", comicId, "chapters", chapterId);
+                await updateDoc(chapterDocRef, { images: nextImages, updatedAt: serverTimestamp() });
+                window.galleryState.currentChapterImages = nextImages;
                 const selIndex = window.selectedMediaGallery.findIndex(m => m.url === url);
                 if(selIndex !== -1) window.selectedMediaGallery.splice(selIndex, 1);
-
-                const chapterDocRef = doc(db, "comics", comicId, "chapters", chapterId);
-                await updateDoc(chapterDocRef, { images: window.galleryState.currentChapterImages, updatedAt: serverTimestamp() });
 
                 window.loadCloudGallery();
             } catch(e) { Swal.fire('Error', "Gagal membuang media: " + e.message, 'error'); }
@@ -1931,12 +1942,13 @@
 
             let bcHtml = `<span onclick="window.navGalleryToRoot()"><i class="fa-solid fa-server"></i> Root Server</span>`;
             if(window.galleryState.level !== 'root') {
-                const safeName = encodeURIComponent(window.galleryState.comicName || '');
+                const safeName = encodeInlineValue(window.galleryState.comicName || '');
                 bcHtml += ` <i class="fa-solid fa-chevron-right" style="font-size:10px;"></i> <span onclick="window.navGalleryToComic('${window.galleryState.comicId}', decodeURIComponent('${safeName}'), '${window.galleryState.entryFormat === 'film' ? 'film' : 'komik'}')">${adminSafe(window.galleryState.comicName)}</span>`;
             }
             if(window.galleryState.level === 'chapter_folder') {
                 bcHtml += ` <i class="fa-solid fa-chevron-right" style="font-size:10px;"></i> <span class="active">${adminSafe(window.galleryState.chapterFolderName)}</span>`;
-                document.getElementById('modalChapterUpdateDate').value = new Date().toISOString().split('T')[0];
+                const today = new Date();
+                document.getElementById('modalChapterUpdateDate').value = `${today.getFullYear()}-${String(today.getMonth()+1).padStart(2,'0')}-${String(today.getDate()).padStart(2,'0')}`;
             }
             breadcrumb.innerHTML = bcHtml;
 
@@ -1956,7 +1968,7 @@
                         return;
                     }
                     window.allComicsList.forEach(c => {
-                        const safeTitle = encodeURIComponent(c.title || '');
+                        const safeTitle = encodeInlineValue(c.title || '');
                         const formatLabel = c.format === 'film' ? 'Folder Film/Series' : 'Folder Komik';
                         const iconHtml = c.format === 'film' ? '<div style="position:absolute;top:-8px;right:-8px;background:var(--purple);color:white;border-radius:50%;width:25px;height:25px;display:flex;align-items:center;justify-content:center;font-size:12px;box-shadow:0 2px 5px rgba(0,0,0,0.2);"><i class="fa-solid fa-film"></i></div>' : '';
 
@@ -1996,7 +2008,7 @@
                             const folderColor = isFilm ? '#8b5cf6' : '#fbbf24';
                             
                             grid.innerHTML += `
-                                <div class="folder-card" onclick="window.navGalleryToChapterFolder('${ch.id}', '${folderLabel}', window.encodeImgs('${encodeURIComponent(JSON.stringify(ch.images || []))}') )">
+                                <div class="folder-card" onclick="window.navGalleryToChapterFolder('${ch.id}', '${folderLabel}', window.encodeImgs('${encodeInlineValue(JSON.stringify(ch.images || []))}') )">
                                     <button type="button" class="btn-edit-folder" onclick="event.stopPropagation(); window.editChapterFolder('${window.galleryState.comicId}', '${ch.id}')" title="Edit folder" aria-label="Edit folder"><i class="fa-solid fa-pen"></i></button>
                                     <button class="btn-delete-folder" onclick="event.stopPropagation(); window.deleteChapterFolder('${window.galleryState.comicId}', '${ch.id}')" title="Pindahkan ke Trash"><i class="fa-solid fa-trash-can-arrow-up"></i></button>
                                     <i class="fa-solid fa-folder-open folder-icon" style="color: ${folderColor};"></i>
@@ -2018,7 +2030,7 @@
 
                     window.galleryState.currentChapterImages.forEach((url, index) => {
                         const isSelected = window.selectedMediaGallery.findIndex(m => m.url === url) !== -1;
-                        const encodedUrl = encodeURIComponent(url);
+                        const encodedUrl = encodeInlineValue(url);
                         const cleanUrl = safeUrl(url);
                         const orderIndex = isSelected ? window.selectedMediaGallery.findIndex(m => m.url === url) + 1 : '';
                         
@@ -2109,8 +2121,11 @@
             if(!comicId || !chapterId) { Swal.fire('Error', "Terjadi kesalahan state memori.", 'error'); return; }
             if(!finalUpdateDate) { Swal.fire('Info', "Mohon isi Tanggal Update (di form kiri bawah)!", 'info'); return; }
 
-            let finalUrls = window.selectedMediaGallery.map(m => m.url);
-            if (finalUrls.length === 0) { finalUrls = window.galleryState.currentChapterImages; }
+            const selectedUrls = window.selectedMediaGallery.map(m => m.url);
+            // Pilihan hanya mengatur urutan prioritas, bukan membuang media lain.
+            let finalUrls = selectedUrls.length
+                ? [...selectedUrls, ...window.galleryState.currentChapterImages.filter(url => !selectedUrls.includes(url))]
+                : [...window.galleryState.currentChapterImages];
             if (finalUrls.length === 0) { Swal.fire('Info', "Folder masih kosong! Silakan upload minimal 1 media.", 'info'); return; }
 
             const btnTop = document.querySelector('#modalFooterPublish .btn-success-sm');
@@ -2226,9 +2241,11 @@
             const chapterRef=doc(db,'comics',comicId,'chapters',chapterId),chapterSnap=await getDoc(chapterRef);
             if(!chapterSnap.exists())throw new Error('Folder tidak ditemukan.');
             const comicSnap=await getDoc(doc(db,'comics',comicId));
-            const trashId=`${comicId}__${chapterId}`;
-            await setDoc(doc(db,'settings','adminTrash','items',trashId),{trashType:'chapter',comicId,chapterId,comicTitle:comicSnap.exists()?(comicSnap.data().title||'Konten'):'Konten',payload:chapterSnap.data(),deletedAt:serverTimestamp(),deletedBy:auth.currentUser?.uid||''});
-            await deleteDoc(chapterRef);await syncChapterCount(comicId);await writeAudit('MOVE_CHAPTER_TO_TRASH',chapterId,comicId);
+            const trashRef=doc(collection(db,'settings','adminTrash','items'));
+            const batch=writeBatch(db);
+            batch.set(trashRef,{trashType:'chapter',comicId,chapterId,comicTitle:comicSnap.exists()?(comicSnap.data().title||'Konten'):'Konten',payload:chapterSnap.data(),deletedAt:serverTimestamp(),deletedBy:auth.currentUser?.uid||''});
+            batch.delete(chapterRef);
+            await batch.commit();await syncChapterCount(comicId);await writeAudit('MOVE_CHAPTER_TO_TRASH',chapterId,comicId);
         }
 
         window.deleteChapter = async function(comicId, chapterId) {

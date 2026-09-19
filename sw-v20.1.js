@@ -1,4 +1,5 @@
 const CACHE_VERSION = "komik-anime-v20.1.1";
+const CACHE_PREFIX = "komik-anime-";
 
 const REQUIRED_SHELL = [
   "./",
@@ -43,7 +44,7 @@ self.addEventListener("activate", (event) => {
           keys
             .filter(
               (key) =>
-                key !== CACHE_VERSION
+                key.startsWith(CACHE_PREFIX) && key !== CACHE_VERSION
             )
             .map((key) =>
               caches.delete(key)

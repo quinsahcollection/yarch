@@ -89,8 +89,8 @@
         
         .manga-card-history, .manga-card-simple { min-width: 120px; width: 120px; background: #ffffff; border-radius: 6px; overflow: hidden; border: 1px solid #e0e0e0; display: flex; flex-direction: column; cursor: pointer; position: relative; }
         .manga-card-history { min-width: 130px; width: 130px; }
-        .manga-card-history img { border-bottom: 3px solid var(--primary-blue); height: 170px; width: 100%; object-fit: cover; }
-        .manga-card-simple img { border-bottom: 1px solid #eeeeee; height: 150px; width: 100%; object-fit: cover; }
+        .manga-card-history img { border-bottom: 3px solid var(--primary-blue); height: 170px; width: 100%; object-fit: contain; background:#eef0f5; }
+        .manga-card-simple img { border-bottom: 1px solid #eeeeee; height: 150px; width: 100%; object-fit: contain; background:#eef0f5; }
         .manga-card-simple .info-container, .manga-card-history .info { padding: 8px; flex-grow: 1; display: flex; flex-direction: column; }
         .manga-card-simple .title, .manga-card-history .title { font-size: 12px; font-weight: 600; color: #222; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
         .manga-card-history .chapter { font-size: 11px; color: var(--primary-blue); font-weight: 600; margin-top: 4px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
@@ -99,7 +99,7 @@
         .discovery-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; padding: 16px; background: #f8fafc; min-height: 80vh; }
         .discovery-card { background: white; border-radius: 8px; overflow: hidden; border: 1px solid #e2e8f0; display: flex; flex-direction: column; cursor: pointer; box-shadow: 0 2px 5px rgba(0,0,0,0.05); transition: transform 0.2s; }
         .discovery-card:hover { transform: translateY(-2px); }
-        .discovery-card img { width: 100%; height: 140px; object-fit: cover; border-bottom: 1px solid #eee; }
+        .discovery-card img { width: 100%; height: 140px; object-fit: contain; background:#eef0f5; border-bottom: 1px solid #eee; }
         .discovery-info { padding: 8px; display: flex; flex-direction: column; gap: 4px; flex-grow: 1; }
         .discovery-title { font-size: 11px; font-weight: 700; color: #111; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; line-height: 1.3; }
         .discovery-stats { display: flex; justify-content: space-between; align-items: center; font-size: 10px; color: #64748b; margin-top: 2px; }
@@ -361,7 +361,7 @@
         .search-results-dropdown { top:64px; border-radius:18px; border-color:var(--border-color); box-shadow:0 18px 50px rgba(24,29,58,.18); }
         .slider-container { height:330px; margin:12px 12px 4px; width:calc(100% - 24px); border-radius:24px; box-shadow:0 16px 36px rgba(18,21,40,.22); }
         .slide-bg-blur { filter:blur(20px); opacity:.58; transform:scale(1.04); }
-        .slide-img { width:64%; left:auto; right:0; background-size:cover; background-position:center; }
+        .slide-img { width:64%; left:auto; right:0; background-size:contain; background-position:right center; }
         .slide-overlay { background:linear-gradient(90deg,#101223 0%,rgba(16,18,35,.95) 38%,rgba(16,18,35,.54) 72%,rgba(16,18,35,.18) 100%),linear-gradient(0deg,rgba(8,10,20,.75),transparent 60%); }
         .hero-content { left:20px; width:58%; max-width:260px; gap:11px; }
         .hero-title { font-size:clamp(20px,5.2vw,26px); letter-spacing:-.6px; line-height:1.12; }
@@ -380,7 +380,7 @@
         .manga-card-history { min-width:145px; width:145px; }
         .manga-card-simple:active,.manga-card-history:active { transform:scale(.97); }
         .card-poster-wrap { position:relative; height:178px; overflow:hidden; background:#e9ebf2; }
-        .manga-card-simple img { height:100%; border:0; transition:transform .3s ease; }
+        .manga-card-simple img { height:100%; border:0; object-fit:contain; background:#eef0f5; transition:transform .3s ease; }
         .manga-card-simple:hover img { transform:scale(1.035); }
         .card-format-badge { position:absolute; left:8px; top:8px; padding:4px 7px; border-radius:8px; color:white; background:rgba(13,16,30,.78); backdrop-filter:blur(8px); font-size:9px; font-weight:800; text-transform:uppercase; letter-spacing:.35px; }
         .card-rating { position:absolute; right:8px; bottom:8px; padding:4px 7px; border-radius:8px; color:#ffd45a; background:rgba(13,16,30,.78); font-size:10px; font-weight:800; }
@@ -392,7 +392,7 @@
         .manga-card-history .chapter { margin-top:5px; }
         .discovery-grid,.bookmark-grid { grid-template-columns:repeat(2,minmax(0,1fr)); gap:14px; padding:16px; background:transparent; align-content:start; align-items:start; grid-auto-rows:max-content; }
         .discovery-card { position:relative; width:100%; height:auto; align-self:start; border:0; border-radius:16px; box-shadow:0 8px 22px rgba(32,37,70,.08); }
-        .discovery-card img { height:218px; border:0; }
+        .discovery-card img { height:218px; object-fit:contain; background:#eef0f5; border:0; }
         .discovery-info { padding:11px; gap:6px; }
         .discovery-title { font-size:12px; min-height:32px; }
         .discovery-latest { min-width:0; display:flex; align-items:center; justify-content:center; gap:5px; border-radius:8px; padding:5px 7px; }
@@ -659,6 +659,9 @@
         .shared-profile-backdrop{position:fixed;inset:0;background:rgba(17,19,35,.58);z-index:10000;display:none;align-items:flex-end;justify-content:center;backdrop-filter:blur(6px)}.shared-profile-backdrop.show{display:flex}.shared-profile-sheet{width:100%;max-width:520px;max-height:88vh;overflow:auto;background:#f7f8fc;border-radius:26px 26px 0 0;padding:20px}.shared-profile-close{float:right;width:34px;height:34px;border:0;border-radius:50%;background:#ececf4}.shared-profile-head{text-align:center;padding:15px}.shared-profile-head img{width:88px;height:88px;border-radius:28px;object-fit:cover}.shared-profile-head h2{font-size:19px;margin-top:10px}.shared-profile-head p{font-size:11px;color:#85899b;margin-top:5px}.shared-favorites{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}.shared-favorite{background:#fff;border-radius:12px;padding:7px;font-size:9px;font-weight:750}.shared-favorite img{width:100%;height:110px;object-fit:cover;border-radius:8px;margin-bottom:5px}
         body[data-app-theme="sunset"]{--primary-blue:#ef6a51;--light-blue:#fff0eb;--dark-blue:#c64336}body[data-app-theme="forest"]{--primary-blue:#15956e;--light-blue:#e5f8f1;--dark-blue:#087454}body[data-app-theme="midnight"]{--primary-blue:#7669ff;--light-blue:#eeecff;--dark-blue:#4037bd}
         body.gamification-off .daily-checkin,body.gamification-off #achievementGrid,body.gamification-off #weeklyMissionList,body.gamification-off #rewardList,body.gamification-off #readerLeaderboard{display:none}
+        /* Cover ditampilkan utuh; ruang sisa memakai latar netral agar rasio asli tidak terpotong. */
+        .card-poster-wrap,.home-all-poster,.history-full-cover,.discovery-card,.shared-favorite{background:#eef0f5}
+        .card-poster-wrap>img,.discovery-card>img,.home-all-poster>img,.history-full-cover>img,.bookmark-grid .manga-card-simple img,.shared-favorite img,.ranking-card img{object-fit:contain!important;object-position:center;background:#eef0f5}
     </style>
 </head>
 <body>
@@ -1150,7 +1153,7 @@
                     <ul class="user-menu-list"><li class="install-app-item" id="installAppUser" hidden onclick="installApp()"><div class="left-info"><i class="fa-solid fa-mobile-screen-button"></i> Pasang Aplikasi</div><i class="fa-solid fa-download"></i></li><li onclick="switchNav('bookmark')"><div class="left-info"><i class="fa-solid fa-layer-group"></i> Kelola Koleksi Saya</div><i class="fa-solid fa-chevron-right"></i></li><li class="logout-item" onclick="doLogout()"><div class="left-info"><i class="fa-solid fa-right-from-bracket"></i> Keluar dari Akun</div><i class="fa-solid fa-chevron-right"></i></li></ul>
                 </div>
             </div>
-            <div class="app-version-card"><div><strong>Versi Aplikasi</strong><span id="currentVersionLabel">V20.1.1.0 • Memeriksa pembaruan...</span></div><button class="version-check-btn" onclick="checkAppConfiguration(true)"><i class="fa-solid fa-rotate"></i> Periksa</button></div>
+            <div class="app-version-card"><div><strong>Versi Aplikasi</strong><span id="currentVersionLabel">V20.1.1 • Memeriksa pembaruan...</span></div><button class="version-check-btn" onclick="checkAppConfiguration(true)"><i class="fa-solid fa-rotate"></i> Periksa</button></div>
         </div>
 
         <!-- ================= BOTTOM NAVIGATION (DITAMBAHKAN DISCOVERY) ================= -->
@@ -1172,7 +1175,7 @@
             </a>
         </nav>
     </div>
-    <div class="update-modal-backdrop" id="updateModal"><div class="update-sheet"><div class="update-icon"><i class="fa-solid fa-cloud-arrow-down"></i></div><h2>Versi baru tersedia</h2><p>Pembaruan aplikasi sudah siap. Proses ini akan membersihkan cache antarmuka lama tanpa menghapus akun, bookmark, atau riwayat Anda.</p><div class="update-version-line"><span id="updateCurrentVersion">V20.1.1.0</span><i class="fa-solid fa-arrow-right"></i><span id="updateLatestVersion">V20.1.0.1</span></div><div class="update-changelog" id="updateChangelog">Peningkatan stabilitas dan tampilan.</div><div class="update-actions"><button class="update-action update-later" onclick="dismissAppUpdate()">Nanti</button><button class="update-action update-now" onclick="applyAppUpdate()"><i class="fa-solid fa-bolt"></i> Perbarui Sekarang</button></div></div></div>
+    <div class="update-modal-backdrop" id="updateModal"><div class="update-sheet"><div class="update-icon"><i class="fa-solid fa-cloud-arrow-down"></i></div><h2>Versi baru tersedia</h2><p>Pembaruan aplikasi sudah siap. Proses ini akan membersihkan cache antarmuka lama tanpa menghapus akun, bookmark, atau riwayat Anda.</p><div class="update-version-line"><span id="updateCurrentVersion">V20.1.1</span><i class="fa-solid fa-arrow-right"></i><span id="updateLatestVersion">V20.1.1</span></div><div class="update-changelog" id="updateChangelog">Peningkatan stabilitas dan tampilan.</div><div class="update-actions"><button class="update-action update-later" onclick="dismissAppUpdate()">Nanti</button><button class="update-action update-now" onclick="applyAppUpdate()"><i class="fa-solid fa-bolt"></i> Perbarui Sekarang</button></div></div></div>
 
     <div class="modern-modal-backdrop" id="modernConfirmModal" role="dialog" aria-modal="true" aria-labelledby="modernConfirmTitle">
         <div class="modern-modal">
@@ -1191,7 +1194,7 @@
     <!-- SCRIPT FIREBASE & LOGIKA UTAMA -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-        import { getFirestore, collection, getDocs, getDoc, getCountFromServer, doc, query, where, orderBy, limit, updateDoc, increment, setDoc, deleteDoc, addDoc, serverTimestamp, runTransaction } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+        import { getFirestore, collection, getDocs, getDoc, getCountFromServer, doc, query, where, orderBy, limit, updateDoc, increment, setDoc, deleteDoc, addDoc, serverTimestamp, runTransaction, writeBatch } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
         import { getAuth, onAuthStateChanged, signInWithEmailAndPassword, createUserWithEmailAndPassword, signOut } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
 
         const firebaseConfig = {
@@ -1206,7 +1209,7 @@
         const app = initializeApp(firebaseConfig);
         const db = getFirestore(app);
         const auth = getAuth(app);
-        const APP_VERSION = '20.1.0';
+        const APP_VERSION = '20.1.1';
         const ADMIN_UID = 'dWUWpKAWQRRxMOzjzaOA3zXWZLp2';
 
         window.comicsData = {};
@@ -1221,6 +1224,7 @@
         window.socialProfile = {displayName:'',bio:'',photoData:'',privacy:{publicProfile:true,showStats:true,showFavorites:true},theme:'default'};
         window.gameData = {points:0,streak:0,lastCheckIn:'',chapterCount:0,watchSeconds:0,commentCount:0,awardedChapters:{},weekly:{}};
         window.lastVideoTrackedSecond = 0;
+        window.pendingWatchAnalyticsSeconds = 0;
         window.analyticsSessionRecorded = false;
 
         // V20.1 analytics ringan: hanya pengguna login, tanpa Cloud Functions.
@@ -1265,7 +1269,7 @@
         async function publishPublicProfile(){if(!auth.currentUser)return;const p=window.socialProfile,g=window.gameData;const favorites=p.privacy?.showFavorites?window.userBookmarks.slice(0,30):[];try{await setDoc(doc(db,'publicProfiles',auth.currentUser.uid),{userId:auth.currentUser.uid,displayName:p.displayName||auth.currentUser.email.split('@')[0],bio:p.bio||'',photoData:p.photoData||'',publicProfile:p.privacy?.publicProfile!==false,showStats:p.privacy?.showStats!==false,showFavorites:p.privacy?.showFavorites!==false,favorites,points:g.points||0,level:gameLevel(g.points||0).level,chapterCount:g.chapterCount||0,watchSeconds:g.watchSeconds||0,streak:g.streak||0,updatedAt:serverTimestamp()},{merge:true});}catch(e){reportBackgroundError('Publikasi profil gagal',e);}}
         window.dailyCheckIn=async function(){if(!auth.currentUser)return;const today=localDateKey();if(window.gameData.lastCheckIn===today)return window.showToast('Check-in hari ini sudah diambil');const yesterday=new Date();yesterday.setDate(yesterday.getDate()-1);window.gameData.streak=window.gameData.lastCheckIn===localDateKey(yesterday)?(window.gameData.streak||0)+1:1;window.gameData.lastCheckIn=today;window.gameData.points=(window.gameData.points||0)+10;await syncGamification();window.showToast('Check-in berhasil: +10 poin');}
         function awardChapter(comicId,chapterId){if(!auth.currentUser||!chapterId)return;const key=`${comicId}__${chapterId}`;window.gameData.awardedChapters=window.gameData.awardedChapters||{};if(window.gameData.awardedChapters[key])return;window.gameData.awardedChapters[key]=Date.now();window.gameData.chapterCount=Object.keys(window.gameData.awardedChapters).length;window.gameData.points=(window.gameData.points||0)+5;ensureWeekly();window.gameData.weekly.chapters=(window.gameData.weekly.chapters||0)+1;recordDailyAnalytics({chapters:1});syncGamification();}
-        function trackWatchSeconds(seconds){if(!auth.currentUser||seconds<=0||seconds>5)return;window.gameData.watchSeconds=(window.gameData.watchSeconds||0)+seconds;ensureWeekly();window.gameData.weekly.watchSeconds=(window.gameData.weekly.watchSeconds||0)+seconds;window.gameData.weekly.watchMinutes=Math.floor(window.gameData.weekly.watchSeconds/60);localStorage.setItem('gameData_'+auth.currentUser.uid,JSON.stringify(window.gameData));if(Math.floor(window.gameData.watchSeconds)%30===0){recordDailyAnalytics({watchSeconds:30});recordContentWatch(window.currentActiveComicId,30);syncGamification();}}
+        function trackWatchSeconds(seconds){if(!auth.currentUser||seconds<=0||seconds>5)return;window.gameData.watchSeconds=(window.gameData.watchSeconds||0)+seconds;window.pendingWatchAnalyticsSeconds=(window.pendingWatchAnalyticsSeconds||0)+seconds;ensureWeekly();window.gameData.weekly.watchSeconds=(window.gameData.weekly.watchSeconds||0)+seconds;window.gameData.weekly.watchMinutes=Math.floor(window.gameData.weekly.watchSeconds/60);localStorage.setItem('gameData_'+auth.currentUser.uid,JSON.stringify(window.gameData));if(window.pendingWatchAnalyticsSeconds>=30){const flush=Math.floor(window.pendingWatchAnalyticsSeconds/30)*30;window.pendingWatchAnalyticsSeconds-=flush;recordDailyAnalytics({watchSeconds:flush});recordContentWatch(window.currentActiveComicId,flush);syncGamification();}}
         window.saveSocialProfile=async function(){if(!auth.currentUser)return;const name=document.getElementById('profileDisplayName').value.trim(),bio=document.getElementById('profileBioInput').value.trim();if(name.length<2)return window.showToast('Nama tampilan minimal 2 karakter');window.socialProfile.displayName=name.slice(0,35);window.socialProfile.bio=bio.slice(0,160);try{await setDoc(doc(db,'users',auth.currentUser.uid,'profile','main'),{...window.socialProfile,updatedAt:serverTimestamp()},{merge:true});await publishPublicProfile();localStorage.setItem('socialProfile_'+auth.currentUser.uid,JSON.stringify(window.socialProfile));renderSocialProfile();window.showToast('Profil berhasil diperbarui');}catch(e){window.showToast('Profil belum dapat disimpan');}}
         window.handleProfilePhoto=function(file){if(!file||!auth.currentUser)return;if(file.size>8*1024*1024)return window.showToast('Foto maksimal 8 MB');const reader=new FileReader();reader.onload=()=>{const img=new Image();img.onload=()=>{const canvas=document.createElement('canvas');canvas.width=256;canvas.height=256;const ctx=canvas.getContext('2d');const scale=Math.max(256/img.width,256/img.height),w=img.width*scale,h=img.height*scale;ctx.drawImage(img,(256-w)/2,(256-h)/2,w,h);window.socialProfile.photoData=canvas.toDataURL('image/jpeg',.72);document.getElementById('profilePhoto').src=window.socialProfile.photoData;window.saveSocialProfile();};img.src=reader.result;};reader.readAsDataURL(file);}
         window.savePrivacySettings=function(){window.socialProfile.privacy={publicProfile:document.getElementById('privacyPublicProfile').checked,showStats:document.getElementById('privacyShowStats').checked,showFavorites:document.getElementById('privacyShowFavorites').checked};window.saveSocialProfile();}
@@ -1296,6 +1300,9 @@
             modal.classList.add('show');
             return new Promise(resolve => { window.modernConfirmResolver = resolve; });
         }
+
+        // Alias kompatibilitas untuk fitur komentar dan laporan lama.
+        const modernConfirm = window.showModernConfirm;
 
         window.resolveModernConfirm = function(result) {
             document.getElementById('modernConfirmModal').classList.remove('show');
@@ -1401,6 +1408,18 @@
                 return ['http:','https:'].includes(url.protocol) ? url.href : '';
             } catch(e) { return ''; }
         }
+        function safeTrailerEmbedUrl(value) {
+            try {
+                const url = new URL(String(value || ''));
+                const host = url.hostname.toLowerCase().replace(/^www\./, '');
+                let videoId = '';
+                if(host === 'youtu.be') videoId = url.pathname.split('/').filter(Boolean)[0] || '';
+                if(host === 'youtube.com' || host === 'm.youtube.com') {
+                    videoId = url.searchParams.get('v') || (url.pathname.match(/^\/embed\/([\w-]{6,})/)?.[1] || '');
+                }
+                return /^[\w-]{6,}$/.test(videoId) ? `https://www.youtube-nocookie.com/embed/${videoId}` : '';
+            } catch(error) { return ''; }
+        }
         let deferredInstallPrompt = null;
         window.addEventListener('beforeinstallprompt', event => {
             event.preventDefault(); deferredInstallPrompt = event;
@@ -1433,7 +1452,7 @@
         window.dismissAppUpdate=function(){const modal=document.getElementById('updateModal');localStorage.setItem('dismissedAppVersion',modal.dataset.version||'');modal.classList.remove('show');}
         window.applyAppUpdate=async function(){
             const button=document.querySelector('.update-now');button.disabled=true;button.innerHTML='<i class="fa-solid fa-spinner fa-spin"></i> Memperbarui...';
-            try{if('serviceWorker'in navigator){const regs=await navigator.serviceWorker.getRegistrations();await Promise.all(regs.map(reg=>reg.unregister()));}if('caches'in window){const keys=await caches.keys();await Promise.all(keys.map(key=>caches.delete(key)));}localStorage.removeItem('dismissedAppVersion');const url=new URL(location.href);url.searchParams.set('appVersion',Date.now());location.replace(url.href);}catch(e){button.disabled=false;button.innerHTML='<i class="fa-solid fa-bolt"></i> Perbarui Sekarang';window.showToast('Pembaruan gagal. Silakan muat ulang halaman.');}
+            try{if('serviceWorker'in navigator){const registration=await navigator.serviceWorker.getRegistration('./');if(registration)await registration.unregister();}if('caches'in window){const keys=await caches.keys();await Promise.all(keys.filter(key=>key.startsWith('komik-anime-')).map(key=>caches.delete(key)));}localStorage.removeItem('dismissedAppVersion');const url=new URL(location.href);url.searchParams.set('appVersion',Date.now());location.replace(url.href);}catch(e){button.disabled=false;button.innerHTML='<i class="fa-solid fa-bolt"></i> Perbarui Sekarang';window.showToast('Pembaruan gagal. Silakan muat ulang halaman.');}
         }
         if('serviceWorker' in navigator && location.protocol !== 'file:') navigator.serviceWorker.register('./sw-v20.1.js?v=20260916-duration-hms',{updateViaCache:'none'}).then(reg=>reg.update()).catch(() => {});
         document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible'){window.checkAppConfiguration(false);recordDailyAnalytics({});}});
@@ -1885,8 +1904,7 @@
                 const orderedComicDocs = [...querySnapshot.docs].sort((a, b) => getTimeValue(b.data().createdAt) - getTimeValue(a.data().createdAt));
                 orderedComicDocs.forEach((docSnap) => {
                     const data = docSnap.data();
-                    const scheduledDue=data.publicationStatus==='scheduled'&&getTimeValue(data.publishAt)>0&&getTimeValue(data.publishAt)<=Date.now();
-                    if (data.isPublished === false && !scheduledDue) return;
+                    if (data.isPublished !== true) return;
                     window.comicsData[docSnap.id] = data; 
                     
                     const isVideoType = data.format === 'film' || (data.type && (data.type.toLowerCase().includes("film") || data.type.toLowerCase().includes("anime")));
@@ -1899,16 +1917,16 @@
                         
                         sliderHtml += `
                             <div class="slide">
-                                <div class="slide-bg-blur" style="background-image: url('${data.coverUrl}');"></div>
-                                <div class="slide-img" style="background-image: url('${data.coverUrl}');"></div>
+                                <div class="slide-bg-blur" style="background-image:url(&quot;${safeAttr(safeMediaUrl(data.coverUrl))}&quot;)"></div>
+                                <div class="slide-img" style="background-image:url(&quot;${safeAttr(safeMediaUrl(data.coverUrl))}&quot;)"></div>
                                 <div class="slide-overlay"></div>
                                 
                                 <div class="hero-content">
                                     <div class="hero-title-row">
-                                        <h1 class="hero-title">${data.title}</h1>
+                                        <h1 class="hero-title">${safeText(data.title)}</h1>
                                         <span class="hero-chapter-badge" id="slider-badge-${docSnap.id}">Memuat...</span>
                                     </div>
-                                    <div class="hero-synopsis">${synopsisText}</div>
+                                    <div class="hero-synopsis">${safeText(synopsisText)}</div>
                                     <div class="hero-footer-row">
                                         <button class="hero-btn-read" onclick="openDetail('${docSnap.id}')"><i class="fa-solid ${iconClass}"></i> ${actionBtnText}</button>
                                         <div class="hero-rating-badge"><i class="fa-solid fa-star"></i> ${rating}</div>
@@ -1964,7 +1982,13 @@
                 // Fetching Info Chapter terbaru untuk Slider & Discovery di background
                 Object.keys(window.comicsData).forEach(async (id) => {
                     try {
-                        const chSnap = await getDocs(query(collection(db, "comics", id, "chapters"), orderBy("chapterNumber", "desc"), limit(3)));
+                        const allChapterSnap = await getDocs(collection(db, "comics", id, "chapters"));
+                        const orderedRecentDocs = [...allChapterSnap.docs].sort((a,b) => {
+                            const byTime = getTimeValue(b.data().updatedAt || b.data().updateDate || b.data().createdAt) - getTimeValue(a.data().updatedAt || a.data().updateDate || a.data().createdAt);
+                            if(byTime) return byTime;
+                            return (Number(b.data().seasonNumber || 1) - Number(a.data().seasonNumber || 1)) || (Number(b.data().chapterNumber || 0) - Number(a.data().chapterNumber || 0));
+                        }).slice(0,3);
+                        const chSnap = { empty:orderedRecentDocs.length === 0, docs:orderedRecentDocs };
                         if(!chSnap.empty) {
                             const recentChapters = chSnap.docs.map(chDoc => ({ id:chDoc.id, ...chDoc.data() }));
                             const chData = recentChapters[0];
@@ -2214,7 +2238,7 @@
             const current = select.value;
             const sorted = [...new Set(values.filter(Boolean).map(v => String(v).trim()).filter(Boolean))]
                 .sort((a,b) => descending ? b.localeCompare(a, 'id', {numeric:true}) : a.localeCompare(b, 'id'));
-            select.innerHTML = `<option value="">${defaultLabel}</option>` + sorted.map(v => `<option value="${v}">${v}</option>`).join('');
+            select.innerHTML = `<option value="">${safeText(defaultLabel)}</option>` + sorted.map(v => `<option value="${safeAttr(v)}">${safeText(v)}</option>`).join('');
             if(sorted.includes(current)) select.value = current;
         }
 
@@ -2865,7 +2889,7 @@
 
             try {
                 const commentRef = collection(db, "comics", comicId, "comments");
-                const q = query(commentRef, orderBy("timestamp", "desc"));
+                const q = query(commentRef, orderBy("timestamp", "desc"), limit(200));
                 const snapshot = await getDocs(q);
                 
                 const all=snapshot.docs.map(commentDoc=>({id:commentDoc.id,...commentDoc.data()}));
@@ -2940,7 +2964,22 @@
                 window.showToast(error.message||'Like belum dapat disimpan.');
             }
         }
-        window.deleteOwnComment=async function(commentId){ if(!auth.currentUser)return; const ok=await modernConfirm({title:'Hapus komentar?',message:'Komentar yang dihapus tidak dapat dipulihkan.',confirmText:'Hapus',danger:true}); if(!ok)return; const ref=doc(db,'comics',window.currentActiveComicId,'comments',commentId); const snap=await getDoc(ref); if(!snap.exists()||snap.data().userId!==auth.currentUser.uid)return window.showToast('Anda tidak dapat menghapus komentar ini'); await deleteDoc(ref); try{await updateDoc(doc(db,'comics',window.currentActiveComicId),{commentCount:increment(-1)});}catch(e){} fetchComments(window.currentActiveComicId); }
+        window.deleteOwnComment=async function(commentId){
+            if(!auth.currentUser)return;
+            const ok=await modernConfirm({title:'Hapus komentar?',message:'Komentar dan seluruh balasannya akan dihapus permanen.',confirmText:'Hapus',danger:true});
+            if(!ok)return;
+            const comicId=window.currentActiveComicId,ref=doc(db,'comics',comicId,'comments',commentId);
+            try {
+                const snap=await getDoc(ref);
+                if(!snap.exists()||snap.data().userId!==auth.currentUser.uid)return window.showToast('Anda tidak dapat menghapus komentar ini');
+                const replies=await getDocs(query(collection(db,'comics',comicId,'comments'),where('parentId','==',commentId)));
+                const batch=writeBatch(db);batch.delete(ref);replies.forEach(reply=>batch.delete(reply.ref));await batch.commit();
+                const remaining=await getCountFromServer(collection(db,'comics',comicId,'comments'));
+                await updateDoc(doc(db,'comics',comicId),{commentCount:remaining.data().count});
+                if(window.comicsData[comicId])window.comicsData[comicId].commentCount=remaining.data().count;
+                await fetchComments(comicId);
+            } catch(error) { reportBackgroundError('Hapus komentar gagal',error);window.showToast('Komentar belum dapat dihapus.'); }
+        }
         window.reportComment=async function(commentId){ if(!auth.currentUser){window.showToast('Login untuk melaporkan komentar');return;} const ok=await modernConfirm({title:'Laporkan komentar?',message:'Laporan akan dikirim kepada admin untuk ditinjau.',confirmText:'Kirim laporan'}); if(!ok)return; await setDoc(doc(db,'commentReports',`${window.currentActiveComicId}_${commentId}_${auth.currentUser.uid}`),{comicId:window.currentActiveComicId,commentId,reporterId:auth.currentUser.uid,reason:'Konten tidak pantas atau spam',status:'open',createdAt:serverTimestamp()}); window.showToast('Laporan berhasil dikirim'); }
         initEmojiPanel();
 
@@ -3061,8 +3100,8 @@
 
                 const tagsContainer = document.getElementById('detailTags');
                 tagsContainer.innerHTML = '';
-                if(data.type) tagsContainer.innerHTML += `<span class="tag">${data.type}</span>`;
-                if(data.genres) data.genres.forEach(g => tagsContainer.innerHTML += `<span class="tag">${g}</span>`);
+                if(data.type) tagsContainer.insertAdjacentHTML('beforeend', `<span class="tag">${safeText(data.type)}</span>`);
+                if(Array.isArray(data.genres)) data.genres.forEach(g => tagsContainer.insertAdjacentHTML('beforeend', `<span class="tag">${safeText(g)}</span>`));
 
                 const isVideo = data.format === 'film' || (data.type && (data.type.toLowerCase().includes('film') || data.type.toLowerCase().includes('anime')));
                 const movieExtras = document.querySelectorAll('.movie-extra-info');
@@ -3096,14 +3135,9 @@
                     
                     movieExtras.forEach(el => el.style.display = 'flex');
 
-                    if(data.trailerUrl) {
+                    const embedUrl = safeTrailerEmbedUrl(data.trailerUrl);
+                    if(embedUrl) {
                         document.getElementById('trailerSection').style.display = 'block';
-                        let embedUrl = data.trailerUrl;
-                        if (embedUrl.includes('watch?v=')) {
-                            embedUrl = embedUrl.replace('watch?v=', 'embed/');
-                        } else if (embedUrl.includes('youtu.be/')) {
-                            embedUrl = embedUrl.replace('youtu.be/', 'www.youtube.com/embed/');
-                        }
                         document.getElementById('detailTrailer').src = embedUrl;
                     } else {
                         document.getElementById('trailerSection').style.display = 'none';
@@ -3210,7 +3244,7 @@
         }
 
         window.handleMediaOpen = function(comicId, chapterId, chapterNum) {
-            document.getElementById('detailTrailer').src = document.getElementById('detailTrailer').src;
+            document.getElementById('detailTrailer').src = '';
 
             const comicRecord = window.comicsData[comicId] || {};
             const isVideo = comicRecord.format === 'film' || (comicRecord.type && (comicRecord.type.toLowerCase().includes('film') || comicRecord.type.toLowerCase().includes('anime')));
@@ -3231,8 +3265,11 @@
 
         async function loadChapterSequence(comicId) {
             try {
-                const snap = await getDocs(query(collection(db,'comics',comicId,'chapters'), orderBy('chapterNumber','asc')));
-                window.currentChapterSequence = snap.docs.map(item => ({id:item.id, ...item.data()}));
+                const snap = await getDocs(collection(db,'comics',comicId,'chapters'));
+                window.currentChapterSequence = snap.docs.map(item => ({id:item.id, ...item.data()})).sort((a,b) =>
+                    (Number(a.seasonNumber || 1) - Number(b.seasonNumber || 1)) ||
+                    (Number(a.chapterNumber || 0) - Number(b.chapterNumber || 0))
+                );
             } catch(e) { window.currentChapterSequence = []; }
             return window.currentChapterSequence;
         }
@@ -3449,6 +3486,7 @@
                 updateVideoSkipButton(second,videoPlayer.duration||0);
             };
             window.lastVideoTrackedSecond=0;
+            window.pendingWatchAnalyticsSeconds=0;
             window.lastVideoProgressSaved=-1;
             videoPlayer.onplay=syncPlayerPlayButton;
             videoPlayer.onpause=()=>{syncPlayerPlayButton();if(auth.currentUser)syncGamification();};

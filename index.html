@@ -202,8 +202,10 @@
         .episode-index { width:38px; height:38px; flex:0 0 38px; display:grid; place-items:center; border-radius:11px; color:#625af2; background:#efeeff; font-size:11px; font-weight:850; }
         .season-card .chapter-info { flex:1; min-width:0; }
         .season-card .chapter-title { display:block; overflow:visible; text-overflow:clip; white-space:normal; overflow-wrap:anywhere; word-break:normal; font-size:13px; font-weight:750; line-height:1.45; }
-        .season-card .chapter-date { display:flex; align-items:center; flex-wrap:wrap; gap:5px 10px; margin-top:3px; line-height:1.35; }
+        .season-card .chapter-date { display:flex; align-items:center; flex-wrap:wrap; gap:5px 0; margin-top:3px; line-height:1.35; }
+        .season-card .chapter-date > span + span::before { content:'|'; margin:0 8px; color:#c3c5ce; font-weight:500; }
         .episode-media-meta { display:inline-flex; align-items:center; gap:4px; color:#716d88; font-weight:650; }
+        .episode-language-meta { display:inline-flex; align-items:center; color:#625af2; font-weight:750; }
         .season-card .chapter-action { flex:0 0 auto; margin-top:1px; white-space:nowrap; }
         @media(max-width:420px){.season-header{padding:13px 12px;gap:9px}.season-progress{display:none}.season-episodes{padding:8px}.season-card .chapter-item{padding:11px 9px;gap:8px}.episode-index{width:34px;height:34px;flex-basis:34px;font-size:10px}.season-card .chapter-title{font-size:12.5px;line-height:1.42}.season-card .chapter-action{padding:6px 8px;font-size:9.5px}}
 
@@ -1327,7 +1329,7 @@
                     <ul class="user-menu-list"><li class="install-app-item" id="installAppUser" hidden onclick="installApp()"><div class="left-info"><i class="fa-solid fa-mobile-screen-button"></i> Pasang Aplikasi</div><i class="fa-solid fa-download"></i></li><li onclick="switchNav('bookmark')"><div class="left-info"><i class="fa-solid fa-layer-group"></i> Kelola Koleksi Saya</div><i class="fa-solid fa-chevron-right"></i></li><li class="logout-item" onclick="doLogout()"><div class="left-info"><i class="fa-solid fa-right-from-bracket"></i> Keluar dari Akun</div><i class="fa-solid fa-chevron-right"></i></li></ul>
                 </div>
             </div>
-            <div class="app-version-card"><div><strong>Versi Aplikasi</strong><span id="currentVersionLabel">V20.1.1 • Memeriksa pembaruan...</span></div><button class="version-check-btn" onclick="checkAppConfiguration(true)"><i class="fa-solid fa-rotate"></i> Periksa</button></div>
+            <div class="app-version-card"><div><strong>Versi Aplikasi</strong><span id="currentVersionLabel">V20.1.2 • Memeriksa pembaruan...</span></div><button class="version-check-btn" onclick="checkAppConfiguration(true)"><i class="fa-solid fa-rotate"></i> Periksa</button></div>
         </div>
 
         <!-- ================= BOTTOM NAVIGATION (DITAMBAHKAN DISCOVERY) ================= -->
@@ -1349,7 +1351,7 @@
             </a>
         </nav>
     </div>
-    <div class="update-modal-backdrop" id="updateModal"><div class="update-sheet"><div class="update-icon"><i class="fa-solid fa-cloud-arrow-down"></i></div><h2>Versi baru tersedia</h2><p>Pembaruan aplikasi sudah siap. Proses ini akan membersihkan cache antarmuka lama tanpa menghapus akun, bookmark, atau riwayat Anda.</p><div class="update-version-line"><span id="updateCurrentVersion">V20.1.1</span><i class="fa-solid fa-arrow-right"></i><span id="updateLatestVersion">V20.1.1</span></div><div class="update-changelog" id="updateChangelog">Peningkatan stabilitas dan tampilan.</div><div class="update-actions"><button class="update-action update-later" onclick="dismissAppUpdate()">Nanti</button><button class="update-action update-now" onclick="applyAppUpdate()"><i class="fa-solid fa-bolt"></i> Perbarui Sekarang</button></div></div></div>
+    <div class="update-modal-backdrop" id="updateModal"><div class="update-sheet"><div class="update-icon"><i class="fa-solid fa-cloud-arrow-down"></i></div><h2>Versi baru tersedia</h2><p>Pembaruan aplikasi sudah siap. Proses ini akan membersihkan cache antarmuka lama tanpa menghapus akun, bookmark, atau riwayat Anda.</p><div class="update-version-line"><span id="updateCurrentVersion">V20.1.2</span><i class="fa-solid fa-arrow-right"></i><span id="updateLatestVersion">V20.1.2</span></div><div class="update-changelog" id="updateChangelog">Peningkatan stabilitas dan tampilan.</div><div class="update-actions"><button class="update-action update-later" onclick="dismissAppUpdate()">Nanti</button><button class="update-action update-now" onclick="applyAppUpdate()"><i class="fa-solid fa-bolt"></i> Perbarui Sekarang</button></div></div></div>
 
     <div class="modern-modal-backdrop" id="modernConfirmModal" role="dialog" aria-modal="true" aria-labelledby="modernConfirmTitle">
         <div class="modern-modal">
@@ -1383,7 +1385,7 @@
         const app = initializeApp(firebaseConfig);
         const db = getFirestore(app);
         const auth = getAuth(app);
-        const APP_VERSION = '20.1.1';
+        const APP_VERSION = '20.1.2';
         const ADMIN_UID = 'dWUWpKAWQRRxMOzjzaOA3zXWZLp2';
 
         window.comicsData = {};
@@ -1641,7 +1643,7 @@
             const button=document.querySelector('.update-now');button.disabled=true;button.innerHTML='<i class="fa-solid fa-spinner fa-spin"></i> Memperbarui...';
             try{if('serviceWorker'in navigator){const registration=await navigator.serviceWorker.getRegistration('./');if(registration)await registration.unregister();}if('caches'in window){const keys=await caches.keys();await Promise.all(keys.filter(key=>key.startsWith('komik-anime-')).map(key=>caches.delete(key)));}localStorage.removeItem('dismissedAppVersion');const url=new URL(location.href);url.searchParams.set('appVersion',Date.now());location.replace(url.href);}catch(e){button.disabled=false;button.innerHTML='<i class="fa-solid fa-bolt"></i> Perbarui Sekarang';window.showToast('Pembaruan gagal. Silakan muat ulang halaman.');}
         }
-        if('serviceWorker' in navigator && location.protocol !== 'file:') navigator.serviceWorker.register('./sw-v20.1.js?v=20260916-duration-hms',{updateViaCache:'none'}).then(reg=>reg.update()).catch(() => {});
+        if('serviceWorker' in navigator && location.protocol !== 'file:') navigator.serviceWorker.register('./sw-v20.1.js?v=20260920-language-labels',{updateViaCache:'none'}).then(reg=>reg.update()).catch(() => {});
         document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible'){window.checkAppConfiguration(false);recordDailyAnalytics({});}});
         async function applyRemoteDisplayConfig(){try{const snap=await getDoc(doc(db,'settings','appConfig'));if(!snap.exists())return;const c=snap.data();if(c.appName)document.title=c.appName;if(/^#[0-9a-f]{6}$/i.test(c.themeColor||''))document.documentElement.style.setProperty('--primary-blue',c.themeColor);const recommendation=document.getElementById('recommendationSection');if(recommendation)recommendation.style.display=c.enableRecommendations===false?'none':'block';document.body.classList.toggle('gamification-off',c.enableGamification===false);if(c.announcement&&localStorage.getItem('seenAnnouncementV20.1')!==c.announcement){localStorage.setItem('seenAnnouncementV20.1',c.announcement);setTimeout(()=>window.showToast(c.announcement),1200);}}catch(e){}}
         applyRemoteDisplayConfig();
@@ -3511,16 +3513,19 @@
                         const date = ch.updateDate || 'Baru';
                         const durationSeconds = Number(ch.durationSeconds || 0) || (Math.max(0, Number(ch.durationMinutes || 0)) * 60);
                         const durationText = formatEpisodeDuration(durationSeconds);
+                        const languageLabels = Array.isArray(ch.languageLabels) ? ch.languageLabels.filter(Boolean) : (ch.languageLabel ? [ch.languageLabel] : []);
+                        const languageText = languageLabels.join(' / ');
                         const pageCount = Math.max(0, Math.floor(Number(ch.pageCount || (Array.isArray(ch.images) ? ch.images.filter(url => !/\.(mp4|webm|ogv|ogg|mov|m4v|mkv)(?:$|[?#])/i.test(String(url))).length : 0))));
                         const mediaMeta = isVideo
                             ? (durationText ? `<span class="episode-media-meta"><i class="fa-regular fa-clock"></i> Durasi: ${durationText}</span>` : '')
                             : (pageCount > 0 ? `<span class="episode-media-meta"><i class="fa-regular fa-images"></i> ${pageCount} halaman</span>` : '');
+                        const languageMeta = isVideo && languageText ? `<span class="episode-language-meta">${safeText(languageText)}</span>` : '';
                         const fullMovie = isFullMovieChapter(comicRecord, ch, chapterDocs.length);
                         const title = ch.title && !fullMovie ? ` — ${ch.title}` : '';
                         const titleDisplay = `${getMediaPartLabel(comicRecord, ch, chapterDocs.length)}${title}`;
                         const readClass = isChapterRead(comicId, ch.id) ? 'is-read' : '';
                         const shortPrefix = fullMovie ? '<i class="fa-solid fa-film"></i>' : `${isVideo ? 'E' : 'C'}${ch.chapterNumber}`;
-                        return `<div class="chapter-item ${readClass}" onclick="handleMediaOpen('${safeAttr(comicId)}','${safeAttr(ch.id)}','${safeAttr(ch.chapterNumber)}')"><div class="episode-index">${shortPrefix}</div><div class="chapter-info"><span class="chapter-title" data-read-label="${isVideo ? 'Sudah ditonton' : 'Sudah dibaca'}">${safeText(titleDisplay)}</span><span class="chapter-date"><span><i class="fa-regular fa-calendar"></i> ${safeText(date)}</span>${mediaMeta}</span></div><div class="${actionClass}"><i class="fa-solid ${isVideo ? 'fa-play' : 'fa-book-open'}"></i> ${actionText}</div></div>`;
+                        return `<div class="chapter-item ${readClass}" onclick="handleMediaOpen('${safeAttr(comicId)}','${safeAttr(ch.id)}','${safeAttr(ch.chapterNumber)}')"><div class="episode-index">${shortPrefix}</div><div class="chapter-info"><span class="chapter-title" data-read-label="${isVideo ? 'Sudah ditonton' : 'Sudah dibaca'}">${safeText(titleDisplay)}</span><span class="chapter-date"><span><i class="fa-regular fa-calendar"></i> ${safeText(date)}</span>${mediaMeta}${languageMeta}</span></div><div class="${actionClass}"><i class="fa-solid ${isVideo ? 'fa-play' : 'fa-book-open'}"></i> ${actionText}</div></div>`;
                     }).join('');
                     chapterHTML += `<section class="season-card ${seasonIndex === 0 ? '' : 'collapsed'}"><button type="button" class="season-header" onclick="toggleSeasonCard(this)" aria-expanded="${seasonIndex === 0 ? 'true' : 'false'}"><span class="season-number">${seasonNumber}</span><span class="season-heading"><strong>Season ${seasonNumber}</strong><small>${episodes.length} ${isVideo ? 'episode' : 'chapter'} tersedia${completed ? ` • ${completed} selesai` : ''}</small></span><span class="season-progress">${episodes.length}${planned ? ` / ${planned}` : ''}</span><span class="season-chevron"><i class="fa-solid fa-chevron-down"></i></span></button><div class="season-episodes">${episodeHtml}</div></section>`;
                 });

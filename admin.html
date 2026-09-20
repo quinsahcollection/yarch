@@ -79,6 +79,12 @@
         textarea { resize: vertical; min-height: 100px; }
         
         .help-text { font-size: 11px; color: var(--text-muted); margin-top: 5px; display: block; }
+        .language-entry-row { display:flex; gap:8px; align-items:stretch; }
+        .language-entry-row select { flex:1; min-width:0; }
+        .language-add-btn { flex:0 0 auto; min-height:44px; padding:0 14px; border:0; border-radius:9px; color:#fff; background:#625af2; font-weight:750; cursor:pointer; }
+        .language-tags { display:flex; flex-wrap:wrap; gap:7px; min-height:0; margin-top:9px; }
+        .language-tag { display:inline-flex; align-items:center; gap:7px; padding:7px 10px; border:1px solid #ddd9ff; border-radius:999px; color:#5149c9; background:#f2f0ff; font-size:11px; font-weight:750; }
+        .language-tag button { width:20px; height:20px; display:grid; place-items:center; border:0; border-radius:50%; color:#625af2; background:#fff; cursor:pointer; }
         
         .genre-list { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 5px; }
         .genre-list label { display: flex; align-items: center; gap: 5px; font-weight: 400; cursor: pointer; background: var(--bg-light); padding: 6px 12px; border-radius: 20px; border: 1px solid var(--border); }
@@ -706,6 +712,26 @@
                                     <label>Durasi Episode (Jam:Menit:Detik)</label>
                                     <input type="text" inputmode="numeric" id="episodeDurationMinutes" placeholder="Contoh: 1:30:23" pattern="(?:\d+:)?[0-5]?\d:[0-5]\d">
                                     <div class="help-text">Contoh: 1:30:23 atau 27:15. Opsional; jika kosong, durasi dibaca otomatis dari video.</div>
+                                </div>
+                                <div class="form-group full-width" id="groupMediaLanguage" style="display:none">
+                                    <label>Bahasa Audio / Subtitle / Dub</label>
+                                    <div class="language-entry-row">
+                                        <select id="mediaLanguageInput">
+                                            <option value="">Pilih keterangan bahasa...</option>
+                                            <option value="Subtitle Indo">Subtitle Indo</option>
+                                            <option value="Dub Indo">Dub Indo</option>
+                                            <option value="Subtitle English">Subtitle English</option>
+                                            <option value="Dub English">Dub English</option>
+                                            <option value="Raw / Tanpa Subtitle">Raw / Tanpa Subtitle</option>
+                                            <option value="__custom__">+ Tambah bahasa lainnya</option>
+                                        </select>
+                                        <button type="button" class="language-add-btn" onclick="addMediaLanguage()"><i class="fa-solid fa-plus"></i> Tambah</button>
+                                    </div>
+                                    <div id="customMediaLanguageWrap" style="display:none;margin-top:8px">
+                                        <input type="text" id="customMediaLanguage" maxlength="60" placeholder="Contoh: Subtitle Jepang atau Dub Mandarin">
+                                    </div>
+                                    <div class="language-tags" id="mediaLanguageTags"></div>
+                                    <div class="help-text">Bisa memilih lebih dari satu. Pilih “Tambah bahasa lainnya” untuk membuat label baru.</div>
                                 </div>
                             </div>
                             
@@ -1648,6 +1674,41 @@
             return `${hours}:${String(minutes).padStart(2, '0')}:${String(remainingSeconds).padStart(2, '0')}`;
         }
 
+        window.selectedMediaLanguages = [];
+
+        function renderMediaLanguageTags() {
+            const box = document.getElementById('mediaLanguageTags');
+            if (!box) return;
+            box.innerHTML = window.selectedMediaLanguages.map((label, index) => `<span class="language-tag">${adminSafe(label)}<button type="button" onclick="removeMediaLanguage(${index})" aria-label="Hapus ${adminSafe(label)}"><i class="fa-solid fa-xmark"></i></button></span>`).join('');
+        }
+
+        window.addMediaLanguage = function() {
+            const select = document.getElementById('mediaLanguageInput');
+            const custom = document.getElementById('customMediaLanguage');
+            const value = (select?.value === '__custom__' ? custom?.value : select?.value || '').trim();
+            if (!value) {
+                if (select?.value === '__custom__') custom?.focus();
+                else Swal.fire('Pilih Bahasa', 'Pilih bahasa atau tambahkan label bahasa baru.', 'info');
+                return;
+            }
+            if (!window.selectedMediaLanguages.some(item => item.toLowerCase() === value.toLowerCase())) window.selectedMediaLanguages.push(value);
+            if (select) select.value = '';
+            if (custom) custom.value = '';
+            document.getElementById('customMediaLanguageWrap').style.display = 'none';
+            renderMediaLanguageTags();
+        };
+
+        window.removeMediaLanguage = function(index) {
+            window.selectedMediaLanguages.splice(Number(index), 1);
+            renderMediaLanguageTags();
+        };
+
+        document.getElementById('mediaLanguageInput')?.addEventListener('change', event => {
+            const customWrap = document.getElementById('customMediaLanguageWrap');
+            customWrap.style.display = event.target.value === '__custom__' ? 'block' : 'none';
+            if (event.target.value === '__custom__') document.getElementById('customMediaLanguage')?.focus();
+        });
+
         window.saveChapterFolder = async function() {
             const comicId = document.getElementById('chapterComicId').value;
             const comicName = document.getElementById('chapterComicSearch').value;
@@ -1657,6 +1718,7 @@
             const selectedComic = window.allComicsList.find(item => item.id === comicId);
             const entryFormat = selectedComic?.format === 'film' ? 'film' : 'komik';
             const durationSeconds = parseAdminDurationSeconds(document.getElementById('episodeDurationMinutes')?.value);
+            const languageLabels = [...window.selectedMediaLanguages];
             const statusEl = document.getElementById('saveFolderStatus');
 
             if(!comicId) { Swal.fire('Peringatan', "Pilih judul terlebih dahulu dari daftar pencarian!", 'warning'); return; }
@@ -1682,6 +1744,7 @@
                     targetChapterId = docSnap.id;
                     targetChapterImages = Array.isArray(docSnap.data().images) ? docSnap.data().images : [];
                     const folderUpdate = { title: chapterTitle, seasonNumber, updatedAt: serverTimestamp() };
+                    if (languageLabels.length) folderUpdate.languageLabels = languageLabels;
                     if (entryFormat === 'film' && durationSeconds > 0) {
                         folderUpdate.durationSeconds = durationSeconds;
                         folderUpdate.durationMinutes = Math.max(1, Math.round(durationSeconds / 60));
@@ -1693,6 +1756,7 @@
                         chapterNumber: parseFloat(chapterNum),
                         seasonNumber,
                         title: chapterTitle,
+                        languageLabels,
                         images: [],
                         createdAt: serverTimestamp(),
                         updatedAt: serverTimestamp()
@@ -2273,6 +2337,9 @@
                 statusEl.style.background = "#ecfdf5";
 
                 document.getElementById('uploadChapterForm').reset();
+                window.selectedMediaLanguages = [];
+                renderMediaLanguageTags();
+                document.getElementById('customMediaLanguageWrap').style.display = 'none';
                 document.getElementById('chkFullMovie').checked = false;
                 window.toggleFullMovie(false);
                 document.getElementById('chapterComicSearch').value = '';
@@ -2365,6 +2432,7 @@
                 const qualityLines = (Array.isArray(qualityData) ? qualityData.map(item => [item.label || item.quality, item.url]) : Object.entries(qualityData)).filter(item => item[0] && item[1]).map(item => `${item[0]}|${item[1]}`).join('\n');
                 const subtitleData = Array.isArray(chapter.subtitles) ? chapter.subtitles : Object.entries(chapter.subtitles || {}).map(([label,url]) => ({label,url}));
                 const subtitleLines = subtitleData.filter(item => item && (typeof item === 'string' || item.url)).map((item,index) => typeof item === 'string' ? `Subtitle ${index+1}|${item}|id` : `${item.label || `Subtitle ${index+1}`}|${item.url}|${item.srclang || item.lang || 'id'}`).join('\n');
+                const languageLines = (Array.isArray(chapter.languageLabels) ? chapter.languageLabels : (chapter.languageLabel ? [chapter.languageLabel] : [])).join('\n');
 
                 const result = await Swal.fire({
                     title: `Edit Folder ${term}`,
@@ -2376,7 +2444,7 @@
                         <input id="editFolderNumber" class="swal2-input" type="number" min="0.1" step="0.1" style="max-width:100%!important;margin:0 0 14px!important" placeholder="Contoh: 1 atau 1.5">
                         <label for="editFolderTitle" style="text-align:left">Judul tambahan (opsional)</label>
                         <input id="editFolderTitle" class="swal2-input" type="text" maxlength="150" style="max-width:100%!important;margin:0 0 ${isFilm ? '14px' : '0'}!important" placeholder="Judul chapter/episode">
-                        ${isFilm ? `<label for="editFolderDuration" style="text-align:left">Durasi (jam:menit:detik)</label><input id="editFolderDuration" class="swal2-input" type="text" inputmode="numeric" style="max-width:100%!important;margin:0 0 14px!important" placeholder="Contoh: 1:30:23"><label for="editVideoQualities" style="text-align:left">Kualitas video — satu per baris: Label|URL</label><textarea id="editVideoQualities" class="swal2-textarea" style="width:100%;margin:0 0 14px!important;min-height:90px" placeholder="1080p|https://...\n720p|https://...">${adminSafe(qualityLines)}</textarea><label for="editSubtitles" style="text-align:left">Subtitle — satu per baris: Label|URL|Bahasa</label><textarea id="editSubtitles" class="swal2-textarea" style="width:100%;margin:0!important;min-height:90px" placeholder="Indonesia|https://.../subtitle.vtt|id">${adminSafe(subtitleLines)}</textarea>` : ''}`,
+                        ${isFilm ? `<label for="editFolderDuration" style="text-align:left">Durasi (jam:menit:detik)</label><input id="editFolderDuration" class="swal2-input" type="text" inputmode="numeric" style="max-width:100%!important;margin:0 0 14px!important" placeholder="Contoh: 1:30:23"><label for="editLanguageLabels" style="text-align:left">Bahasa audio/subtitle/dub — satu per baris</label><textarea id="editLanguageLabels" class="swal2-textarea" style="width:100%;margin:0 0 14px!important;min-height:76px" placeholder="Subtitle Indo\nDub Indo\nSubtitle English">${adminSafe(languageLines)}</textarea><label for="editVideoQualities" style="text-align:left">Kualitas video — satu per baris: Label|URL</label><textarea id="editVideoQualities" class="swal2-textarea" style="width:100%;margin:0 0 14px!important;min-height:90px" placeholder="1080p|https://...\n720p|https://...">${adminSafe(qualityLines)}</textarea><label for="editSubtitles" style="text-align:left">File subtitle — satu per baris: Label|URL|Bahasa</label><textarea id="editSubtitles" class="swal2-textarea" style="width:100%;margin:0!important;min-height:90px" placeholder="Indonesia|https://.../subtitle.vtt|id">${adminSafe(subtitleLines)}</textarea>` : ''}`,
                     showCancelButton: true,
                     confirmButtonText: '<i class="fa-solid fa-floppy-disk"></i> Simpan Perubahan',
                     cancelButtonText: 'Batal',
@@ -2405,11 +2473,12 @@
                         const parseRows = value => String(value || '').split(/\n+/).map(line => line.trim()).filter(Boolean).map(line => line.split('|').map(part => part.trim()));
                         const videoQualities = {};
                         const subtitles = [];
+                        const languageLabels = isFilm ? String(document.getElementById('editLanguageLabels')?.value || '').split(/\n+/).map(item => item.trim()).filter(Boolean).filter((item,index,list) => list.findIndex(other => other.toLowerCase() === item.toLowerCase()) === index) : [];
                         if(isFilm) {
                             for(const [label,url] of parseRows(document.getElementById('editVideoQualities')?.value)) if(label && /^https?:\/\//i.test(url || '')) videoQualities[label] = url;
                             for(const [label,url,lang] of parseRows(document.getElementById('editSubtitles')?.value)) if(label && /^https?:\/\//i.test(url || '')) subtitles.push({label,url,srclang:lang || 'id'});
                         }
-                        return { chapterNumber, title, seasonNumber, durationSeconds, videoQualities, subtitles };
+                        return { chapterNumber, title, seasonNumber, durationSeconds, languageLabels, videoQualities, subtitles };
                     }
                 });
 
@@ -2436,6 +2505,7 @@
                     editData.durationMinutes = Math.max(1, Math.round(result.value.durationSeconds / 60));
                 }
                 if (isFilm) {
+                    editData.languageLabels = result.value.languageLabels;
                     editData.videoQualities = result.value.videoQualities;
                     editData.subtitles = result.value.subtitles;
                 }
@@ -2892,7 +2962,11 @@
                     // Tampilkan atau sembunyikan Opsi Full Movie
                     document.getElementById('groupFullMovie').style.display = isFilm ? 'block' : 'none';
                     document.getElementById('groupEpisodeDuration').style.display = isFilm ? 'block' : 'none';
+                    document.getElementById('groupMediaLanguage').style.display = isFilm ? 'block' : 'none';
                     document.getElementById('episodeDurationMinutes').value = '';
+                    window.selectedMediaLanguages = [];
+                    renderMediaLanguageTags();
+                    document.getElementById('customMediaLanguageWrap').style.display = 'none';
                     document.getElementById('chkFullMovie').checked = false;
                     window.toggleFullMovie(false);
                 }

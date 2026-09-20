@@ -197,17 +197,18 @@
         .season-card.collapsed .season-chevron { transform:rotate(-90deg); }
         .season-episodes { display:flex; flex-direction:column; gap:8px; padding:10px; background:linear-gradient(180deg,#fbfbfe,#f6f7fb); }
         .season-card.collapsed .season-episodes { display:none; }
-        .season-card .chapter-item { margin:0; padding:13px 12px; gap:10px; align-items:flex-start; border:1px solid transparent; border-radius:13px; background:#fff; box-shadow:0 3px 10px rgba(35,39,70,.035); }
+        .season-card .chapter-item { position:relative; margin:0; padding:13px 12px; gap:10px; align-items:flex-start; border:1px solid transparent; border-radius:13px; background:#fff; box-shadow:0 3px 10px rgba(35,39,70,.035); }
         .season-card .chapter-item:hover { border-color:#d9d7ff; transform:translateY(-1px); }
         .episode-index { width:38px; height:38px; flex:0 0 38px; display:grid; place-items:center; border-radius:11px; color:#625af2; background:#efeeff; font-size:11px; font-weight:850; }
         .season-card .chapter-info { flex:1; min-width:0; }
-        .season-card .chapter-title { display:block; overflow:visible; text-overflow:clip; white-space:normal; overflow-wrap:anywhere; word-break:normal; font-size:13px; font-weight:750; line-height:1.45; }
-        .season-card .chapter-date { display:flex; align-items:center; flex-wrap:wrap; gap:5px 0; margin-top:3px; line-height:1.35; }
-        .season-card .chapter-date > span + span::before { content:'|'; margin:0 8px; color:#c3c5ce; font-weight:500; }
+        .season-card .chapter-title { display:block; padding-right:92px; overflow:visible; text-overflow:clip; white-space:normal; overflow-wrap:anywhere; word-break:normal; font-size:13px; font-weight:750; line-height:1.45; }
+        .season-card .chapter-date { display:flex; align-items:center; flex-wrap:nowrap; gap:0; margin-top:5px; max-width:100%; overflow:hidden; white-space:nowrap; font-size:10px; line-height:1.35; letter-spacing:-.1px; }
+        .season-card .chapter-date > span { min-width:0; flex:0 1 auto; }
+        .season-card .chapter-date > span + span::before { content:'|'; margin:0 6px; color:#c3c5ce; font-weight:500; }
         .episode-media-meta { display:inline-flex; align-items:center; gap:4px; color:#716d88; font-weight:650; }
         .episode-language-meta { display:inline-flex; align-items:center; color:#625af2; font-weight:750; }
-        .season-card .chapter-action { flex:0 0 auto; margin-top:1px; white-space:nowrap; }
-        @media(max-width:420px){.season-header{padding:13px 12px;gap:9px}.season-progress{display:none}.season-episodes{padding:8px}.season-card .chapter-item{padding:11px 9px;gap:8px}.episode-index{width:34px;height:34px;flex-basis:34px;font-size:10px}.season-card .chapter-title{font-size:12.5px;line-height:1.42}.season-card .chapter-action{padding:6px 8px;font-size:9.5px}}
+        .season-card .chapter-action { position:absolute; top:13px; right:12px; margin:0; white-space:nowrap; }
+        @media(max-width:420px){.season-header{padding:13px 12px;gap:9px}.season-progress{display:none}.season-episodes{padding:8px}.season-card .chapter-item{padding:11px 9px;gap:8px}.episode-index{width:34px;height:34px;flex-basis:34px;font-size:10px}.season-card .chapter-title{padding-right:78px;font-size:12.5px;line-height:1.42}.season-card .chapter-date{font-size:9.3px;letter-spacing:-.18px}.season-card .chapter-date>span+span::before{margin:0 4px}.season-card .chapter-action{top:11px;right:9px;padding:6px 8px;font-size:9.5px}}
 
         /* COMMENT UI */
         .comment-wrapper { display: flex; flex-direction: column; height: 100%; min-height: 50vh; position: relative;}
@@ -1329,7 +1330,7 @@
                     <ul class="user-menu-list"><li class="install-app-item" id="installAppUser" hidden onclick="installApp()"><div class="left-info"><i class="fa-solid fa-mobile-screen-button"></i> Pasang Aplikasi</div><i class="fa-solid fa-download"></i></li><li onclick="switchNav('bookmark')"><div class="left-info"><i class="fa-solid fa-layer-group"></i> Kelola Koleksi Saya</div><i class="fa-solid fa-chevron-right"></i></li><li class="logout-item" onclick="doLogout()"><div class="left-info"><i class="fa-solid fa-right-from-bracket"></i> Keluar dari Akun</div><i class="fa-solid fa-chevron-right"></i></li></ul>
                 </div>
             </div>
-            <div class="app-version-card"><div><strong>Versi Aplikasi</strong><span id="currentVersionLabel">V20.1.2 • Memeriksa pembaruan...</span></div><button class="version-check-btn" onclick="checkAppConfiguration(true)"><i class="fa-solid fa-rotate"></i> Periksa</button></div>
+            <div class="app-version-card"><div><strong>Versi Aplikasi</strong><span id="currentVersionLabel">V20.1.3 • Memeriksa pembaruan...</span></div><button class="version-check-btn" onclick="checkAppConfiguration(true)"><i class="fa-solid fa-rotate"></i> Periksa</button></div>
         </div>
 
         <!-- ================= BOTTOM NAVIGATION (DITAMBAHKAN DISCOVERY) ================= -->
@@ -1351,7 +1352,7 @@
             </a>
         </nav>
     </div>
-    <div class="update-modal-backdrop" id="updateModal"><div class="update-sheet"><div class="update-icon"><i class="fa-solid fa-cloud-arrow-down"></i></div><h2>Versi baru tersedia</h2><p>Pembaruan aplikasi sudah siap. Proses ini akan membersihkan cache antarmuka lama tanpa menghapus akun, bookmark, atau riwayat Anda.</p><div class="update-version-line"><span id="updateCurrentVersion">V20.1.2</span><i class="fa-solid fa-arrow-right"></i><span id="updateLatestVersion">V20.1.2</span></div><div class="update-changelog" id="updateChangelog">Peningkatan stabilitas dan tampilan.</div><div class="update-actions"><button class="update-action update-later" onclick="dismissAppUpdate()">Nanti</button><button class="update-action update-now" onclick="applyAppUpdate()"><i class="fa-solid fa-bolt"></i> Perbarui Sekarang</button></div></div></div>
+    <div class="update-modal-backdrop" id="updateModal"><div class="update-sheet"><div class="update-icon"><i class="fa-solid fa-cloud-arrow-down"></i></div><h2>Versi baru tersedia</h2><p>Pembaruan aplikasi sudah siap. Proses ini akan membersihkan cache antarmuka lama tanpa menghapus akun, bookmark, atau riwayat Anda.</p><div class="update-version-line"><span id="updateCurrentVersion">V20.1.3</span><i class="fa-solid fa-arrow-right"></i><span id="updateLatestVersion">V20.1.3</span></div><div class="update-changelog" id="updateChangelog">Peningkatan stabilitas dan tampilan.</div><div class="update-actions"><button class="update-action update-later" onclick="dismissAppUpdate()">Nanti</button><button class="update-action update-now" onclick="applyAppUpdate()"><i class="fa-solid fa-bolt"></i> Perbarui Sekarang</button></div></div></div>
 
     <div class="modern-modal-backdrop" id="modernConfirmModal" role="dialog" aria-modal="true" aria-labelledby="modernConfirmTitle">
         <div class="modern-modal">
@@ -1385,7 +1386,7 @@
         const app = initializeApp(firebaseConfig);
         const db = getFirestore(app);
         const auth = getAuth(app);
-        const APP_VERSION = '20.1.2';
+        const APP_VERSION = '20.1.3';
         const ADMIN_UID = 'dWUWpKAWQRRxMOzjzaOA3zXWZLp2';
 
         window.comicsData = {};
@@ -1643,7 +1644,7 @@
             const button=document.querySelector('.update-now');button.disabled=true;button.innerHTML='<i class="fa-solid fa-spinner fa-spin"></i> Memperbarui...';
             try{if('serviceWorker'in navigator){const registration=await navigator.serviceWorker.getRegistration('./');if(registration)await registration.unregister();}if('caches'in window){const keys=await caches.keys();await Promise.all(keys.filter(key=>key.startsWith('komik-anime-')).map(key=>caches.delete(key)));}localStorage.removeItem('dismissedAppVersion');const url=new URL(location.href);url.searchParams.set('appVersion',Date.now());location.replace(url.href);}catch(e){button.disabled=false;button.innerHTML='<i class="fa-solid fa-bolt"></i> Perbarui Sekarang';window.showToast('Pembaruan gagal. Silakan muat ulang halaman.');}
         }
-        if('serviceWorker' in navigator && location.protocol !== 'file:') navigator.serviceWorker.register('./sw-v20.1.js?v=20260920-language-labels',{updateViaCache:'none'}).then(reg=>reg.update()).catch(() => {});
+        if('serviceWorker' in navigator && location.protocol !== 'file:') navigator.serviceWorker.register('./sw-v20.1.js?v=20260920-inline-language-labels',{updateViaCache:'none'}).then(reg=>reg.update()).catch(() => {});
         document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible'){window.checkAppConfiguration(false);recordDailyAnalytics({});}});
         async function applyRemoteDisplayConfig(){try{const snap=await getDoc(doc(db,'settings','appConfig'));if(!snap.exists())return;const c=snap.data();if(c.appName)document.title=c.appName;if(/^#[0-9a-f]{6}$/i.test(c.themeColor||''))document.documentElement.style.setProperty('--primary-blue',c.themeColor);const recommendation=document.getElementById('recommendationSection');if(recommendation)recommendation.style.display=c.enableRecommendations===false?'none':'block';document.body.classList.toggle('gamification-off',c.enableGamification===false);if(c.announcement&&localStorage.getItem('seenAnnouncementV20.1')!==c.announcement){localStorage.setItem('seenAnnouncementV20.1',c.announcement);setTimeout(()=>window.showToast(c.announcement),1200);}}catch(e){}}
         applyRemoteDisplayConfig();

@@ -1374,6 +1374,15 @@
             history.pushState({ comicApp:true, view, scrollY:0, ...data }, '');
         }
 
+        function openMediaHistoryState(view, data = {}, fromHistory = false) {
+            if(fromHistory || window.handlingPopState) return;
+            if(history.state?.comicApp && history.state.view === view) {
+                history.replaceState({ ...history.state, ...data, scrollY:0 }, '');
+            } else {
+                pushAppState(view, data);
+            }
+        }
+
         if(!history.state?.comicApp) {
             history.replaceState({ comicApp:true, exitBoundary:true }, '');
             history.pushState({ comicApp:true, view:'home', scrollY:0 }, '');
@@ -1395,20 +1404,23 @@
             }
             if(!state?.comicApp) return;
             window.handlingPopState = true;
-            if(state.view !== 'player') {
-                const player = document.getElementById('mainVideoPlayer');
-                player.pause(); player.src = '';
+            try {
+                if(state.view !== 'player') {
+                    const player = document.getElementById('mainVideoPlayer');
+                    player.pause(); player.src = '';
+                }
+                if(state.view !== 'reader' && window.readerObserver) window.readerObserver.disconnect();
+                if(state.view !== 'detail') document.getElementById('detailTrailer').src = '';
+                if(['home','discovery','updates','bookmark','profile'].includes(state.view)) window.switchNav(state.view, null, true);
+                else if(state.view === 'history') await window.openHistoryPage(true);
+                else if(state.view === 'homeCollection') window.openHomeCollection(state.collectionMode || 'updates', true);
+                else if(state.view === 'detail') await window.openDetail(state.comicId, true);
+                else if(state.view === 'reader') await window.openReader(state.comicId, state.chapterId, state.chapterNum, state.pageIndex || 1, true);
+                else if(state.view === 'player') await window.openPlayer(state.comicId, state.chapterId, state.chapterNum, true);
+                setTimeout(() => window.scrollTo(0, state.scrollY || 0), 60);
+            } finally {
+                window.handlingPopState = false;
             }
-            if(state.view !== 'reader' && window.readerObserver) window.readerObserver.disconnect();
-            if(state.view !== 'detail') document.getElementById('detailTrailer').src = '';
-            if(['home','discovery','updates','bookmark','profile'].includes(state.view)) window.switchNav(state.view, null, true);
-            else if(state.view === 'history') await window.openHistoryPage(true);
-            else if(state.view === 'homeCollection') window.openHomeCollection(state.collectionMode || 'updates', true);
-            else if(state.view === 'detail') await window.openDetail(state.comicId, true);
-            else if(state.view === 'reader') await window.openReader(state.comicId, state.chapterId, state.chapterNum, state.pageIndex || 1, true);
-            else if(state.view === 'player') await window.openPlayer(state.comicId, state.chapterId, state.chapterNum, true);
-            window.handlingPopState = false;
-            setTimeout(() => window.scrollTo(0, state.scrollY || 0), 60);
         });
 
         window.showToast = function(msg) {
@@ -2527,33 +2539,46 @@
             localHist[comicId] = {...(localHist[comicId] || {}), ...historyItem};
             localStorage.setItem('comicHistoryDetail', JSON.stringify(localHist));
             localStorage.setItem(`videoResume_${comicId}_${chapterId}`, String(second));
+            renderReadingHistory(true);
+            renderUpdatesFeed();
             if(auth.currentUser) {
                 try { await setDoc(doc(db,'users',auth.currentUser.uid,'history',comicId), {...historyItem,updatedAt:serverTimestamp()}, {merge:true}); }
                 catch(e) { reportBackgroundError('Sinkronisasi progres video gagal', e); }
             }
         }
 
-        async function renderReadingHistory() {
+        function historyUpdatedMillis(item) {
+            const value = item?.updatedAt;
+            if(value && typeof value.toMillis === 'function') return value.toMillis();
+            if(value && typeof value.seconds === 'number') return value.seconds * 1000 + Math.floor(Number(value.nanoseconds || 0) / 1000000);
+            return Number(value || 0);
+        }
+
+        async function renderReadingHistory(preferLocal = false) {
             const container = document.getElementById('history-container');
             if (!container) return;
+            const renderToken = (window.readingHistoryRenderToken || 0) + 1;
+            window.readingHistoryRenderToken = renderToken;
 
-            let historyList = [];
+            const localHist = safeJsonParse(localStorage.getItem('comicHistoryDetail'), {});
+            const historyByComic = new Map(Object.values(localHist).filter(item => item?.comicId).map(item => [item.comicId, item]));
 
-            if (auth.currentUser) {
+            if (auth.currentUser && (!preferLocal || historyByComic.size === 0)) {
                 try {
                     const histRef = collection(db, "users", auth.currentUser.uid, "history");
                     const q = query(histRef, orderBy("updatedAt", "desc"), limit(10));
                     const snap = await getDocs(q);
-                    snap.forEach(d => {
-                        historyList.push(d.data());
+                    snap.forEach(historyDoc => {
+                        const remoteItem = historyDoc.data();
+                        const localItem = historyByComic.get(remoteItem.comicId);
+                        if(!localItem || historyUpdatedMillis(remoteItem) > historyUpdatedMillis(localItem)) {
+                            historyByComic.set(remoteItem.comicId, remoteItem);
+                        }
                     });
                 } catch(e) { }
             }
-
-            if (historyList.length === 0) {
-                const localHist = safeJsonParse(localStorage.getItem('comicHistoryDetail'), {});
-                historyList = Object.values(localHist).sort((a,b) => (b.updatedAt || 0) - (a.updatedAt || 0));
-            }
+            let historyList = [...historyByComic.values()].sort((a,b) => historyUpdatedMillis(b) - historyUpdatedMillis(a)).slice(0, 10);
+            if(renderToken !== window.readingHistoryRenderToken) return;
 
             // Jangan tampilkan riwayat untuk judul yang sudah di-unpublish/dihapus admin.
             const localHistoryMap = safeJsonParse(localStorage.getItem('comicHistoryDetail'), {});
@@ -2593,6 +2618,7 @@
             }
             historyList = visibleHistory;
             localStorage.setItem('comicHistoryDetail', JSON.stringify(localHistoryMap));
+            if(renderToken !== window.readingHistoryRenderToken) return;
 
             const statHistEl = document.getElementById('statHistoryCount');
             if(statHistEl) statHistEl.innerText = historyList.length;
@@ -3444,6 +3470,9 @@
             document.getElementById('readerTitle').innerText = `Chapter ${chapterNum} • Hal. ${page}`;
             document.getElementById('readerPageCounter').textContent = `${page}/${window.currentReaderTotal}`;
             document.getElementById('readerPageJump').value = page;
+            if(history.state?.comicApp && history.state.view === 'reader') {
+                history.replaceState({ ...history.state, pageIndex:page }, '');
+            }
         }
         window.bookmarkReaderPage = function() {
             const mark={comicId:window.currentActiveComicId,chapterId:window.currentActiveChapterId,chapterNum:window.currentActiveChapterNum,page:window.currentReaderPage||1,savedAt:Date.now()};
@@ -3455,7 +3484,16 @@
         }
 
         window.openReader = async function(comicId, chapterId, chapterNum, targetPageIndex = 1, fromHistory = false) {
-            if(!fromHistory) pushAppState('reader', { comicId, chapterId, chapterNum, pageIndex:targetPageIndex });
+            if(window.readerObserver) {
+                window.readerObserver.disconnect();
+                window.readerObserver = null;
+            }
+            if(window.currentActiveComicId && window.currentActiveChapterId &&
+               (window.currentActiveComicId !== comicId || window.currentActiveChapterId !== chapterId) &&
+               document.getElementById('reader-page')?.style.display === 'block') {
+                window.saveReadingProgress(window.currentActiveComicId, window.currentActiveChapterId, window.currentActiveChapterNum, window.currentReaderPage || 1);
+            }
+            openMediaHistoryState('reader', { comicId, chapterId, chapterNum, pageIndex:targetPageIndex }, fromHistory);
             window.currentActiveComicId = comicId;
             window.currentActiveChapterId = chapterId;
             window.currentActiveChapterNum = chapterNum;
@@ -3541,7 +3579,13 @@
         window.openPlayer = async function(comicId, chapterId, chapterNum, fromHistory = false) {
             cancelAutoplayNext();
             document.getElementById('playerSettingsPanel')?.classList.remove('show');
-            if(!fromHistory) pushAppState('player', { comicId, chapterId, chapterNum });
+            const previousPlayer = document.getElementById('mainVideoPlayer');
+            if(window.currentActiveComicId && window.currentActiveChapterId &&
+               (window.currentActiveComicId !== comicId || window.currentActiveChapterId !== chapterId) &&
+               previousPlayer?.currentTime > 0 && !previousPlayer.ended) {
+                window.saveVideoProgress(window.currentActiveComicId, window.currentActiveChapterId, window.currentActiveChapterNum, previousPlayer.currentTime, previousPlayer.duration || 0);
+            }
+            openMediaHistoryState('player', { comicId, chapterId, chapterNum }, fromHistory);
             window.currentActiveComicId = comicId;
             window.currentActiveChapterId = chapterId;
             window.currentActiveChapterNum = chapterNum;
@@ -3807,6 +3851,7 @@
             });
             document.getElementById(pageId + '-page').style.display = 'block';
             document.getElementById('mainBottomNav').style.display = 'flex';
+            if(pageId === 'home') renderReadingHistory(true);
             if(pageId === 'updates') renderUpdatesFeed();
             
             if(element) {

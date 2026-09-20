@@ -713,6 +713,126 @@
         .discovery-card>img{width:100%;display:block;object-fit:fill!important;object-position:center;background:#eef0f5}
         .manga-card-simple,.manga-card-history,.discovery-card,.home-all-card,.history-full-card{isolation:isolate}
         .manga-card-simple>img,.manga-card-history>img{width:100%;aspect-ratio:2/3;height:auto!important;object-fit:cover!important;object-position:center top}
+
+        /* ===== DESKTOP / LAPTOP RESPONSIVE LAYOUT ===== */
+        @media (min-width:900px) {
+            body { align-items:flex-start; min-height:100vh; padding:0 20px; background:radial-gradient(circle at 50% -15%,#d9dcff 0,#edf0f7 42%,#e7ebf3 100%); }
+            .app-container { width:min(1180px,calc(100vw - 40px)); max-width:1180px; min-height:calc(100vh - 48px); margin:24px auto; padding-bottom:88px; border-radius:30px; box-shadow:0 24px 80px rgba(23,27,55,.16); overflow:hidden; }
+            #home-page,#discovery-page,#updates-page,#bookmark-page,#profile-page,#history-page,#home-collection-page,#detail-page { min-height:calc(100vh - 48px); }
+            .header { min-height:78px; padding:15px 30px; gap:14px; }
+            .brand-mark { width:44px; height:44px; flex-basis:44px; border-radius:15px; font-size:18px; }
+            .search-container { min-height:46px; max-width:none; padding:11px 16px; }
+            .search-container input { font-size:14px; }
+            .header-icons i { width:42px; height:42px; font-size:17px; }
+            .search-results-dropdown { top:78px; left:30px; right:30px; max-height:460px; }
+            .home-welcome { grid-column:1/-1; margin:22px 32px 0; padding:0; }
+            .home-welcome span { font-size:13px; }
+            .home-welcome strong { font-size:23px; }
+            #home-page main { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); column-gap:14px; align-items:start; }
+            #home-page main>.slider-container { grid-column:1/-1; width:calc(100% - 64px); height:370px; margin:16px 32px 6px; border-radius:27px; }
+            #home-page main>.section-container { min-width:0; padding:25px 28px 8px; }
+            #home-page main>.section-container:nth-last-child(1) { grid-column:1/-1; }
+            .slide-img { width:55%; }
+            .slide-overlay { background:linear-gradient(90deg,rgba(13,15,31,.98) 0%,rgba(13,15,31,.94) 38%,rgba(13,15,31,.38) 67%,rgba(13,15,31,.06) 100%),linear-gradient(0deg,rgba(8,10,20,.65),transparent 62%); }
+            .hero-content { left:36px; width:43%; max-width:470px; gap:13px; }
+            .hero-title { font-size:30px; -webkit-line-clamp:2; }
+            .hero-synopsis { max-width:390px; font-size:13px; line-height:1.6; -webkit-line-clamp:3; }
+            .hero-btn-read { padding:11px 18px; font-size:12px; }
+            .hero-rating-badge { margin-left:12px; }
+            .section-title { font-size:18px; }
+            .horizontal-scroll { gap:14px; }
+            .manga-card-simple { min-width:148px; width:148px; }
+            .manga-card-history { min-width:158px; width:158px; }
+            .card-poster-wrap { height:205px; }
+            .manga-card-history img { height:215px!important; aspect-ratio:auto; }
+            .ranking-card { min-width:245px; }
+            .bottom-nav { left:50%; bottom:24px; width:min(1180px,calc(100vw - 40px)); max-width:1180px; min-height:72px; padding:8px 26px 10px; transform:translateX(-50%); border-radius:0 0 30px 30px; }
+            .nav-item { max-width:170px; font-size:10px; }
+            .nav-item i { font-size:19px; }
+
+            .discovery-toolbar { top:78px; padding:14px 30px; }
+            .sort-panel,.filter-panel { margin:8px 30px; }
+            .sort-options { grid-template-columns:repeat(4,minmax(0,1fr)); }
+            .filter-fields { grid-template-columns:repeat(5,minmax(0,1fr)); }
+            .alphabet-rail { top:148px; width:calc(100% - 60px); margin:10px 30px 4px; }
+            #discovery-page.alphabet-active .discovery-grid { padding-left:30px; }
+            .discovery-grid { grid-template-columns:repeat(4,minmax(0,1fr)); gap:18px; padding:22px 30px; }
+            .discovery-grid.view-3 { grid-template-columns:repeat(6,minmax(0,1fr)); gap:14px; }
+            .discovery-grid.view-3 .discovery-card>img { aspect-ratio:2/3; }
+            .discovery-grid.view-list { grid-template-columns:repeat(2,minmax(0,1fr)); gap:16px; }
+            .discovery-grid.view-list .discovery-card { grid-template-columns:145px minmax(0,1fr); min-height:218px; }
+            .discovery-grid.view-list .discovery-card>img { width:145px; min-height:218px; }
+            .discovery-grid.view-list .discovery-info { padding:17px 52px 15px 17px; }
+
+            .updates-hero { padding:32px 34px 24px; }
+            .updates-hero h2 { font-size:28px; }
+            .updates-tabs { padding:14px 30px; }
+            .notification-panel { margin:0 30px 16px; }
+            .updates-feed { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); align-items:start; gap:14px; padding:8px 30px 30px; }
+            .update-feed-card { min-height:128px; grid-template-columns:82px minmax(0,1fr); }
+            .update-feed-card img { width:82px; height:118px; }
+
+            .bookmark-toolbar { padding:13px 30px; }
+            .bookmark-grid { grid-template-columns:repeat(4,minmax(0,1fr)); gap:18px; padding:22px 30px; }
+            .bookmark-grid .manga-card-simple { width:100%; min-width:0; }
+            .bookmark-grid.view-3 { grid-template-columns:repeat(6,minmax(0,1fr)); }
+            .bookmark-grid.view-list { grid-template-columns:repeat(2,minmax(0,1fr)); }
+            .history-full-grid,.home-collection-grid { grid-template-columns:repeat(6,minmax(0,1fr)); gap:14px; padding:20px 30px 32px; }
+            .history-page-header,.home-collection-head { padding-left:30px; padding-right:30px; }
+            .history-tabs { padding-left:30px; padding-right:30px; }
+            .history-delete-actions { padding-left:30px; padding-right:30px; }
+            .home-collection-tools { padding:15px 30px; }
+            .home-collection-filter-panel { padding:16px 30px; }
+            .home-filter-grid { grid-template-columns:repeat(5,minmax(0,1fr)); }
+
+            .detail-top-nav,.reader-header,.player-header { top:24px; left:50%; width:min(1180px,calc(100vw - 40px)); max-width:1180px; transform:translateX(-50%); border-radius:30px 30px 0 0; }
+            .reader-header.hidden { transform:translate(-50%,-125%); }
+            .detail-header { min-height:470px; padding:128px 55px 45px; background-position:center 28%; }
+            .detail-header::before { background:linear-gradient(90deg,rgba(10,12,24,.88),rgba(10,12,24,.45) 56%,rgba(10,12,24,.68)),linear-gradient(to bottom,rgba(10,12,24,.08),rgba(10,12,24,.92)); }
+            .comic-info-layout { max-width:950px; margin:0 auto; gap:25px; }
+            .comic-cover-wrapper { width:172px; }
+            .comic-detail-title { font-size:31px; }
+            .comic-alt-title { font-size:13px; }
+            .comic-stats-row { font-size:14px; }
+            .genre-tags .tag { padding:5px 12px; font-size:11px; }
+            .detail-tabs { top:0; }
+            .tab-content { width:min(100%,980px); margin:0 auto; padding:30px 34px; }
+            .synopsis-text { font-size:14px; line-height:1.75; }
+            .comment-wrapper { min-height:420px; }
+            .comment-list { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); align-items:start; gap:16px; }
+            .comment-composer { grid-column:1/-1; }
+            .season-list { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); align-items:start; }
+
+            #reader-page,#player-page { width:100%; min-height:calc(100vh - 48px); }
+            .reader-images:not(.mode-horizontal):not(.mode-double) { max-width:920px; margin:0 auto; background:#111; }
+            .reader-images:not(.mode-horizontal):not(.mode-double) img { max-width:920px; }
+            .video-container { height:calc(100vh - 48px); padding-top:62px; }
+            .video-container video { width:min(100%,1100px); }
+            .reader-toolbar { bottom:40px; width:min(calc(100% - 80px),760px); }
+            .reader-settings { right:max(40px,calc((100vw - 1180px)/2 + 40px)); bottom:98px; }
+
+            .profile-hero { padding:48px 50px 34px; border-radius:0; }
+            .social-profile-top { max-width:760px; margin:0 auto; }
+            .profile-bio,.profile-hero-actions,.profile-xp { max-width:760px; margin-left:auto; margin-right:auto; }
+            .profile-dashboard { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:16px; padding:24px 30px 34px; }
+            .profile-panel { margin:0; padding:20px; }
+            .profile-dashboard>.daily-checkin { grid-column:1/-1; }
+            .auth-form-card { max-width:620px; margin:0 auto; }
+            .user-menu-list { max-width:760px; margin:0 auto; }
+            .profile-stats-grid { max-width:760px; margin:0 auto; }
+            .shared-profile-backdrop,.update-modal-backdrop { align-items:center; }
+            .shared-profile-sheet { max-width:680px; max-height:82vh; border-radius:26px; }
+            .shared-favorites { grid-template-columns:repeat(4,1fr); }
+            .toast-notification { bottom:112px; }
+        }
+
+        @media (min-width:900px) and (max-width:1099px) {
+            .app-container,.bottom-nav,.detail-top-nav,.reader-header,.player-header { width:calc(100vw - 28px); }
+            .discovery-grid { grid-template-columns:repeat(3,minmax(0,1fr)); }
+            .discovery-grid.view-3 { grid-template-columns:repeat(5,minmax(0,1fr)); }
+            .history-full-grid,.home-collection-grid,.bookmark-grid.view-3 { grid-template-columns:repeat(5,minmax(0,1fr)); }
+            .discovery-grid.view-list { grid-template-columns:1fr; }
+        }
     </style>
 </head>
 <body>

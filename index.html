@@ -402,7 +402,7 @@
         .home-welcome strong { display:block; margin-top:2px; color:var(--text-dark); font-size:18px; font-weight:850; letter-spacing:-.35px; }
         .slider-container { height:270px; margin:10px 12px 4px; width:calc(100% - 24px); border-radius:22px; box-shadow:0 14px 30px rgba(18,21,40,.2); }
         .slide-bg-blur { filter:blur(20px); opacity:.58; transform:scale(1.04); }
-        .slide-img { width:56%; left:auto; right:0; background-size:cover; background-position:center top; }
+        .slide-img { width:58%; left:auto; right:0; background-size:contain; background-position:right center; background-repeat:no-repeat; }
         .slide-overlay { background:linear-gradient(90deg,rgba(16,18,35,.96) 0%,rgba(16,18,35,.9) 38%,rgba(16,18,35,.42) 55%,rgba(16,18,35,.03) 100%),linear-gradient(0deg,rgba(8,10,20,.42),transparent 58%); }
         .slide::after { content:''; position:absolute; top:-5%; bottom:-5%; left:38%; width:24%; z-index:2; pointer-events:none; background:linear-gradient(90deg,rgba(8,10,24,.32),rgba(8,10,24,.13) 52%,transparent); filter:blur(9px); }
         .hero-content { left:18px; width:40%; max-width:196px; gap:8px; }
@@ -439,6 +439,13 @@
         .card-status { color:var(--primary-blue); font-weight:700; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
         .manga-card-history img { height:184px; border:0; }
         .manga-card-history .chapter { margin-top:5px; }
+        .history-progress-ring { position:absolute; top:9px; right:9px; z-index:5; width:39px; height:39px; display:grid; place-items:center; border-radius:50%; background:conic-gradient(#625af2 calc(var(--progress,0) * 1%),rgba(255,255,255,.4) 0); box-shadow:0 5px 13px rgba(24,25,48,.25); }
+        .history-progress-ring::before { content:''; position:absolute; inset:4px; border-radius:50%; background:rgba(20,22,38,.86); backdrop-filter:blur(6px); }
+        .history-progress-ring span { position:relative; z-index:1; color:#fff; font-size:8px; font-weight:850; }
+        .history-progress-row { display:flex; align-items:center; justify-content:space-between; gap:7px; margin-top:8px; color:#85899a; font-size:9px; font-weight:700; }
+        .history-progress-row strong { color:#625af2; font-size:10px; }
+        .history-progress-track { height:5px; margin-top:5px; overflow:hidden; border-radius:999px; background:#ececf4; }
+        .history-progress-fill { height:100%; min-width:0; border-radius:inherit; background:linear-gradient(90deg,#625af2,#8b72ff); transition:width .35s ease; }
         .discovery-grid,.bookmark-grid { grid-template-columns:repeat(2,minmax(0,1fr)); gap:10px; padding:14px; background:transparent; align-content:start; align-items:start; grid-auto-rows:max-content; }
         .discovery-card { position:relative; width:100%; height:auto; align-self:start; border:0; border-radius:16px; box-shadow:0 8px 22px rgba(32,37,70,.08); }
         .discovery-card img { width:100%; aspect-ratio:2/3; height:auto; object-fit:cover; object-position:center top; background:#eef0f5; border:0; }
@@ -1349,7 +1356,7 @@
                     <ul class="user-menu-list"><li class="install-app-item" id="installAppUser" hidden onclick="installApp()"><div class="left-info"><i class="fa-solid fa-mobile-screen-button"></i> Pasang Aplikasi</div><i class="fa-solid fa-download"></i></li><li onclick="switchNav('bookmark')"><div class="left-info"><i class="fa-solid fa-layer-group"></i> Kelola Koleksi Saya</div><i class="fa-solid fa-chevron-right"></i></li><li class="logout-item" onclick="doLogout()"><div class="left-info"><i class="fa-solid fa-right-from-bracket"></i> Keluar dari Akun</div><i class="fa-solid fa-chevron-right"></i></li></ul>
                 </div>
             </div>
-            <div class="app-version-card"><div><strong>Versi Aplikasi</strong><span id="currentVersionLabel">V20.1.5 • Memeriksa pembaruan...</span></div><button class="version-check-btn" onclick="checkAppConfiguration(true)"><i class="fa-solid fa-rotate"></i> Periksa</button></div>
+            <div class="app-version-card"><div><strong>Versi Aplikasi</strong><span id="currentVersionLabel">V20.1.6 • Memeriksa pembaruan...</span></div><button class="version-check-btn" onclick="checkAppConfiguration(true)"><i class="fa-solid fa-rotate"></i> Periksa</button></div>
         </div>
 
         <!-- ================= BOTTOM NAVIGATION (DITAMBAHKAN DISCOVERY) ================= -->
@@ -1371,7 +1378,7 @@
             </a>
         </nav>
     </div>
-    <div class="update-modal-backdrop" id="updateModal"><div class="update-sheet"><div class="update-icon"><i class="fa-solid fa-cloud-arrow-down"></i></div><h2>Versi baru tersedia</h2><p>Pembaruan aplikasi sudah siap. Proses ini akan membersihkan cache antarmuka lama tanpa menghapus akun, bookmark, atau riwayat Anda.</p><div class="update-version-line"><span id="updateCurrentVersion">V20.1.5</span><i class="fa-solid fa-arrow-right"></i><span id="updateLatestVersion">V20.1.5</span></div><div class="update-changelog" id="updateChangelog">Peningkatan stabilitas dan tampilan.</div><div class="update-actions"><button class="update-action update-later" onclick="dismissAppUpdate()">Nanti</button><button class="update-action update-now" onclick="applyAppUpdate()"><i class="fa-solid fa-bolt"></i> Perbarui Sekarang</button></div></div></div>
+    <div class="update-modal-backdrop" id="updateModal"><div class="update-sheet"><div class="update-icon"><i class="fa-solid fa-cloud-arrow-down"></i></div><h2>Versi baru tersedia</h2><p>Pembaruan aplikasi sudah siap. Proses ini akan membersihkan cache antarmuka lama tanpa menghapus akun, bookmark, atau riwayat Anda.</p><div class="update-version-line"><span id="updateCurrentVersion">V20.1.6</span><i class="fa-solid fa-arrow-right"></i><span id="updateLatestVersion">V20.1.6</span></div><div class="update-changelog" id="updateChangelog">Peningkatan stabilitas dan tampilan.</div><div class="update-actions"><button class="update-action update-later" onclick="dismissAppUpdate()">Nanti</button><button class="update-action update-now" onclick="applyAppUpdate()"><i class="fa-solid fa-bolt"></i> Perbarui Sekarang</button></div></div></div>
 
     <div class="modern-modal-backdrop" id="modernConfirmModal" role="dialog" aria-modal="true" aria-labelledby="modernConfirmTitle">
         <div class="modern-modal">
@@ -1405,7 +1412,7 @@
         const app = initializeApp(firebaseConfig);
         const db = getFirestore(app);
         const auth = getAuth(app);
-        const APP_VERSION = '20.1.5';
+        const APP_VERSION = '20.1.6';
         const ADMIN_UID = 'dWUWpKAWQRRxMOzjzaOA3zXWZLp2';
 
         window.comicsData = {};
@@ -1663,7 +1670,7 @@
             const button=document.querySelector('.update-now');button.disabled=true;button.innerHTML='<i class="fa-solid fa-spinner fa-spin"></i> Memperbarui...';
             try{if('serviceWorker'in navigator){const registration=await navigator.serviceWorker.getRegistration('./');if(registration)await registration.unregister();}if('caches'in window){const keys=await caches.keys();await Promise.all(keys.filter(key=>key.startsWith('komik-anime-')).map(key=>caches.delete(key)));}localStorage.removeItem('dismissedAppVersion');const url=new URL(location.href);url.searchParams.set('appVersion',Date.now());location.replace(url.href);}catch(e){button.disabled=false;button.innerHTML='<i class="fa-solid fa-bolt"></i> Perbarui Sekarang';window.showToast('Pembaruan gagal. Silakan muat ulang halaman.');}
         }
-        if('serviceWorker' in navigator && location.protocol !== 'file:') navigator.serviceWorker.register('./sw-v20.1.js?v=20260920-hero-slider-motion',{updateViaCache:'none'}).then(reg=>reg.update()).catch(() => {});
+        if('serviceWorker' in navigator && location.protocol !== 'file:') navigator.serviceWorker.register('./sw-v20.1.js?v=20260920-hero-contain-progress',{updateViaCache:'none'}).then(reg=>reg.update()).catch(() => {});
         document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible'){window.checkAppConfiguration(false);recordDailyAnalytics({});}});
         async function applyRemoteDisplayConfig(){try{const snap=await getDoc(doc(db,'settings','appConfig'));if(!snap.exists())return;const c=snap.data();if(c.appName)document.title=c.appName;if(/^#[0-9a-f]{6}$/i.test(c.themeColor||''))document.documentElement.style.setProperty('--primary-blue',c.themeColor);const recommendation=document.getElementById('recommendationSection');if(recommendation)recommendation.style.display=c.enableRecommendations===false?'none':'block';document.body.classList.toggle('gamification-off',c.enableGamification===false);if(c.announcement&&localStorage.getItem('seenAnnouncementV20.1')!==c.announcement){localStorage.setItem('seenAnnouncementV20.1',c.announcement);setTimeout(()=>window.showToast(c.announcement),1200);}}catch(e){}}
         applyRemoteDisplayConfig();
@@ -2673,6 +2680,8 @@
                 chapterId: chapterId || "",
                 chapterNumber: chapterNum || "1",
                 pageIndex: pageIndex || 1,
+                pageTotal: Math.max(Number(pageIndex || 1), Number(window.currentReaderTotal || pageIndex || 1)),
+                progressPercent: Math.min(100, Math.max(0, Math.round((Number(pageIndex || 1) / Math.max(1, Number(window.currentReaderTotal || pageIndex || 1))) * 100))),
                 mediaFormat: comicData.format || '',
                 mediaType: comicData.type || '',
                 updatedAt: new Date().getTime()
@@ -2815,13 +2824,24 @@
                 
                 const chInfo = item.chapterNumber ? getMediaPartLabel(comicRecord, {chapterNumber:item.chapterNumber, title:item.chapterTitle || ''}, 0, true) : '';
                 const pgInfo = !isVideo && item.pageIndex ? ` • Hal. ${item.pageIndex}` : '';
+                const storedPercent = Number(item.progressPercent);
+                const calculatedPercent = isVideo
+                    ? (Number(item.videoDuration) > 0 ? Number(item.videoSecond || 0) / Number(item.videoDuration) * 100 : 0)
+                    : (Number(item.pageTotal) > 0 ? Number(item.pageIndex || 1) / Number(item.pageTotal) * 100 : 0);
+                const progressPercent = Math.max(0, Math.min(100, Math.round(Number.isFinite(storedPercent) ? storedPercent : calculatedPercent)));
+                const progressDetail = isVideo
+                    ? `${progressPercent}% ditonton`
+                    : (Number(item.pageTotal) > 0 ? `${Number(item.pageIndex || 1)}/${Number(item.pageTotal)} halaman` : `Halaman ${Number(item.pageIndex || 1)}`);
 
                 html += `
                     <div class="manga-card-history" onclick="continueReading('${safeAttr(item.comicId)}', '${safeAttr(item.chapterId || '')}', '${safeAttr(item.chapterNumber || '')}', ${Math.max(1,Number(item.pageIndex)||1)})">
                         <img src="${cover}" onerror="this.src='https://placehold.co/130x170?text=No+Cover'">
+                        <div class="history-progress-ring" style="--progress:${progressPercent}" aria-label="Progres ${progressPercent} persen"><span>${progressPercent}%</span></div>
                         <div class="info">
                             <div class="title">${title}</div>
                             <div class="chapter">${safeText(chInfo + pgInfo)}</div>
+                            <div class="history-progress-row"><span>${safeText(progressDetail)}</span><strong>${progressPercent}%</strong></div>
+                            <div class="history-progress-track"><div class="history-progress-fill" style="width:${progressPercent}%"></div></div>
                         </div>
                     </div>
                 `;

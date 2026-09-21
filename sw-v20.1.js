@@ -1,4 +1,4 @@
-const CACHE_VERSION = "komik-anime-v20.1.7";
+const CACHE_VERSION = "komik-anime-v20.1.8";
 const CACHE_PREFIX = "komik-anime-";
 
 const REQUIRED_SHELL = [

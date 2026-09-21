@@ -398,8 +398,12 @@
         .header-icons { gap:8px; }
         .header-icons i { width:38px; height:38px; display:grid; place-items:center; border-radius:12px; background:var(--light-blue); font-size:15px; }
         .search-results-dropdown { top:64px; border-radius:18px; border-color:var(--border-color); box-shadow:0 18px 50px rgba(24,29,58,.18); }
-        .home-welcome { padding:14px 18px 2px; color:#7c8194; font-size:11px; font-weight:650; }
+        .home-welcome { display:flex; align-items:center; justify-content:space-between; gap:12px; padding:14px 18px 2px; color:#7c8194; font-size:11px; font-weight:650; }
+        .home-welcome-copy { min-width:0; flex:1; }
         .home-welcome strong { display:block; margin-top:2px; color:var(--text-dark); font-size:18px; font-weight:850; letter-spacing:-.35px; }
+        .home-welcome-actions { display:flex; align-items:center; gap:8px; }
+        .home-welcome-action { width:37px; height:37px; display:grid; place-items:center; border:0; border-radius:12px; color:#5b5cf0; background:#eeefff; box-shadow:0 6px 16px rgba(48,52,93,.08); cursor:pointer; font-size:14px; }
+        .home-welcome-action.contact { color:#15956e; background:#e8f8f2; }
         .slider-container { height:270px; margin:10px 12px 4px; width:calc(100% - 24px); border-radius:22px; box-shadow:0 14px 30px rgba(18,21,40,.2); }
         .slide-bg-blur { filter:blur(20px); opacity:.58; transform:scale(1.04); }
         .slide-img { width:58%; left:auto; right:0; background-size:contain; background-position:right center; background-repeat:no-repeat; }
@@ -587,6 +591,9 @@
         .history-full-info { padding:9px 8px 10px; }
         .history-full-title { min-height:29px; display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden; color:var(--text-dark); font-size:10px; line-height:1.4; font-weight:800; }
         .history-full-progress { margin-top:6px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; color:var(--primary-blue); font-size:8.5px; font-weight:750; }
+        .history-full-info .history-progress-row { margin-top:7px; font-size:7.5px; }
+        .history-full-info .history-progress-row strong { font-size:8.5px; }
+        .history-full-info .history-progress-track { height:4px; margin-top:4px; }
         @media(max-width:360px){.history-full-grid{gap:7px;padding-left:10px;padding-right:10px}.history-kind{font-size:7px;padding:4px 6px}}
 
         /* Halaman Lihat Semua dari Home */
@@ -664,6 +671,27 @@
         /* Modern confirmation dialog */
         .modern-modal-backdrop { position:fixed; inset:0; z-index:10000; display:none; align-items:center; justify-content:center; padding:22px; background:rgba(13,16,31,.52); backdrop-filter:blur(8px); -webkit-backdrop-filter:blur(8px); }
         .modern-modal-backdrop.show { display:flex; animation:modalFade .2s ease; }
+        .home-action-backdrop { position:fixed; inset:0; z-index:11200; display:none; align-items:flex-end; justify-content:center; padding:16px; background:rgba(13,16,31,.55); backdrop-filter:blur(8px); -webkit-backdrop-filter:blur(8px); }
+        .home-action-backdrop.show { display:flex; }
+        .home-action-sheet { width:100%; max-width:430px; padding:20px; border-radius:24px 24px 18px 18px; background:#fff; box-shadow:0 24px 65px rgba(17,20,39,.25); }
+        .home-action-head { display:flex; align-items:flex-start; gap:12px; margin-bottom:17px; }
+        .home-action-icon { width:42px; height:42px; flex:0 0 42px; display:grid; place-items:center; border-radius:14px; color:#fff; background:linear-gradient(135deg,#6d5dfc,#5153e8); }
+        .home-action-head div:nth-child(2) { min-width:0; flex:1; }
+        .home-action-head h3 { font-size:17px; }
+        .home-action-head p { margin-top:4px; color:#85899b; font-size:10px; line-height:1.45; }
+        .home-action-close { width:32px; height:32px; border:0; border-radius:10px; color:#71758a; background:#f1f2f7; cursor:pointer; }
+        .home-action-label { display:block; margin:12px 0 6px; color:#4f5368; font-size:10px; font-weight:800; }
+        .home-action-input { width:100%; min-height:45px; padding:11px 13px; border:1px solid #e1e3ed; border-radius:12px; outline:0; color:#171a2c; background:#fafbfe; font-size:12px; }
+        .home-action-input:focus { border-color:#7770f4; box-shadow:0 0 0 4px rgba(91,92,240,.09); }
+        .home-action-buttons { display:grid; grid-template-columns:1fr 1fr; gap:9px; margin-top:17px; }
+        .home-action-button { min-height:43px; border:0; border-radius:12px; color:#fff; cursor:pointer; font-size:11px; font-weight:800; }
+        .home-action-button.whatsapp { background:#20a968; }
+        .home-action-button.email { background:#5b5cf0; }
+        .contact-choice { display:flex; align-items:center; gap:12px; width:100%; margin-top:9px; padding:13px; border:1px solid #e7e9f2; border-radius:14px; color:#24273a; background:#fafbfe; cursor:pointer; text-align:left; }
+        .contact-choice i { width:35px; height:35px; display:grid; place-items:center; border-radius:11px; color:#fff; background:#20a968; font-size:16px; }
+        .contact-choice.email i { background:#5b5cf0; }
+        .contact-choice strong { display:block; font-size:11px; }
+        .contact-choice span { display:block; margin-top:3px; color:#85899b; font-size:9px; }
         .modern-modal { width:min(100%,360px); padding:22px; border:1px solid rgba(255,255,255,.65); border-radius:24px; background:rgba(255,255,255,.97); box-shadow:0 24px 70px rgba(13,16,31,.28); animation:modalPop .25s ease; }
         .modern-modal-icon { width:50px; height:50px; display:grid; place-items:center; margin-bottom:15px; border-radius:16px; color:var(--primary-blue); background:var(--light-blue); font-size:20px; }
         .modern-modal-icon.danger { color:#e5485d; background:#fff0f2; }
@@ -884,7 +912,13 @@
             <div id="searchResults" class="search-results-dropdown"></div>
 
             <main>
-                <div class="home-welcome"><span>Selamat datang,</span><strong id="homeWelcomeName">User</strong></div>
+                <div class="home-welcome">
+                    <div class="home-welcome-copy"><span>Selamat datang,</span><strong id="homeWelcomeName">User</strong></div>
+                    <div class="home-welcome-actions">
+                        <button class="home-welcome-action" type="button" onclick="openRequestModal()" aria-label="Request komik atau film" title="Request konten"><i class="fa-solid fa-paper-plane"></i></button>
+                        <button class="home-welcome-action contact" type="button" onclick="openAdminContact()" aria-label="Hubungi admin" title="Hubungi admin"><i class="fa-solid fa-headset"></i></button>
+                    </div>
+                </div>
                 <!-- Hero Slider Modern & Minimalis -->
                 <section class="slider-container">
                     <div class="slider-indicators" id="slider-dots"></div>
@@ -1353,7 +1387,7 @@
                     <ul class="user-menu-list"><li class="install-app-item" id="installAppUser" hidden onclick="installApp()"><div class="left-info"><i class="fa-solid fa-mobile-screen-button"></i> Pasang Aplikasi</div><i class="fa-solid fa-download"></i></li><li onclick="switchNav('bookmark')"><div class="left-info"><i class="fa-solid fa-layer-group"></i> Kelola Koleksi Saya</div><i class="fa-solid fa-chevron-right"></i></li><li class="logout-item" onclick="doLogout()"><div class="left-info"><i class="fa-solid fa-right-from-bracket"></i> Keluar dari Akun</div><i class="fa-solid fa-chevron-right"></i></li></ul>
                 </div>
             </div>
-            <div class="app-version-card"><div><strong>Versi Aplikasi</strong><span id="currentVersionLabel">V20.1.7 • Memeriksa pembaruan...</span></div><button class="version-check-btn" onclick="checkAppConfiguration(true)"><i class="fa-solid fa-rotate"></i> Periksa</button></div>
+            <div class="app-version-card"><div><strong>Versi Aplikasi</strong><span id="currentVersionLabel">V20.1.8 • Memeriksa pembaruan...</span></div><button class="version-check-btn" onclick="checkAppConfiguration(true)"><i class="fa-solid fa-rotate"></i> Periksa</button></div>
         </div>
 
         <!-- ================= BOTTOM NAVIGATION (DITAMBAHKAN DISCOVERY) ================= -->
@@ -1375,7 +1409,26 @@
             </a>
         </nav>
     </div>
-    <div class="update-modal-backdrop" id="updateModal"><div class="update-sheet"><div class="update-icon"><i class="fa-solid fa-cloud-arrow-down"></i></div><h2>Versi baru tersedia</h2><p>Pembaruan aplikasi sudah siap. Proses ini akan membersihkan cache antarmuka lama tanpa menghapus akun, bookmark, atau riwayat Anda.</p><div class="update-version-line"><span id="updateCurrentVersion">V20.1.7</span><i class="fa-solid fa-arrow-right"></i><span id="updateLatestVersion">V20.1.7</span></div><div class="update-changelog" id="updateChangelog">Peningkatan stabilitas dan tampilan.</div><div class="update-actions"><button class="update-action update-later" onclick="dismissAppUpdate()">Nanti</button><button class="update-action update-now" onclick="applyAppUpdate()"><i class="fa-solid fa-bolt"></i> Perbarui Sekarang</button></div></div></div>
+    <div class="update-modal-backdrop" id="updateModal"><div class="update-sheet"><div class="update-icon"><i class="fa-solid fa-cloud-arrow-down"></i></div><h2>Versi baru tersedia</h2><p>Pembaruan aplikasi sudah siap. Proses ini akan membersihkan cache antarmuka lama tanpa menghapus akun, bookmark, atau riwayat Anda.</p><div class="update-version-line"><span id="updateCurrentVersion">V20.1.8</span><i class="fa-solid fa-arrow-right"></i><span id="updateLatestVersion">V20.1.8</span></div><div class="update-changelog" id="updateChangelog">Peningkatan stabilitas dan tampilan.</div><div class="update-actions"><button class="update-action update-later" onclick="dismissAppUpdate()">Nanti</button><button class="update-action update-now" onclick="applyAppUpdate()"><i class="fa-solid fa-bolt"></i> Perbarui Sekarang</button></div></div></div>
+
+    <div class="home-action-backdrop" id="requestContentModal" role="dialog" aria-modal="true" aria-labelledby="requestContentTitle" onclick="if(event.target===this)closeRequestModal()">
+        <div class="home-action-sheet">
+            <div class="home-action-head"><div class="home-action-icon"><i class="fa-solid fa-paper-plane"></i></div><div><h3 id="requestContentTitle">Request Konten</h3><p>Pilih jenis konten dan masukkan judul yang ingin ditambahkan.</p></div><button class="home-action-close" type="button" onclick="closeRequestModal()" aria-label="Tutup"><i class="fa-solid fa-xmark"></i></button></div>
+            <label class="home-action-label" for="requestContentType">Jenis konten</label>
+            <select class="home-action-input" id="requestContentType"><option value="Komik / Manga">Komik / Manga</option><option value="Film / Anime">Film / Anime</option></select>
+            <label class="home-action-label" for="requestContentName">Judul komik atau film</label>
+            <input class="home-action-input" id="requestContentName" type="text" maxlength="150" placeholder="Contoh: Naruto, One Piece...">
+            <div class="home-action-buttons"><button class="home-action-button whatsapp" type="button" onclick="sendContentRequest('whatsapp')"><i class="fa-brands fa-whatsapp"></i> Kirim via WhatsApp</button><button class="home-action-button email" type="button" onclick="sendContentRequest('email')"><i class="fa-regular fa-envelope"></i> Kirim via Email</button></div>
+        </div>
+    </div>
+
+    <div class="home-action-backdrop" id="adminContactModal" role="dialog" aria-modal="true" aria-labelledby="adminContactTitle" onclick="if(event.target===this)closeAdminContact()">
+        <div class="home-action-sheet">
+            <div class="home-action-head"><div class="home-action-icon"><i class="fa-solid fa-headset"></i></div><div><h3 id="adminContactTitle">Hubungi Admin</h3><p>Pilih saluran yang paling nyaman untuk menghubungi admin.</p></div><button class="home-action-close" type="button" onclick="closeAdminContact()" aria-label="Tutup"><i class="fa-solid fa-xmark"></i></button></div>
+            <button class="contact-choice" type="button" onclick="openAdminChannel('whatsapp')"><i class="fa-brands fa-whatsapp"></i><span><strong>WhatsApp</strong><span>081294114812</span></span></button>
+            <button class="contact-choice email" type="button" onclick="openAdminChannel('email')"><i class="fa-regular fa-envelope"></i><span><strong>Email</strong><span>hrmnkosasi@gmail.com</span></span></button>
+        </div>
+    </div>
 
     <div class="modern-modal-backdrop" id="modernConfirmModal" role="dialog" aria-modal="true" aria-labelledby="modernConfirmTitle">
         <div class="modern-modal">
@@ -1409,7 +1462,7 @@
         const app = initializeApp(firebaseConfig);
         const db = getFirestore(app);
         const auth = getAuth(app);
-        const APP_VERSION = '20.1.7';
+        const APP_VERSION = '20.1.8';
         const ADMIN_UID = 'dWUWpKAWQRRxMOzjzaOA3zXWZLp2';
 
         window.comicsData = {};
@@ -1667,7 +1720,7 @@
             const button=document.querySelector('.update-now');button.disabled=true;button.innerHTML='<i class="fa-solid fa-spinner fa-spin"></i> Memperbarui...';
             try{if('serviceWorker'in navigator){const registration=await navigator.serviceWorker.getRegistration('./');if(registration)await registration.unregister();}if('caches'in window){const keys=await caches.keys();await Promise.all(keys.filter(key=>key.startsWith('komik-anime-')).map(key=>caches.delete(key)));}localStorage.removeItem('dismissedAppVersion');const url=new URL(location.href);url.searchParams.set('appVersion',Date.now());location.replace(url.href);}catch(e){button.disabled=false;button.innerHTML='<i class="fa-solid fa-bolt"></i> Perbarui Sekarang';window.showToast('Pembaruan gagal. Silakan muat ulang halaman.');}
         }
-        if('serviceWorker' in navigator && location.protocol !== 'file:') navigator.serviceWorker.register('./sw-v20.1.js?v=20260921-latest-three-progress',{updateViaCache:'none'}).then(reg=>reg.update()).catch(() => {});
+        if('serviceWorker' in navigator && location.protocol !== 'file:') navigator.serviceWorker.register('./sw-v20.1.js?v=20260921-history-request-contact',{updateViaCache:'none'}).then(reg=>reg.update()).catch(() => {});
         document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible'){window.checkAppConfiguration(false);recordDailyAnalytics({});}});
         async function applyRemoteDisplayConfig(){try{const snap=await getDoc(doc(db,'settings','appConfig'));if(!snap.exists())return;const c=snap.data();if(c.appName)document.title=c.appName;if(/^#[0-9a-f]{6}$/i.test(c.themeColor||''))document.documentElement.style.setProperty('--primary-blue',c.themeColor);const recommendation=document.getElementById('recommendationSection');if(recommendation)recommendation.style.display=c.enableRecommendations===false?'none':'block';document.body.classList.toggle('gamification-off',c.enableGamification===false);if(c.announcement&&localStorage.getItem('seenAnnouncementV20.1')!==c.announcement){localStorage.setItem('seenAnnouncementV20.1',c.announcement);setTimeout(()=>window.showToast(c.announcement),1200);}}catch(e){}}
         applyRemoteDisplayConfig();
@@ -2956,12 +3009,50 @@
                 const cover = safeMediaUrl(item.coverUrl || comic.coverUrl || '');
                 const title = safeText(item.comicTitle || comic.title || 'Konten');
                 const part = getMediaPartLabel(comic, {chapterNumber:item.chapterNumber, title:item.chapterTitle || ''}, 0, true);
-                const page = !item._isVideo && item.pageIndex ? ` • Hal. ${Number(item.pageIndex)}` : '';
+                const storedPercent = Number(item.progressPercent || 0);
+                const calculatedPercent = item._isVideo
+                    ? (Number(item.videoDuration || 0) > 0 ? (Number(item.videoSecond || 0) / Number(item.videoDuration)) * 100 : 0)
+                    : (Number(item.pageTotal || 0) > 0 ? (Number(item.pageIndex || 0) / Number(item.pageTotal)) * 100 : 0);
+                const progressPercent = Math.max(0, Math.min(100, Math.round(storedPercent || calculatedPercent || 0)));
+                const progressDetail = item._isVideo
+                    ? `${formatEpisodeDuration(item.videoSecond || 0) || '0:00:00'} / ${formatEpisodeDuration(item.videoDuration || 0) || '0:00:00'}`
+                    : (Number(item.pageTotal || 0) > 0 ? `${Number(item.pageIndex || 0)}/${Number(item.pageTotal)} halaman` : `Halaman ${Number(item.pageIndex || 1)}`);
                 return `<article class="history-full-card" onclick="continueReading('${safeAttr(item.comicId)}','${safeAttr(item.chapterId || '')}','${safeAttr(item.chapterNumber || '')}',${Number(item.pageIndex || 1)})">
                     <div class="history-full-cover"><img src="${cover}" loading="lazy" decoding="async" alt="${title}" onerror="this.src='https://placehold.co/240x340?text=No+Cover'"><span class="history-kind">${item._isVideo ? 'FILM / ANIME' : 'KOMIK'}</span></div>
-                    <div class="history-full-info"><div class="history-full-title">${title}</div><div class="history-full-progress">${safeText(part + page)}</div></div>
+                    <div class="history-full-info"><div class="history-full-title">${title}</div><div class="history-full-progress">${safeText(part)}</div><div class="history-progress-row"><span>${safeText(progressDetail)}</span><strong>${progressPercent}%</strong></div><div class="history-progress-track"><div class="history-progress-fill" style="width:${progressPercent}%"></div></div></div>
                 </article>`;
             }).join('') || `<div class="empty-history" style="grid-column:1/-1;padding-top:70px"><i class="fa-solid ${isVideoTab ? 'fa-film' : 'fa-book-open'}" style="font-size:30px;color:#c5c8d5"></i><br><br>Belum ada riwayat ${isVideoTab ? 'tontonan' : 'bacaan'}.</div>`;
+        }
+
+        const ADMIN_CONTACT_PHONE = '6281294114812';
+        const ADMIN_CONTACT_EMAIL = 'hrmnkosasi@gmail.com';
+        function openExternalUrl(url) {
+            const link = document.createElement('a');
+            link.href = url; link.target = '_blank'; link.rel = 'noopener noreferrer';
+            document.body.appendChild(link); link.click(); link.remove();
+        }
+        window.openRequestModal = function() {
+            document.getElementById('requestContentModal')?.classList.add('show');
+            setTimeout(() => document.getElementById('requestContentName')?.focus(), 120);
+        }
+        window.closeRequestModal = function() { document.getElementById('requestContentModal')?.classList.remove('show'); }
+        window.openAdminContact = function() { document.getElementById('adminContactModal')?.classList.add('show'); }
+        window.closeAdminContact = function() { document.getElementById('adminContactModal')?.classList.remove('show'); }
+        window.sendContentRequest = function(channel) {
+            const type = document.getElementById('requestContentType')?.value || 'Konten';
+            const title = document.getElementById('requestContentName')?.value.trim() || '';
+            if(!title) { window.showToast('Masukkan judul yang ingin diminta'); document.getElementById('requestContentName')?.focus(); return; }
+            const requester = document.getElementById('homeWelcomeName')?.textContent?.trim() || 'User';
+            const message = `Halo Admin, saya ingin request ${type}.\n\nJudul: ${title}\nPemohon: ${requester}`;
+            if(channel === 'email') location.href = `mailto:${ADMIN_CONTACT_EMAIL}?subject=${encodeURIComponent(`Request ${type}: ${title}`)}&body=${encodeURIComponent(message)}`;
+            else openExternalUrl(`https://wa.me/${ADMIN_CONTACT_PHONE}?text=${encodeURIComponent(message)}`);
+            window.closeRequestModal();
+        }
+        window.openAdminChannel = function(channel) {
+            const message = 'Halo Admin, saya ingin bertanya mengenai aplikasi Komik & Anime.';
+            if(channel === 'email') location.href = `mailto:${ADMIN_CONTACT_EMAIL}?subject=${encodeURIComponent('Bantuan Aplikasi Komik & Anime')}&body=${encodeURIComponent(message)}`;
+            else openExternalUrl(`https://wa.me/${ADMIN_CONTACT_PHONE}?text=${encodeURIComponent(message)}`);
+            window.closeAdminContact();
         }
 
         window.clearHistoryType = async function(type) {

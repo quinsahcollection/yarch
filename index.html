@@ -209,7 +209,9 @@
         .episode-thumbnail img { width:100%; height:100%; display:block; object-fit:cover; }
         .episode-thumbnail::after { content:'\f04b'; position:absolute; inset:0; display:grid; place-items:center; color:#fff; background:linear-gradient(180deg,transparent,rgba(8,10,20,.34)); font-family:'Font Awesome 6 Free'; font-size:10px; font-weight:900; text-shadow:0 2px 5px rgba(0,0,0,.45); }
         .episode-thumbnail-label { position:absolute; left:4px; bottom:3px; z-index:2; padding:2px 4px; border-radius:5px; color:#fff; background:rgba(13,16,30,.76); font-size:6.5px; font-weight:850; }
-        .episode-thumbnail.comic-thumbnail::after { content:''; background:linear-gradient(180deg,transparent 48%,rgba(8,10,20,.22)); }
+        .episode-thumbnail.comic-thumbnail { width:54px; height:76px; flex:0 0 54px; border-radius:9px; background:#fff; border:1px solid #e5e7eb; }
+        .episode-thumbnail.comic-thumbnail img { object-fit:contain; object-position:center; background:#fff; }
+        .episode-thumbnail.comic-thumbnail::after { content:''; background:linear-gradient(180deg,transparent 62%,rgba(8,10,20,.18)); }
         .season-card.seasonless-card { overflow:visible; border:0; box-shadow:none; background:transparent; }
         .season-card.seasonless-card .season-episodes { padding:0; background:transparent; }
         .season-card .chapter-info { flex:1; min-width:0; }
@@ -220,7 +222,7 @@
         .episode-media-meta { display:inline-flex; align-items:center; gap:4px; color:#716d88; font-weight:650; }
         .episode-language-meta { display:inline-flex; align-items:center; color:#625af2; font-weight:750; }
         .season-card .chapter-action { position:absolute; top:13px; right:12px; margin:0; white-space:nowrap; }
-        @media(max-width:420px){.season-header{padding:13px 12px;gap:9px}.season-progress{display:none}.season-episodes{padding:8px}.season-card .chapter-item{padding:11px 9px;gap:8px}.episode-index{width:34px;height:34px;flex-basis:34px;font-size:10px}.episode-thumbnail{width:57px;height:41px;flex-basis:57px}.season-card .chapter-title{padding-right:78px;font-size:12.5px;line-height:1.42}.season-card .chapter-date{font-size:9.3px;letter-spacing:-.18px}.season-card .chapter-date>span+span::before{margin:0 4px}.season-card .chapter-action{top:11px;right:9px;padding:6px 8px;font-size:9.5px}}
+        @media(max-width:420px){.season-header{padding:13px 12px;gap:9px}.season-progress{display:none}.season-episodes{padding:8px}.season-card .chapter-item{padding:11px 9px;gap:8px}.episode-index{width:34px;height:34px;flex-basis:34px;font-size:10px}.episode-thumbnail{width:57px;height:41px;flex-basis:57px}.episode-thumbnail.comic-thumbnail{width:48px;height:68px;flex-basis:48px}.season-card .chapter-title{padding-right:78px;font-size:12.5px;line-height:1.42}.season-card .chapter-date{font-size:9.3px;letter-spacing:-.18px}.season-card .chapter-date>span+span::before{margin:0 4px}.season-card .chapter-action{top:11px;right:9px;padding:6px 8px;font-size:9.5px}}
 
         /* COMMENT UI */
         .comment-wrapper { display: flex; flex-direction: column; height: 100%; min-height: 50vh; position: relative;}
@@ -1447,7 +1449,7 @@
                     <ul class="user-menu-list"><li class="install-app-item" id="installAppUser" hidden onclick="installApp()"><div class="left-info"><i class="fa-solid fa-mobile-screen-button"></i> Pasang Aplikasi</div><i class="fa-solid fa-download"></i></li><li onclick="switchNav('bookmark')"><div class="left-info"><i class="fa-solid fa-layer-group"></i> Kelola Koleksi Saya</div><i class="fa-solid fa-chevron-right"></i></li><li class="logout-item" onclick="doLogout()"><div class="left-info"><i class="fa-solid fa-right-from-bracket"></i> Keluar dari Akun</div><i class="fa-solid fa-chevron-right"></i></li></ul>
                 </div>
             </div>
-            <div class="app-version-card"><div><strong>Versi Aplikasi</strong><span id="currentVersionLabel">V20.1.15 • Memeriksa pembaruan...</span></div><button class="version-check-btn" onclick="checkAppConfiguration(true)"><i class="fa-solid fa-rotate"></i> Periksa</button></div>
+            <div class="app-version-card"><div><strong>Versi Aplikasi</strong><span id="currentVersionLabel">V20.1.16 • Memeriksa pembaruan...</span></div><button class="version-check-btn" onclick="checkAppConfiguration(true)"><i class="fa-solid fa-rotate"></i> Periksa</button></div>
         </div>
 
         <!-- ================= BOTTOM NAVIGATION (DITAMBAHKAN DISCOVERY) ================= -->
@@ -1491,7 +1493,7 @@
             <button class="account-menu-item danger" id="accountMenuLogout" type="button" onclick="closeAccountMenu();doLogout()"><i class="fa-solid fa-right-from-bracket"></i><span>Keluar dari Akun</span><i class="fa-solid fa-chevron-right"></i></button>
         </aside>
     </div>
-    <div class="update-modal-backdrop" id="updateModal"><div class="update-sheet"><div class="update-icon"><i class="fa-solid fa-cloud-arrow-down"></i></div><h2>Versi baru tersedia</h2><p>Pembaruan aplikasi sudah siap. Proses ini akan membersihkan cache antarmuka lama tanpa menghapus akun, bookmark, atau riwayat Anda.</p><div class="update-version-line"><span id="updateCurrentVersion">V20.1.15</span><i class="fa-solid fa-arrow-right"></i><span id="updateLatestVersion">V20.1.15</span></div><div class="update-changelog" id="updateChangelog">Peningkatan stabilitas dan tampilan.</div><div class="update-actions"><button class="update-action update-later" onclick="dismissAppUpdate()">Nanti</button><button class="update-action update-now" onclick="applyAppUpdate()"><i class="fa-solid fa-bolt"></i> Perbarui Sekarang</button></div></div></div>
+    <div class="update-modal-backdrop" id="updateModal"><div class="update-sheet"><div class="update-icon"><i class="fa-solid fa-cloud-arrow-down"></i></div><h2>Versi baru tersedia</h2><p>Pembaruan aplikasi sudah siap. Proses ini akan membersihkan cache antarmuka lama tanpa menghapus akun, bookmark, atau riwayat Anda.</p><div class="update-version-line"><span id="updateCurrentVersion">V20.1.16</span><i class="fa-solid fa-arrow-right"></i><span id="updateLatestVersion">V20.1.16</span></div><div class="update-changelog" id="updateChangelog">Peningkatan stabilitas dan tampilan.</div><div class="update-actions"><button class="update-action update-later" onclick="dismissAppUpdate()">Nanti</button><button class="update-action update-now" onclick="applyAppUpdate()"><i class="fa-solid fa-bolt"></i> Perbarui Sekarang</button></div></div></div>
 
     <div class="home-action-backdrop" id="requestContentModal" role="dialog" aria-modal="true" aria-labelledby="requestContentTitle" onclick="if(event.target===this)closeRequestModal()">
         <div class="home-action-sheet">
@@ -1556,7 +1558,7 @@
         const app = initializeApp(firebaseConfig);
         const db = getFirestore(app);
         const auth = getAuth(app);
-        const APP_VERSION = '20.1.15';
+        const APP_VERSION = '20.1.16';
         const ADMIN_UID = 'dWUWpKAWQRRxMOzjzaOA3zXWZLp2';
 
         window.comicsData = {};

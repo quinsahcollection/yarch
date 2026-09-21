@@ -209,6 +209,9 @@
         .episode-thumbnail img { width:100%; height:100%; display:block; object-fit:cover; }
         .episode-thumbnail::after { content:'\f04b'; position:absolute; inset:0; display:grid; place-items:center; color:#fff; background:linear-gradient(180deg,transparent,rgba(8,10,20,.34)); font-family:'Font Awesome 6 Free'; font-size:10px; font-weight:900; text-shadow:0 2px 5px rgba(0,0,0,.45); }
         .episode-thumbnail-label { position:absolute; left:4px; bottom:3px; z-index:2; padding:2px 4px; border-radius:5px; color:#fff; background:rgba(13,16,30,.76); font-size:6.5px; font-weight:850; }
+        .episode-thumbnail.comic-thumbnail::after { content:''; background:linear-gradient(180deg,transparent 48%,rgba(8,10,20,.22)); }
+        .season-card.seasonless-card { overflow:visible; border:0; box-shadow:none; background:transparent; }
+        .season-card.seasonless-card .season-episodes { padding:0; background:transparent; }
         .season-card .chapter-info { flex:1; min-width:0; }
         .season-card .chapter-title { display:block; padding-right:92px; overflow:visible; text-overflow:clip; white-space:normal; overflow-wrap:anywhere; word-break:normal; font-size:13px; font-weight:750; line-height:1.45; }
         .season-card .chapter-date { display:flex; align-items:center; flex-wrap:nowrap; gap:0; margin-top:5px; max-width:100%; overflow:hidden; white-space:nowrap; font-size:10px; line-height:1.35; letter-spacing:-.1px; }
@@ -1444,7 +1447,7 @@
                     <ul class="user-menu-list"><li class="install-app-item" id="installAppUser" hidden onclick="installApp()"><div class="left-info"><i class="fa-solid fa-mobile-screen-button"></i> Pasang Aplikasi</div><i class="fa-solid fa-download"></i></li><li onclick="switchNav('bookmark')"><div class="left-info"><i class="fa-solid fa-layer-group"></i> Kelola Koleksi Saya</div><i class="fa-solid fa-chevron-right"></i></li><li class="logout-item" onclick="doLogout()"><div class="left-info"><i class="fa-solid fa-right-from-bracket"></i> Keluar dari Akun</div><i class="fa-solid fa-chevron-right"></i></li></ul>
                 </div>
             </div>
-            <div class="app-version-card"><div><strong>Versi Aplikasi</strong><span id="currentVersionLabel">V20.1.12 • Memeriksa pembaruan...</span></div><button class="version-check-btn" onclick="checkAppConfiguration(true)"><i class="fa-solid fa-rotate"></i> Periksa</button></div>
+            <div class="app-version-card"><div><strong>Versi Aplikasi</strong><span id="currentVersionLabel">V20.1.13 • Memeriksa pembaruan...</span></div><button class="version-check-btn" onclick="checkAppConfiguration(true)"><i class="fa-solid fa-rotate"></i> Periksa</button></div>
         </div>
 
         <!-- ================= BOTTOM NAVIGATION (DITAMBAHKAN DISCOVERY) ================= -->
@@ -1488,7 +1491,7 @@
             <button class="account-menu-item danger" id="accountMenuLogout" type="button" onclick="closeAccountMenu();doLogout()"><i class="fa-solid fa-right-from-bracket"></i><span>Keluar dari Akun</span><i class="fa-solid fa-chevron-right"></i></button>
         </aside>
     </div>
-    <div class="update-modal-backdrop" id="updateModal"><div class="update-sheet"><div class="update-icon"><i class="fa-solid fa-cloud-arrow-down"></i></div><h2>Versi baru tersedia</h2><p>Pembaruan aplikasi sudah siap. Proses ini akan membersihkan cache antarmuka lama tanpa menghapus akun, bookmark, atau riwayat Anda.</p><div class="update-version-line"><span id="updateCurrentVersion">V20.1.12</span><i class="fa-solid fa-arrow-right"></i><span id="updateLatestVersion">V20.1.12</span></div><div class="update-changelog" id="updateChangelog">Peningkatan stabilitas dan tampilan.</div><div class="update-actions"><button class="update-action update-later" onclick="dismissAppUpdate()">Nanti</button><button class="update-action update-now" onclick="applyAppUpdate()"><i class="fa-solid fa-bolt"></i> Perbarui Sekarang</button></div></div></div>
+    <div class="update-modal-backdrop" id="updateModal"><div class="update-sheet"><div class="update-icon"><i class="fa-solid fa-cloud-arrow-down"></i></div><h2>Versi baru tersedia</h2><p>Pembaruan aplikasi sudah siap. Proses ini akan membersihkan cache antarmuka lama tanpa menghapus akun, bookmark, atau riwayat Anda.</p><div class="update-version-line"><span id="updateCurrentVersion">V20.1.13</span><i class="fa-solid fa-arrow-right"></i><span id="updateLatestVersion">V20.1.13</span></div><div class="update-changelog" id="updateChangelog">Peningkatan stabilitas dan tampilan.</div><div class="update-actions"><button class="update-action update-later" onclick="dismissAppUpdate()">Nanti</button><button class="update-action update-now" onclick="applyAppUpdate()"><i class="fa-solid fa-bolt"></i> Perbarui Sekarang</button></div></div></div>
 
     <div class="home-action-backdrop" id="requestContentModal" role="dialog" aria-modal="true" aria-labelledby="requestContentTitle" onclick="if(event.target===this)closeRequestModal()">
         <div class="home-action-sheet">
@@ -1553,7 +1556,7 @@
         const app = initializeApp(firebaseConfig);
         const db = getFirestore(app);
         const auth = getAuth(app);
-        const APP_VERSION = '20.1.12';
+        const APP_VERSION = '20.1.13';
         const ADMIN_UID = 'dWUWpKAWQRRxMOzjzaOA3zXWZLp2';
 
         window.comicsData = {};
@@ -3684,16 +3687,18 @@
                 const totalParts = isVideo
                     ? Number(data.totalEpisodes || data.totalParts || 0)
                     : Number(data.totalChapters || data.totalParts || 0);
-                const totalSeasons = Math.max(1, Number(data.totalSeasons || 1));
+                const totalSeasons = Math.max(0, Number(data.totalSeasons ?? 1));
                 const seasonTotals = data.seasonTotals || {};
-                document.getElementById('detailTotalSeasons').innerText = `${totalSeasons} Season`;
+                document.getElementById('detailTotalSeasons').innerText = totalSeasons > 0 ? `${totalSeasons} Season` : 'Tanpa Season';
                 document.getElementById('lblDetailTotalParts').innerText = `Total ${isVideo ? 'Episode' : 'Chapter'} per Season`;
-                const seasonLines = Array.from({length:totalSeasons}, (_,i) => {
+                const seasonLines = totalSeasons === 0
+                    ? [`${totalParts.toLocaleString('id-ID')} ${isVideo ? 'Episode' : 'Chapter'}`]
+                    : Array.from({length:totalSeasons}, (_,i) => {
                     const count = Number(seasonTotals[i+1] || seasonTotals[String(i+1)] || (totalSeasons === 1 ? totalParts : 0));
                     return count > 0
                         ? `Season ${i+1}: ${count.toLocaleString('id-ID')} ${isVideo ? 'Episode' : 'Chapter'}`
                         : `Season ${i+1}: Belum ditentukan`;
-                });
+                    });
                 document.getElementById('detailTotalParts').innerText = seasonLines.join(' • ');
                 
                 if (isVideo) {
@@ -3774,6 +3779,7 @@
             const actionText = isVideo ? 'Tonton' : 'Baca';
             const actionClass = isVideo ? 'chapter-action tonton' : 'chapter-action';
             const chapterPrefix = isVideo ? 'Episode' : 'Chapter';
+            const usesSeasons = Number(comicRecord.totalSeasons ?? 1) > 0;
 
             try {
                 const chaptersRef = collection(db, "comics", comicId, "chapters");
@@ -3781,10 +3787,10 @@
                 const snapshot = await getDocs(q);
                 
                 let chapterHTML = '';
-                const chapterDocs = snapshot.docs.map(item => ({id:item.id, ...item.data()})).sort((a,b) => (Number(b.seasonNumber||1)-Number(a.seasonNumber||1)) || (Number(b.chapterNumber||0)-Number(a.chapterNumber||0)));
+                const chapterDocs = snapshot.docs.map(item => ({id:item.id, ...item.data()})).sort((a,b) => (Number(b.seasonNumber ?? 1)-Number(a.seasonNumber ?? 1)) || (Number(b.chapterNumber||0)-Number(a.chapterNumber||0)));
                 const groupedSeasons = new Map();
                 chapterDocs.forEach(ch => {
-                    const season = Number(ch.seasonNumber || 1);
+                    const season = usesSeasons ? Number(ch.seasonNumber ?? 1) : 0;
                     if (!groupedSeasons.has(season)) groupedSeasons.set(season, []);
                     groupedSeasons.get(season).push(ch);
                 });
@@ -3809,11 +3815,13 @@
                         const readClass = isChapterRead(comicId, ch.id) ? 'is-read' : '';
                         const shortPrefix = fullMovie ? '<i class="fa-solid fa-film"></i>' : `${isVideo ? 'E' : 'C'}${ch.chapterNumber}`;
                         const firstChapterImage = Array.isArray(ch.images) ? ch.images.find(url => !/\.(mp4|webm|ogv|ogg|mov|m4v|mkv)(?:$|[?#])/i.test(String(url))) : '';
-                        const episodeThumbnailUrl = safeMediaUrl(ch.thumbnailUrl || ch.posterUrl || firstChapterImage || comicRecord.coverUrl || '');
-                        const leadingVisual = isVideo && episodeThumbnailUrl ? `<div class="episode-thumbnail"><img src="${episodeThumbnailUrl}" loading="lazy" decoding="async" alt="Thumbnail ${safeAttr(titleDisplay)}"><span class="episode-thumbnail-label">${fullMovie ? 'MOVIE' : `E${safeText(ch.chapterNumber)}`}</span></div>` : `<div class="episode-index">${shortPrefix}</div>`;
+                        const episodeThumbnailUrl = safeMediaUrl(isVideo ? (ch.thumbnailUrl || ch.posterUrl || firstChapterImage || comicRecord.coverUrl || '') : (ch.thumbnailUrl || ch.posterUrl || ''));
+                        const leadingVisual = episodeThumbnailUrl ? `<div class="episode-thumbnail ${isVideo ? '' : 'comic-thumbnail'}"><img src="${episodeThumbnailUrl}" loading="lazy" decoding="async" alt="Thumbnail ${safeAttr(titleDisplay)}"><span class="episode-thumbnail-label">${fullMovie ? 'MOVIE' : `${isVideo ? 'E' : 'C'}${safeText(ch.chapterNumber)}`}</span></div>` : `<div class="episode-index">${shortPrefix}</div>`;
                         return `<div class="chapter-item ${readClass}" onclick="handleMediaOpen('${safeAttr(comicId)}','${safeAttr(ch.id)}','${safeAttr(ch.chapterNumber)}')">${leadingVisual}<div class="chapter-info"><span class="chapter-title" data-read-label="${isVideo ? 'Sudah ditonton' : 'Sudah dibaca'}">${safeText(titleDisplay)}</span><span class="chapter-date"><span><i class="fa-regular fa-calendar"></i> ${safeText(date)}</span>${mediaMeta}${languageMeta}</span></div><div class="${actionClass}"><i class="fa-solid ${isVideo ? 'fa-play' : 'fa-book-open'}"></i> ${actionText}</div></div>`;
                     }).join('');
-                    chapterHTML += `<section class="season-card ${seasonIndex === 0 ? '' : 'collapsed'}"><button type="button" class="season-header" onclick="toggleSeasonCard(this)" aria-expanded="${seasonIndex === 0 ? 'true' : 'false'}"><span class="season-number">${seasonNumber}</span><span class="season-heading"><strong>Season ${seasonNumber}</strong><small>${episodes.length} ${isVideo ? 'episode' : 'chapter'} tersedia${completed ? ` • ${completed} selesai` : ''}</small></span><span class="season-progress">${episodes.length}${planned ? ` / ${planned}` : ''}</span><span class="season-chevron"><i class="fa-solid fa-chevron-down"></i></span></button><div class="season-episodes">${episodeHtml}</div></section>`;
+                    chapterHTML += usesSeasons
+                        ? `<section class="season-card ${seasonIndex === 0 ? '' : 'collapsed'}"><button type="button" class="season-header" onclick="toggleSeasonCard(this)" aria-expanded="${seasonIndex === 0 ? 'true' : 'false'}"><span class="season-number">${seasonNumber}</span><span class="season-heading"><strong>Season ${seasonNumber}</strong><small>${episodes.length} ${isVideo ? 'episode' : 'chapter'} tersedia${completed ? ` • ${completed} selesai` : ''}</small></span><span class="season-progress">${episodes.length}${planned ? ` / ${planned}` : ''}</span><span class="season-chevron"><i class="fa-solid fa-chevron-down"></i></span></button><div class="season-episodes">${episodeHtml}</div></section>`
+                        : `<section class="season-card seasonless-card"><div class="season-episodes">${episodeHtml}</div></section>`;
                 });
                 const total = chapterDocs.length;
                 if(total > 0) {
@@ -3862,15 +3870,18 @@
             if(!picker)return;
             const comic=window.comicsData[window.currentActiveComicId]||{};
             const isVideo=mode==='player'||isVideoContent(comic);
-            const rows=(window.currentChapterSequence||[]).map(ch=>{
+            const usesSeasons=Number(comic.totalSeasons ?? 1)>0;
+            const ordered=[...(window.currentChapterSequence||[])].sort((a,b)=>(Number(b.seasonNumber ?? 1)-Number(a.seasonNumber ?? 1))||(Number(b.chapterNumber||0)-Number(a.chapterNumber||0)));
+            const rows=ordered.map(ch=>{
                 const active=ch.id===window.currentActiveChapterId;
                 const mediaLabel=getMediaPartLabel(comic,ch,window.currentChapterSequence.length);
                 const extra=ch.title&&!isFullMovieChapter(comic,ch,window.currentChapterSequence.length)?` — ${ch.title}`:'';
-                const season=Math.max(1,Number(ch.seasonNumber||1));
+                const season=Math.max(1,Number(ch.seasonNumber ?? 1));
                 const handler=isVideo
                     ? `openPlayer('${safeAttr(window.currentActiveComicId)}','${safeAttr(ch.id)}','${safeAttr(ch.chapterNumber)}')`
                     : `openReader('${safeAttr(window.currentActiveComicId)}','${safeAttr(ch.id)}','${safeAttr(ch.chapterNumber)}',1)`;
-                return `<button class="media-picker-item ${active?'active':''}" onclick="${handler}"><span>${safeText(mediaLabel+extra)}</span><small>Season ${season}${active?' • Aktif':''}</small></button>`;
+                const subLabel=usesSeasons?`Season ${season}${active?' • Aktif':''}`:(active?'Aktif':'');
+                return `<button class="media-picker-item ${active?'active':''}" onclick="${handler}"><span>${safeText(mediaLabel+extra)}</span>${subLabel?`<small>${subLabel}</small>`:''}</button>`;
             }).join('');
             picker.innerHTML=`<div class="media-picker-head"><span><i class="fa-solid fa-list"></i> Pilih ${isVideo?'episode':'chapter'}</span><span>${window.currentChapterSequence.length} tersedia</span></div><div class="media-picker-list">${rows||'<div class="loading-text" style="color:#aaa">Belum ada daftar.</div>'}</div>`;
         }

@@ -1447,7 +1447,7 @@
                     <ul class="user-menu-list"><li class="install-app-item" id="installAppUser" hidden onclick="installApp()"><div class="left-info"><i class="fa-solid fa-mobile-screen-button"></i> Pasang Aplikasi</div><i class="fa-solid fa-download"></i></li><li onclick="switchNav('bookmark')"><div class="left-info"><i class="fa-solid fa-layer-group"></i> Kelola Koleksi Saya</div><i class="fa-solid fa-chevron-right"></i></li><li class="logout-item" onclick="doLogout()"><div class="left-info"><i class="fa-solid fa-right-from-bracket"></i> Keluar dari Akun</div><i class="fa-solid fa-chevron-right"></i></li></ul>
                 </div>
             </div>
-            <div class="app-version-card"><div><strong>Versi Aplikasi</strong><span id="currentVersionLabel">V20.1.13 • Memeriksa pembaruan...</span></div><button class="version-check-btn" onclick="checkAppConfiguration(true)"><i class="fa-solid fa-rotate"></i> Periksa</button></div>
+            <div class="app-version-card"><div><strong>Versi Aplikasi</strong><span id="currentVersionLabel">V20.1.14 • Memeriksa pembaruan...</span></div><button class="version-check-btn" onclick="checkAppConfiguration(true)"><i class="fa-solid fa-rotate"></i> Periksa</button></div>
         </div>
 
         <!-- ================= BOTTOM NAVIGATION (DITAMBAHKAN DISCOVERY) ================= -->
@@ -1491,7 +1491,7 @@
             <button class="account-menu-item danger" id="accountMenuLogout" type="button" onclick="closeAccountMenu();doLogout()"><i class="fa-solid fa-right-from-bracket"></i><span>Keluar dari Akun</span><i class="fa-solid fa-chevron-right"></i></button>
         </aside>
     </div>
-    <div class="update-modal-backdrop" id="updateModal"><div class="update-sheet"><div class="update-icon"><i class="fa-solid fa-cloud-arrow-down"></i></div><h2>Versi baru tersedia</h2><p>Pembaruan aplikasi sudah siap. Proses ini akan membersihkan cache antarmuka lama tanpa menghapus akun, bookmark, atau riwayat Anda.</p><div class="update-version-line"><span id="updateCurrentVersion">V20.1.13</span><i class="fa-solid fa-arrow-right"></i><span id="updateLatestVersion">V20.1.13</span></div><div class="update-changelog" id="updateChangelog">Peningkatan stabilitas dan tampilan.</div><div class="update-actions"><button class="update-action update-later" onclick="dismissAppUpdate()">Nanti</button><button class="update-action update-now" onclick="applyAppUpdate()"><i class="fa-solid fa-bolt"></i> Perbarui Sekarang</button></div></div></div>
+    <div class="update-modal-backdrop" id="updateModal"><div class="update-sheet"><div class="update-icon"><i class="fa-solid fa-cloud-arrow-down"></i></div><h2>Versi baru tersedia</h2><p>Pembaruan aplikasi sudah siap. Proses ini akan membersihkan cache antarmuka lama tanpa menghapus akun, bookmark, atau riwayat Anda.</p><div class="update-version-line"><span id="updateCurrentVersion">V20.1.14</span><i class="fa-solid fa-arrow-right"></i><span id="updateLatestVersion">V20.1.14</span></div><div class="update-changelog" id="updateChangelog">Peningkatan stabilitas dan tampilan.</div><div class="update-actions"><button class="update-action update-later" onclick="dismissAppUpdate()">Nanti</button><button class="update-action update-now" onclick="applyAppUpdate()"><i class="fa-solid fa-bolt"></i> Perbarui Sekarang</button></div></div></div>
 
     <div class="home-action-backdrop" id="requestContentModal" role="dialog" aria-modal="true" aria-labelledby="requestContentTitle" onclick="if(event.target===this)closeRequestModal()">
         <div class="home-action-sheet">
@@ -1556,7 +1556,7 @@
         const app = initializeApp(firebaseConfig);
         const db = getFirestore(app);
         const auth = getAuth(app);
-        const APP_VERSION = '20.1.13';
+        const APP_VERSION = '20.1.14';
         const ADMIN_UID = 'dWUWpKAWQRRxMOzjzaOA3zXWZLp2';
 
         window.comicsData = {};

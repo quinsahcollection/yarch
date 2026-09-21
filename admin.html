@@ -2342,6 +2342,7 @@
                         // Deteksi Tipe Media untuk Thumbnail
                         const isVideo = isCloudVideo(url);
                         const isThumbnail = !isVideo && window.galleryState.chapterThumbnailUrl === url;
+                        const hasVideoThumbnail = isVideo && Boolean(window.galleryState.chapterThumbnailUrl);
                         const mediaHtml = isVideo 
                             ? `<video src="${cleanUrl}" preload="metadata" playsinline muted></video><div class="video-indicator"><i class="fa-solid fa-play"></i> Video</div>`
                             : `<img src="${cleanUrl}" loading="lazy" style="width:100%; height:100%; object-fit:cover;">`;
@@ -2351,7 +2352,7 @@
                                 <div class="media-thumb ${isVideo ? 'is-video' : 'is-image'}" onclick="window.toggleSelectGalleryItem('${index}', decodeURIComponent('${encodedUrl}'))" title="Pilih File">
                                     <div class="check-circle" id="badge-${index}">${orderIndex}</div>
                                     ${mediaHtml}
-                                    ${isThumbnail ? '<div class="thumbnail-badge"><i class="fa-solid fa-image"></i> Thumbnail</div>' : ''}
+                                    ${isThumbnail || hasVideoThumbnail ? '<div class="thumbnail-badge"><i class="fa-solid fa-image"></i> Thumbnail aktif</div>' : ''}
                                 </div>
                                 <div class="media-info">Media ${index + 1}</div>
                                 <div class="media-actions">
@@ -2359,8 +2360,8 @@
                                         ${isSelected ? '<i class="fa-solid fa-check"></i> Dipilih' : 'Pilih'}
                                     </button>
                                     <button type="button" class="btn-icon-outline" onclick="event.stopPropagation(); window.openLightboxPreview(decodeURIComponent('${encodedUrl}'))" title="Preview media" aria-label="Preview media"><i class="fa-solid fa-eye"></i></button>
-                                    ${!isVideo ? `<button type="button" class="btn-icon-outline" onclick="event.stopPropagation(); window.setChapterThumbnail(decodeURIComponent('${encodedUrl}'))" title="Jadikan thumbnail chapter" aria-label="Jadikan thumbnail chapter"><i class="fa-solid fa-image"></i></button>` : ''}
-                                    ${isVideo ? `<button type="button" class="btn-icon-outline" onclick="event.stopPropagation(); window.downloadGalleryVideo(decodeURIComponent('${encodedUrl}'), ${index})" title="Download video" aria-label="Download video"><i class="fa-solid fa-download"></i></button>` : ''}
+                                    ${!isVideo ? `<button type="button" class="btn-icon-outline" onclick="event.stopPropagation(); window.setChapterThumbnail(decodeURIComponent('${encodedUrl}'))" title="Jadikan thumbnail chapter" aria-label="Jadikan thumbnail chapter"><i class="fa-solid fa-image"></i></button>` : `<button type="button" class="btn-icon-outline" onclick="event.stopPropagation(); window.chooseVideoThumbnail(decodeURIComponent('${encodedUrl}'))" title="Pilih frame thumbnail video" aria-label="Pilih frame thumbnail video"><i class="fa-solid fa-image"></i></button>`}
+                                    <button type="button" class="btn-icon-outline" onclick="event.stopPropagation(); window.downloadGalleryMedia(decodeURIComponent('${encodedUrl}'), ${index})" title="Download media" aria-label="Download media"><i class="fa-solid fa-download"></i></button>
                                     <button class="btn-icon-outline text-danger" onclick="window.deleteImageFromChapter('${index}', decodeURIComponent('${encodedUrl}'))" title="Hapus"><i class="fa-solid fa-trash-can"></i></button>
                                 </div>
                             </div>
@@ -3216,16 +3217,19 @@
             document.getElementById('lightboxModal').classList.add('show');
         }
 
-        window.downloadGalleryVideo = function(url, index = 0) {
+        window.downloadGalleryMedia = function(url, index = 0) {
             try {
                 const mediaUrl = new URL(url, window.location.href);
-                const pathName = decodeURIComponent(mediaUrl.pathname.split('/').pop() || 'video.mp4');
-                const extensionMatch = pathName.match(/\.(mp4|webm|ogv|ogg|mov|m4v|mkv)$/i);
-                const extension = extensionMatch ? extensionMatch[0].toLowerCase() : '.mp4';
+                const videoMode = isCloudVideo(url);
+                const pathName = decodeURIComponent(mediaUrl.pathname.split('/').pop() || (videoMode ? 'video.mp4' : 'halaman.jpg'));
+                const extensionMatch = pathName.match(/\.(mp4|webm|ogv|ogg|mov|m4v|mkv|jpe?g|png|webp|gif|avif)$/i);
+                const extension = extensionMatch ? extensionMatch[0].toLowerCase() : (videoMode ? '.mp4' : '.jpg');
                 const safePart = value => String(value || '').normalize('NFKD').replace(/[\u0300-\u036f]/g, '').replace(/[^a-zA-Z0-9]+/g, '-').replace(/^-+|-+$/g, '');
                 const comicName = safePart(window.galleryState?.comicName || 'Konten');
-                const folderName = safePart(window.galleryState?.chapterFolderName || 'Season-1-Episode');
-                const suffix = (window.galleryState?.currentChapterImages || []).filter(isCloudVideo).length > 1 ? `-Part-${Number(index) + 1}` : '';
+                const folderName = safePart(window.galleryState?.chapterFolderName || (videoMode ? 'Season-1-Episode' : 'Chapter'));
+                const suffix = videoMode
+                    ? ((window.galleryState?.currentChapterImages || []).filter(isCloudVideo).length > 1 ? `-Part-${Number(index) + 1}` : '')
+                    : `-Halaman-${Number(index) + 1}`;
                 const fileName = `${comicName}-${folderName}${suffix}${extension}`;
                 mediaUrl.searchParams.set('download', fileName);
                 const anchor = document.createElement('a');
@@ -3236,7 +3240,75 @@
                 anchor.click();
                 anchor.remove();
             } catch (error) {
-                Swal.fire('Download gagal', error.message || 'Alamat video tidak valid.', 'error');
+                Swal.fire('Download gagal', error.message || 'Alamat media tidak valid.', 'error');
+            }
+        };
+        window.downloadGalleryVideo = window.downloadGalleryMedia;
+
+        window.chooseVideoThumbnail = async function(url) {
+            const comicId = window.galleryState.comicId || localStorage.getItem('activeComicId');
+            const chapterId = window.galleryState.chapterFolderId || localStorage.getItem('activeChapterFolderId');
+            const cleanUrl = window.safeAdminUrl ? window.safeAdminUrl(url) : url;
+            if (!comicId || !chapterId || !cleanUrl) {
+                Swal.fire('Thumbnail Gagal', 'Folder atau alamat video tidak valid.', 'warning');
+                return;
+            }
+
+            const result = await Swal.fire({
+                title: 'Pilih Frame Thumbnail',
+                width: 720,
+                html: `<div style="text-align:left"><video id="thumbnailFrameVideo" src="${cleanUrl}" crossorigin="anonymous" controls playsinline preload="metadata" style="display:block;width:100%;max-height:52vh;background:#000;border-radius:12px"></video><div style="display:flex;align-items:center;gap:10px;margin-top:14px"><input id="thumbnailFrameRange" type="range" min="0" max="1" step="0.1" value="0" style="flex:1"><strong id="thumbnailFrameTime" style="min-width:92px;text-align:right">0:00 / 0:00</strong></div><p style="margin:9px 0 0;color:#64748b;font-size:12px">Putar atau geser sampai gambar yang diinginkan terlihat, lalu tekan Gunakan Frame Ini.</p></div>`,
+                showCancelButton: true,
+                confirmButtonText: '<i class="fa-solid fa-camera"></i> Gunakan Frame Ini',
+                cancelButtonText: 'Batal',
+                confirmButtonColor: '#7c3aed',
+                didOpen: () => {
+                    const video = document.getElementById('thumbnailFrameVideo');
+                    const range = document.getElementById('thumbnailFrameRange');
+                    const time = document.getElementById('thumbnailFrameTime');
+                    const fmt = value => `${Math.floor((value || 0) / 60)}:${String(Math.floor(value || 0) % 60).padStart(2,'0')}`;
+                    const sync = () => { range.value = String(video.currentTime || 0); time.textContent = `${fmt(video.currentTime)} / ${fmt(video.duration)}`; };
+                    video.addEventListener('loadedmetadata', () => { range.max = String(Math.max(0.1, video.duration || 1)); sync(); });
+                    video.addEventListener('timeupdate', sync);
+                    range.addEventListener('input', () => { video.currentTime = Number(range.value || 0); sync(); });
+                },
+                preConfirm: async () => {
+                    const video = document.getElementById('thumbnailFrameVideo');
+                    if (!video || !video.videoWidth || !video.videoHeight) {
+                        Swal.showValidationMessage('Video belum siap. Tunggu hingga gambarnya tampil.');
+                        return false;
+                    }
+                    try {
+                        const maxWidth = 1280;
+                        const scale = Math.min(1, maxWidth / video.videoWidth);
+                        const canvas = document.createElement('canvas');
+                        canvas.width = Math.max(1, Math.round(video.videoWidth * scale));
+                        canvas.height = Math.max(1, Math.round(video.videoHeight * scale));
+                        canvas.getContext('2d').drawImage(video, 0, 0, canvas.width, canvas.height);
+                        const blob = await new Promise(resolve => canvas.toBlob(resolve, 'image/jpeg', .88));
+                        if (!blob) throw new Error('Frame tidak dapat dibuat.');
+                        const formData = new FormData();
+                        const safeName = String(window.galleryState?.chapterFolderName || 'episode').replace(/[^a-z0-9]+/gi,'-');
+                        formData.append('coverImage', new File([blob], `${safeName}-thumbnail.jpg`, {type:'image/jpeg'}));
+                        const response = await fetch(WORKER_URL, {method:'POST', headers:await getWorkerAuthHeaders(), body:formData});
+                        const data = await response.json().catch(() => ({}));
+                        if (!response.ok || !data.url) throw new Error(data.error || 'Upload thumbnail gagal.');
+                        return data.url;
+                    } catch (error) {
+                        Swal.showValidationMessage(error.name === 'SecurityError' ? 'Frame tidak dapat diambil karena izin CORS video. Pastikan domain R2 mengizinkan domain aplikasi.' : error.message);
+                        return false;
+                    }
+                }
+            });
+
+            if (!result.isConfirmed || !result.value) return;
+            try {
+                await updateDoc(doc(db, 'comics', comicId, 'chapters', chapterId), {thumbnailUrl:result.value, updatedAt:serverTimestamp()});
+                window.galleryState.chapterThumbnailUrl = result.value;
+                window.loadCloudGallery();
+                Swal.fire({title:'Thumbnail tersimpan',text:'Frame video akan tampil pada daftar isi.',icon:'success',timer:1600,showConfirmButton:false});
+            } catch (error) {
+                Swal.fire('Thumbnail Gagal', error.message || 'URL thumbnail tidak dapat disimpan.', 'error');
             }
         };
 

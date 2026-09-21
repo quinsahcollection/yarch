@@ -218,6 +218,9 @@
         .media-type-hint { width: 100%; color: var(--text-muted); font-size: 11px; line-height: 1.45; }
         .media-thumb.is-video { padding-top: 56.25%; background: #080b12; }
         .media-thumb.is-video video { object-fit: contain; object-position: center; }
+        .genre-list label { position:relative; }
+        .genre-delete-btn { border:0; background:transparent; color:#ef4444; width:20px; height:20px; border-radius:50%; cursor:pointer; display:inline-flex; align-items:center; justify-content:center; margin-left:4px; font-size:10px; }
+        .genre-delete-btn:hover { background:#fee2e2; }
         .empty-gallery { grid-column: 1/-1; min-height: 240px; padding: 40px 20px; display:flex; flex-direction:column; align-items:center; justify-content:center; text-align:center; color:var(--text-muted); line-height:1.55; }
         
         .check-circle { position: absolute; top: 10px; left: 10px; width: 26px; height: 26px; border-radius: 50%; border: 2px solid var(--white); background: rgba(0,0,0,0.5); display: flex; align-items: center; justify-content: center; color: transparent; font-weight: bold; font-size: 12px; transition: 0.2s; z-index: 5; box-shadow: 0 2px 4px rgba(0,0,0,0.2); }
@@ -1030,15 +1033,19 @@
             const container = document.getElementById(containerId);
             if (!container || !Array.isArray(values)) return;
             values.map(value => String(value || '').trim()).filter(Boolean).slice(0, 20).forEach(value => {
-                let checkbox = [...container.querySelectorAll(`.${checkboxClass}`)].find(item => item.value.toLowerCase() === value.toLowerCase());
+                const targetKey = checkboxClass === 'genre-check' ? normalizeGenreKey(value) : normalizeMasterKey(value);
+                let checkbox = [...container.querySelectorAll(`.${checkboxClass}`)].find(item => {
+                    const itemKey = checkboxClass === 'genre-check' ? normalizeGenreKey(item.value) : normalizeMasterKey(item.value);
+                    return itemKey === targetKey;
+                });
                 if (!checkbox) {
                     const label = document.createElement('label');
                     checkbox = document.createElement('input');
                     checkbox.type = 'checkbox';
-                    checkbox.value = value;
+                    checkbox.value = checkboxClass === 'genre-check' ? canonicalGenreName(value) : value;
                     checkbox.className = checkboxClass;
                     checkbox.dataset.aiGenerated = 'true';
-                    label.append(checkbox, document.createTextNode(` ${value}`));
+                    label.append(checkbox, document.createTextNode(` ${checkbox.value}`));
                     container.appendChild(label);
                 }
                 checkbox.checked = true;
@@ -1192,6 +1199,77 @@
            LOGIKA MASTER DATA (TERMASUK QUICK ADD)
            ========================================= */
         const masterDocRef = doc(db, "settings", "master_data");
+
+        function normalizeMasterKey(value) {
+            return String(value || '').normalize('NFKD').replace(/[\u0300-\u036f]/g, '').trim().toLowerCase().replace(/[^a-z0-9]+/g, '');
+        }
+
+        const GENRE_ALIASES = {
+            comedy:'Comedy', komedi:'Comedy', romance:'Romance', romansa:'Romance', romantis:'Romance',
+            action:'Action', aksi:'Action', adventure:'Adventure', petualangan:'Adventure',
+            fantasy:'Fantasy', fantasi:'Fantasy', mystery:'Mystery', misteri:'Mystery',
+            supernatural:'Supernatural', supranatural:'Supernatural', animation:'Animation', animasi:'Animation',
+            japanese:'Japanese', jepang:'Japanese', horror:'Horror', horor:'Horror',
+            psychological:'Psychological', psikologis:'Psychological', school:'School', sekolah:'School',
+            military:'Military', militer:'Military', historical:'Historical', sejarah:'Historical',
+            superhero:'Super Hero', pahlawansuper:'Super Hero', martialarts:'Martial Arts', senibeladiri:'Martial Arts',
+            sciencefiction:'Sci-Fi', scifi:'Sci-Fi', technothriller:'Techno-thriller', teknothriller:'Techno-thriller',
+            sliceoflife:'Slice of life', kehidupanseharihari:'Slice of life', fullcolor:'Full color', berwarna:'Full color'
+        };
+
+        function canonicalGenreName(value) {
+            const clean = String(value || '').trim();
+            return GENRE_ALIASES[normalizeMasterKey(clean)] || clean;
+        }
+
+        function normalizeGenreKey(value) {
+            return normalizeMasterKey(canonicalGenreName(value));
+        }
+
+        function uniqueMasterValues(values, field) {
+            const output = [];
+            const keys = new Set();
+            for (const raw of Array.isArray(values) ? values : []) {
+                const value = field === 'genres' ? canonicalGenreName(raw) : String(raw || '').trim();
+                const key = field === 'genres' ? normalizeGenreKey(value) : normalizeMasterKey(value);
+                if (!value || !key || keys.has(key)) continue;
+                keys.add(key);
+                output.push(value);
+            }
+            return output;
+        }
+
+        function renderGenreCheckboxes(values) {
+            const container = document.getElementById('genreCheckboxContainer');
+            if (!container) return;
+            const genres = uniqueMasterValues(values, 'genres');
+            container.innerHTML = '';
+            if (!genres.length) {
+                container.innerHTML = '<span class="help-text">Belum ada data genre.</span>';
+                return;
+            }
+            genres.forEach(genre => {
+                const label = document.createElement('label');
+                const checkbox = document.createElement('input');
+                checkbox.type = 'checkbox';
+                checkbox.value = genre;
+                checkbox.className = 'genre-check';
+                const deleteButton = document.createElement('button');
+                deleteButton.type = 'button';
+                deleteButton.className = 'genre-delete-btn';
+                deleteButton.title = `Hapus genre ${genre}`;
+                deleteButton.setAttribute('aria-label', `Hapus genre ${genre}`);
+                deleteButton.innerHTML = '<i class="fa-solid fa-xmark"></i>';
+                deleteButton.addEventListener('click', event => {
+                    event.preventDefault();
+                    event.stopPropagation();
+                    window.removeMasterDataFirebase('genres', genre);
+                });
+                label.append(checkbox, document.createTextNode(` ${genre}`), deleteButton);
+                container.appendChild(label);
+            });
+        }
+
         async function initMasterData() {
             try {
                 const snap = await getDoc(masterDocRef);
@@ -1201,6 +1279,11 @@
                 onSnapshot(masterDocRef, (docSnap) => {
                     const data = docSnap.data();
                     if (!data) return;
+                    window.masterDataCache = data;
+                    const normalizedGenres = uniqueMasterValues(data.genres, 'genres');
+                    if (JSON.stringify(normalizedGenres) !== JSON.stringify(data.genres || [])) {
+                        updateDoc(masterDocRef, { genres: normalizedGenres }).catch(error => console.error('Normalisasi genre gagal:', error));
+                    }
 
                     renderMasterList('listAuthor', data.authors, 'authors');
                     renderMasterList('listDirector', data.directors, 'directors');
@@ -1214,11 +1297,7 @@
                     renderDropdown('status', data.statuses, 'Data...');
                     renderDropdown('ageRating', data.ageRatings, 'Data...');
                     
-                    const genreContainer = document.getElementById('genreCheckboxContainer');
-                    genreContainer.innerHTML = '';
-                    if(data.genres && data.genres.length > 0) {
-                        data.genres.forEach(genre => { genreContainer.innerHTML += `<label><input type="checkbox" value="${adminSafe(genre)}" class="genre-check"> ${adminSafe(genre)}</label>`; });
-                    } else { genreContainer.innerHTML = '<span class="help-text">Belum ada data genre.</span>'; }
+                    renderGenreCheckboxes(data.genres);
 
                     const directorContainer = document.getElementById('directorCheckboxContainer');
                     directorContainer.innerHTML = '';
@@ -1252,8 +1331,12 @@
 
         window.addMasterDataFirebase = async function(field, inputId) {
             const inputEl = document.getElementById(inputId);
-            const val = inputEl.value.trim();
+            const val = field === 'genres' ? canonicalGenreName(inputEl.value) : inputEl.value.trim();
             if (val === "") return;
+            const existingValues = window.masterDataCache?.[field] || [];
+            const newKey = field === 'genres' ? normalizeGenreKey(val) : normalizeMasterKey(val);
+            const duplicate = existingValues.find(item => (field === 'genres' ? normalizeGenreKey(item) : normalizeMasterKey(item)) === newKey);
+            if (duplicate) return Swal.fire('Data sudah ada', `“${val}” sama dengan data “${duplicate}” yang sudah tersedia.`, 'info');
             try { await updateDoc(masterDocRef, { [field]: arrayUnion(val) }); inputEl.value = ""; } 
             catch (error) { Swal.fire('Error', error.message, 'error'); }
         };
@@ -1289,7 +1372,14 @@
 
             if (val && val.trim() !== "") {
                 try {
-                    await updateDoc(masterDocRef, { [field]: arrayUnion(val.trim()) });
+                    const entered = field === 'genres' ? canonicalGenreName(val) : val.trim();
+                    const existingValues = window.masterDataCache?.[field] || [];
+                    const newKey = field === 'genres' ? normalizeGenreKey(entered) : normalizeMasterKey(entered);
+                    const duplicate = existingValues.find(item => (field === 'genres' ? normalizeGenreKey(item) : normalizeMasterKey(item)) === newKey);
+                    if (duplicate) {
+                        return Swal.fire('Data sudah ada', `“${entered}” sama dengan data “${duplicate}” yang sudah tersedia.`, 'info');
+                    }
+                    await updateDoc(masterDocRef, { [field]: arrayUnion(entered) });
                     Swal.fire({ title: 'Sukses!', text: `Data berhasil ditambahkan.`, icon: 'success', timer: 1500, showConfirmButton: false });
                 } catch (error) { Swal.fire('Gagal', error.message, 'error'); }
             }
@@ -2262,6 +2352,7 @@
                                         ${isSelected ? '<i class="fa-solid fa-check"></i> Dipilih' : 'Pilih'}
                                     </button>
                                     <button type="button" class="btn-icon-outline" onclick="event.stopPropagation(); window.openLightboxPreview(decodeURIComponent('${encodedUrl}'))" title="Preview media" aria-label="Preview media"><i class="fa-solid fa-eye"></i></button>
+                                    ${isVideo ? `<button type="button" class="btn-icon-outline" onclick="event.stopPropagation(); window.downloadGalleryVideo(decodeURIComponent('${encodedUrl}'), ${index})" title="Download video" aria-label="Download video"><i class="fa-solid fa-download"></i></button>` : ''}
                                     <button class="btn-icon-outline text-danger" onclick="window.deleteImageFromChapter('${index}', decodeURIComponent('${encodedUrl}'))" title="Hapus"><i class="fa-solid fa-trash-can"></i></button>
                                 </div>
                             </div>
@@ -3095,6 +3186,30 @@
             else { container.innerHTML = `<img src="${cleanUrl}" alt="Preview" style="max-width: 100%; max-height: 90vh; border-radius: 8px; box-shadow: 0 10px 40px rgba(0,0,0,0.5); object-fit: contain;">`; }
             document.getElementById('lightboxModal').classList.add('show');
         }
+
+        window.downloadGalleryVideo = function(url, index = 0) {
+            try {
+                const mediaUrl = new URL(url, window.location.href);
+                const pathName = decodeURIComponent(mediaUrl.pathname.split('/').pop() || 'video.mp4');
+                const extensionMatch = pathName.match(/\.(mp4|webm|ogv|ogg|mov|m4v|mkv)$/i);
+                const extension = extensionMatch ? extensionMatch[0].toLowerCase() : '.mp4';
+                const safePart = value => String(value || '').normalize('NFKD').replace(/[\u0300-\u036f]/g, '').replace(/[^a-zA-Z0-9]+/g, '-').replace(/^-+|-+$/g, '');
+                const comicName = safePart(window.galleryState?.comicName || 'Konten');
+                const folderName = safePart(window.galleryState?.chapterFolderName || 'Season-1-Episode');
+                const suffix = (window.galleryState?.currentChapterImages || []).filter(isCloudVideo).length > 1 ? `-Part-${Number(index) + 1}` : '';
+                const fileName = `${comicName}-${folderName}${suffix}${extension}`;
+                mediaUrl.searchParams.set('download', fileName);
+                const anchor = document.createElement('a');
+                anchor.href = mediaUrl.toString();
+                anchor.download = fileName;
+                anchor.rel = 'noopener';
+                document.body.appendChild(anchor);
+                anchor.click();
+                anchor.remove();
+            } catch (error) {
+                Swal.fire('Download gagal', error.message || 'Alamat video tidak valid.', 'error');
+            }
+        };
         window.closeLightboxPreview = function() {
             document.getElementById('lightboxModal').classList.remove('show');
             setTimeout(() => { document.getElementById('lightboxContentArea').innerHTML = ''; }, 300);

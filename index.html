@@ -412,9 +412,9 @@
         .home-welcome-action.contact { color:#15956e; background:#e8f8f2; }
         .home-menu-button { width:43px; height:43px; flex:0 0 43px; display:grid; place-items:center; border:0; border-radius:14px; color:#5e6072; background:#f3f4f8; cursor:pointer; font-size:17px; transition:.2s ease; }
         .home-menu-button:active { transform:scale(.94); }
-        .account-menu-backdrop { position:fixed; inset:0; z-index:12000; display:none; justify-content:flex-end; background:rgba(17,19,35,.48); backdrop-filter:blur(5px); -webkit-backdrop-filter:blur(5px); }
+        .account-menu-backdrop { position:fixed; inset:0; z-index:12000; display:none; justify-content:flex-end; background:rgba(17,19,35,.48); backdrop-filter:blur(5px); -webkit-backdrop-filter:blur(5px); touch-action:none; overscroll-behavior:none; }
         .account-menu-backdrop.show { display:flex; animation:fadeIn .18s ease; }
-        .account-menu-drawer { width:min(86vw,360px); height:100%; overflow:auto; padding:22px 18px calc(28px + env(safe-area-inset-bottom)); background:#fff; box-shadow:-20px 0 50px rgba(24,27,55,.2); animation:accountMenuIn .25s ease both; }
+        .account-menu-drawer { width:min(86vw,360px); height:100%; overflow:auto; padding:22px 18px calc(28px + env(safe-area-inset-bottom)); background:#fff; box-shadow:-20px 0 50px rgba(24,27,55,.2); animation:accountMenuIn .25s ease both; touch-action:pan-y; overscroll-behavior:contain; }
         @keyframes accountMenuIn { from{transform:translateX(100%)} to{transform:translateX(0)} }
         .account-menu-close { margin-left:auto; width:36px; height:36px; display:grid; place-items:center; border:0; border-radius:11px; background:#f0f1f6; color:#6e7283; cursor:pointer; }
         .account-menu-profile { display:flex; align-items:center; gap:12px; padding:17px 4px 19px; }
@@ -434,6 +434,10 @@
         .account-menu-item.danger>i:first-child { color:#d84f62; background:#fff0f2; }
         .app-info-content { color:#666b7c; font-size:11px; line-height:1.7; }
         .app-info-content p+p { margin-top:10px; }
+        .app-info-content h4 { margin:16px 0 4px; color:#292c3c; font-size:12px; }
+        .app-info-content ul { margin:6px 0 0 18px; }
+        .app-info-content li+li { margin-top:5px; }
+        .app-info-date { display:inline-flex; margin-bottom:8px; padding:5px 8px; border-radius:8px; color:#5f58d8; background:#f0efff; font-size:9px; font-weight:800; }
         .slider-container { height:270px; margin:10px 12px 4px; width:calc(100% - 24px); border-radius:22px; box-shadow:0 14px 30px rgba(18,21,40,.2); }
         .slide-bg-blur { filter:blur(20px); opacity:.58; transform:scale(1.04); }
         .slide-img { width:58%; left:auto; right:0; background-size:contain; background-position:right center; background-repeat:no-repeat; }
@@ -709,9 +713,9 @@
         /* Modern confirmation dialog */
         .modern-modal-backdrop { position:fixed; inset:0; z-index:10000; display:none; align-items:center; justify-content:center; padding:22px; background:rgba(13,16,31,.52); backdrop-filter:blur(8px); -webkit-backdrop-filter:blur(8px); }
         .modern-modal-backdrop.show { display:flex; animation:modalFade .2s ease; }
-        .home-action-backdrop { position:fixed; inset:0; z-index:11200; display:none; align-items:flex-end; justify-content:center; padding:16px; background:rgba(13,16,31,.55); backdrop-filter:blur(8px); -webkit-backdrop-filter:blur(8px); }
+        .home-action-backdrop { position:fixed; inset:0; z-index:11200; display:none; align-items:flex-end; justify-content:center; padding:16px; background:rgba(13,16,31,.55); backdrop-filter:blur(8px); -webkit-backdrop-filter:blur(8px); touch-action:none; overscroll-behavior:none; }
         .home-action-backdrop.show { display:flex; }
-        .home-action-sheet { width:100%; max-width:430px; max-height:92vh; overflow:auto; padding:20px; border-radius:24px 24px 18px 18px; background:#fff; box-shadow:0 24px 65px rgba(17,20,39,.25); }
+        .home-action-sheet { width:100%; max-width:430px; max-height:92vh; overflow:auto; padding:20px; border-radius:24px 24px 18px 18px; background:#fff; box-shadow:0 24px 65px rgba(17,20,39,.25); touch-action:pan-y; overscroll-behavior:contain; }
         .home-action-head { display:flex; align-items:flex-start; gap:12px; margin-bottom:17px; }
         .home-action-icon { width:42px; height:42px; flex:0 0 42px; display:grid; place-items:center; border-radius:14px; color:#fff; background:linear-gradient(135deg,#6d5dfc,#5153e8); }
         .home-action-head div:nth-child(2) { min-width:0; flex:1; }
@@ -966,7 +970,7 @@
 
             <main>
                 <div class="home-welcome">
-                    <div class="home-welcome-identity"><img class="home-welcome-avatar" id="homeWelcomeAvatar" alt="Foto profil pengguna"><div class="home-welcome-copy"><span>Selamat datang,</span><strong id="homeWelcomeName">User</strong></div></div>
+                    <div class="home-welcome-identity"><img class="home-welcome-avatar" id="homeWelcomeAvatar" src="data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=" alt="" aria-label="Foto profil pengguna"><div class="home-welcome-copy"><span>Selamat datang,</span><strong id="homeWelcomeName">User</strong></div></div>
                     <div class="home-welcome-actions">
                         <button class="home-welcome-action" type="button" onclick="openRequestModal()" aria-label="Request komik atau film" title="Request konten"><i class="fa-solid fa-paper-plane"></i></button>
                         <button class="home-welcome-action contact" type="button" onclick="openAdminContact()" aria-label="Hubungi admin" title="Hubungi admin"><i class="fa-solid fa-headset"></i></button>
@@ -1440,7 +1444,7 @@
                     <ul class="user-menu-list"><li class="install-app-item" id="installAppUser" hidden onclick="installApp()"><div class="left-info"><i class="fa-solid fa-mobile-screen-button"></i> Pasang Aplikasi</div><i class="fa-solid fa-download"></i></li><li onclick="switchNav('bookmark')"><div class="left-info"><i class="fa-solid fa-layer-group"></i> Kelola Koleksi Saya</div><i class="fa-solid fa-chevron-right"></i></li><li class="logout-item" onclick="doLogout()"><div class="left-info"><i class="fa-solid fa-right-from-bracket"></i> Keluar dari Akun</div><i class="fa-solid fa-chevron-right"></i></li></ul>
                 </div>
             </div>
-            <div class="app-version-card"><div><strong>Versi Aplikasi</strong><span id="currentVersionLabel">V20.1.11 • Memeriksa pembaruan...</span></div><button class="version-check-btn" onclick="checkAppConfiguration(true)"><i class="fa-solid fa-rotate"></i> Periksa</button></div>
+            <div class="app-version-card"><div><strong>Versi Aplikasi</strong><span id="currentVersionLabel">V20.1.12 • Memeriksa pembaruan...</span></div><button class="version-check-btn" onclick="checkAppConfiguration(true)"><i class="fa-solid fa-rotate"></i> Periksa</button></div>
         </div>
 
         <!-- ================= BOTTOM NAVIGATION (DITAMBAHKAN DISCOVERY) ================= -->
@@ -1466,7 +1470,7 @@
         <aside class="account-menu-drawer">
             <button class="account-menu-close" type="button" onclick="closeAccountMenu()" aria-label="Tutup menu"><i class="fa-solid fa-xmark"></i></button>
             <div class="account-menu-profile">
-                <img class="account-menu-avatar" id="accountMenuAvatar" alt="Foto profil pengguna">
+                <img class="account-menu-avatar" id="accountMenuAvatar" src="data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=" alt="" aria-label="Foto profil pengguna">
                 <div class="account-menu-user"><strong id="accountMenuName">User</strong><span id="accountMenuEmail">Belum masuk akun</span></div>
             </div>
             <div class="account-menu-divider"></div>
@@ -1484,7 +1488,7 @@
             <button class="account-menu-item danger" id="accountMenuLogout" type="button" onclick="closeAccountMenu();doLogout()"><i class="fa-solid fa-right-from-bracket"></i><span>Keluar dari Akun</span><i class="fa-solid fa-chevron-right"></i></button>
         </aside>
     </div>
-    <div class="update-modal-backdrop" id="updateModal"><div class="update-sheet"><div class="update-icon"><i class="fa-solid fa-cloud-arrow-down"></i></div><h2>Versi baru tersedia</h2><p>Pembaruan aplikasi sudah siap. Proses ini akan membersihkan cache antarmuka lama tanpa menghapus akun, bookmark, atau riwayat Anda.</p><div class="update-version-line"><span id="updateCurrentVersion">V20.1.11</span><i class="fa-solid fa-arrow-right"></i><span id="updateLatestVersion">V20.1.11</span></div><div class="update-changelog" id="updateChangelog">Peningkatan stabilitas dan tampilan.</div><div class="update-actions"><button class="update-action update-later" onclick="dismissAppUpdate()">Nanti</button><button class="update-action update-now" onclick="applyAppUpdate()"><i class="fa-solid fa-bolt"></i> Perbarui Sekarang</button></div></div></div>
+    <div class="update-modal-backdrop" id="updateModal"><div class="update-sheet"><div class="update-icon"><i class="fa-solid fa-cloud-arrow-down"></i></div><h2>Versi baru tersedia</h2><p>Pembaruan aplikasi sudah siap. Proses ini akan membersihkan cache antarmuka lama tanpa menghapus akun, bookmark, atau riwayat Anda.</p><div class="update-version-line"><span id="updateCurrentVersion">V20.1.12</span><i class="fa-solid fa-arrow-right"></i><span id="updateLatestVersion">V20.1.12</span></div><div class="update-changelog" id="updateChangelog">Peningkatan stabilitas dan tampilan.</div><div class="update-actions"><button class="update-action update-later" onclick="dismissAppUpdate()">Nanti</button><button class="update-action update-now" onclick="applyAppUpdate()"><i class="fa-solid fa-bolt"></i> Perbarui Sekarang</button></div></div></div>
 
     <div class="home-action-backdrop" id="requestContentModal" role="dialog" aria-modal="true" aria-labelledby="requestContentTitle" onclick="if(event.target===this)closeRequestModal()">
         <div class="home-action-sheet">
@@ -1503,8 +1507,9 @@
 
     <div class="home-action-backdrop" id="adminContactModal" role="dialog" aria-modal="true" aria-labelledby="adminContactTitle" onclick="if(event.target===this)closeAdminContact()">
         <div class="home-action-sheet">
-            <div class="home-action-head"><div class="home-action-icon"><i class="fa-solid fa-headset"></i></div><div><h3 id="adminContactTitle">Hubungi Admin</h3><p>Pilih saluran yang paling nyaman untuk menghubungi admin.</p></div><button class="home-action-close" type="button" onclick="closeAdminContact()" aria-label="Tutup"><i class="fa-solid fa-xmark"></i></button></div>
-            <button class="contact-choice" type="button" onclick="openAdminChannel('whatsapp')"><i class="fa-brands fa-whatsapp"></i><span><strong>WhatsApp</strong><span>081294114812</span></span></button>
+            <div class="home-action-head"><div class="home-action-icon"><i class="fa-solid fa-headset"></i></div><div><h3 id="adminContactTitle">Hubungi Tim Yarch</h3><p>Pilih admin atau layanan pelanggan yang ingin dihubungi.</p></div><button class="home-action-close" type="button" onclick="closeAdminContact()" aria-label="Tutup"><i class="fa-solid fa-xmark"></i></button></div>
+            <button class="contact-choice" type="button" onclick="openAdminChannel('whatsapp-admin')"><i class="fa-brands fa-whatsapp"></i><span><strong>Herman Kosasi (Admin)</strong><span>081294114812</span></span></button>
+            <button class="contact-choice" type="button" onclick="openAdminChannel('whatsapp-support')"><i class="fa-brands fa-whatsapp"></i><span><strong>Willy Saputra — Layanan Pelanggan</strong><span>08987786789</span></span></button>
             <button class="contact-choice email" type="button" onclick="openAdminChannel('email')"><i class="fa-regular fa-envelope"></i><span><strong>Email</strong><span>hrmnkosasi@gmail.com</span></span></button>
         </div>
     </div>
@@ -1548,7 +1553,7 @@
         const app = initializeApp(firebaseConfig);
         const db = getFirestore(app);
         const auth = getAuth(app);
-        const APP_VERSION = '20.1.11';
+        const APP_VERSION = '20.1.12';
         const ADMIN_UID = 'dWUWpKAWQRRxMOzjzaOA3zXWZLp2';
 
         window.comicsData = {};
@@ -1608,20 +1613,27 @@
             if(menuAvatar)menuAvatar.src=photo;
             if(logout)logout.hidden=!user;
         }
-        window.openAccountMenu=function(){updateHomeAccountIdentity();const menu=document.getElementById('accountMenu'),button=document.querySelector('.home-menu-button');menu?.classList.add('show');button?.setAttribute('aria-expanded','true');document.body.style.overflow='hidden';}
-        window.closeAccountMenu=function(){const menu=document.getElementById('accountMenu'),button=document.querySelector('.home-menu-button');menu?.classList.remove('show');button?.setAttribute('aria-expanded','false');document.body.style.overflow='';}
+        let accountMenuScrollY=0;
+        window.openAccountMenu=function(){
+            updateHomeAccountIdentity();const menu=document.getElementById('accountMenu'),button=document.querySelector('.home-menu-button');if(!menu||menu.classList.contains('show'))return;
+            accountMenuScrollY=window.scrollY||document.documentElement.scrollTop||0;document.body.style.position='fixed';document.body.style.top=`-${accountMenuScrollY}px`;document.body.style.left='0';document.body.style.right='0';document.body.style.width='100%';document.body.style.overflow='hidden';menu.classList.add('show');button?.setAttribute('aria-expanded','true');
+        }
+        window.closeAccountMenu=function(){
+            const menu=document.getElementById('accountMenu'),button=document.querySelector('.home-menu-button');if(!menu?.classList.contains('show'))return;menu.classList.remove('show');button?.setAttribute('aria-expanded','false');document.body.style.position='';document.body.style.top='';document.body.style.left='';document.body.style.right='';document.body.style.width='';document.body.style.overflow='';window.scrollTo(0,accountMenuScrollY);
+        }
         window.accountMenuNavigate=function(page){closeAccountMenu();switchNav(page);}
-        window.closeAppInfo=function(){document.getElementById('appInfoModal')?.classList.remove('show');}
+        let appInfoScrollY=0;
+        window.closeAppInfo=function(){const modal=document.getElementById('appInfoModal');if(!modal?.classList.contains('show'))return;modal.classList.remove('show');document.body.style.position='';document.body.style.top='';document.body.style.left='';document.body.style.right='';document.body.style.width='';document.body.style.overflow='';window.scrollTo(0,appInfoScrollY);}
         window.openAppInfo=function(type){
             closeAccountMenu();
             const modal=document.getElementById('appInfoModal'),title=document.getElementById('appInfoTitle'),subtitle=document.getElementById('appInfoSubtitle'),content=document.getElementById('appInfoContent'),icon=document.getElementById('appInfoIcon');
             const info={
                 blog:{title:'Blog Yarch',subtitle:'Berita dan perkembangan aplikasi',icon:'fa-newspaper',html:'<p>Temukan kabar pembaruan fitur, rekomendasi bacaan dan tontonan, serta informasi terbaru dari Yarch.</p><p>Halaman artikel lengkap sedang disiapkan dan akan hadir pada pembaruan berikutnya.</p>'},
-                privacy:{title:'Privacy & Policy',subtitle:'Cara Yarch menjaga data pengguna',icon:'fa-shield-halved',html:'<p>Yarch menggunakan data akun untuk login, sinkronisasi profil, koleksi, riwayat, komentar, dan progres baca atau tonton.</p><p>Foto profil yang Anda unggah digunakan untuk menampilkan identitas pada profil dan komentar. Anda dapat mengubah pengaturan visibilitas melalui menu Profil.</p><p>Yarch tidak menjual data pribadi pengguna. Hubungi admin apabila Anda ingin meminta koreksi atau penghapusan data akun.</p>'},
-                about:{title:'Tentang Yarch',subtitle:'Aplikasi koleksi komik, film, dan anime',icon:'fa-circle-info',html:'<p>Yarch dibuat untuk membantu pengguna menemukan, menyimpan, membaca, dan menonton koleksi favorit dalam satu aplikasi.</p><p><strong>Dibuat oleh Herman Kosasi.</strong></p><p>Masukan, laporan masalah, dan permintaan konten dapat dikirim melalui menu Hubungi Admin.</p>'}
+                privacy:{title:'Privacy & Policy',subtitle:'Kebijakan privasi dan penggunaan data Yarch',icon:'fa-shield-halved',html:`<span class="app-info-date">Terakhir diperbarui: 21 September 2026</span><p>Kebijakan ini menjelaskan informasi yang diproses ketika Anda menggunakan Yarch serta pilihan yang tersedia untuk mengelola data tersebut.</p><h4>1. Informasi yang diproses</h4><ul><li>Informasi akun seperti alamat email, nama tampilan, dan identitas pengguna.</li><li>Foto profil, bio, preferensi privasi, koleksi, bookmark, komentar, rating, serta judul yang diikuti.</li><li>Riwayat dan progres membaca atau menonton agar aktivitas dapat dilanjutkan pada posisi terakhir.</li><li>Data teknis terbatas seperti waktu aktivitas, status login, pengaturan aplikasi, dan laporan kesalahan.</li></ul><h4>2. Tujuan penggunaan</h4><p>Data digunakan untuk autentikasi, sinkronisasi profil, penyimpanan koleksi dan progres, personalisasi rekomendasi, komentar, notifikasi pembaruan, keamanan akun, serta peningkatan performa aplikasi.</p><h4>3. Penyimpanan dan layanan pendukung</h4><p>Yarch dapat menggunakan Firebase untuk autentikasi dan basis data, Cloudflare R2/Workers untuk penyimpanan atau pengiriman media, serta hosting web untuk menjalankan aplikasi. Setiap penyedia dapat memproses data teknis sesuai kebijakan layanannya.</p><h4>4. Penyimpanan lokal</h4><p>Browser dapat menyimpan cache, pengaturan, riwayat, dan status sesi melalui localStorage, IndexedDB, atau teknologi sejenis. Data lokal dapat dihapus melalui pengaturan browser, tetapi tindakan tersebut dapat menghapus preferensi dan progres yang belum tersinkron.</p><h4>5. Berbagi data</h4><p>Yarch tidak menjual data pribadi pengguna. Informasi hanya dibagikan kepada penyedia layanan yang diperlukan untuk menjalankan aplikasi, ketika diwajibkan oleh hukum, atau atas persetujuan pengguna.</p><h4>6. Profil, komentar, dan visibilitas</h4><p>Nama dan foto profil dapat tampil pada komentar serta profil publik. Pengguna dapat mengatur visibilitas profil, statistik, dan favorit melalui halaman Profil.</p><h4>7. Keamanan dan masa penyimpanan</h4><p>Langkah keamanan yang wajar digunakan untuk melindungi data. Namun, tidak ada layanan internet yang dapat menjamin keamanan mutlak. Data disimpan selama akun atau fitur terkait masih digunakan, atau selama diperlukan untuk operasional, keamanan, dan penyelesaian sengketa.</p><h4>8. Hak dan pilihan pengguna</h4><p>Pengguna dapat memperbarui informasi profil dan pengaturan privasi. Permintaan akses, koreksi, atau penghapusan data dapat disampaikan melalui menu Hubungi Admin. Verifikasi akun mungkin diperlukan sebelum permintaan diproses.</p><h4>9. Pengguna di bawah umur</h4><p>Pengguna yang belum memenuhi usia yang dipersyaratkan di wilayahnya harus menggunakan aplikasi dengan izin dan pengawasan orang tua atau wali.</p><h4>10. Perubahan kebijakan</h4><p>Kebijakan dapat diperbarui saat fitur atau layanan berubah. Tanggal pembaruan akan dicantumkan pada bagian atas halaman ini.</p><h4>11. Kontak</h4><p>Pertanyaan mengenai privasi dapat dikirim ke <strong>hrmnkosasi@gmail.com</strong> atau melalui menu Hubungi Admin.</p>`},
+                about:{title:'Tentang Yarch',subtitle:'Aplikasi koleksi komik, film, dan anime',icon:'fa-circle-info',html:'<p>Yarch dibuat untuk membantu pengguna menemukan, menyimpan, membaca, dan menonton koleksi favorit dalam satu aplikasi.</p><h4>Tim Yarch</h4><p><strong>Herman Kosasi</strong><br>Founder, pembuat aplikasi, dan administrator.</p><p><strong>Willy Saputra</strong><br>Tim Yarch dan layanan pelanggan (Support).</p><h4>Hubungi kami</h4><p>Masukan, laporan masalah, bantuan akun, dan permintaan konten dapat dikirim melalui menu Hubungi Admin.</p>'}
             }[type]||null;
             if(!info||!modal)return;
-            title.textContent=info.title;subtitle.textContent=info.subtitle;content.innerHTML=info.html;icon.innerHTML=`<i class="fa-solid ${info.icon}"></i>`;modal.classList.add('show');
+            title.textContent=info.title;subtitle.textContent=info.subtitle;content.innerHTML=info.html;icon.innerHTML=`<i class="fa-solid ${info.icon}"></i>`;appInfoScrollY=window.scrollY||document.documentElement.scrollTop||0;document.body.style.position='fixed';document.body.style.top=`-${appInfoScrollY}px`;document.body.style.left='0';document.body.style.right='0';document.body.style.width='100%';document.body.style.overflow='hidden';modal.classList.add('show');
         }
         function gameLevel(points=0){const level=Math.floor(points/100)+1;const names=['Pemula','Penjelajah','Pembaca Aktif','Kolektor','Ahli Cerita','Legenda'];return {level,name:names[Math.min(names.length-1,Math.floor((level-1)/3))],progress:points%100};}
         function ensureWeekly(){const key=weekKey();if(!window.gameData.weekly||window.gameData.weekly.key!==key)window.gameData.weekly={key,chapters:0,watchMinutes:0,comments:0};}
@@ -3131,6 +3143,7 @@
         }
 
         const ADMIN_CONTACT_PHONE = '6281294114812';
+        const SUPPORT_CONTACT_PHONE = '628987786789';
         const ADMIN_CONTACT_EMAIL = 'hrmnkosasi@gmail.com';
         function openExternalUrl(url) {
             const link = document.createElement('a');
@@ -3156,9 +3169,10 @@
             window.closeRequestModal();
         }
         window.openAdminChannel = function(channel) {
-            const message = 'Halo Admin, saya ingin bertanya mengenai aplikasi Komik & Anime.';
+            const isSupport=channel==='whatsapp-support';
+            const message=isSupport?'Halo Kak Willy, saya membutuhkan bantuan mengenai aplikasi Yarch.':'Halo Kak Herman, saya ingin bertanya mengenai aplikasi Yarch.';
             if(channel === 'email') location.href = `mailto:${ADMIN_CONTACT_EMAIL}?subject=${encodeURIComponent('Bantuan Aplikasi Komik & Anime')}&body=${encodeURIComponent(message)}`;
-            else openExternalUrl(`https://wa.me/${ADMIN_CONTACT_PHONE}?text=${encodeURIComponent(message)}`);
+            else openExternalUrl(`https://wa.me/${isSupport?SUPPORT_CONTACT_PHONE:ADMIN_CONTACT_PHONE}?text=${encodeURIComponent(message)}`);
             window.closeAdminContact();
         }
 

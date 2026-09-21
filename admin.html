@@ -1045,25 +1045,70 @@
             });
         }
 
+        let aiMetadataRequestId = 0;
+
+        function resetAiMetadataFields(format) {
+            ['altTitle', 'releaseDate', 'synopsis', 'trailerUrl', 'castCrew', 'durationHours', 'durationMinutes'].forEach(id => {
+                const field = document.getElementById(id);
+                if (field) field.value = '';
+            });
+
+            ['type', 'status', 'ageRating', 'author'].forEach(id => {
+                const select = document.getElementById(id);
+                if (!select) return;
+                [...select.options].filter(option => option.dataset.aiGenerated === 'true').forEach(option => option.remove());
+                select.value = '';
+            });
+
+            [
+                ['genreCheckboxContainer', 'genre-check'],
+                ['directorCheckboxContainer', 'director-check']
+            ].forEach(([containerId, checkboxClass]) => {
+                const container = document.getElementById(containerId);
+                if (!container) return;
+                container.querySelectorAll(`.${checkboxClass}`).forEach(checkbox => {
+                    checkbox.checked = false;
+                    if (checkbox.dataset.aiGenerated === 'true') checkbox.closest('label')?.remove();
+                });
+            });
+
+            const totalSeasons = document.getElementById('totalSeasons');
+            if (totalSeasons) totalSeasons.value = '1';
+            window.renderSeasonTotalInputs?.(1, {});
+
+            // Nilai dasar hanya dipakai bila AI memang tidak mengembalikan tipe/status.
+            setAiSelectValue('type', format === 'film' ? 'Anime' : 'Manga');
+            setAiSelectValue('status', 'Ongoing');
+        }
+
         window.fillMetadataWithAI = async function() {
             const titleInput = document.getElementById('title');
             const title = titleInput.value.trim();
             if (title.length < 2) return Swal.fire('Judul belum lengkap', 'Masukkan judul komik, film, atau anime terlebih dahulu.', 'info');
             const button = document.getElementById('btnAiMetadata');
             const originalHtml = button.innerHTML;
+            const requestId = ++aiMetadataRequestId;
+            const requestedFormat = document.querySelector('input[name="entryFormat"]:checked')?.value || 'komik';
             try {
                 button.disabled = true;
                 button.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Mencari...';
-                const format = document.querySelector('input[name="entryFormat"]:checked')?.value || 'komik';
                 const response = await fetch(new URL('ai/metadata', WORKER_URL), {
                     method: 'POST',
                     headers: { ...(await getWorkerAuthHeaders()), 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ title, format, language: 'id' })
+                    body: JSON.stringify({ title, format: requestedFormat, language: 'id' })
                 });
                 const result = await response.json().catch(() => ({}));
                 if (!response.ok) throw new Error(result.error || `AI metadata gagal (HTTP ${response.status})`);
                 const data = result.metadata || result.data || result;
                 if (!data || typeof data !== 'object') throw new Error('Respons AI tidak berisi metadata yang valid.');
+
+                const currentTitle = titleInput.value.trim();
+                const currentFormat = document.querySelector('input[name="entryFormat"]:checked')?.value || 'komik';
+                if (requestId !== aiMetadataRequestId || currentTitle !== title || currentFormat !== requestedFormat) {
+                    throw new Error('AI_SEARCH_CHANGED');
+                }
+
+                resetAiMetadataFields(requestedFormat);
 
                 if (data.format === 'film' || data.format === 'komik') {
                     document.querySelector(`input[name="entryFormat"][value="${data.format}"]`).checked = true;
@@ -1075,24 +1120,21 @@
                 setAiSelectValue('ageRating', data.ageRating);
                 setAiSelectValue('author', data.author);
                 const releaseDate = String(data.releaseDate || '').match(/^\d{4}-\d{2}-\d{2}$/)?.[0] || '';
-                if (releaseDate) document.getElementById('releaseDate').value = releaseDate;
+                document.getElementById('releaseDate').value = releaseDate;
                 document.getElementById('synopsis').value = String(data.synopsis || '').slice(0, 5000);
                 setAiCheckboxValues('genreCheckboxContainer', 'genre-check', data.genres);
                 setAiCheckboxValues('directorCheckboxContainer', 'director-check', data.directors);
-                if (data.durationMinutesTotal || data.durationMinutes) {
-                    const totalMinutes = Math.max(0, Number(data.durationMinutesTotal || data.durationMinutes) || 0);
-                    document.getElementById('durationHours').value = Math.floor(totalMinutes / 60);
-                    document.getElementById('durationMinutes').value = Math.floor(totalMinutes % 60);
-                }
+                const totalMinutes = Math.max(0, Number(data.durationMinutesTotal || data.durationMinutes) || 0);
+                document.getElementById('durationHours').value = totalMinutes ? Math.floor(totalMinutes / 60) : '';
+                document.getElementById('durationMinutes').value = totalMinutes ? Math.floor(totalMinutes % 60) : '';
                 document.getElementById('trailerUrl').value = String(data.trailerUrl || '').slice(0, 500);
                 document.getElementById('castCrew').value = Array.isArray(data.castCrew) ? data.castCrew.join(', ') : String(data.castCrew || '');
-                if (data.totalSeasons) {
-                    document.getElementById('totalSeasons').value = Math.max(1, Math.min(100, Number(data.totalSeasons) || 1));
-                    window.renderSeasonTotalInputs?.(undefined, data.seasonTotals && typeof data.seasonTotals === 'object' ? data.seasonTotals : undefined);
-                }
+                document.getElementById('totalSeasons').value = Math.max(1, Math.min(100, Number(data.totalSeasons) || 1));
+                window.renderSeasonTotalInputs?.(undefined, data.seasonTotals && typeof data.seasonTotals === 'object' ? data.seasonTotals : {});
                 await writeAudit('AI_METADATA_FILL', 'content-form', title);
                 Swal.fire({ title:'Metadata terisi', text:'Silakan periksa hasil AI dan unggah cover sebelum menyimpan.', icon:'success', timer:2300, showConfirmButton:false });
             } catch (error) {
+                if (error.message === 'AI_SEARCH_CHANGED') return;
                 console.error(error);
                 Swal.fire('AI belum dapat digunakan', `${error.message}\n\nPastikan rute /ai/metadata sudah dipasang pada Worker.`, 'error');
             } finally {

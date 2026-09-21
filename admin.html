@@ -713,6 +713,11 @@
                                     <input type="text" inputmode="numeric" id="episodeDurationMinutes" placeholder="Contoh: 1:30:23" pattern="(?:\d+:)?[0-5]?\d:[0-5]\d">
                                     <div class="help-text">Contoh: 1:30:23 atau 27:15. Opsional; jika kosong, durasi dibaca otomatis dari video.</div>
                                 </div>
+                                <div class="form-group" id="groupEpisodeThumbnail" style="display:none">
+                                    <label>Thumbnail Episode / Film (Opsional)</label>
+                                    <input type="url" id="episodeThumbnailUrl" placeholder="https://.../thumbnail.jpg">
+                                    <div class="help-text">Gunakan gambar 16:9. Jika kosong, gambar pertama yang diunggah atau cover utama akan dipakai.</div>
+                                </div>
                                 <div class="form-group full-width" id="groupMediaLanguage" style="display:none">
                                     <label>Bahasa Audio / Subtitle / Dub</label>
                                     <div class="language-entry-row">
@@ -1718,6 +1723,7 @@
             const selectedComic = window.allComicsList.find(item => item.id === comicId);
             const entryFormat = selectedComic?.format === 'film' ? 'film' : 'komik';
             const durationSeconds = parseAdminDurationSeconds(document.getElementById('episodeDurationMinutes')?.value);
+            const thumbnailUrl = String(document.getElementById('episodeThumbnailUrl')?.value || '').trim();
             const languageLabels = [...window.selectedMediaLanguages];
             const statusEl = document.getElementById('saveFolderStatus');
 
@@ -1744,6 +1750,7 @@
                     targetChapterId = docSnap.id;
                     targetChapterImages = Array.isArray(docSnap.data().images) ? docSnap.data().images : [];
                     const folderUpdate = { title: chapterTitle, seasonNumber, updatedAt: serverTimestamp() };
+                    if (thumbnailUrl) folderUpdate.thumbnailUrl = thumbnailUrl;
                     if (languageLabels.length) folderUpdate.languageLabels = languageLabels;
                     if (entryFormat === 'film' && durationSeconds > 0) {
                         folderUpdate.durationSeconds = durationSeconds;
@@ -1757,6 +1764,7 @@
                         seasonNumber,
                         title: chapterTitle,
                         languageLabels,
+                        thumbnailUrl,
                         images: [],
                         createdAt: serverTimestamp(),
                         updatedAt: serverTimestamp()
@@ -2309,6 +2317,9 @@
                     updatedAt: serverTimestamp()
                 };
                 if (isFilm) {
+                    const manualThumbnail = String(document.getElementById('episodeThumbnailUrl')?.value || previousChapter.thumbnailUrl || '').trim();
+                    const firstUploadedImage = finalUrls.find(url => !isCloudVideo(url));
+                    publishData.thumbnailUrl = manualThumbnail || firstUploadedImage || previousChapter.thumbnailUrl || '';
                     const manualInput = document.getElementById('episodeDurationMinutes')?.value;
                     const manualSeconds = manualInput
                         ? parseAdminDurationSeconds(manualInput)
@@ -2444,7 +2455,7 @@
                         <input id="editFolderNumber" class="swal2-input" type="number" min="0.1" step="0.1" style="max-width:100%!important;margin:0 0 14px!important" placeholder="Contoh: 1 atau 1.5">
                         <label for="editFolderTitle" style="text-align:left">Judul tambahan (opsional)</label>
                         <input id="editFolderTitle" class="swal2-input" type="text" maxlength="150" style="max-width:100%!important;margin:0 0 ${isFilm ? '14px' : '0'}!important" placeholder="Judul chapter/episode">
-                        ${isFilm ? `<label for="editFolderDuration" style="text-align:left">Durasi (jam:menit:detik)</label><input id="editFolderDuration" class="swal2-input" type="text" inputmode="numeric" style="max-width:100%!important;margin:0 0 14px!important" placeholder="Contoh: 1:30:23"><label for="editLanguageLabels" style="text-align:left">Bahasa audio/subtitle/dub — satu per baris</label><textarea id="editLanguageLabels" class="swal2-textarea" style="width:100%;margin:0 0 14px!important;min-height:76px" placeholder="Subtitle Indo\nDub Indo\nSubtitle English">${adminSafe(languageLines)}</textarea><label for="editVideoQualities" style="text-align:left">Kualitas video — satu per baris: Label|URL</label><textarea id="editVideoQualities" class="swal2-textarea" style="width:100%;margin:0 0 14px!important;min-height:90px" placeholder="1080p|https://...\n720p|https://...">${adminSafe(qualityLines)}</textarea><label for="editSubtitles" style="text-align:left">File subtitle — satu per baris: Label|URL|Bahasa</label><textarea id="editSubtitles" class="swal2-textarea" style="width:100%;margin:0!important;min-height:90px" placeholder="Indonesia|https://.../subtitle.vtt|id">${adminSafe(subtitleLines)}</textarea>` : ''}`,
+                        ${isFilm ? `<label for="editFolderDuration" style="text-align:left">Durasi (jam:menit:detik)</label><input id="editFolderDuration" class="swal2-input" type="text" inputmode="numeric" style="max-width:100%!important;margin:0 0 14px!important" placeholder="Contoh: 1:30:23"><label for="editFolderThumbnail" style="text-align:left">Thumbnail episode / film</label><input id="editFolderThumbnail" class="swal2-input" type="url" style="max-width:100%!important;margin:0 0 14px!important" placeholder="https://.../thumbnail.jpg"><label for="editLanguageLabels" style="text-align:left">Bahasa audio/subtitle/dub — satu per baris</label><textarea id="editLanguageLabels" class="swal2-textarea" style="width:100%;margin:0 0 14px!important;min-height:76px" placeholder="Subtitle Indo\nDub Indo\nSubtitle English">${adminSafe(languageLines)}</textarea><label for="editVideoQualities" style="text-align:left">Kualitas video — satu per baris: Label|URL</label><textarea id="editVideoQualities" class="swal2-textarea" style="width:100%;margin:0 0 14px!important;min-height:90px" placeholder="1080p|https://...\n720p|https://...">${adminSafe(qualityLines)}</textarea><label for="editSubtitles" style="text-align:left">File subtitle — satu per baris: Label|URL|Bahasa</label><textarea id="editSubtitles" class="swal2-textarea" style="width:100%;margin:0!important;min-height:90px" placeholder="Indonesia|https://.../subtitle.vtt|id">${adminSafe(subtitleLines)}</textarea>` : ''}`,
                     showCancelButton: true,
                     confirmButtonText: '<i class="fa-solid fa-floppy-disk"></i> Simpan Perubahan',
                     cancelButtonText: 'Batal',
@@ -2454,7 +2465,7 @@
                         document.getElementById('editFolderSeason').value = String(chapter.seasonNumber || 1);
                         document.getElementById('editFolderNumber').value = chapter.chapterNumber ?? '';
                         document.getElementById('editFolderTitle').value = isFullMovie ? '' : (chapter.title || '');
-                        if (isFilm) document.getElementById('editFolderDuration').value = formatAdminDuration(chapter.durationSeconds || (Number(chapter.durationMinutes || 0) * 60));
+                        if (isFilm) { document.getElementById('editFolderDuration').value = formatAdminDuration(chapter.durationSeconds || (Number(chapter.durationMinutes || 0) * 60)); document.getElementById('editFolderThumbnail').value = chapter.thumbnailUrl || chapter.posterUrl || ''; }
                     },
                     preConfirm: () => {
                         const fullMovie = isFilm && document.getElementById('editFolderFullMovie')?.checked;
@@ -2478,7 +2489,8 @@
                             for(const [label,url] of parseRows(document.getElementById('editVideoQualities')?.value)) if(label && /^https?:\/\//i.test(url || '')) videoQualities[label] = url;
                             for(const [label,url,lang] of parseRows(document.getElementById('editSubtitles')?.value)) if(label && /^https?:\/\//i.test(url || '')) subtitles.push({label,url,srclang:lang || 'id'});
                         }
-                        return { chapterNumber, title, seasonNumber, durationSeconds, languageLabels, videoQualities, subtitles };
+                        const thumbnailUrl = isFilm ? String(document.getElementById('editFolderThumbnail')?.value || '').trim() : '';
+                        return { chapterNumber, title, seasonNumber, durationSeconds, thumbnailUrl, languageLabels, videoQualities, subtitles };
                     }
                 });
 
@@ -2505,6 +2517,7 @@
                     editData.durationMinutes = Math.max(1, Math.round(result.value.durationSeconds / 60));
                 }
                 if (isFilm) {
+                    editData.thumbnailUrl = result.value.thumbnailUrl;
                     editData.languageLabels = result.value.languageLabels;
                     editData.videoQualities = result.value.videoQualities;
                     editData.subtitles = result.value.subtitles;
@@ -2962,8 +2975,10 @@
                     // Tampilkan atau sembunyikan Opsi Full Movie
                     document.getElementById('groupFullMovie').style.display = isFilm ? 'block' : 'none';
                     document.getElementById('groupEpisodeDuration').style.display = isFilm ? 'block' : 'none';
+                    document.getElementById('groupEpisodeThumbnail').style.display = isFilm ? 'block' : 'none';
                     document.getElementById('groupMediaLanguage').style.display = isFilm ? 'block' : 'none';
                     document.getElementById('episodeDurationMinutes').value = '';
+                    document.getElementById('episodeThumbnailUrl').value = '';
                     window.selectedMediaLanguages = [];
                     renderMediaLanguageTags();
                     document.getElementById('customMediaLanguageWrap').style.display = 'none';

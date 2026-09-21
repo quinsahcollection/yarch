@@ -403,11 +403,37 @@
         .header-icons i { width:38px; height:38px; display:grid; place-items:center; border-radius:12px; background:var(--light-blue); font-size:15px; }
         .search-results-dropdown { top:64px; border-radius:18px; border-color:var(--border-color); box-shadow:0 18px 50px rgba(24,29,58,.18); }
         .home-welcome { display:flex; align-items:center; justify-content:space-between; gap:12px; padding:14px 18px 2px; color:#7c8194; font-size:11px; font-weight:650; }
+        .home-welcome-identity { display:flex; align-items:center; min-width:0; flex:1; gap:10px; }
+        .home-welcome-avatar { width:43px; height:43px; flex:0 0 43px; border-radius:50%; object-fit:cover; object-position:center; background:#eceeff; border:2px solid #fff; box-shadow:0 5px 15px rgba(42,45,87,.14); }
         .home-welcome-copy { min-width:0; flex:1; }
         .home-welcome strong { display:block; margin-top:2px; color:var(--text-dark); font-size:18px; font-weight:850; letter-spacing:-.35px; }
         .home-welcome-actions { display:flex; align-items:center; gap:8px; }
         .home-welcome-action { width:37px; height:37px; display:grid; place-items:center; border:0; border-radius:12px; color:#5b5cf0; background:#eeefff; box-shadow:0 6px 16px rgba(48,52,93,.08); cursor:pointer; font-size:14px; }
         .home-welcome-action.contact { color:#15956e; background:#e8f8f2; }
+        .home-menu-button { width:43px; height:43px; flex:0 0 43px; display:grid; place-items:center; border:0; border-radius:14px; color:#5e6072; background:#f3f4f8; cursor:pointer; font-size:17px; transition:.2s ease; }
+        .home-menu-button:active { transform:scale(.94); }
+        .account-menu-backdrop { position:fixed; inset:0; z-index:12000; display:none; justify-content:flex-end; background:rgba(17,19,35,.48); backdrop-filter:blur(5px); -webkit-backdrop-filter:blur(5px); }
+        .account-menu-backdrop.show { display:flex; animation:fadeIn .18s ease; }
+        .account-menu-drawer { width:min(86vw,360px); height:100%; overflow:auto; padding:22px 18px calc(28px + env(safe-area-inset-bottom)); background:#fff; box-shadow:-20px 0 50px rgba(24,27,55,.2); animation:accountMenuIn .25s ease both; }
+        @keyframes accountMenuIn { from{transform:translateX(100%)} to{transform:translateX(0)} }
+        .account-menu-close { margin-left:auto; width:36px; height:36px; display:grid; place-items:center; border:0; border-radius:11px; background:#f0f1f6; color:#6e7283; cursor:pointer; }
+        .account-menu-profile { display:flex; align-items:center; gap:12px; padding:17px 4px 19px; }
+        .account-menu-avatar { width:58px; height:58px; flex:0 0 58px; border-radius:50%; object-fit:cover; background:#eceeff; border:2px solid #fff; box-shadow:0 7px 18px rgba(53,50,125,.17); }
+        .account-menu-user { min-width:0; flex:1; }
+        .account-menu-user strong,.account-menu-user span { display:block; overflow:hidden; white-space:nowrap; text-overflow:ellipsis; }
+        .account-menu-user strong { color:#202232; font-size:15px; }
+        .account-menu-user span { margin-top:4px; color:#8b8fa0; font-size:10px; }
+        .account-menu-divider { height:1px; margin:0 0 11px; background:#eceef4; }
+        .account-menu-label { padding:8px 5px 6px; color:#a0a3b1; font-size:9px; font-weight:850; letter-spacing:.08em; text-transform:uppercase; }
+        .account-menu-item { width:100%; min-height:47px; display:flex; align-items:center; gap:12px; padding:10px 9px; border:0; border-radius:12px; color:#4b4f61; background:transparent; text-align:left; cursor:pointer; font-size:11px; font-weight:750; }
+        .account-menu-item:hover { background:#f7f7fc; }
+        .account-menu-item>i:first-child { width:31px; height:31px; display:grid; place-items:center; border-radius:10px; color:#625af2; background:#efefff; }
+        .account-menu-item>span { flex:1; }
+        .account-menu-item>.fa-chevron-right { color:#b3b5c1; font-size:9px; }
+        .account-menu-item.danger { color:#d84f62; }
+        .account-menu-item.danger>i:first-child { color:#d84f62; background:#fff0f2; }
+        .app-info-content { color:#666b7c; font-size:11px; line-height:1.7; }
+        .app-info-content p+p { margin-top:10px; }
         .slider-container { height:270px; margin:10px 12px 4px; width:calc(100% - 24px); border-radius:22px; box-shadow:0 14px 30px rgba(18,21,40,.2); }
         .slide-bg-blur { filter:blur(20px); opacity:.58; transform:scale(1.04); }
         .slide-img { width:58%; left:auto; right:0; background-size:contain; background-position:right center; background-repeat:no-repeat; }
@@ -809,6 +835,8 @@
             .home-welcome { grid-column:1/-1; margin:22px 32px 0; padding:0; }
             .home-welcome span { font-size:13px; }
             .home-welcome strong { font-size:23px; }
+            .home-welcome-avatar { width:50px; height:50px; flex-basis:50px; }
+            .account-menu-drawer { width:390px; }
             #home-page main { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); column-gap:14px; align-items:start; }
             #home-page main>.slider-container { grid-column:1/-1; width:calc(100% - 64px); height:340px; margin:16px 32px 6px; border-radius:27px; }
             #home-page main>.section-container { min-width:0; padding:25px 28px 8px; }
@@ -930,9 +958,7 @@
                     <i class="fa-solid fa-magnifying-glass"></i>
                     <input type="text" id="searchInput" placeholder="Cari judul komik atau film...">
                 </div>
-                <div class="header-icons home-bell" onclick="switchNav('updates')">
-                    <i class="fa-regular fa-bell" aria-label="Notifikasi"></i><span class="home-notification-count" id="homeNotificationCount">0</span>
-                </div>
+                <button class="home-menu-button" type="button" onclick="openAccountMenu()" aria-label="Buka menu akun" aria-controls="accountMenu" aria-expanded="false"><i class="fa-solid fa-bars"></i></button>
             </header>
             
             <!-- Tempat Munculnya Hasil Pencarian (Dropdown) -->
@@ -940,7 +966,7 @@
 
             <main>
                 <div class="home-welcome">
-                    <div class="home-welcome-copy"><span>Selamat datang,</span><strong id="homeWelcomeName">User</strong></div>
+                    <div class="home-welcome-identity"><img class="home-welcome-avatar" id="homeWelcomeAvatar" alt="Foto profil pengguna"><div class="home-welcome-copy"><span>Selamat datang,</span><strong id="homeWelcomeName">User</strong></div></div>
                     <div class="home-welcome-actions">
                         <button class="home-welcome-action" type="button" onclick="openRequestModal()" aria-label="Request komik atau film" title="Request konten"><i class="fa-solid fa-paper-plane"></i></button>
                         <button class="home-welcome-action contact" type="button" onclick="openAdminContact()" aria-label="Hubungi admin" title="Hubungi admin"><i class="fa-solid fa-headset"></i></button>
@@ -1414,7 +1440,7 @@
                     <ul class="user-menu-list"><li class="install-app-item" id="installAppUser" hidden onclick="installApp()"><div class="left-info"><i class="fa-solid fa-mobile-screen-button"></i> Pasang Aplikasi</div><i class="fa-solid fa-download"></i></li><li onclick="switchNav('bookmark')"><div class="left-info"><i class="fa-solid fa-layer-group"></i> Kelola Koleksi Saya</div><i class="fa-solid fa-chevron-right"></i></li><li class="logout-item" onclick="doLogout()"><div class="left-info"><i class="fa-solid fa-right-from-bracket"></i> Keluar dari Akun</div><i class="fa-solid fa-chevron-right"></i></li></ul>
                 </div>
             </div>
-            <div class="app-version-card"><div><strong>Versi Aplikasi</strong><span id="currentVersionLabel">V20.1.10 • Memeriksa pembaruan...</span></div><button class="version-check-btn" onclick="checkAppConfiguration(true)"><i class="fa-solid fa-rotate"></i> Periksa</button></div>
+            <div class="app-version-card"><div><strong>Versi Aplikasi</strong><span id="currentVersionLabel">V20.1.11 • Memeriksa pembaruan...</span></div><button class="version-check-btn" onclick="checkAppConfiguration(true)"><i class="fa-solid fa-rotate"></i> Periksa</button></div>
         </div>
 
         <!-- ================= BOTTOM NAVIGATION (DITAMBAHKAN DISCOVERY) ================= -->
@@ -1436,7 +1462,29 @@
             </a>
         </nav>
     </div>
-    <div class="update-modal-backdrop" id="updateModal"><div class="update-sheet"><div class="update-icon"><i class="fa-solid fa-cloud-arrow-down"></i></div><h2>Versi baru tersedia</h2><p>Pembaruan aplikasi sudah siap. Proses ini akan membersihkan cache antarmuka lama tanpa menghapus akun, bookmark, atau riwayat Anda.</p><div class="update-version-line"><span id="updateCurrentVersion">V20.1.10</span><i class="fa-solid fa-arrow-right"></i><span id="updateLatestVersion">V20.1.10</span></div><div class="update-changelog" id="updateChangelog">Peningkatan stabilitas dan tampilan.</div><div class="update-actions"><button class="update-action update-later" onclick="dismissAppUpdate()">Nanti</button><button class="update-action update-now" onclick="applyAppUpdate()"><i class="fa-solid fa-bolt"></i> Perbarui Sekarang</button></div></div></div>
+    <div class="account-menu-backdrop" id="accountMenu" role="dialog" aria-modal="true" aria-label="Menu akun" onclick="if(event.target===this)closeAccountMenu()">
+        <aside class="account-menu-drawer">
+            <button class="account-menu-close" type="button" onclick="closeAccountMenu()" aria-label="Tutup menu"><i class="fa-solid fa-xmark"></i></button>
+            <div class="account-menu-profile">
+                <img class="account-menu-avatar" id="accountMenuAvatar" alt="Foto profil pengguna">
+                <div class="account-menu-user"><strong id="accountMenuName">User</strong><span id="accountMenuEmail">Belum masuk akun</span></div>
+            </div>
+            <div class="account-menu-divider"></div>
+            <div class="account-menu-label">Akun & koleksi</div>
+            <button class="account-menu-item" type="button" onclick="accountMenuNavigate('profile')"><i class="fa-solid fa-user"></i><span>Profil Saya</span><i class="fa-solid fa-chevron-right"></i></button>
+            <button class="account-menu-item" type="button" onclick="accountMenuNavigate('bookmark')"><i class="fa-solid fa-layer-group"></i><span>Koleksi Saya</span><i class="fa-solid fa-chevron-right"></i></button>
+            <button class="account-menu-item" type="button" onclick="closeAccountMenu();openHistoryPage()"><i class="fa-solid fa-clock-rotate-left"></i><span>Riwayat Baca & Tonton</span><i class="fa-solid fa-chevron-right"></i></button>
+            <button class="account-menu-item" type="button" onclick="closeAccountMenu();openRequestModal()"><i class="fa-solid fa-paper-plane"></i><span>Request Konten</span><i class="fa-solid fa-chevron-right"></i></button>
+            <div class="account-menu-divider" style="margin-top:11px"></div>
+            <div class="account-menu-label">Informasi</div>
+            <button class="account-menu-item" type="button" onclick="openAppInfo('blog')"><i class="fa-solid fa-newspaper"></i><span>Blog</span><i class="fa-solid fa-chevron-right"></i></button>
+            <button class="account-menu-item" type="button" onclick="openAppInfo('privacy')"><i class="fa-solid fa-shield-halved"></i><span>Privacy & Policy</span><i class="fa-solid fa-chevron-right"></i></button>
+            <button class="account-menu-item" type="button" onclick="openAppInfo('about')"><i class="fa-solid fa-circle-info"></i><span>Tentang Yarch</span><i class="fa-solid fa-chevron-right"></i></button>
+            <button class="account-menu-item" type="button" onclick="closeAccountMenu();openAdminContact()"><i class="fa-solid fa-headset"></i><span>Hubungi Admin</span><i class="fa-solid fa-chevron-right"></i></button>
+            <button class="account-menu-item danger" id="accountMenuLogout" type="button" onclick="closeAccountMenu();doLogout()"><i class="fa-solid fa-right-from-bracket"></i><span>Keluar dari Akun</span><i class="fa-solid fa-chevron-right"></i></button>
+        </aside>
+    </div>
+    <div class="update-modal-backdrop" id="updateModal"><div class="update-sheet"><div class="update-icon"><i class="fa-solid fa-cloud-arrow-down"></i></div><h2>Versi baru tersedia</h2><p>Pembaruan aplikasi sudah siap. Proses ini akan membersihkan cache antarmuka lama tanpa menghapus akun, bookmark, atau riwayat Anda.</p><div class="update-version-line"><span id="updateCurrentVersion">V20.1.11</span><i class="fa-solid fa-arrow-right"></i><span id="updateLatestVersion">V20.1.11</span></div><div class="update-changelog" id="updateChangelog">Peningkatan stabilitas dan tampilan.</div><div class="update-actions"><button class="update-action update-later" onclick="dismissAppUpdate()">Nanti</button><button class="update-action update-now" onclick="applyAppUpdate()"><i class="fa-solid fa-bolt"></i> Perbarui Sekarang</button></div></div></div>
 
     <div class="home-action-backdrop" id="requestContentModal" role="dialog" aria-modal="true" aria-labelledby="requestContentTitle" onclick="if(event.target===this)closeRequestModal()">
         <div class="home-action-sheet">
@@ -1458,6 +1506,13 @@
             <div class="home-action-head"><div class="home-action-icon"><i class="fa-solid fa-headset"></i></div><div><h3 id="adminContactTitle">Hubungi Admin</h3><p>Pilih saluran yang paling nyaman untuk menghubungi admin.</p></div><button class="home-action-close" type="button" onclick="closeAdminContact()" aria-label="Tutup"><i class="fa-solid fa-xmark"></i></button></div>
             <button class="contact-choice" type="button" onclick="openAdminChannel('whatsapp')"><i class="fa-brands fa-whatsapp"></i><span><strong>WhatsApp</strong><span>081294114812</span></span></button>
             <button class="contact-choice email" type="button" onclick="openAdminChannel('email')"><i class="fa-regular fa-envelope"></i><span><strong>Email</strong><span>hrmnkosasi@gmail.com</span></span></button>
+        </div>
+    </div>
+
+    <div class="home-action-backdrop" id="appInfoModal" role="dialog" aria-modal="true" aria-labelledby="appInfoTitle" onclick="if(event.target===this)closeAppInfo()">
+        <div class="home-action-sheet">
+            <div class="home-action-head"><div class="home-action-icon" id="appInfoIcon"><i class="fa-solid fa-circle-info"></i></div><div style="min-width:0;flex:1"><h3 id="appInfoTitle">Informasi Yarch</h3><p id="appInfoSubtitle">Informasi aplikasi</p></div><button class="home-action-close" type="button" onclick="closeAppInfo()" aria-label="Tutup"><i class="fa-solid fa-xmark"></i></button></div>
+            <div class="app-info-content" id="appInfoContent"></div>
         </div>
     </div>
 
@@ -1493,7 +1548,7 @@
         const app = initializeApp(firebaseConfig);
         const db = getFirestore(app);
         const auth = getAuth(app);
-        const APP_VERSION = '20.1.10';
+        const APP_VERSION = '20.1.11';
         const ADMIN_UID = 'dWUWpKAWQRRxMOzjzaOA3zXWZLp2';
 
         window.comicsData = {};
@@ -1543,6 +1598,31 @@
         function localDateKey(date=new Date()){return `${date.getFullYear()}-${String(date.getMonth()+1).padStart(2,'0')}-${String(date.getDate()).padStart(2,'0')}`;}
         function weekKey(){const d=new Date(),start=new Date(d.getFullYear(),0,1);return `${d.getFullYear()}-W${Math.ceil((((d-start)/86400000)+start.getDay()+1)/7)}`;}
         function defaultAvatar(name){const initial=String(name||'U').trim().charAt(0).toUpperCase()||'U';return `data:image/svg+xml,${encodeURIComponent(`<svg xmlns="http://www.w3.org/2000/svg" width="256" height="256"><defs><linearGradient id="g" x2="1" y2="1"><stop stop-color="#776cff"/><stop offset="1" stop-color="#f06ea9"/></linearGradient></defs><rect width="256" height="256" rx="72" fill="url(#g)"/><text x="128" y="154" text-anchor="middle" font-family="Arial" font-size="112" font-weight="700" fill="white">${initial}</text></svg>`)}`;}
+        function updateHomeAccountIdentity(user=auth.currentUser){
+            const profileName=String(window.socialProfile?.displayName||'').trim(),accountName=String(user?.displayName||'').trim(),emailName=user?.email?String(user.email).split('@')[0]:'',name=profileName||accountName||emailName||'User',photo=String(window.socialProfile?.photoData||user?.photoURL||'').trim()||defaultAvatar(name);
+            const welcomeName=document.getElementById('homeWelcomeName'),welcomeAvatar=document.getElementById('homeWelcomeAvatar'),menuName=document.getElementById('accountMenuName'),menuEmail=document.getElementById('accountMenuEmail'),menuAvatar=document.getElementById('accountMenuAvatar'),logout=document.getElementById('accountMenuLogout');
+            if(welcomeName)welcomeName.textContent=name;
+            if(welcomeAvatar)welcomeAvatar.src=photo;
+            if(menuName)menuName.textContent=name;
+            if(menuEmail)menuEmail.textContent=user?.email||'Belum masuk akun';
+            if(menuAvatar)menuAvatar.src=photo;
+            if(logout)logout.hidden=!user;
+        }
+        window.openAccountMenu=function(){updateHomeAccountIdentity();const menu=document.getElementById('accountMenu'),button=document.querySelector('.home-menu-button');menu?.classList.add('show');button?.setAttribute('aria-expanded','true');document.body.style.overflow='hidden';}
+        window.closeAccountMenu=function(){const menu=document.getElementById('accountMenu'),button=document.querySelector('.home-menu-button');menu?.classList.remove('show');button?.setAttribute('aria-expanded','false');document.body.style.overflow='';}
+        window.accountMenuNavigate=function(page){closeAccountMenu();switchNav(page);}
+        window.closeAppInfo=function(){document.getElementById('appInfoModal')?.classList.remove('show');}
+        window.openAppInfo=function(type){
+            closeAccountMenu();
+            const modal=document.getElementById('appInfoModal'),title=document.getElementById('appInfoTitle'),subtitle=document.getElementById('appInfoSubtitle'),content=document.getElementById('appInfoContent'),icon=document.getElementById('appInfoIcon');
+            const info={
+                blog:{title:'Blog Yarch',subtitle:'Berita dan perkembangan aplikasi',icon:'fa-newspaper',html:'<p>Temukan kabar pembaruan fitur, rekomendasi bacaan dan tontonan, serta informasi terbaru dari Yarch.</p><p>Halaman artikel lengkap sedang disiapkan dan akan hadir pada pembaruan berikutnya.</p>'},
+                privacy:{title:'Privacy & Policy',subtitle:'Cara Yarch menjaga data pengguna',icon:'fa-shield-halved',html:'<p>Yarch menggunakan data akun untuk login, sinkronisasi profil, koleksi, riwayat, komentar, dan progres baca atau tonton.</p><p>Foto profil yang Anda unggah digunakan untuk menampilkan identitas pada profil dan komentar. Anda dapat mengubah pengaturan visibilitas melalui menu Profil.</p><p>Yarch tidak menjual data pribadi pengguna. Hubungi admin apabila Anda ingin meminta koreksi atau penghapusan data akun.</p>'},
+                about:{title:'Tentang Yarch',subtitle:'Aplikasi koleksi komik, film, dan anime',icon:'fa-circle-info',html:'<p>Yarch dibuat untuk membantu pengguna menemukan, menyimpan, membaca, dan menonton koleksi favorit dalam satu aplikasi.</p><p><strong>Dibuat oleh Herman Kosasi.</strong></p><p>Masukan, laporan masalah, dan permintaan konten dapat dikirim melalui menu Hubungi Admin.</p>'}
+            }[type]||null;
+            if(!info||!modal)return;
+            title.textContent=info.title;subtitle.textContent=info.subtitle;content.innerHTML=info.html;icon.innerHTML=`<i class="fa-solid ${info.icon}"></i>`;modal.classList.add('show');
+        }
         function gameLevel(points=0){const level=Math.floor(points/100)+1;const names=['Pemula','Penjelajah','Pembaca Aktif','Kolektor','Ahli Cerita','Legenda'];return {level,name:names[Math.min(names.length-1,Math.floor((level-1)/3))],progress:points%100};}
         function ensureWeekly(){const key=weekKey();if(!window.gameData.weekly||window.gameData.weekly.key!==key)window.gameData.weekly={key,chapters:0,watchMinutes:0,comments:0};}
         async function syncGamification(){if(!auth.currentUser)return;ensureWeekly();const payload={...window.gameData,updatedAt:serverTimestamp()};try{await setDoc(doc(db,'users',auth.currentUser.uid,'gamification','main'),payload,{merge:true});await publishPublicProfile();}catch(e){reportBackgroundError('Sinkronisasi gamifikasi gagal',e);}localStorage.setItem('gameData_'+auth.currentUser.uid,JSON.stringify(window.gameData));renderSocialProfile();}
@@ -1563,7 +1643,7 @@
         async function loadSharedProfileFromUrl(){const uid=new URLSearchParams(location.search).get('profile');if(!uid)return;const modal=document.getElementById('sharedProfileModal'),box=document.getElementById('sharedProfileContent');modal.classList.add('show');try{const snap=await getDoc(doc(db,'publicProfiles',uid));if(!snap.exists()||snap.data().publicProfile!==true)throw new Error('private');const x=snap.data(),showStats=x.showStats!==false,ids=x.showFavorites!==false?(x.favorites||[]):[];const favorites=ids.map(id=>({id,comic:window.comicsData[id]})).filter(x=>x.comic);box.innerHTML=`<div class="shared-profile-head"><img src="${x.photoData||defaultAvatar(x.displayName)}"><h2>${safeText(x.displayName||'Pembaca')}</h2><p>${safeText(x.bio||'')}</p>${showStats?`<div class="game-stats" style="margin-top:14px"><div class="game-stat"><strong>${x.level||1}</strong><span>Level</span></div><div class="game-stat"><strong>${x.chapterCount||0}</strong><span>Chapter</span></div><div class="game-stat"><strong>${Math.floor((x.watchSeconds||0)/60)}m</strong><span>Menonton</span></div><div class="game-stat"><strong>${x.streak||0}</strong><span>Streak</span></div></div>`:''}</div><div class="profile-panel-title" style="margin:8px 0 12px">Daftar Favorit</div><div class="shared-favorites">${favorites.map(({id,comic})=>`<div class="shared-favorite" onclick="closeSharedProfile();openDetail('${safeAttr(id)}')"><img src="${safeMediaUrl(comic.coverUrl)}">${safeText(comic.title)}</div>`).join('')||'<div class="empty-history" style="grid-column:1/-1">Daftar favorit disembunyikan atau kosong.</div>'}</div>`;}catch(e){box.innerHTML='<div class="shared-profile-head"><i class="fa-solid fa-user-lock" style="font-size:42px;color:#85899b"></i><h2>Profil tidak tersedia</h2><p>Profil ini bersifat privat atau telah dihapus.</p></div>';}}
         window.applyReward=function(theme,cost){if((window.gameData.points||0)<cost)return window.showToast(`Butuh ${cost} poin`);window.socialProfile.theme=theme;document.body.dataset.appTheme=theme;localStorage.setItem('socialProfile_'+auth.currentUser.uid,JSON.stringify(window.socialProfile));window.saveSocialProfile();window.showToast('Tema berhasil digunakan');}
         function favoriteGenres(){const counts={};let history={};try{history=JSON.parse(localStorage.getItem('comicHistoryDetail')||'{}');}catch(e){};new Set([...Object.keys(history),...window.userBookmarks]).forEach(id=>(window.comicsData[id]?.genres||[]).forEach(g=>counts[g]=(counts[g]||0)+1));return Object.entries(counts).sort((a,b)=>b[1]-a[1]).slice(0,5);}
-        function renderSocialProfile(){if(!auth.currentUser)return;const p=window.socialProfile,g=window.gameData,level=gameLevel(g.points||0),name=p.displayName||auth.currentUser.email.split('@')[0];document.body.dataset.appTheme=p.theme||'default';document.getElementById('userNameDisplay').textContent=name;document.getElementById('userEmailDisplay').textContent=auth.currentUser.email;document.getElementById('profileBioDisplay').textContent=p.bio||'Belum ada bio. Ceritakan genre atau karakter favoritmu.';document.getElementById('profilePhoto').src=p.photoData||defaultAvatar(name);document.getElementById('profileDisplayName').value=name;document.getElementById('profileBioInput').value=p.bio||'';document.getElementById('profileLevelLabel').textContent=`Level ${level.level} • ${level.name}`;document.getElementById('profilePointsLabel').textContent=`${g.points||0} poin`;document.getElementById('profileNextLevel').textContent=`${100-level.progress} menuju level berikutnya`;document.getElementById('profileXpFill').style.width=`${level.progress}%`;document.getElementById('statChapterRead').textContent=g.chapterCount||0;document.getElementById('statWatchTime').textContent=(g.watchSeconds||0)>=3600?`${Math.floor(g.watchSeconds/3600)}j ${Math.floor((g.watchSeconds%3600)/60)}m`:`${Math.floor((g.watchSeconds||0)/60)}m`;document.getElementById('statStreak').textContent=`${g.streak||0}🔥`;document.getElementById('statPoints').textContent=g.points||0;
+        function renderSocialProfile(){if(!auth.currentUser)return;const p=window.socialProfile,g=window.gameData,level=gameLevel(g.points||0),name=p.displayName||auth.currentUser.email.split('@')[0];document.body.dataset.appTheme=p.theme||'default';document.getElementById('userNameDisplay').textContent=name;document.getElementById('userEmailDisplay').textContent=auth.currentUser.email;document.getElementById('profileBioDisplay').textContent=p.bio||'Belum ada bio. Ceritakan genre atau karakter favoritmu.';document.getElementById('profilePhoto').src=p.photoData||defaultAvatar(name);document.getElementById('profileDisplayName').value=name;document.getElementById('profileBioInput').value=p.bio||'';document.getElementById('profileLevelLabel').textContent=`Level ${level.level} • ${level.name}`;document.getElementById('profilePointsLabel').textContent=`${g.points||0} poin`;document.getElementById('profileNextLevel').textContent=`${100-level.progress} menuju level berikutnya`;document.getElementById('profileXpFill').style.width=`${level.progress}%`;document.getElementById('statChapterRead').textContent=g.chapterCount||0;document.getElementById('statWatchTime').textContent=(g.watchSeconds||0)>=3600?`${Math.floor(g.watchSeconds/3600)}j ${Math.floor((g.watchSeconds%3600)/60)}m`:`${Math.floor((g.watchSeconds||0)/60)}m`;document.getElementById('statStreak').textContent=`${g.streak||0}🔥`;document.getElementById('statPoints').textContent=g.points||0;updateHomeAccountIdentity(auth.currentUser);
             const today=localDateKey(),checked=g.lastCheckIn===today,button=document.getElementById('checkinButton');button.disabled=checked;button.textContent=checked?'Sudah diambil':'+10 poin';document.getElementById('checkinMessage').textContent=checked?`Streak ${g.streak||0} hari aktif. Kembali besok!`:'Ambil hadiah hari ini dan lanjutkan streak.';
             const achievements=[{icon:'fa-book-open',title:'Pembaca 10',desc:'10 chapter',ok:(g.chapterCount||0)>=10},{icon:'fa-layer-group',title:'Pembaca 50',desc:'50 chapter',ok:(g.chapterCount||0)>=50},{icon:'fa-crown',title:'Pembaca 100',desc:'100 chapter',ok:(g.chapterCount||0)>=100},{icon:'fa-fire',title:'Streak 7',desc:'7 hari',ok:(g.streak||0)>=7},{icon:'fa-comments',title:'Komentator',desc:'10 komentar',ok:(g.commentCount||0)>=10},{icon:'fa-clock',title:'Penonton',desc:'10 jam',ok:(g.watchSeconds||0)>=36000}];document.getElementById('achievementGrid').innerHTML=achievements.map(a=>`<div class="achievement ${a.ok?'unlocked':''}"><i class="fa-solid ${a.icon}"></i><strong>${a.title}</strong><span>${a.ok?'Terbuka':a.desc}</span></div>`).join('');
             ensureWeekly();const missions=[['Baca 5 chapter',g.weekly.chapters||0,5],['Menonton 30 menit',g.weekly.watchMinutes||0,30],['Tulis 3 komentar',g.weekly.comments||0,3]];document.getElementById('weeklyMissionList').innerHTML=missions.map(([name,val,target])=>`<div class="mission"><div class="mission-row"><span>${name}</span><span>${Math.min(val,target)}/${target}</span></div><div class="mission-track"><div class="mission-fill" style="width:${Math.min(100,val/target*100)}%"></div></div></div>`).join('');
@@ -1823,12 +1903,7 @@
 
         // ================= SISTEM AUTENTIKASI =================
         function updateHomeGreeting(user) {
-            const greeting=document.getElementById('homeWelcomeName');
-            if(!greeting)return;
-            const profileName=String(window.socialProfile?.displayName||'').trim();
-            const accountName=String(user?.displayName||'').trim();
-            const emailName=user?.email ? String(user.email).split('@')[0] : '';
-            greeting.textContent=profileName||accountName||emailName||'User';
+            updateHomeAccountIdentity(user);
         }
         onAuthStateChanged(auth, async (user) => {
             if (user) {
@@ -4258,6 +4333,8 @@
         }
 
         document.addEventListener('keydown',event=>{
+            if(event.key==='Escape'&&document.getElementById('accountMenu')?.classList.contains('show')){closeAccountMenu();return;}
+            if(event.key==='Escape'&&document.getElementById('appInfoModal')?.classList.contains('show')){closeAppInfo();return;}
             const readerVisible=document.getElementById('reader-page')?.style.display==='block';
             const playerVisible=document.getElementById('player-page')?.style.display==='flex';
             if(readerVisible){

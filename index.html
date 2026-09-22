@@ -631,10 +631,12 @@
         .history-delete-btn { min-height:38px; width:100%; padding:0 12px; border:1px solid #ffd5da; border-radius:11px; color:#d94359; background:#fff3f5; cursor:pointer; font-size:11px; font-weight:750; }
         .history-delete-btn i { margin-right:6px; }
         .history-full-grid { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:9px; padding:5px 14px 24px; }
-        .history-full-card { min-width:0; overflow:hidden; border-radius:17px; background:#fff; box-shadow:0 8px 22px rgba(32,37,70,.08); cursor:pointer; }
+        .history-full-card { position:relative; min-width:0; overflow:hidden; border-radius:17px; background:#fff; box-shadow:0 8px 22px rgba(32,37,70,.08); cursor:pointer; }
         .history-full-cover { position:relative; width:100%; aspect-ratio:2/3; background:#e9ebf2; }
         .history-full-cover img { width:100%; height:100%; object-fit:cover; display:block; }
         .history-kind { position:absolute; top:9px; left:9px; padding:5px 8px; border-radius:9px; color:#fff; background:rgba(17,20,39,.82); backdrop-filter:blur(8px); font-size:9px; font-weight:800; }
+        .history-item-delete { position:absolute; top:8px; right:8px; z-index:4; width:30px; height:30px; display:grid; place-items:center; border:1px solid rgba(255,255,255,.7); border-radius:10px; color:#fff; background:rgba(211,55,79,.88); backdrop-filter:blur(8px); box-shadow:0 5px 13px rgba(67,15,25,.22); cursor:pointer; font-size:11px; }
+        .history-item-delete:active { transform:scale(.94); }
         .history-full-info { padding:9px 8px 10px; }
         .history-full-title { min-height:29px; display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden; color:var(--text-dark); font-size:10px; line-height:1.4; font-weight:800; }
         .history-full-progress { margin-top:6px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; color:var(--primary-blue); font-size:8.5px; font-weight:750; }
@@ -1449,7 +1451,7 @@
                     <ul class="user-menu-list"><li class="install-app-item" id="installAppUser" hidden onclick="installApp()"><div class="left-info"><i class="fa-solid fa-mobile-screen-button"></i> Pasang Aplikasi</div><i class="fa-solid fa-download"></i></li><li onclick="switchNav('bookmark')"><div class="left-info"><i class="fa-solid fa-layer-group"></i> Kelola Koleksi Saya</div><i class="fa-solid fa-chevron-right"></i></li><li class="logout-item" onclick="doLogout()"><div class="left-info"><i class="fa-solid fa-right-from-bracket"></i> Keluar dari Akun</div><i class="fa-solid fa-chevron-right"></i></li></ul>
                 </div>
             </div>
-            <div class="app-version-card"><div><strong>Versi Aplikasi</strong><span id="currentVersionLabel">V20.1.17 • Memeriksa pembaruan...</span></div><button class="version-check-btn" onclick="checkAppConfiguration(true)"><i class="fa-solid fa-rotate"></i> Periksa</button></div>
+            <div class="app-version-card"><div><strong>Versi Aplikasi</strong><span id="currentVersionLabel">V20.1.19 • Memeriksa pembaruan...</span></div><button class="version-check-btn" onclick="checkAppConfiguration(true)"><i class="fa-solid fa-rotate"></i> Periksa</button></div>
         </div>
 
         <!-- ================= BOTTOM NAVIGATION (DITAMBAHKAN DISCOVERY) ================= -->
@@ -1496,7 +1498,7 @@
     <div class="profile-modal-backdrop" id="profileEditorModal" onclick="if(event.target===this)closeProfileEditor()"><section class="profile-modal-sheet" role="dialog" aria-modal="true" aria-labelledby="profileEditorTitle"><div class="profile-modal-head"><div class="profile-modal-icon"><i class="fa-solid fa-user-pen"></i></div><div class="profile-modal-title"><h3 id="profileEditorTitle">Lengkapi Profil</h3><p>Informasi tanggal lahir disimpan secara privat untuk verifikasi usia.</p></div><button class="profile-modal-close" onclick="closeProfileEditor()"><i class="fa-solid fa-xmark"></i></button></div><div class="profile-modal-form"><label for="profileDisplayName">Nama tampilan</label><input id="profileDisplayName" maxlength="35" placeholder="Nama tampilan"><label for="profileBioInput">Bio singkat</label><textarea id="profileBioInput" maxlength="160" placeholder="Ceritakan genre atau karakter favoritmu..."></textarea><div class="profile-modal-grid"><div><label for="profileBirthDate">Tanggal lahir</label><input id="profileBirthDate" type="date"></div><div><label for="profileGender">Jenis kelamin</label><select id="profileGender"><option value="">Tidak disebutkan</option><option value="Laki-laki">Laki-laki</option><option value="Perempuan">Perempuan</option><option value="Lainnya">Lainnya</option></select></div></div><label for="profileLocation">Kota / lokasi (opsional)</label><input id="profileLocation" maxlength="60" placeholder="Contoh: Jakarta"><button class="profile-modal-save" onclick="saveSocialProfile()"><i class="fa-solid fa-floppy-disk"></i> Simpan Profil</button></div></section></div>
     <div class="profile-modal-backdrop" id="shareProfileModal" onclick="if(event.target===this)closeShareProfile()"><section class="profile-modal-sheet" role="dialog" aria-modal="true"><div class="profile-modal-head"><div class="profile-modal-icon"><i class="fa-solid fa-share-nodes"></i></div><div class="profile-modal-title"><h3>Bagikan Profil</h3><p>Undang teman melihat profil, statistik, dan favorit yang kamu izinkan.</p></div><button class="profile-modal-close" onclick="closeShareProfile()"><i class="fa-solid fa-xmark"></i></button></div><div class="share-profile-preview"><img id="shareProfileAvatar" alt="Foto profil"><div><strong id="shareProfileName">Pembaca Yarch</strong><span id="shareProfileLevel">Profil pembaca</span></div></div><div class="share-url-row"><input id="shareProfileUrl" readonly><button onclick="shareProfileVia('copy')" aria-label="Salin tautan"><i class="fa-regular fa-copy"></i></button></div><div class="share-option-grid"><button class="share-option" onclick="shareProfileVia('native')"><i class="fa-solid fa-arrow-up-from-bracket"></i>Bagikan</button><button class="share-option" onclick="shareProfileVia('whatsapp')"><i class="fa-brands fa-whatsapp" style="color:#18a957"></i>WhatsApp</button><button class="share-option" onclick="shareProfileVia('telegram')"><i class="fa-brands fa-telegram" style="color:#2b9bd7"></i>Telegram</button><button class="share-option" onclick="shareProfileVia('copy')"><i class="fa-solid fa-link"></i>Salin</button></div></section></div>
     <div class="profile-modal-backdrop" id="ageGateModal"><section class="profile-modal-sheet age-gate-sheet" role="dialog" aria-modal="true"><div class="age-gate-shield"><i class="fa-solid fa-shield-halved"></i></div><h3 id="ageGateTitle">Verifikasi Usia</h3><p id="ageGateMessage">Konten ini ditujukan untuk pengguna yang telah memenuhi batas usia.</p><div class="profile-modal-form"><label for="ageGateBirthDate" style="text-align:left">Tanggal lahir</label><input id="ageGateBirthDate" type="date"><label class="age-confirm-check"><input id="ageGateConfirm" type="checkbox" onchange="updateAgeGateButton()"><span>Saya menyatakan tanggal lahir yang dimasukkan benar dan memahami bahwa konten dapat memuat tema dewasa.</span></label></div><div class="age-gate-actions"><button class="age-cancel" onclick="resolveAgeGate(false)">Kembali</button><button class="age-continue" id="ageGateContinue" disabled onclick="resolveAgeGate(true)">Verifikasi & Masuk</button></div></section></div>
-    <div class="update-modal-backdrop" id="updateModal"><div class="update-sheet"><div class="update-icon"><i class="fa-solid fa-cloud-arrow-down"></i></div><h2>Versi baru tersedia</h2><p>Pembaruan aplikasi sudah siap. Proses ini akan membersihkan cache antarmuka lama tanpa menghapus akun, bookmark, atau riwayat Anda.</p><div class="update-version-line"><span id="updateCurrentVersion">V20.1.16</span><i class="fa-solid fa-arrow-right"></i><span id="updateLatestVersion">V20.1.16</span></div><div class="update-changelog" id="updateChangelog">Peningkatan stabilitas dan tampilan.</div><div class="update-actions"><button class="update-action update-later" onclick="dismissAppUpdate()">Nanti</button><button class="update-action update-now" onclick="applyAppUpdate()"><i class="fa-solid fa-bolt"></i> Perbarui Sekarang</button></div></div></div>
+    <div class="update-modal-backdrop" id="updateModal"><div class="update-sheet"><div class="update-icon"><i class="fa-solid fa-cloud-arrow-down"></i></div><h2>Versi baru tersedia</h2><p>Pembaruan aplikasi sudah siap. Proses ini akan membersihkan cache antarmuka lama tanpa menghapus akun, bookmark, atau riwayat Anda.</p><div class="update-version-line"><span id="updateCurrentVersion">V20.1.19</span><i class="fa-solid fa-arrow-right"></i><span id="updateLatestVersion">V20.1.19</span></div><div class="update-changelog" id="updateChangelog">Peningkatan stabilitas dan tampilan.</div><div class="update-actions"><button class="update-action update-later" onclick="dismissAppUpdate()">Nanti</button><button class="update-action update-now" onclick="applyAppUpdate()"><i class="fa-solid fa-bolt"></i> Perbarui Sekarang</button></div></div></div>
 
     <div class="home-action-backdrop" id="requestContentModal" role="dialog" aria-modal="true" aria-labelledby="requestContentTitle" onclick="if(event.target===this)closeRequestModal()">
         <div class="home-action-sheet">
@@ -1561,7 +1563,7 @@
         const app = initializeApp(firebaseConfig);
         const db = getFirestore(app);
         const auth = getAuth(app);
-        const APP_VERSION = '20.1.17';
+        const APP_VERSION = '20.1.19';
         const ADMIN_UID = 'dWUWpKAWQRRxMOzjzaOA3zXWZLp2';
 
         window.comicsData = {};
@@ -1745,9 +1747,15 @@
             try {
                 if(state.view !== 'player') {
                     const player = document.getElementById('mainVideoPlayer');
+                    if(document.getElementById('player-page')?.style.display === 'flex' && window.currentActiveComicId && window.currentActiveChapterId && player.currentTime > 0 && !player.ended) {
+                        await window.saveVideoProgress(window.currentActiveComicId, window.currentActiveChapterId, window.currentActiveChapterNum, player.currentTime, player.duration || 0);
+                    }
                     player.pause(); player.src = '';
                 }
-                if(state.view !== 'reader' && window.readerObserver) window.readerObserver.disconnect();
+                if(state.view !== 'reader' && document.getElementById('reader-page')?.style.display === 'block' && window.currentActiveComicId && window.currentActiveChapterId) {
+                    await window.saveReadingProgress(window.currentActiveComicId, window.currentActiveChapterId, window.currentActiveChapterNum, window.currentReaderPage || 1);
+                }
+                if(state.view !== 'reader') stopReaderProgressTracking();
                 if(state.view !== 'detail') document.getElementById('detailTrailer').src = '';
                 if(['home','discovery','updates','bookmark','profile'].includes(state.view)) window.switchNav(state.view, null, true);
                 else if(state.view === 'history') await window.openHistoryPage(true);
@@ -2876,6 +2884,11 @@
             localHist[comicId] = {...previousHistory, ...historyItem};
             localStorage.setItem('comicHistoryDetail', JSON.stringify(localHist));
 
+            // Perbarui tampilan langsung dari data lokal; sinkronisasi cloud berjalan sesudahnya.
+            renderReadingHistory(true);
+            renderUpdatesFeed();
+            refreshVisibleFullHistory();
+
             if (auth.currentUser) {
                 try {
                     await setDoc(doc(db, "users", auth.currentUser.uid, "history", comicId), {
@@ -2887,11 +2900,9 @@
                     window.setCollectionStatus(comicId,'reading');
                 }
             }
-            renderReadingHistory();
-            renderUpdatesFeed();
         }
 
-        window.saveVideoProgress = async function(comicId, chapterId, chapterNum, currentSecond, durationSecond) {
+        window.saveVideoProgress = async function(comicId, chapterId, chapterNum, currentSecond, durationSecond, syncCloud = true) {
             if(!comicId || !chapterId) return;
             const second = Math.max(0, Math.floor(Number(currentSecond || 0)));
             const duration = Math.max(0, Math.floor(Number(durationSecond || 0)));
@@ -2907,12 +2918,25 @@
             localHist[comicId] = {...(localHist[comicId] || {}), ...historyItem};
             localStorage.setItem('comicHistoryDetail', JSON.stringify(localHist));
             localStorage.setItem(`videoResume_${comicId}_${chapterId}`, String(second));
-            renderReadingHistory(true);
-            renderUpdatesFeed();
-            if(auth.currentUser) {
+            if(document.getElementById('home-page')?.style.display === 'block') renderReadingHistory(true);
+            if(syncCloud) {
+                renderUpdatesFeed();
+                refreshVisibleFullHistory();
+            }
+            if(syncCloud && auth.currentUser) {
                 try { await setDoc(doc(db,'users',auth.currentUser.uid,'history',comicId), {...historyItem,updatedAt:serverTimestamp()}, {merge:true}); }
                 catch(e) { reportBackgroundError('Sinkronisasi progres video gagal', e); }
             }
+        }
+
+        let fullHistoryRefreshTimer = null;
+        function refreshVisibleFullHistory() {
+            if(document.getElementById('history-page')?.style.display !== 'block') return;
+            clearTimeout(fullHistoryRefreshTimer);
+            fullHistoryRefreshTimer = setTimeout(async () => {
+                window.fullHistoryItems = await loadFullHistoryItems(true);
+                window.renderFullHistoryPage();
+            }, 120);
         }
 
         function historyUpdatedMillis(item) {
@@ -3069,12 +3093,12 @@
         window.historyMediaTab = 'comic';
         window.fullHistoryItems = [];
 
-        async function loadFullHistoryItems() {
+        async function loadFullHistoryItems(preferLocal = false) {
             const merged = new Map();
             const localItems = Object.values(safeJsonParse(localStorage.getItem('comicHistoryDetail'), {}));
             localItems.forEach(item => item?.comicId && merged.set(item.comicId, item));
 
-            if(auth.currentUser) {
+            if(auth.currentUser && (!preferLocal || merged.size === 0)) {
                 try {
                     const snap = await getDocs(query(collection(db, 'users', auth.currentUser.uid, 'history'), orderBy('updatedAt', 'desc')));
                     snap.forEach(historyDoc => {
@@ -3149,6 +3173,7 @@
                     : (Number(item.pageTotal || 0) > 0 ? `${Number(item.pageIndex || 0)}/${Number(item.pageTotal)} halaman` : `Halaman ${Number(item.pageIndex || 1)}`);
                 return `<article class="history-full-card" onclick="continueReading('${safeAttr(item.comicId)}','${safeAttr(item.chapterId || '')}','${safeAttr(item.chapterNumber || '')}',${Number(item.pageIndex || 1)})">
                     <div class="history-full-cover"><img src="${cover}" loading="lazy" decoding="async" alt="${title}" onerror="this.src='https://placehold.co/240x340?text=No+Cover'"><span class="history-kind">${item._isVideo ? 'FILM / ANIME' : 'KOMIK'}</span></div>
+                    <button class="history-item-delete" type="button" aria-label="Hapus ${title} dari riwayat" title="Hapus dari riwayat" onclick="event.stopPropagation();deleteSingleHistory('${safeAttr(item.comicId)}')"><i class="fa-regular fa-trash-can"></i></button>
                     <div class="history-full-info"><div class="history-full-title">${title}</div><div class="history-full-progress">${safeText(part)}</div><div class="history-progress-row"><span>${safeText(progressDetail)}</span><strong>${progressPercent}%</strong></div><div class="history-progress-track"><div class="history-progress-fill" style="width:${progressPercent}%"></div></div></div>
                 </article>`;
             }).join('') || `<div class="empty-history" style="grid-column:1/-1;padding-top:70px"><i class="fa-solid ${isVideoTab ? 'fa-film' : 'fa-book-open'}" style="font-size:30px;color:#c5c8d5"></i><br><br>Belum ada riwayat ${isVideoTab ? 'tontonan' : 'bacaan'}.</div>`;
@@ -3223,6 +3248,37 @@
             renderReadingHistory();
             renderUpdatesFeed();
             window.showToast(`Riwayat ${isVideoTarget ? 'tontonan' : 'bacaan'} berhasil dihapus`);
+        }
+
+        window.deleteSingleHistory = async function(comicId) {
+            const item = window.fullHistoryItems.find(entry => entry.comicId === comicId);
+            if(!item) return;
+            const title = item.comicTitle || item._comic?.title || 'konten ini';
+            const confirmed = await window.showModernConfirm({
+                title:'Hapus satu riwayat?',
+                message:`Riwayat “${title}” akan dihapus. Bookmark dan koleksi tidak ikut terhapus.`,
+                confirmText:'Ya, hapus', danger:true, icon:'fa-trash-can'
+            });
+            if(!confirmed) return;
+
+            const localMap = safeJsonParse(localStorage.getItem('comicHistoryDetail'), {});
+            delete localMap[comicId];
+            localStorage.setItem('comicHistoryDetail', JSON.stringify(localMap));
+
+            const readMap = getReadChapterMap();
+            Object.keys(readMap).forEach(key => { if(key.startsWith(`${comicId}__`)) delete readMap[key]; });
+            localStorage.setItem('readChapterMap', JSON.stringify(readMap));
+            Object.keys(localStorage).forEach(key => { if(key.startsWith(`videoResume_${comicId}_`)) localStorage.removeItem(key); });
+
+            if(auth.currentUser) {
+                try { await deleteDoc(doc(db, 'users', auth.currentUser.uid, 'history', comicId)); }
+                catch(error) { reportBackgroundError('Sinkronisasi hapus satu riwayat gagal', error); }
+            }
+            window.fullHistoryItems = window.fullHistoryItems.filter(entry => entry.comicId !== comicId);
+            window.renderFullHistoryPage();
+            renderReadingHistory(true);
+            renderUpdatesFeed();
+            window.showToast(`Riwayat “${title}” berhasil dihapus`);
         }
 
         // ================= FITUR BOOKMARK =================
@@ -3963,6 +4019,60 @@
                 history.replaceState({ ...history.state, pageIndex:page }, '');
             }
         }
+        function stopReaderProgressTracking() {
+            if(window.readerObserver) {
+                window.readerObserver.disconnect();
+                window.readerObserver = null;
+            }
+            if(window.readerProgressScrollHandler) {
+                window.removeEventListener('scroll', window.readerProgressScrollHandler);
+                window.readerProgressScrollTarget?.removeEventListener('scroll', window.readerProgressScrollHandler);
+                window.readerProgressScrollHandler = null;
+                window.readerProgressScrollTarget = null;
+            }
+            if(window.readerProgressFrame) {
+                cancelAnimationFrame(window.readerProgressFrame);
+                window.readerProgressFrame = null;
+            }
+        }
+        function detectCurrentReaderPage(comicId, chapterId, chapterNum) {
+            const images = [...document.querySelectorAll('#readerImagesContainer img[data-page]')];
+            if(!images.length || document.getElementById('reader-page')?.style.display !== 'block') return;
+            const viewportTarget = Math.max(1, window.innerHeight * 0.42);
+            let best = null;
+            let bestDistance = Infinity;
+            images.forEach(img => {
+                const rect = img.getBoundingClientRect();
+                if(rect.bottom <= 0 || rect.top >= window.innerHeight) return;
+                const focus = Math.min(Math.max(viewportTarget, rect.top), rect.bottom);
+                const distance = Math.abs(focus - viewportTarget);
+                if(distance < bestDistance) { bestDistance = distance; best = img; }
+            });
+            if(!best) return;
+            const visiblePage = Number(best.dataset.page || 1);
+            if(visiblePage !== window.currentReaderPage) {
+                updateReaderPage(visiblePage, chapterNum);
+                window.saveReadingProgress(comicId, chapterId, chapterNum, visiblePage);
+            }
+        }
+        function startReaderProgressTracking(comicId, chapterId, chapterNum) {
+            stopReaderProgressTracking();
+            window.readerProgressScrollHandler = () => {
+                if(window.readerProgressFrame) return;
+                window.readerProgressFrame = requestAnimationFrame(() => {
+                    window.readerProgressFrame = null;
+                    detectCurrentReaderPage(comicId, chapterId, chapterNum);
+                });
+            };
+            window.addEventListener('scroll', window.readerProgressScrollHandler, {passive:true});
+            window.readerProgressScrollTarget = document.getElementById('readerImagesContainer');
+            window.readerProgressScrollTarget?.addEventListener('scroll', window.readerProgressScrollHandler, {passive:true});
+            window.readerObserver = new IntersectionObserver(() => window.readerProgressScrollHandler(), {
+                threshold:[0, 0.01, 0.05], rootMargin:'-10% 0px -10% 0px'
+            });
+            document.querySelectorAll('#readerImagesContainer img[data-page]').forEach(img => window.readerObserver.observe(img));
+            window.readerProgressScrollHandler();
+        }
         window.bookmarkReaderPage = function() {
             const mark={comicId:window.currentActiveComicId,chapterId:window.currentActiveChapterId,chapterNum:window.currentActiveChapterNum,page:window.currentReaderPage||1,savedAt:Date.now()};
             localStorage.setItem(`readerMark_${mark.comicId}`,JSON.stringify(mark));
@@ -3974,10 +4084,7 @@
 
         window.openReader = async function(comicId, chapterId, chapterNum, targetPageIndex = 1, fromHistory = false) {
             if(!(await ensureAgeAccess(comicId))) return;
-            if(window.readerObserver) {
-                window.readerObserver.disconnect();
-                window.readerObserver = null;
-            }
+            stopReaderProgressTracking();
             if(window.currentActiveComicId && window.currentActiveChapterId &&
                (window.currentActiveComicId !== comicId || window.currentActiveChapterId !== chapterId) &&
                document.getElementById('reader-page')?.style.display === 'block') {
@@ -4030,24 +4137,7 @@
 
                         saveReadingProgress(comicId, chapterId, chapterNum, targetPageIndex);
 
-                        if (window.readerObserver) window.readerObserver.disconnect();
-                        let lastSavedPage = targetPageIndex;
-                        
-                        window.readerObserver = new IntersectionObserver((entries) => {
-                            entries.forEach(entry => {
-                                if(entry.isIntersecting) {
-                                    const visiblePage = parseInt(entry.target.getAttribute('data-page'));
-                                    if(visiblePage !== lastSavedPage) {
-                                        lastSavedPage = visiblePage;
-                                        updateReaderPage(visiblePage, chapterNum);
-                                        saveReadingProgress(comicId, chapterId, chapterNum, visiblePage);
-                                    }
-                                }
-                            });
-                        }, { threshold: 0.5 });
-
-                        const imgs = imgContainer.querySelectorAll('img[data-page]');
-                        imgs.forEach(img => window.readerObserver.observe(img));
+                        startReaderProgressTracking(comicId, chapterId, chapterNum);
                     }
                 } else {
                     loader.style.display = 'none';
@@ -4060,7 +4150,10 @@
         }
 
         window.closeReader = function() {
-            if (window.readerObserver) window.readerObserver.disconnect();
+            if(window.currentActiveComicId && window.currentActiveChapterId) {
+                window.saveReadingProgress(window.currentActiveComicId, window.currentActiveChapterId, window.currentActiveChapterNum, window.currentReaderPage || 1);
+            }
+            stopReaderProgressTracking();
             if(history.state?.comicApp && history.state.view === 'reader') history.back();
             else window.switchNav('home');
         }
@@ -4139,17 +4232,30 @@
             videoPlayer.ontimeupdate = () => {
                 const second = Math.floor(videoPlayer.currentTime || 0);
                 const delta=second-window.lastVideoTrackedSecond;if(!videoPlayer.paused&&delta>0&&delta<=3)trackWatchSeconds(delta);window.lastVideoTrackedSecond=second;
-                if(second > 0 && second % 10 === 0 && second !== window.lastVideoProgressSaved) {
+                if(second >= 0 && second !== window.lastVideoProgressSaved) {
                     window.lastVideoProgressSaved = second;
-                    window.saveVideoProgress(comicId, chapterId, chapterNum, second, videoPlayer.duration || 0);
+                    // Simpan lokal setiap detik agar posisi terakhir selalu tepat.
+                    window.saveVideoProgress(comicId, chapterId, chapterNum, second, videoPlayer.duration || 0, false);
+                    // Sinkronisasi cloud dibatasi agar Firestore tidak ditulis setiap detik.
+                    if(second > 0 && (window.lastVideoCloudSaved < 0 || second - window.lastVideoCloudSaved >= 5)) {
+                        window.lastVideoCloudSaved = second;
+                        window.saveVideoProgress(comicId, chapterId, chapterNum, second, videoPlayer.duration || 0, true);
+                    }
                 }
                 updateVideoSkipButton(second,videoPlayer.duration||0);
             };
             window.lastVideoTrackedSecond=0;
             window.pendingWatchAnalyticsSeconds=0;
             window.lastVideoProgressSaved=-1;
+            window.lastVideoCloudSaved=-1;
             videoPlayer.onplay=syncPlayerPlayButton;
-            videoPlayer.onpause=()=>{syncPlayerPlayButton();if(auth.currentUser)syncGamification();};
+            videoPlayer.onpause=()=>{
+                syncPlayerPlayButton();
+                if(videoPlayer.currentTime > 0 && !videoPlayer.ended) {
+                    window.saveVideoProgress(comicId, chapterId, chapterNum, videoPlayer.currentTime, videoPlayer.duration || 0);
+                }
+                if(auth.currentUser) syncGamification();
+            };
             videoPlayer.onended = () => {
                 syncPlayerPlayButton();
                 markChapterRead(comicId, chapterId);
@@ -4375,6 +4481,24 @@
             if(history.state?.comicApp && history.state.view === 'player') history.back();
             else window.switchNav('home');
         }
+
+        function saveActiveMediaProgress() {
+            const playerVisible = document.getElementById('player-page')?.style.display === 'flex';
+            const readerVisible = document.getElementById('reader-page')?.style.display === 'block';
+            if(playerVisible) {
+                const player = document.getElementById('mainVideoPlayer');
+                if(window.currentActiveComicId && window.currentActiveChapterId && player?.currentTime > 0 && !player.ended) {
+                    window.saveVideoProgress(window.currentActiveComicId, window.currentActiveChapterId, window.currentActiveChapterNum, player.currentTime, player.duration || 0);
+                }
+            } else if(readerVisible && window.currentActiveComicId && window.currentActiveChapterId) {
+                detectCurrentReaderPage(window.currentActiveComicId, window.currentActiveChapterId, window.currentActiveChapterNum);
+                window.saveReadingProgress(window.currentActiveComicId, window.currentActiveChapterId, window.currentActiveChapterNum, window.currentReaderPage || 1);
+            }
+        }
+        window.addEventListener('pagehide', saveActiveMediaProgress);
+        document.addEventListener('visibilitychange', () => {
+            if(document.visibilityState === 'hidden') saveActiveMediaProgress();
+        });
 
         document.addEventListener('keydown',event=>{
             if(event.key==='Escape'&&document.getElementById('accountMenu')?.classList.contains('show')){closeAccountMenu();return;}

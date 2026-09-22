@@ -239,7 +239,7 @@
             .season-header{padding:13px 12px;gap:9px}.season-progress{display:none}.season-episodes{padding:8px;gap:10px}
             .season-card .chapter-item{display:grid;grid-template-columns:88px minmax(0,1fr);grid-template-areas:'visual info' 'visual actions';align-items:start;padding:12px 10px;column-gap:11px;row-gap:8px;min-height:88px}
             .episode-thumbnail,.episode-index{grid-area:visual;align-self:center}.episode-index{width:44px;height:44px;place-self:center;font-size:11px}
-            .episode-thumbnail{width:88px;height:60px;flex-basis:88px;border-radius:12px;transform:scale(1.08);transform-origin:center;z-index:1}.episode-thumbnail.comic-thumbnail{width:56px;height:79px;place-self:center;flex-basis:56px}
+            .episode-thumbnail{width:88px;height:60px;flex-basis:88px;border-radius:12px;transform:scale(1.18);transform-origin:center;z-index:1}.episode-thumbnail.comic-thumbnail{width:56px;height:79px;place-self:center;flex-basis:56px;transform:scale(1.08)}
             .season-card .chapter-info{grid-area:info;width:100%;min-width:0}.season-card .chapter-title{padding-right:0;font-size:12.8px;line-height:1.43;overflow-wrap:anywhere}
             .season-card .chapter-date{flex-wrap:wrap;row-gap:4px;margin-top:6px;overflow:visible;white-space:normal;font-size:9.4px;line-height:1.35;letter-spacing:-.12px}.season-card .chapter-date>span+span::before{margin:0 5px}
             .chapter-action-group{position:static;grid-area:actions;justify-self:start;display:flex;align-items:center;gap:6px;z-index:auto}
@@ -553,6 +553,13 @@
         .alphabet-btn { width:25px; min-height:18px; display:grid; place-items:center; flex:0 0 18px; border:0; border-radius:9px; color:#60657a; background:transparent; cursor:pointer; font-size:9px; font-weight:800; line-height:1; }
         .alphabet-btn:hover { color:var(--primary-blue); background:var(--light-blue); }
         .alphabet-btn.active { min-height:25px; flex-basis:25px; color:#fff; background:linear-gradient(135deg,#6d5dfc,#5153e8); box-shadow:0 4px 10px rgba(91,92,240,.28); }
+        .alphabet-btn.unavailable { opacity:.3; cursor:default; }
+        .alphabet-section-heading { grid-column:1/-1; position:relative; display:flex; align-items:center; gap:11px; min-height:56px; margin:6px 0 0; padding:11px 4px 7px; scroll-margin-top:205px; color:#242738; }
+        .alphabet-section-heading:first-child { margin-top:0; }
+        .alphabet-section-letter { width:42px; height:42px; flex:0 0 42px; display:grid; place-items:center; border-radius:14px; color:#fff; background:linear-gradient(135deg,#6d5dfc,#5153e8); box-shadow:0 7px 18px rgba(91,92,240,.24); font-size:21px; font-weight:900; }
+        .alphabet-section-copy strong { display:block; font-size:13px; font-weight:850; }
+        .alphabet-section-copy small { display:block; margin-top:3px; color:#9296a7; font-size:9px; font-weight:650; }
+        .alphabet-section-line { height:1px; flex:1; background:linear-gradient(90deg,#dddafe,transparent); }
         .filter-panel { display:none; margin:2px 16px 4px; padding:16px; border-radius:18px; background:#fff; box-shadow:0 12px 32px rgba(32,37,70,.1); border:1px solid var(--border-color); }
         .filter-panel.show { display:block; animation:fadeIn .2s ease; }
         .filter-panel-head { display:flex; justify-content:space-between; align-items:center; margin-bottom:13px; }
@@ -1254,7 +1261,7 @@
                 <h1>Yarch terus berkembang</h1>
                 <p>Lihat fitur baru, peningkatan pengalaman, dan bug yang telah diperbaiki dari versi terbaru hingga versi sebelumnya.</p>
             </section>
-            <div class="changelog-current"><span><strong id="changelogCurrentVersion">V20.2.5</strong><br>Versi yang sedang digunakan</span><button type="button" onclick="checkAppConfiguration(true)"><i class="fa-solid fa-rotate"></i> Periksa update</button></div>
+            <div class="changelog-current"><span><strong id="changelogCurrentVersion">V20.2.6</strong><br>Versi yang sedang digunakan</span><button type="button" onclick="checkAppConfiguration(true)"><i class="fa-solid fa-rotate"></i> Periksa update</button></div>
             <main class="changelog-timeline" id="changelogTimeline" aria-live="polite"></main>
         </div>
 
@@ -1598,14 +1605,14 @@
             <button class="account-menu-item" type="button" onclick="openAppInfo('about')"><i class="fa-solid fa-circle-info"></i><span>Tentang Yarch</span><i class="fa-solid fa-chevron-right"></i></button>
             <button class="account-menu-item" type="button" onclick="closeAccountMenu();openAdminContact()"><i class="fa-solid fa-headset"></i><span>Hubungi Admin</span><i class="fa-solid fa-chevron-right"></i></button>
             <div class="account-menu-divider" style="margin-top:11px"></div>
-            <button class="account-menu-item updates-menu-item" type="button" onclick="closeAccountMenu();openChangelogPage()"><i class="fa-solid fa-clock-rotate-left"></i><span class="account-menu-item-copy"><strong>Updates</strong><small>V20.2.5 • Riwayat perbaikan</small></span><i class="fa-solid fa-chevron-right"></i></button>
+            <button class="account-menu-item updates-menu-item" type="button" onclick="closeAccountMenu();openChangelogPage()"><i class="fa-solid fa-clock-rotate-left"></i><span class="account-menu-item-copy"><strong>Updates</strong><small>V20.2.6 • Riwayat perbaikan</small></span><i class="fa-solid fa-chevron-right"></i></button>
             <button class="account-menu-item danger" id="accountMenuLogout" type="button" onclick="closeAccountMenu();doLogout()"><i class="fa-solid fa-right-from-bracket"></i><span>Keluar dari Akun</span><i class="fa-solid fa-chevron-right"></i></button>
         </aside>
     </div>
     <div class="profile-modal-backdrop" id="profileEditorModal" onclick="if(event.target===this)closeProfileEditor()"><section class="profile-modal-sheet" role="dialog" aria-modal="true" aria-labelledby="profileEditorTitle"><div class="profile-modal-head"><div class="profile-modal-icon"><i class="fa-solid fa-user-pen"></i></div><div class="profile-modal-title"><h3 id="profileEditorTitle">Lengkapi Profil</h3><p>Informasi tanggal lahir disimpan secara privat untuk verifikasi usia.</p></div><button class="profile-modal-close" onclick="closeProfileEditor()"><i class="fa-solid fa-xmark"></i></button></div><div class="profile-modal-form"><label for="profileDisplayName">Nama tampilan</label><input id="profileDisplayName" maxlength="35" placeholder="Nama tampilan"><label for="profileBioInput">Bio singkat</label><textarea id="profileBioInput" maxlength="160" placeholder="Ceritakan genre atau karakter favoritmu..."></textarea><div class="profile-modal-grid"><div><label for="profileBirthDate">Tanggal lahir</label><input id="profileBirthDate" type="date"></div><div><label for="profileGender">Jenis kelamin</label><select id="profileGender"><option value="">Tidak disebutkan</option><option value="Laki-laki">Laki-laki</option><option value="Perempuan">Perempuan</option><option value="Lainnya">Lainnya</option></select></div></div><label for="profileLocation">Kota / lokasi (opsional)</label><input id="profileLocation" maxlength="60" placeholder="Contoh: Jakarta"><button class="profile-modal-save" onclick="saveSocialProfile()"><i class="fa-solid fa-floppy-disk"></i> Simpan Profil</button></div></section></div>
     <div class="profile-modal-backdrop" id="shareProfileModal" onclick="if(event.target===this)closeShareProfile()"><section class="profile-modal-sheet" role="dialog" aria-modal="true"><div class="profile-modal-head"><div class="profile-modal-icon"><i class="fa-solid fa-share-nodes"></i></div><div class="profile-modal-title"><h3>Bagikan Profil</h3><p>Undang teman melihat profil, statistik, dan favorit yang kamu izinkan.</p></div><button class="profile-modal-close" onclick="closeShareProfile()"><i class="fa-solid fa-xmark"></i></button></div><div class="share-profile-preview"><img id="shareProfileAvatar" alt="Foto profil"><div><strong id="shareProfileName">Pembaca Yarch</strong><span id="shareProfileLevel">Profil pembaca</span></div></div><div class="share-url-row"><input id="shareProfileUrl" readonly><button onclick="shareProfileVia('copy')" aria-label="Salin tautan"><i class="fa-regular fa-copy"></i></button></div><div class="share-option-grid"><button class="share-option" onclick="shareProfileVia('native')"><i class="fa-solid fa-arrow-up-from-bracket"></i>Bagikan</button><button class="share-option" onclick="shareProfileVia('whatsapp')"><i class="fa-brands fa-whatsapp" style="color:#18a957"></i>WhatsApp</button><button class="share-option" onclick="shareProfileVia('telegram')"><i class="fa-brands fa-telegram" style="color:#2b9bd7"></i>Telegram</button><button class="share-option" onclick="shareProfileVia('copy')"><i class="fa-solid fa-link"></i>Salin</button></div></section></div>
     <div class="profile-modal-backdrop" id="ageGateModal"><section class="profile-modal-sheet age-gate-sheet" role="dialog" aria-modal="true" aria-labelledby="ageGateTitle"><div class="age-gate-shield"><i class="fa-solid fa-shield-halved"></i></div><h3 id="ageGateTitle">Verifikasi Usia</h3><p id="ageGateMessage">Konten ini ditujukan untuk pengguna yang telah memenuhi batas usia.</p><div class="profile-modal-form"><label for="ageGateBirthDate" style="text-align:left">Tanggal lahir</label><input id="ageGateBirthDate" type="date" oninput="updateAgeGateButton()" onchange="updateAgeGateButton()"><div class="age-gate-status" id="ageGateStatus" role="status" aria-live="polite"></div><label class="age-confirm-check"><input id="ageGateConfirm" type="checkbox" onchange="updateAgeGateButton()"><span>Saya menyatakan tanggal lahir yang dimasukkan benar dan memahami bahwa konten dapat memuat tema dewasa.</span></label></div><div class="age-gate-actions"><button class="age-cancel" onclick="resolveAgeGate(false)">Kembali</button><button class="age-continue" id="ageGateContinue" disabled onclick="resolveAgeGate(true)">Verifikasi & Masuk</button></div></section></div>
-    <div class="update-modal-backdrop" id="updateModal"><div class="update-sheet"><div class="update-icon"><i class="fa-solid fa-cloud-arrow-down"></i></div><h2>Versi baru tersedia</h2><p>Pembaruan aplikasi sudah siap. Proses ini akan membersihkan cache antarmuka lama tanpa menghapus akun, bookmark, atau riwayat Anda.</p><div class="update-version-line"><span id="updateCurrentVersion">V20.2.5</span><i class="fa-solid fa-arrow-right"></i><span id="updateLatestVersion">V20.2.5</span></div><div class="update-changelog" id="updateChangelog">Peningkatan stabilitas dan tampilan.</div><div class="update-actions"><button class="update-action update-later" onclick="dismissAppUpdate()">Nanti</button><button class="update-action update-now" onclick="applyAppUpdate()"><i class="fa-solid fa-bolt"></i> Perbarui Sekarang</button></div></div></div>
+    <div class="update-modal-backdrop" id="updateModal"><div class="update-sheet"><div class="update-icon"><i class="fa-solid fa-cloud-arrow-down"></i></div><h2>Versi baru tersedia</h2><p>Pembaruan aplikasi sudah siap. Proses ini akan membersihkan cache antarmuka lama tanpa menghapus akun, bookmark, atau riwayat Anda.</p><div class="update-version-line"><span id="updateCurrentVersion">V20.2.6</span><i class="fa-solid fa-arrow-right"></i><span id="updateLatestVersion">V20.2.6</span></div><div class="update-changelog" id="updateChangelog">Peningkatan stabilitas dan tampilan.</div><div class="update-actions"><button class="update-action update-later" onclick="dismissAppUpdate()">Nanti</button><button class="update-action update-now" onclick="applyAppUpdate()"><i class="fa-solid fa-bolt"></i> Perbarui Sekarang</button></div></div></div>
 
     <div class="home-action-backdrop" id="requestContentModal" role="dialog" aria-modal="true" aria-labelledby="requestContentTitle" onclick="if(event.target===this)closeRequestModal()">
         <div class="home-action-sheet">
@@ -1670,7 +1677,7 @@
         const app = initializeApp(firebaseConfig);
         const db = getFirestore(app);
         const auth = getAuth(app);
-        const APP_VERSION = '20.2.5';
+        const APP_VERSION = '20.2.6';
         const ADMIN_UID = 'dWUWpKAWQRRxMOzjzaOA3zXWZLp2';
 
         // ================= PENYIMPANAN OFFLINE (INDEXEDDB) =================
@@ -1784,7 +1791,8 @@
         }
         window.accountMenuNavigate=function(page){closeAccountMenu();switchNav(page);}
         const APP_CHANGELOG = [
-            {version:'20.2.5',label:'Terbaru',title:'Thumbnail media lebih jelas',changes:['Thumbnail komik, video, film, dan episode diperbesar sedikit pada layar ponsel tanpa mengubah ukuran kartu daftar isi.'],fixes:['Ukuran teks, tombol, serta jarak antar-episode tetap dipertahankan seperti versi sebelumnya.']},
+            {version:'20.2.6',label:'Terbaru',title:'Indeks abjad dan thumbnail video',changes:['Thumbnail video diperbesar lagi sementara ukuran thumbnail komik tetap dipertahankan.','Sorting Judul A–Z dan Z–A kini menampilkan pemisah huruf besar beserta kumpulan judul di bawahnya.','Huruf kecil pada indeks atas kini menjadi pintasan menuju kelompok judul yang dipilih.'],fixes:['Huruf tanpa hasil setelah filter otomatis dibuat nonaktif dan urutan kelompok mengikuti arah sorting.']},
+            {version:'20.2.5',title:'Thumbnail media lebih jelas',changes:['Thumbnail komik, video, film, dan episode diperbesar sedikit pada layar ponsel tanpa mengubah ukuran kartu daftar isi.'],fixes:['Ukuran teks, tombol, serta jarak antar-episode tetap dipertahankan seperti versi sebelumnya.']},
             {version:'20.2.4',title:'Daftar episode lebih rapi',changes:['Thumbnail episode dan film diperbesar agar lebih mudah dikenali pada layar ponsel.','Judul, tanggal, durasi, bahasa, dan tombol aksi kini memiliki area terpisah.'],fixes:['Mencegah judul serta informasi di bawahnya bertabrakan dengan tombol Tonton dan Offline pada judul yang panjang.']},
             {version:'20.2.3',title:'Progres dan tata letak unduhan',changes:['Tombol Offline kini sejajar di samping tombol Baca/Tonton agar tidak menimpa informasi subtitle.','Panel progres menampilkan persentase, urutan berkas, serta ukuran data yang sedang diterima.'],fixes:['Status berhasil dan gagal kini terlihat jelas sehingga pengguna mengetahui hasil proses unduhan.']},
             {version:'20.2.2',title:'Perbaikan daftar unduhan kosong',changes:['Pembacaan IndexedDB kini membedakan hasil kosong dengan objek permintaan database.','Record unduhan tidak lengkap otomatis dibersihkan agar dapat diunduh ulang.'],fixes:['Memperbaiki pesan keliru “konten sudah tersedia offline” ketika konten sebenarnya belum tersimpan.','Memperbaiki halaman Unduhan Offline yang kosong setelah pemeriksaan download.']},
@@ -2050,7 +2058,7 @@
             const button=document.querySelector('.update-now');button.disabled=true;button.innerHTML='<i class="fa-solid fa-spinner fa-spin"></i> Memperbarui...';
             try{if('serviceWorker'in navigator){const registration=await navigator.serviceWorker.getRegistration('./');if(registration)await registration.unregister();}if('caches'in window){const keys=await caches.keys();await Promise.all(keys.filter(key=>key.startsWith('komik-anime-')).map(key=>caches.delete(key)));}localStorage.removeItem('dismissedAppVersion');const url=new URL(location.href);url.searchParams.set('appVersion',Date.now());location.replace(url.href);}catch(e){button.disabled=false;button.innerHTML='<i class="fa-solid fa-bolt"></i> Perbarui Sekarang';window.showToast('Pembaruan gagal. Silakan muat ulang halaman.');}
         }
-        if('serviceWorker' in navigator && location.protocol !== 'file:') navigator.serviceWorker.register('./sw-v20.1.js?v=20.2.5-thumbnail-scale',{updateViaCache:'none'}).then(reg=>reg.update()).catch(() => {});
+        if('serviceWorker' in navigator && location.protocol !== 'file:') navigator.serviceWorker.register('./sw-v20.1.js?v=20.2.6-alphabet-sections',{updateViaCache:'none'}).then(reg=>reg.update()).catch(() => {});
         document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible'){window.checkAppConfiguration(false);recordDailyAnalytics({});}});
         async function applyRemoteDisplayConfig(){try{const snap=await getDoc(doc(db,'settings','appConfig'));if(!snap.exists())return;const c=snap.data();if(c.appName)document.title=c.appName;if(/^#[0-9a-f]{6}$/i.test(c.themeColor||''))document.documentElement.style.setProperty('--primary-blue',c.themeColor);const recommendation=document.getElementById('recommendationSection');if(recommendation)recommendation.style.display=c.enableRecommendations===false?'none':'block';document.body.classList.toggle('gamification-off',c.enableGamification===false);if(c.announcement&&localStorage.getItem('seenAnnouncementV20.1')!==c.announcement){localStorage.setItem('seenAnnouncementV20.1',c.announcement);setTimeout(()=>window.showToast(c.announcement),1200);}}catch(e){}}
         applyRemoteDisplayConfig();
@@ -2823,7 +2831,10 @@
                 ? ['', ...alphabet.reverse(), '#']
                 : ['', '#', ...alphabet];
             rail.innerHTML = letters.map(letter => `<button class="alphabet-btn ${letter === '' ? 'all-letters' : ''} ${window.discoveryLetter === letter ? 'active' : ''}" data-letter="${letter}" onclick="selectAlphabetLetter('${letter}')" title="${letter ? 'Judul ' + letter : 'Semua judul'}">${letter || 'Semua'}</button>`).join('');
-            requestAnimationFrame(() => rail.querySelector('.alphabet-btn.active')?.scrollIntoView({ behavior:'smooth', block:'nearest', inline:'center' }));
+            requestAnimationFrame(() => {
+                rail.querySelector('.alphabet-btn.active')?.scrollIntoView({ behavior:'smooth', block:'nearest', inline:'center' });
+                syncAlphabetAvailability();
+            });
         }
 
         function updateAlphabetMode() {
@@ -2833,11 +2844,33 @@
             renderAlphabetRail();
         }
 
+        function alphabetSectionId(letter) {
+            return `alphabet-section-${letter === '#' ? 'other' : letter}`;
+        }
+
+        function syncAlphabetAvailability() {
+            const rail = document.getElementById('alphabetRail');
+            rail?.querySelectorAll('.alphabet-btn[data-letter]').forEach(button => {
+                const letter = button.dataset.letter || '';
+                const available = !letter || !!document.getElementById(alphabetSectionId(letter));
+                button.classList.toggle('unavailable', !available);
+                button.disabled = !available;
+                button.title = available ? (letter ? `Menuju judul ${letter}` : 'Kembali ke atas') : `Belum ada judul ${letter}`;
+            });
+        }
+
         window.selectAlphabetLetter = function(letter) {
+            if(!letter) {
+                window.discoveryLetter = '';
+                renderAlphabetRail();
+                document.getElementById('discovery-page')?.scrollIntoView({behavior:'smooth',block:'start'});
+                return;
+            }
+            const target = document.getElementById(alphabetSectionId(letter));
+            if(!target) return window.showToast(`Belum ada judul dengan huruf ${letter}`);
             window.discoveryLetter = letter;
             renderAlphabetRail();
-            renderDiscoveryGrid(false);
-            window.scrollTo({ top:0, behavior:'smooth' });
+            target.scrollIntoView({behavior:'smooth',block:'start'});
         }
 
         window.toggleDiscoverySort = function() {
@@ -2958,11 +2991,12 @@
 
             let gridHtml = '';
             let resultCount = 0;
+            let lastTitleLetter = null;
+            const alphabetGrouping = window.discoverySort === 'title-asc' || window.discoverySort === 'title-desc';
             const sortedEntries = sortDiscoveryEntries(Object.entries(window.comicsData));
             for(const [id, comic] of sortedEntries) {
                 const firstCharacter = String(comic.title || '').trim().charAt(0).toUpperCase();
                 const titleLetter = /^[A-Z]$/.test(firstCharacter) ? firstCharacter : '#';
-                if(window.discoveryLetter && titleLetter !== window.discoveryLetter) continue;
                 const comicGenres = Array.isArray(comic.genres) ? comic.genres : [];
                 const releaseYear = comic.releaseDate ? String(comic.releaseDate).slice(0,4) : '';
                 if(filters.genre && !comicGenres.includes(filters.genre)) continue;
@@ -2992,6 +3026,12 @@
                 const ageText = comic.ageRating || 'SU';
                 const typeText = comic.type || (isVideoType ? 'Video' : 'Komik');
 
+                if(alphabetGrouping && titleLetter !== lastTitleLetter) {
+                    const sectionLabel = titleLetter === '#' ? 'Lainnya' : `Huruf ${titleLetter}`;
+                    gridHtml += `<div class="alphabet-section-heading" id="${alphabetSectionId(titleLetter)}" data-letter="${safeAttr(titleLetter)}"><span class="alphabet-section-letter">${safeText(titleLetter)}</span><span class="alphabet-section-copy"><strong>${safeText(sectionLabel)}</strong><small>Kumpulan judul berawalan ${safeText(titleLetter)}</small></span><span class="alphabet-section-line"></span></div>`;
+                    lastTitleLetter = titleLetter;
+                }
+
                 gridHtml += `
                     <div class="discovery-card" onclick="openDetail('${id}')">
                         <button class="quick-bookmark-btn ${bookmarkActive ? 'active' : ''}" data-bookmark-id="${id}" onclick="toggleBookmarkFromCard(event,'${id}')" title="${bookmarkActive ? 'Hapus bookmark' : 'Simpan bookmark'}"><i class="fa-${bookmarkActive ? 'solid' : 'regular'} fa-bookmark"></i></button>
@@ -3015,8 +3055,9 @@
             }
 
             const countEl = document.getElementById('discoveryCount');
-            if(countEl) countEl.innerText = `${window.discoveryLetter ? 'Huruf ' + window.discoveryLetter + ' • ' : ''}${resultCount} konten ditemukan`;
+            if(countEl) countEl.innerText = `${resultCount} konten ditemukan`;
             container.innerHTML = gridHtml || `<div class="empty-history" style="grid-column:1/-1;"><i class="fa-solid fa-filter-circle-xmark" style="font-size:28px;margin-bottom:12px;color:#b6b9c7;"></i><br>Tidak ada konten yang cocok dengan filter.</div>`;
+            syncAlphabetAvailability();
         }
 
         window.setDiscoveryView(window.discoveryView);

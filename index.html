@@ -135,7 +135,7 @@
         .nav-item.active i { margin-bottom: 0; }
 
         /* PAGE CONTROL */
-        #detail-page, #profile-page, #reader-page, #player-page, #bookmark-page, #discovery-page, #updates-page, #history-page, #home-collection-page { display: none; background-color: #ffffff; min-height: 100vh; animation: fadeIn 0.3s ease-in-out; padding-bottom: 65px; }
+        #detail-page, #profile-page, #reader-page, #player-page, #bookmark-page, #discovery-page, #updates-page, #history-page, #home-collection-page, #changelog-page { display: none; background-color: #ffffff; min-height: 100vh; animation: fadeIn 0.3s ease-in-out; padding-bottom: 65px; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 
         /* DETAIL PAGE */
@@ -212,6 +212,9 @@
         .episode-thumbnail.comic-thumbnail { width:54px; height:76px; flex:0 0 54px; border-radius:9px; background:#fff; border:1px solid #e5e7eb; }
         .episode-thumbnail.comic-thumbnail img { object-fit:contain; object-position:center; background:#fff; }
         .episode-thumbnail.comic-thumbnail::after { content:''; background:linear-gradient(180deg,transparent 62%,rgba(8,10,20,.18)); }
+        .episode-thumbnail.image-unavailable img { display:none; }
+        .episode-thumbnail.image-unavailable { background:linear-gradient(145deg,#eeedff,#f8f8fc); }
+        .episode-thumbnail.image-unavailable::after { content:'\f03e'; color:#817bea; background:transparent; font-size:15px; }
         .season-card.seasonless-card { overflow:visible; border:0; box-shadow:none; background:transparent; }
         .season-card.seasonless-card .season-episodes { padding:0; background:transparent; }
         .season-card .chapter-info { flex:1; min-width:0; }
@@ -434,6 +437,10 @@
         .account-menu-item:hover { background:#f7f7fc; }
         .account-menu-item>i:first-child { width:31px; height:31px; display:grid; place-items:center; border-radius:10px; color:#625af2; background:#efefff; }
         .account-menu-item>span { flex:1; }
+        .account-menu-item-copy strong,.account-menu-item-copy small { display:block; }
+        .account-menu-item-copy small { margin-top:3px; color:#989cad; font-size:8.5px; font-weight:650; }
+        .account-menu-item.updates-menu-item { margin-top:5px; background:linear-gradient(135deg,#f2f0ff,#fff6f0); }
+        .account-menu-item.updates-menu-item>i:first-child { color:#fff; background:linear-gradient(135deg,#6d5dfc,#ff6b4a); box-shadow:0 6px 14px rgba(98,90,242,.23); }
         .account-menu-item>.fa-chevron-right { color:#b3b5c1; font-size:9px; }
         .account-menu-item.danger { color:#d84f62; }
         .account-menu-item.danger>i:first-child { color:#d84f62; background:#fff0f2; }
@@ -709,6 +716,41 @@
         .maintenance-screen { position:fixed; inset:0; z-index:12000; display:none; align-items:center; justify-content:center; padding:25px; background:radial-gradient(circle at 50% 15%,#7470ff,#292c66 58%,#17192e); color:#fff; text-align:center; }
         .maintenance-screen.show { display:flex; }.maintenance-box{width:min(100%,390px)}.maintenance-icon{width:82px;height:82px;display:grid;place-items:center;margin:0 auto 22px;border-radius:26px;background:rgba(255,255,255,.13);border:1px solid rgba(255,255,255,.2);font-size:34px}.maintenance-box h1{font-size:25px}.maintenance-box p{margin-top:10px;color:rgba(255,255,255,.72);font-size:13px;line-height:1.65}.maintenance-retry{margin-top:22px;padding:12px 18px;border:1px solid rgba(255,255,255,.25);border-radius:13px;color:#fff;background:rgba(255,255,255,.12);font-weight:800;cursor:pointer}
 
+        /* HALAMAN RIWAYAT VERSI / UPDATES */
+        #changelog-page { background:#f7f8fc; }
+        .changelog-head { position:sticky; top:0; z-index:20; min-height:64px; display:flex; align-items:center; gap:13px; padding:11px 17px; border-bottom:1px solid rgba(229,231,240,.86); background:rgba(255,255,255,.9); backdrop-filter:blur(16px); -webkit-backdrop-filter:blur(16px); }
+        .changelog-back { width:41px; height:41px; flex:0 0 41px; display:grid; place-items:center; border:0; border-radius:13px; color:#53576a; background:#f0f1f6; cursor:pointer; }
+        .changelog-head-copy strong { display:block; color:#202333; font-size:18px; letter-spacing:-.35px; }
+        .changelog-head-copy span { display:block; margin-top:2px; color:#9296a7; font-size:9px; }
+        .changelog-hero { position:relative; overflow:hidden; margin:15px; padding:24px 21px; border-radius:24px; color:#fff; background:linear-gradient(125deg,#272b4d 0%,#5f59ef 48%,#f07475 100%); box-shadow:0 16px 35px rgba(66,62,151,.22); }
+        .changelog-hero::before,.changelog-hero::after { content:''; position:absolute; border-radius:999px; border:12px solid rgba(255,255,255,.1); transform:rotate(-25deg); }
+        .changelog-hero::before { width:180px; height:60px; right:-35px; top:-20px; }
+        .changelog-hero::after { width:130px; height:42px; right:25px; bottom:-30px; }
+        .changelog-hero>* { position:relative; z-index:1; }
+        .changelog-kicker { display:inline-flex; align-items:center; gap:6px; padding:5px 9px; border:1px solid rgba(255,255,255,.25); border-radius:99px; background:rgba(255,255,255,.12); font-size:8px; font-weight:850; letter-spacing:.08em; text-transform:uppercase; }
+        .changelog-hero h1 { margin-top:13px; font-size:26px; letter-spacing:-.8px; }
+        .changelog-hero p { max-width:330px; margin-top:7px; color:rgba(255,255,255,.78); font-size:11px; line-height:1.55; }
+        .changelog-current { display:flex; align-items:center; justify-content:space-between; gap:10px; margin:13px 15px 2px; padding:12px 14px; border:1px solid #e6e8f1; border-radius:15px; background:#fff; color:#767b8e; font-size:9.5px; }
+        .changelog-current strong { color:#292c3c; font-size:11px; }
+        .changelog-current button { border:0; padding:8px 10px; border-radius:10px; color:#625af2; background:#eeedff; font-size:9px; font-weight:850; cursor:pointer; }
+        .changelog-timeline { position:relative; margin:20px 15px 5px 25px; padding:0 0 15px 22px; }
+        .changelog-timeline::before { content:''; position:absolute; top:8px; bottom:18px; left:4px; width:2px; border-radius:2px; background:linear-gradient(#6b60f6,#efa0ba,#dde0e9); }
+        .release-card { position:relative; overflow:hidden; margin-bottom:15px; padding:17px; border:1px solid #e8e9f1; border-radius:20px; background:#fff; box-shadow:0 8px 25px rgba(38,42,76,.055); }
+        .release-card::before { content:''; position:absolute; top:-42px; right:-45px; width:145px; height:145px; border-radius:50%; background:radial-gradient(circle,rgba(106,96,246,.18),transparent 68%); }
+        .release-card:nth-child(even)::before { background:radial-gradient(circle,rgba(255,112,118,.17),transparent 68%); }
+        .release-dot { position:absolute; top:21px; left:-27px; width:12px; height:12px; border:3px solid #f7f8fc; border-radius:50%; background:#655cf3; box-shadow:0 0 0 2px #655cf3; }
+        .release-card.latest .release-dot { background:#ff6b4a; box-shadow:0 0 0 2px #ff6b4a,0 0 0 7px rgba(255,107,74,.12); }
+        .release-card-head { position:relative; display:flex; align-items:flex-start; justify-content:space-between; gap:12px; }
+        .release-version strong { display:block; color:#222536; font-size:16px; }
+        .release-version span { display:block; margin-top:3px; color:#9a9eae; font-size:8.5px; }
+        .release-number { color:#6460de; font-size:29px; font-weight:900; line-height:.9; letter-spacing:-1.8px; opacity:.2; }
+        .release-badge { display:inline-flex; margin-top:8px; padding:4px 8px; border-radius:99px; color:#e65d42; background:#fff0eb; font-size:7.5px; font-weight:900; letter-spacing:.05em; text-transform:uppercase; }
+        .release-section { position:relative; margin-top:13px; }
+        .release-section h3 { display:flex; align-items:center; gap:6px; color:#4a4e61; font-size:10px; }
+        .release-section h3 i { color:#655cf3; }
+        .release-section ul { margin:7px 0 0 16px; color:#72778a; font-size:9.5px; line-height:1.58; }
+        .release-section li+li { margin-top:4px; }
+
         /* Horizontal sticky alphabet: compact on mobile and never covers cards */
         .alphabet-rail { position:sticky; top:129px; left:auto; bottom:auto; width:calc(100% - 24px); height:52px; margin:8px 12px 2px; padding:7px; flex-direction:row; justify-content:flex-start; gap:5px; border-radius:17px; overflow-x:auto; overflow-y:hidden; scroll-snap-type:x proximity; }
         #discovery-page.alphabet-active .discovery-grid { padding-left:16px; }
@@ -836,7 +878,7 @@
         @media (min-width:900px) {
             body { align-items:flex-start; min-height:100vh; padding:0 20px; background:radial-gradient(circle at 50% -15%,#d9dcff 0,#edf0f7 42%,#e7ebf3 100%); }
             .app-container { width:min(1180px,calc(100vw - 40px)); max-width:1180px; min-height:calc(100vh - 48px); margin:24px auto; padding-bottom:88px; border-radius:30px; box-shadow:0 24px 80px rgba(23,27,55,.16); overflow:hidden; }
-            #home-page,#discovery-page,#updates-page,#bookmark-page,#profile-page,#history-page,#home-collection-page,#detail-page { min-height:calc(100vh - 48px); }
+            #home-page,#discovery-page,#updates-page,#bookmark-page,#profile-page,#history-page,#home-collection-page,#detail-page,#changelog-page { min-height:calc(100vh - 48px); }
             .header { min-height:78px; padding:15px 30px; gap:14px; }
             .brand-mark { width:44px; height:44px; flex-basis:44px; border-radius:15px; font-size:18px; }
             .search-container { min-height:46px; max-width:none; padding:11px 16px; }
@@ -1163,6 +1205,21 @@
             <div class="updates-feed" id="updatesFeed"><div class="loading-text">Memuat update...</div></div>
         </div>
 
+        <!-- ================= RIWAYAT PEMBARUAN APLIKASI ================= -->
+        <div id="changelog-page">
+            <header class="changelog-head">
+                <button class="changelog-back" type="button" onclick="closeChangelogPage()" aria-label="Kembali"><i class="fa-solid fa-arrow-left"></i></button>
+                <div class="changelog-head-copy"><strong>Updates</strong><span>Riwayat peningkatan dan perbaikan Yarch</span></div>
+            </header>
+            <section class="changelog-hero">
+                <span class="changelog-kicker"><i class="fa-solid fa-wand-magic-sparkles"></i> What's new?</span>
+                <h1>Yarch terus berkembang</h1>
+                <p>Lihat fitur baru, peningkatan pengalaman, dan bug yang telah diperbaiki dari versi terbaru hingga versi sebelumnya.</p>
+            </section>
+            <div class="changelog-current"><span><strong id="changelogCurrentVersion">V20.1.23</strong><br>Versi yang sedang digunakan</span><button type="button" onclick="checkAppConfiguration(true)"><i class="fa-solid fa-rotate"></i> Periksa update</button></div>
+            <main class="changelog-timeline" id="changelogTimeline" aria-live="polite"></main>
+        </div>
+
         <!-- ================= HALAMAN RIWAYAT LENGKAP ================= -->
         <div id="history-page">
             <div class="history-page-header">
@@ -1452,7 +1509,6 @@
                     <ul class="user-menu-list"><li class="install-app-item" id="installAppUser" hidden onclick="installApp()"><div class="left-info"><i class="fa-solid fa-mobile-screen-button"></i> Pasang Aplikasi</div><i class="fa-solid fa-download"></i></li><li onclick="switchNav('bookmark')"><div class="left-info"><i class="fa-solid fa-layer-group"></i> Kelola Koleksi Saya</div><i class="fa-solid fa-chevron-right"></i></li><li class="logout-item" onclick="doLogout()"><div class="left-info"><i class="fa-solid fa-right-from-bracket"></i> Keluar dari Akun</div><i class="fa-solid fa-chevron-right"></i></li></ul>
                 </div>
             </div>
-            <div class="app-version-card"><div><strong>Versi Aplikasi</strong><span id="currentVersionLabel">V20.1.22 • Memeriksa pembaruan...</span></div><button class="version-check-btn" onclick="checkAppConfiguration(true)"><i class="fa-solid fa-rotate"></i> Periksa</button></div>
         </div>
 
         <!-- ================= BOTTOM NAVIGATION (DITAMBAHKAN DISCOVERY) ================= -->
@@ -1493,13 +1549,15 @@
             <button class="account-menu-item" type="button" onclick="openAppInfo('privacy')"><i class="fa-solid fa-shield-halved"></i><span>Privacy & Policy</span><i class="fa-solid fa-chevron-right"></i></button>
             <button class="account-menu-item" type="button" onclick="openAppInfo('about')"><i class="fa-solid fa-circle-info"></i><span>Tentang Yarch</span><i class="fa-solid fa-chevron-right"></i></button>
             <button class="account-menu-item" type="button" onclick="closeAccountMenu();openAdminContact()"><i class="fa-solid fa-headset"></i><span>Hubungi Admin</span><i class="fa-solid fa-chevron-right"></i></button>
+            <div class="account-menu-divider" style="margin-top:11px"></div>
+            <button class="account-menu-item updates-menu-item" type="button" onclick="closeAccountMenu();openChangelogPage()"><i class="fa-solid fa-clock-rotate-left"></i><span class="account-menu-item-copy"><strong>Updates</strong><small>V20.1.23 • Riwayat perbaikan</small></span><i class="fa-solid fa-chevron-right"></i></button>
             <button class="account-menu-item danger" id="accountMenuLogout" type="button" onclick="closeAccountMenu();doLogout()"><i class="fa-solid fa-right-from-bracket"></i><span>Keluar dari Akun</span><i class="fa-solid fa-chevron-right"></i></button>
         </aside>
     </div>
     <div class="profile-modal-backdrop" id="profileEditorModal" onclick="if(event.target===this)closeProfileEditor()"><section class="profile-modal-sheet" role="dialog" aria-modal="true" aria-labelledby="profileEditorTitle"><div class="profile-modal-head"><div class="profile-modal-icon"><i class="fa-solid fa-user-pen"></i></div><div class="profile-modal-title"><h3 id="profileEditorTitle">Lengkapi Profil</h3><p>Informasi tanggal lahir disimpan secara privat untuk verifikasi usia.</p></div><button class="profile-modal-close" onclick="closeProfileEditor()"><i class="fa-solid fa-xmark"></i></button></div><div class="profile-modal-form"><label for="profileDisplayName">Nama tampilan</label><input id="profileDisplayName" maxlength="35" placeholder="Nama tampilan"><label for="profileBioInput">Bio singkat</label><textarea id="profileBioInput" maxlength="160" placeholder="Ceritakan genre atau karakter favoritmu..."></textarea><div class="profile-modal-grid"><div><label for="profileBirthDate">Tanggal lahir</label><input id="profileBirthDate" type="date"></div><div><label for="profileGender">Jenis kelamin</label><select id="profileGender"><option value="">Tidak disebutkan</option><option value="Laki-laki">Laki-laki</option><option value="Perempuan">Perempuan</option><option value="Lainnya">Lainnya</option></select></div></div><label for="profileLocation">Kota / lokasi (opsional)</label><input id="profileLocation" maxlength="60" placeholder="Contoh: Jakarta"><button class="profile-modal-save" onclick="saveSocialProfile()"><i class="fa-solid fa-floppy-disk"></i> Simpan Profil</button></div></section></div>
     <div class="profile-modal-backdrop" id="shareProfileModal" onclick="if(event.target===this)closeShareProfile()"><section class="profile-modal-sheet" role="dialog" aria-modal="true"><div class="profile-modal-head"><div class="profile-modal-icon"><i class="fa-solid fa-share-nodes"></i></div><div class="profile-modal-title"><h3>Bagikan Profil</h3><p>Undang teman melihat profil, statistik, dan favorit yang kamu izinkan.</p></div><button class="profile-modal-close" onclick="closeShareProfile()"><i class="fa-solid fa-xmark"></i></button></div><div class="share-profile-preview"><img id="shareProfileAvatar" alt="Foto profil"><div><strong id="shareProfileName">Pembaca Yarch</strong><span id="shareProfileLevel">Profil pembaca</span></div></div><div class="share-url-row"><input id="shareProfileUrl" readonly><button onclick="shareProfileVia('copy')" aria-label="Salin tautan"><i class="fa-regular fa-copy"></i></button></div><div class="share-option-grid"><button class="share-option" onclick="shareProfileVia('native')"><i class="fa-solid fa-arrow-up-from-bracket"></i>Bagikan</button><button class="share-option" onclick="shareProfileVia('whatsapp')"><i class="fa-brands fa-whatsapp" style="color:#18a957"></i>WhatsApp</button><button class="share-option" onclick="shareProfileVia('telegram')"><i class="fa-brands fa-telegram" style="color:#2b9bd7"></i>Telegram</button><button class="share-option" onclick="shareProfileVia('copy')"><i class="fa-solid fa-link"></i>Salin</button></div></section></div>
     <div class="profile-modal-backdrop" id="ageGateModal"><section class="profile-modal-sheet age-gate-sheet" role="dialog" aria-modal="true" aria-labelledby="ageGateTitle"><div class="age-gate-shield"><i class="fa-solid fa-shield-halved"></i></div><h3 id="ageGateTitle">Verifikasi Usia</h3><p id="ageGateMessage">Konten ini ditujukan untuk pengguna yang telah memenuhi batas usia.</p><div class="profile-modal-form"><label for="ageGateBirthDate" style="text-align:left">Tanggal lahir</label><input id="ageGateBirthDate" type="date" oninput="updateAgeGateButton()" onchange="updateAgeGateButton()"><div class="age-gate-status" id="ageGateStatus" role="status" aria-live="polite"></div><label class="age-confirm-check"><input id="ageGateConfirm" type="checkbox" onchange="updateAgeGateButton()"><span>Saya menyatakan tanggal lahir yang dimasukkan benar dan memahami bahwa konten dapat memuat tema dewasa.</span></label></div><div class="age-gate-actions"><button class="age-cancel" onclick="resolveAgeGate(false)">Kembali</button><button class="age-continue" id="ageGateContinue" disabled onclick="resolveAgeGate(true)">Verifikasi & Masuk</button></div></section></div>
-    <div class="update-modal-backdrop" id="updateModal"><div class="update-sheet"><div class="update-icon"><i class="fa-solid fa-cloud-arrow-down"></i></div><h2>Versi baru tersedia</h2><p>Pembaruan aplikasi sudah siap. Proses ini akan membersihkan cache antarmuka lama tanpa menghapus akun, bookmark, atau riwayat Anda.</p><div class="update-version-line"><span id="updateCurrentVersion">V20.1.22</span><i class="fa-solid fa-arrow-right"></i><span id="updateLatestVersion">V20.1.22</span></div><div class="update-changelog" id="updateChangelog">Peningkatan stabilitas dan tampilan.</div><div class="update-actions"><button class="update-action update-later" onclick="dismissAppUpdate()">Nanti</button><button class="update-action update-now" onclick="applyAppUpdate()"><i class="fa-solid fa-bolt"></i> Perbarui Sekarang</button></div></div></div>
+    <div class="update-modal-backdrop" id="updateModal"><div class="update-sheet"><div class="update-icon"><i class="fa-solid fa-cloud-arrow-down"></i></div><h2>Versi baru tersedia</h2><p>Pembaruan aplikasi sudah siap. Proses ini akan membersihkan cache antarmuka lama tanpa menghapus akun, bookmark, atau riwayat Anda.</p><div class="update-version-line"><span id="updateCurrentVersion">V20.1.23</span><i class="fa-solid fa-arrow-right"></i><span id="updateLatestVersion">V20.1.23</span></div><div class="update-changelog" id="updateChangelog">Peningkatan stabilitas dan tampilan.</div><div class="update-actions"><button class="update-action update-later" onclick="dismissAppUpdate()">Nanti</button><button class="update-action update-now" onclick="applyAppUpdate()"><i class="fa-solid fa-bolt"></i> Perbarui Sekarang</button></div></div></div>
 
     <div class="home-action-backdrop" id="requestContentModal" role="dialog" aria-modal="true" aria-labelledby="requestContentTitle" onclick="if(event.target===this)closeRequestModal()">
         <div class="home-action-sheet">
@@ -1564,7 +1622,7 @@
         const app = initializeApp(firebaseConfig);
         const db = getFirestore(app);
         const auth = getAuth(app);
-        const APP_VERSION = '20.1.22';
+        const APP_VERSION = '20.1.23';
         const ADMIN_UID = 'dWUWpKAWQRRxMOzjzaOA3zXWZLp2';
 
         window.comicsData = {};
@@ -1633,6 +1691,34 @@
             const menu=document.getElementById('accountMenu'),button=document.querySelector('.home-menu-button');if(!menu?.classList.contains('show'))return;menu.classList.remove('show');button?.setAttribute('aria-expanded','false');document.body.style.position='';document.body.style.top='';document.body.style.left='';document.body.style.right='';document.body.style.width='';document.body.style.overflow='';window.scrollTo(0,accountMenuScrollY);
         }
         window.accountMenuNavigate=function(page){closeAccountMenu();switchNav(page);}
+        const APP_CHANGELOG = [
+            {version:'20.1.23',label:'Terbaru',title:'Thumbnail & pusat Updates',changes:['Chapter tanpa thumbnail kini otomatis memakai cover komik, sehingga tidak ada lagi gambar rusak.','Kartu versi dipindahkan dari Profil ke menu garis tiga.','Halaman Updates baru menampilkan riwayat fitur dan perbaikan secara berurutan.'],fixes:['Fallback gambar tetap bekerja jika alamat thumbnail lama rusak atau tidak dapat dimuat.']},
+            {version:'20.1.22',title:'Progres baca dan tonton',changes:['Posisi halaman tetap sama ketika mode baca vertikal dan slide diganti.','Data Lanjutkan Baca & Tonton diselaraskan dengan progres terbaru.'],fixes:['Memperbaiki waktu video di Beranda yang sebelumnya dapat tertahan pada 0:00:00.']},
+            {version:'20.1.21',title:'Pembaca & verifikasi usia',changes:['Pelacakan halaman komik diperbarui untuk semua mode baca.','Verifikasi usia untuk konten dewasa menggunakan tanggal lahir profil.'],fixes:['Peringatan usia kini muncul sebelum konten terbatas dibuka.']},
+            {version:'20.1.20',title:'Sinkronisasi progres Beranda',changes:['Kartu lanjutkan membaca dan menonton memuat posisi lokal terbaru terlebih dahulu.'],fixes:['Mencegah data cloud lama menimpa progres yang lebih baru di perangkat.']},
+            {version:'20.1.19',title:'Riwayat lebih fleksibel',changes:['Progres video disimpan lebih cepat saat diputar, dijeda, atau halaman ditutup.','Riwayat dapat dihapus per item selain menghapus seluruh kategori.'],fixes:['Waktu dan persentase menonton dibuat konsisten di Riwayat dan Beranda.']},
+            {version:'20.1.18',title:'Keandalan aktivitas media',changes:['Penyimpanan progres ditambahkan pada perpindahan halaman, tombol kembali, dan perubahan status aplikasi.'],fixes:['Mengurangi progres baca atau tonton yang kembali ke awal.']},
+            {version:'20.1.17',title:'Profil, usia, dan berbagi',changes:['Edit Profil dipindahkan ke modal lengkap dengan tanggal lahir dan informasi pengguna.','Tampilan Bagikan Profil diperbarui dengan WhatsApp, Telegram, salin tautan, dan menu berbagi perangkat.'],fixes:['Validasi profil dan akses konten berdasarkan umur diperjelas.']},
+            {version:'20.1.16',title:'Thumbnail media',changes:['Admin dapat memilih gambar chapter sebagai thumbnail.','Frame video dapat dipilih sebagai thumbnail episode atau film.','Media yang diunggah dapat diunduh kembali dengan nama yang lebih teratur.'],fixes:['Tampilan thumbnail komik dibuat proporsional seperti cover.']},
+            {version:'20.1.15',title:'Daftar isi lebih rapi',changes:['Chapter dan episode diurutkan dari yang terbaru ke yang paling awal.','Konten dengan jumlah season 0 ditampilkan langsung tanpa header Season.'],fixes:['Memperbaiki urutan daftar pada pembaca dan halaman detail.']},
+            {version:'20.1.14',title:'Admin dan pengelolaan konten',changes:['Pemeriksaan genre ganda dan penghapusan pilihan genre ditambahkan.','Pengelolaan folder chapter, episode, dan media ditingkatkan.'],fixes:['Mencegah isian AI lama tertinggal ketika judul pencarian diganti.']},
+            {version:'20.1.13',title:'Koleksi dan pengalaman utama',changes:['Tampilan Koleksi, Riwayat, dan kartu Lanjutkan Baca & Tonton disempurnakan.','Request Konten dan Hubungi Admin dibuat lebih mudah diakses.'],fixes:['Memperbaiki tab koleksi dan informasi cover yang saling bertabrakan.']},
+            {version:'20.1.12',label:'Versi dasar',title:'Profil & menu informasi',changes:['Foto profil ditampilkan pada Beranda dan menu akun.','Menu Blog, Privacy & Policy, Tentang Yarch, dan Hubungi Admin ditambahkan.'],fixes:['Scroll latar dikunci ketika menu akun terbuka dan loading foto profil diperhalus.']}
+        ];
+        function renderChangelog(){
+            const timeline=document.getElementById('changelogTimeline');
+            const version=document.getElementById('changelogCurrentVersion');
+            if(version)version.textContent=`V${APP_VERSION}`;
+            if(!timeline)return;
+            timeline.innerHTML=APP_CHANGELOG.map((release,index)=>`<article class="release-card ${index===0?'latest':''}"><span class="release-dot"></span><div class="release-card-head"><div class="release-version"><strong>Version ${safeText(release.version)}</strong><span>${safeText(release.title)}</span>${release.label?`<span class="release-badge">${safeText(release.label)}</span>`:''}</div><span class="release-number">${safeText(release.version.split('.').pop())}</span></div><section class="release-section"><h3><i class="fa-solid fa-wand-magic-sparkles"></i> Peningkatan & perubahan</h3><ul>${release.changes.map(item=>`<li>${safeText(item)}</li>`).join('')}</ul></section>${release.fixes?.length?`<section class="release-section"><h3><i class="fa-solid fa-screwdriver-wrench"></i> Perbaikan bug</h3><ul>${release.fixes.map(item=>`<li>${safeText(item)}</li>`).join('')}</ul></section>`:''}</article>`).join('');
+        }
+        window.openChangelogPage=function(fromHistory=false){
+            if(!fromHistory&&history.state?.view!=='changelog')pushAppState('changelog');
+            document.querySelectorAll('.app-container > div').forEach(el=>{if(el.id!=='mainBottomNav')el.style.display='none';});
+            const page=document.getElementById('changelog-page');if(page)page.style.display='block';
+            document.getElementById('mainBottomNav').style.display='none';renderChangelog();window.scrollTo(0,0);
+        };
+        window.closeChangelogPage=function(){if(history.state?.comicApp&&history.state.view==='changelog')history.back();else window.switchNav('home');};
         let appInfoScrollY=0;
         window.closeAppInfo=function(){const modal=document.getElementById('appInfoModal');if(!modal?.classList.contains('show'))return;modal.classList.remove('show');document.body.style.position='';document.body.style.top='';document.body.style.left='';document.body.style.right='';document.body.style.width='';document.body.style.overflow='';window.scrollTo(0,appInfoScrollY);}
         window.openAppInfo=function(type){
@@ -1760,6 +1846,7 @@
                 if(state.view !== 'detail') document.getElementById('detailTrailer').src = '';
                 if(['home','discovery','updates','bookmark','profile'].includes(state.view)) window.switchNav(state.view, null, true);
                 else if(state.view === 'history') await window.openHistoryPage(true);
+                else if(state.view === 'changelog') window.openChangelogPage(true);
                 else if(state.view === 'homeCollection') window.openHomeCollection(state.collectionMode || 'updates', true);
                 else if(state.view === 'detail') await window.openDetail(state.comicId, true);
                 else if(state.view === 'reader') await window.openReader(state.comicId, state.chapterId, state.chapterNum, state.pageIndex || 1, true);
@@ -3989,8 +4076,9 @@
                         const readClass = isChapterRead(comicId, ch.id) ? 'is-read' : '';
                         const shortPrefix = fullMovie ? '<i class="fa-solid fa-film"></i>' : `${isVideo ? 'E' : 'C'}${ch.chapterNumber}`;
                         const firstChapterImage = Array.isArray(ch.images) ? ch.images.find(url => !/\.(mp4|webm|ogv|ogg|mov|m4v|mkv)(?:$|[?#])/i.test(String(url))) : '';
-                        const episodeThumbnailUrl = safeMediaUrl(isVideo ? (ch.thumbnailUrl || ch.posterUrl || firstChapterImage || comicRecord.coverUrl || '') : (ch.thumbnailUrl || ch.posterUrl || ''));
-                        const leadingVisual = episodeThumbnailUrl ? `<div class="episode-thumbnail ${isVideo ? '' : 'comic-thumbnail'}"><img src="${episodeThumbnailUrl}" loading="lazy" decoding="async" alt="Thumbnail ${safeAttr(titleDisplay)}"><span class="episode-thumbnail-label">${fullMovie ? 'MOVIE' : `${isVideo ? 'E' : 'C'}${safeText(ch.chapterNumber)}`}</span></div>` : `<div class="episode-index">${shortPrefix}</div>`;
+                        const fallbackThumbnailUrl = safeMediaUrl(comicRecord.coverUrl || firstChapterImage || '');
+                        const episodeThumbnailUrl = safeMediaUrl(isVideo ? (ch.thumbnailUrl || ch.posterUrl || firstChapterImage || comicRecord.coverUrl || '') : (ch.thumbnailUrl || ch.posterUrl || comicRecord.coverUrl || firstChapterImage || ''));
+                        const leadingVisual = episodeThumbnailUrl ? `<div class="episode-thumbnail ${isVideo ? '' : 'comic-thumbnail'}"><img src="${episodeThumbnailUrl}" data-fallback="${safeAttr(fallbackThumbnailUrl)}" onerror="const fallback=this.dataset.fallback;if(fallback&&this.src!==fallback){this.dataset.fallback='';this.src=fallback;}else{this.closest('.episode-thumbnail')?.classList.add('image-unavailable');}" loading="lazy" decoding="async" alt="Thumbnail ${safeAttr(titleDisplay)}"><span class="episode-thumbnail-label">${fullMovie ? 'MOVIE' : `${isVideo ? 'E' : 'C'}${safeText(ch.chapterNumber)}`}</span></div>` : `<div class="episode-index">${shortPrefix}</div>`;
                         return `<div class="chapter-item ${readClass}" onclick="handleMediaOpen('${safeAttr(comicId)}','${safeAttr(ch.id)}','${safeAttr(ch.chapterNumber)}')">${leadingVisual}<div class="chapter-info"><span class="chapter-title" data-read-label="${isVideo ? 'Sudah ditonton' : 'Sudah dibaca'}">${safeText(titleDisplay)}</span><span class="chapter-date"><span><i class="fa-regular fa-calendar"></i> ${safeText(date)}</span>${mediaMeta}${languageMeta}</span></div><div class="${actionClass}"><i class="fa-solid ${isVideo ? 'fa-play' : 'fa-book-open'}"></i> ${actionText}</div></div>`;
                     }).join('');
                     chapterHTML += usesSeasons

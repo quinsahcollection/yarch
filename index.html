@@ -954,6 +954,7 @@
             .discovery-grid.view-list { grid-template-columns:1fr; }
         }
         .profile-modal-backdrop{position:fixed;inset:0;z-index:12000;display:none;align-items:flex-end;justify-content:center;background:rgba(16,18,34,.62);backdrop-filter:blur(7px)}.profile-modal-backdrop.show{display:flex}.profile-modal-sheet{width:100%;max-width:540px;max-height:92vh;overflow:auto;padding:20px;background:#fff;border-radius:26px 26px 0 0;box-shadow:0 -18px 50px rgba(21,24,48,.2)}.profile-modal-head{display:flex;align-items:flex-start;gap:12px;margin-bottom:17px}.profile-modal-icon{width:46px;height:46px;flex:0 0 46px;border-radius:15px;display:grid;place-items:center;color:#fff;background:linear-gradient(135deg,#625af2,#8d68f6);font-size:18px}.profile-modal-title{flex:1}.profile-modal-title h3{font-size:17px;margin:1px 0 4px}.profile-modal-title p{color:#85899a;font-size:10px;line-height:1.45}.profile-modal-close{width:35px;height:35px;border:0;border-radius:11px;background:#f1f2f7;color:#74798b;font-size:15px}.profile-modal-form label{display:block;margin:11px 2px 6px;font-size:10px;font-weight:800;color:#4e5367}.profile-modal-form input,.profile-modal-form textarea,.profile-modal-form select{width:100%;padding:12px;border:1px solid #dfe1ea;border-radius:12px;background:#f9fafc;font:inherit;font-size:11px}.profile-modal-form textarea{min-height:82px;resize:vertical}.profile-modal-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}.profile-modal-save{width:100%;margin-top:17px;padding:12px;border:0;border-radius:12px;background:linear-gradient(135deg,#625af2,#795bea);color:#fff;font-weight:850}.share-profile-preview{display:flex;align-items:center;gap:12px;padding:13px;border-radius:16px;background:linear-gradient(135deg,#f0efff,#fff5f2)}.share-profile-preview img{width:58px;height:58px;border-radius:17px;object-fit:cover}.share-profile-preview strong{display:block;font-size:13px}.share-profile-preview span{font-size:9px;color:#777c90}.share-url-row{display:flex;gap:7px;margin:14px 0}.share-url-row input{flex:1;min-width:0;padding:11px;border:1px solid #e0e2eb;border-radius:11px;background:#f8f9fc;font-size:9px}.share-url-row button{border:0;border-radius:11px;padding:0 13px;background:#625af2;color:#fff}.share-option-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}.share-option{border:1px solid #e7e8ef;border-radius:13px;padding:11px 4px;background:#fff;color:#4b5063;font-size:8px;font-weight:800}.share-option i{display:block;margin-bottom:7px;font-size:19px;color:#625af2}.age-gate-sheet{text-align:center}.age-gate-shield{width:68px;height:68px;margin:2px auto 12px;border-radius:22px;display:grid;place-items:center;background:linear-gradient(135deg,#ff7c45,#ef3f62);color:#fff;font-size:28px;box-shadow:0 10px 25px rgba(239,63,98,.25)}.age-gate-sheet h3{font-size:19px}.age-gate-sheet>p{margin:7px auto 14px;max-width:390px;color:#74798d;font-size:11px;line-height:1.55}.age-confirm-check{display:flex;align-items:flex-start;gap:9px;margin-top:12px;padding:11px;border-radius:12px;background:#fff5f3;text-align:left;font-size:9px;line-height:1.45;color:#676b7c}.age-confirm-check input{width:17px;height:17px;flex:0 0 17px;accent-color:#ef5263}.age-gate-actions{display:grid;grid-template-columns:1fr 1.3fr;gap:9px;margin-top:14px}.age-gate-actions button{padding:12px;border:0;border-radius:12px;font-weight:850}.age-cancel{background:#eef0f5;color:#656a7b}.age-continue{background:linear-gradient(135deg,#ff7043,#ef3f62);color:#fff}.age-continue:disabled{opacity:.45}@media(min-width:700px){.profile-modal-backdrop{align-items:center;padding:24px}.profile-modal-sheet{border-radius:26px;max-height:86vh}}
+        .age-gate-status{display:none;margin-top:10px;padding:10px 12px;border-radius:11px;text-align:left;font-size:10px;font-weight:750;line-height:1.45}.age-gate-status.show{display:block}.age-gate-status.denied{color:#b4233b;background:#fff0f2;border:1px solid #ffd3da}.age-gate-status.allowed{color:#147851;background:#eaf9f2;border:1px solid #c9efdf}
     </style>
 </head>
 <body>
@@ -1451,7 +1452,7 @@
                     <ul class="user-menu-list"><li class="install-app-item" id="installAppUser" hidden onclick="installApp()"><div class="left-info"><i class="fa-solid fa-mobile-screen-button"></i> Pasang Aplikasi</div><i class="fa-solid fa-download"></i></li><li onclick="switchNav('bookmark')"><div class="left-info"><i class="fa-solid fa-layer-group"></i> Kelola Koleksi Saya</div><i class="fa-solid fa-chevron-right"></i></li><li class="logout-item" onclick="doLogout()"><div class="left-info"><i class="fa-solid fa-right-from-bracket"></i> Keluar dari Akun</div><i class="fa-solid fa-chevron-right"></i></li></ul>
                 </div>
             </div>
-            <div class="app-version-card"><div><strong>Versi Aplikasi</strong><span id="currentVersionLabel">V20.1.19 • Memeriksa pembaruan...</span></div><button class="version-check-btn" onclick="checkAppConfiguration(true)"><i class="fa-solid fa-rotate"></i> Periksa</button></div>
+            <div class="app-version-card"><div><strong>Versi Aplikasi</strong><span id="currentVersionLabel">V20.1.21 • Memeriksa pembaruan...</span></div><button class="version-check-btn" onclick="checkAppConfiguration(true)"><i class="fa-solid fa-rotate"></i> Periksa</button></div>
         </div>
 
         <!-- ================= BOTTOM NAVIGATION (DITAMBAHKAN DISCOVERY) ================= -->
@@ -1497,8 +1498,8 @@
     </div>
     <div class="profile-modal-backdrop" id="profileEditorModal" onclick="if(event.target===this)closeProfileEditor()"><section class="profile-modal-sheet" role="dialog" aria-modal="true" aria-labelledby="profileEditorTitle"><div class="profile-modal-head"><div class="profile-modal-icon"><i class="fa-solid fa-user-pen"></i></div><div class="profile-modal-title"><h3 id="profileEditorTitle">Lengkapi Profil</h3><p>Informasi tanggal lahir disimpan secara privat untuk verifikasi usia.</p></div><button class="profile-modal-close" onclick="closeProfileEditor()"><i class="fa-solid fa-xmark"></i></button></div><div class="profile-modal-form"><label for="profileDisplayName">Nama tampilan</label><input id="profileDisplayName" maxlength="35" placeholder="Nama tampilan"><label for="profileBioInput">Bio singkat</label><textarea id="profileBioInput" maxlength="160" placeholder="Ceritakan genre atau karakter favoritmu..."></textarea><div class="profile-modal-grid"><div><label for="profileBirthDate">Tanggal lahir</label><input id="profileBirthDate" type="date"></div><div><label for="profileGender">Jenis kelamin</label><select id="profileGender"><option value="">Tidak disebutkan</option><option value="Laki-laki">Laki-laki</option><option value="Perempuan">Perempuan</option><option value="Lainnya">Lainnya</option></select></div></div><label for="profileLocation">Kota / lokasi (opsional)</label><input id="profileLocation" maxlength="60" placeholder="Contoh: Jakarta"><button class="profile-modal-save" onclick="saveSocialProfile()"><i class="fa-solid fa-floppy-disk"></i> Simpan Profil</button></div></section></div>
     <div class="profile-modal-backdrop" id="shareProfileModal" onclick="if(event.target===this)closeShareProfile()"><section class="profile-modal-sheet" role="dialog" aria-modal="true"><div class="profile-modal-head"><div class="profile-modal-icon"><i class="fa-solid fa-share-nodes"></i></div><div class="profile-modal-title"><h3>Bagikan Profil</h3><p>Undang teman melihat profil, statistik, dan favorit yang kamu izinkan.</p></div><button class="profile-modal-close" onclick="closeShareProfile()"><i class="fa-solid fa-xmark"></i></button></div><div class="share-profile-preview"><img id="shareProfileAvatar" alt="Foto profil"><div><strong id="shareProfileName">Pembaca Yarch</strong><span id="shareProfileLevel">Profil pembaca</span></div></div><div class="share-url-row"><input id="shareProfileUrl" readonly><button onclick="shareProfileVia('copy')" aria-label="Salin tautan"><i class="fa-regular fa-copy"></i></button></div><div class="share-option-grid"><button class="share-option" onclick="shareProfileVia('native')"><i class="fa-solid fa-arrow-up-from-bracket"></i>Bagikan</button><button class="share-option" onclick="shareProfileVia('whatsapp')"><i class="fa-brands fa-whatsapp" style="color:#18a957"></i>WhatsApp</button><button class="share-option" onclick="shareProfileVia('telegram')"><i class="fa-brands fa-telegram" style="color:#2b9bd7"></i>Telegram</button><button class="share-option" onclick="shareProfileVia('copy')"><i class="fa-solid fa-link"></i>Salin</button></div></section></div>
-    <div class="profile-modal-backdrop" id="ageGateModal"><section class="profile-modal-sheet age-gate-sheet" role="dialog" aria-modal="true"><div class="age-gate-shield"><i class="fa-solid fa-shield-halved"></i></div><h3 id="ageGateTitle">Verifikasi Usia</h3><p id="ageGateMessage">Konten ini ditujukan untuk pengguna yang telah memenuhi batas usia.</p><div class="profile-modal-form"><label for="ageGateBirthDate" style="text-align:left">Tanggal lahir</label><input id="ageGateBirthDate" type="date"><label class="age-confirm-check"><input id="ageGateConfirm" type="checkbox" onchange="updateAgeGateButton()"><span>Saya menyatakan tanggal lahir yang dimasukkan benar dan memahami bahwa konten dapat memuat tema dewasa.</span></label></div><div class="age-gate-actions"><button class="age-cancel" onclick="resolveAgeGate(false)">Kembali</button><button class="age-continue" id="ageGateContinue" disabled onclick="resolveAgeGate(true)">Verifikasi & Masuk</button></div></section></div>
-    <div class="update-modal-backdrop" id="updateModal"><div class="update-sheet"><div class="update-icon"><i class="fa-solid fa-cloud-arrow-down"></i></div><h2>Versi baru tersedia</h2><p>Pembaruan aplikasi sudah siap. Proses ini akan membersihkan cache antarmuka lama tanpa menghapus akun, bookmark, atau riwayat Anda.</p><div class="update-version-line"><span id="updateCurrentVersion">V20.1.19</span><i class="fa-solid fa-arrow-right"></i><span id="updateLatestVersion">V20.1.19</span></div><div class="update-changelog" id="updateChangelog">Peningkatan stabilitas dan tampilan.</div><div class="update-actions"><button class="update-action update-later" onclick="dismissAppUpdate()">Nanti</button><button class="update-action update-now" onclick="applyAppUpdate()"><i class="fa-solid fa-bolt"></i> Perbarui Sekarang</button></div></div></div>
+    <div class="profile-modal-backdrop" id="ageGateModal"><section class="profile-modal-sheet age-gate-sheet" role="dialog" aria-modal="true" aria-labelledby="ageGateTitle"><div class="age-gate-shield"><i class="fa-solid fa-shield-halved"></i></div><h3 id="ageGateTitle">Verifikasi Usia</h3><p id="ageGateMessage">Konten ini ditujukan untuk pengguna yang telah memenuhi batas usia.</p><div class="profile-modal-form"><label for="ageGateBirthDate" style="text-align:left">Tanggal lahir</label><input id="ageGateBirthDate" type="date" oninput="updateAgeGateButton()" onchange="updateAgeGateButton()"><div class="age-gate-status" id="ageGateStatus" role="status" aria-live="polite"></div><label class="age-confirm-check"><input id="ageGateConfirm" type="checkbox" onchange="updateAgeGateButton()"><span>Saya menyatakan tanggal lahir yang dimasukkan benar dan memahami bahwa konten dapat memuat tema dewasa.</span></label></div><div class="age-gate-actions"><button class="age-cancel" onclick="resolveAgeGate(false)">Kembali</button><button class="age-continue" id="ageGateContinue" disabled onclick="resolveAgeGate(true)">Verifikasi & Masuk</button></div></section></div>
+    <div class="update-modal-backdrop" id="updateModal"><div class="update-sheet"><div class="update-icon"><i class="fa-solid fa-cloud-arrow-down"></i></div><h2>Versi baru tersedia</h2><p>Pembaruan aplikasi sudah siap. Proses ini akan membersihkan cache antarmuka lama tanpa menghapus akun, bookmark, atau riwayat Anda.</p><div class="update-version-line"><span id="updateCurrentVersion">V20.1.21</span><i class="fa-solid fa-arrow-right"></i><span id="updateLatestVersion">V20.1.21</span></div><div class="update-changelog" id="updateChangelog">Peningkatan stabilitas dan tampilan.</div><div class="update-actions"><button class="update-action update-later" onclick="dismissAppUpdate()">Nanti</button><button class="update-action update-now" onclick="applyAppUpdate()"><i class="fa-solid fa-bolt"></i> Perbarui Sekarang</button></div></div></div>
 
     <div class="home-action-backdrop" id="requestContentModal" role="dialog" aria-modal="true" aria-labelledby="requestContentTitle" onclick="if(event.target===this)closeRequestModal()">
         <div class="home-action-sheet">
@@ -1563,7 +1564,7 @@
         const app = initializeApp(firebaseConfig);
         const db = getFirestore(app);
         const auth = getAuth(app);
-        const APP_VERSION = '20.1.19';
+        const APP_VERSION = '20.1.21';
         const ADMIN_UID = 'dWUWpKAWQRRxMOzjzaOA3zXWZLp2';
 
         window.comicsData = {};
@@ -1659,7 +1660,7 @@
         function trackWatchSeconds(seconds){if(!auth.currentUser||seconds<=0||seconds>5)return;window.gameData.watchSeconds=(window.gameData.watchSeconds||0)+seconds;window.pendingWatchAnalyticsSeconds=(window.pendingWatchAnalyticsSeconds||0)+seconds;ensureWeekly();window.gameData.weekly.watchSeconds=(window.gameData.weekly.watchSeconds||0)+seconds;window.gameData.weekly.watchMinutes=Math.floor(window.gameData.weekly.watchSeconds/60);localStorage.setItem('gameData_'+auth.currentUser.uid,JSON.stringify(window.gameData));if(window.pendingWatchAnalyticsSeconds>=30){const flush=Math.floor(window.pendingWatchAnalyticsSeconds/30)*30;window.pendingWatchAnalyticsSeconds-=flush;recordDailyAnalytics({watchSeconds:flush});recordContentWatch(window.currentActiveComicId,flush);syncGamification();}}
         window.openProfileEditor=function(){if(!auth.currentUser)return window.switchNav('profile');const p=window.socialProfile||{};document.getElementById('profileDisplayName').value=p.displayName||auth.currentUser.email.split('@')[0];document.getElementById('profileBioInput').value=p.bio||'';document.getElementById('profileBirthDate').value=p.birthDate||'';document.getElementById('profileGender').value=p.gender||'';document.getElementById('profileLocation').value=p.location||'';document.getElementById('profileEditorModal').classList.add('show');document.body.style.overflow='hidden';}
         window.closeProfileEditor=function(){document.getElementById('profileEditorModal').classList.remove('show');document.body.style.overflow='';}
-        window.saveSocialProfile=async function(){if(!auth.currentUser)return;const name=document.getElementById('profileDisplayName').value.trim(),bio=document.getElementById('profileBioInput').value.trim(),birthDate=document.getElementById('profileBirthDate').value,gender=document.getElementById('profileGender').value,location=document.getElementById('profileLocation').value.trim();if(name.length<2)return window.showToast('Nama tampilan minimal 2 karakter');if(birthDate&&(!/^\d{4}-\d{2}-\d{2}$/.test(birthDate)||new Date(birthDate)>new Date()))return window.showToast('Tanggal lahir tidak valid');window.socialProfile.displayName=name.slice(0,35);window.socialProfile.bio=bio.slice(0,160);window.socialProfile.birthDate=birthDate;window.socialProfile.gender=gender;window.socialProfile.location=location.slice(0,60);try{await setDoc(doc(db,'users',auth.currentUser.uid,'profile','main'),{...window.socialProfile,updatedAt:serverTimestamp()},{merge:true});await publishPublicProfile();refreshVisibleCommentAvatars(auth.currentUser.uid,window.socialProfile);localStorage.setItem('socialProfile_'+auth.currentUser.uid,JSON.stringify(window.socialProfile));renderSocialProfile();updateHomeGreeting(auth.currentUser);closeProfileEditor();window.showToast('Profil berhasil diperbarui');}catch(e){window.showToast('Profil belum dapat disimpan');}}
+        window.saveSocialProfile=async function(){if(!auth.currentUser)return;const name=document.getElementById('profileDisplayName').value.trim(),bio=document.getElementById('profileBioInput').value.trim(),birthDate=document.getElementById('profileBirthDate').value,gender=document.getElementById('profileGender').value,location=document.getElementById('profileLocation').value.trim();if(name.length<2)return window.showToast('Nama tampilan minimal 2 karakter');if(birthDate&&(!/^\d{4}-\d{2}-\d{2}$/.test(birthDate)||new Date(birthDate)>new Date()))return window.showToast('Tanggal lahir tidak valid');window.socialProfile.displayName=name.slice(0,35);window.socialProfile.bio=bio.slice(0,160);window.socialProfile.birthDate=birthDate;window.socialProfile.gender=gender;window.socialProfile.location=location.slice(0,60);try{await setDoc(doc(db,'users',auth.currentUser.uid,'profile','main'),{...window.socialProfile,updatedAt:serverTimestamp()},{merge:true});await publishPublicProfile();refreshVisibleCommentAvatars(auth.currentUser.uid,window.socialProfile);localStorage.setItem('socialProfile_'+auth.currentUser.uid,JSON.stringify(window.socialProfile));Object.keys(sessionStorage).forEach(key=>{if(key.startsWith(`ageVerified_${auth.currentUser.uid}_`))sessionStorage.removeItem(key);});renderSocialProfile();updateHomeGreeting(auth.currentUser);closeProfileEditor();window.showToast('Profil berhasil diperbarui');}catch(e){window.showToast('Profil belum dapat disimpan');}}
         window.handleProfilePhoto=function(file){if(!file||!auth.currentUser)return;if(file.size>8*1024*1024)return window.showToast('Foto maksimal 8 MB');const reader=new FileReader();reader.onload=()=>{const img=new Image();img.onload=()=>{const canvas=document.createElement('canvas');canvas.width=256;canvas.height=256;const ctx=canvas.getContext('2d');const scale=Math.max(256/img.width,256/img.height),w=img.width*scale,h=img.height*scale;ctx.drawImage(img,(256-w)/2,(256-h)/2,w,h);window.socialProfile.photoData=canvas.toDataURL('image/jpeg',.72);document.getElementById('profilePhoto').src=window.socialProfile.photoData;window.saveSocialProfile();};img.src=reader.result;};reader.readAsDataURL(file);}
         window.savePrivacySettings=function(){window.socialProfile.privacy={publicProfile:document.getElementById('privacyPublicProfile').checked,showStats:document.getElementById('privacyShowStats').checked,showFavorites:document.getElementById('privacyShowFavorites').checked};window.saveSocialProfile();}
         window.shareMyProfile=function(){if(!auth.currentUser)return;const name=window.socialProfile.displayName||'Pembaca Yarch',level=gameLevel(window.gameData.points||0).level,url=location.href.split('?')[0]+`?profile=${auth.currentUser.uid}`;document.getElementById('shareProfileAvatar').src=window.socialProfile.photoData||defaultAvatar(name);document.getElementById('shareProfileName').textContent=name;document.getElementById('shareProfileLevel').textContent=`Level ${level} • Profil pembaca Yarch`;document.getElementById('shareProfileUrl').value=url;document.getElementById('shareProfileModal').classList.add('show');document.body.style.overflow='hidden';}
@@ -2856,12 +2857,28 @@
         }
 
         // ================= FITUR HISTORY & LANJUT BACA =================
+        window.historyCloudWriteQueues = window.historyCloudWriteQueues || {};
+        function queueHistoryCloudWrite(comicId, historyItem, errorLabel) {
+            const uid=auth.currentUser?.uid;
+            if(!uid) return Promise.resolve();
+            const previous = window.historyCloudWriteQueues[comicId] || Promise.resolve();
+            const next = previous.catch(()=>{}).then(() => setDoc(
+                doc(db, 'users', uid, 'history', comicId),
+                {...historyItem, updatedAt:serverTimestamp()},
+                {merge:true}
+            )).catch(error => reportBackgroundError(errorLabel, error));
+            window.historyCloudWriteQueues[comicId] = next;
+            next.finally(() => { if(window.historyCloudWriteQueues[comicId] === next) delete window.historyCloudWriteQueues[comicId]; });
+            return next;
+        }
         window.saveReadingProgress = async function(comicId, chapterId, chapterNum, pageIndex = 1) {
             if (!comicId) return;
-            if(chapterId) markChapterRead(comicId, chapterId);
             const comicData = window.comicsData[comicId] || {};
             const title = comicData.title || "Konten";
             const coverUrl = comicData.coverUrl || "";
+            const currentPage = Math.max(1, Number(pageIndex || 1));
+            const totalPages = Math.max(currentPage, Number(window.currentReaderTotal || currentPage));
+            if(chapterId && currentPage >= totalPages) markChapterRead(comicId, chapterId);
 
             const historyItem = {
                 comicId: comicId,
@@ -2869,9 +2886,9 @@
                 coverUrl: coverUrl,
                 chapterId: chapterId || "",
                 chapterNumber: chapterNum || "1",
-                pageIndex: pageIndex || 1,
-                pageTotal: Math.max(Number(pageIndex || 1), Number(window.currentReaderTotal || pageIndex || 1)),
-                progressPercent: Math.min(100, Math.max(0, Math.round((Number(pageIndex || 1) / Math.max(1, Number(window.currentReaderTotal || pageIndex || 1))) * 100))),
+                pageIndex: currentPage,
+                pageTotal: totalPages,
+                progressPercent: Math.min(100, Math.max(0, Math.round((currentPage / totalPages) * 100))),
                 mediaFormat: comicData.format || '',
                 mediaType: comicData.type || '',
                 updatedAt: new Date().getTime()
@@ -2890,12 +2907,7 @@
             refreshVisibleFullHistory();
 
             if (auth.currentUser) {
-                try {
-                    await setDoc(doc(db, "users", auth.currentUser.uid, "history", comicId), {
-                        ...historyItem,
-                        updatedAt: serverTimestamp()
-                    }, {merge:true});
-                } catch(e) { reportBackgroundError('Sinkronisasi riwayat baca/tonton gagal', e); }
+                await queueHistoryCloudWrite(comicId, historyItem, 'Sinkronisasi riwayat baca gagal');
                 if(window.userLibrary[comicId]?.status === 'want') {
                     window.setCollectionStatus(comicId,'reading');
                 }
@@ -2924,8 +2936,7 @@
                 refreshVisibleFullHistory();
             }
             if(syncCloud && auth.currentUser) {
-                try { await setDoc(doc(db,'users',auth.currentUser.uid,'history',comicId), {...historyItem,updatedAt:serverTimestamp()}, {merge:true}); }
-                catch(e) { reportBackgroundError('Sinkronisasi progres video gagal', e); }
+                await queueHistoryCloudWrite(comicId, historyItem, 'Sinkronisasi progres video gagal');
             }
         }
 
@@ -2973,7 +2984,7 @@
             if(renderToken !== window.readingHistoryRenderToken) return;
 
             // Jangan tampilkan riwayat untuk judul yang sudah di-unpublish/dihapus admin.
-            const localHistoryMap = safeJsonParse(localStorage.getItem('comicHistoryDetail'), {});
+            const hiddenComicIds = [];
             const visibleHistory = [];
             for (const item of historyList) {
                 if(!item?.comicId) continue;
@@ -2999,7 +3010,7 @@
                 }
 
                 if(confirmedHidden) {
-                    delete localHistoryMap[item.comicId];
+                    hiddenComicIds.push(item.comicId);
                     if(auth.currentUser) {
                         try { await deleteDoc(doc(db, 'users', auth.currentUser.uid, 'history', item.comicId)); }
                         catch(error) { }
@@ -3009,7 +3020,13 @@
                 if(comicRecord) visibleHistory.push(item);
             }
             historyList = visibleHistory;
-            localStorage.setItem('comicHistoryDetail', JSON.stringify(localHistoryMap));
+            // Jangan menulis kembali snapshot lokal lama setelah operasi async.
+            // Hanya hapus ID yang telah dipastikan tersembunyi dari salinan PALING BARU.
+            if(hiddenComicIds.length) {
+                const newestLocalHistory = safeJsonParse(localStorage.getItem('comicHistoryDetail'), {});
+                hiddenComicIds.forEach(comicId => delete newestLocalHistory[comicId]);
+                localStorage.setItem('comicHistoryDetail', JSON.stringify(newestLocalHistory));
+            }
             if(renderToken !== window.readingHistoryRenderToken) return;
 
             const statHistEl = document.getElementById('statHistoryCount');
@@ -3692,10 +3709,60 @@
         }
 
         function profileAge(birthDate){if(!/^\d{4}-\d{2}-\d{2}$/.test(String(birthDate||'')))return null;const born=new Date(`${birthDate}T00:00:00`),now=new Date();if(Number.isNaN(born.getTime())||born>now)return null;let age=now.getFullYear()-born.getFullYear();const month=now.getMonth()-born.getMonth();if(month<0||(month===0&&now.getDate()<born.getDate()))age--;return age;}
-        window.ageGateResolver=null;window.ageGateRequired=17;
-        window.updateAgeGateButton=function(){const date=document.getElementById('ageGateBirthDate').value,checked=document.getElementById('ageGateConfirm').checked,age=profileAge(date);document.getElementById('ageGateContinue').disabled=!checked||age===null;}
-        window.resolveAgeGate=async function(accepted){const modal=document.getElementById('ageGateModal'),resolver=window.ageGateResolver;if(!resolver)return;if(!accepted){modal.classList.remove('show');document.body.style.overflow='';window.ageGateResolver=null;resolver(false);return;}const birthDate=document.getElementById('ageGateBirthDate').value,age=profileAge(birthDate),required=window.ageGateRequired;if(age===null)return window.showToast('Masukkan tanggal lahir yang valid');if(age<required){document.getElementById('ageGateMessage').textContent=`Maaf, konten ini hanya untuk pengguna berusia ${required} tahun ke atas.`;document.getElementById('ageGateContinue').disabled=true;return;}if(auth.currentUser){window.socialProfile.birthDate=birthDate;localStorage.setItem('socialProfile_'+auth.currentUser.uid,JSON.stringify(window.socialProfile));try{await setDoc(doc(db,'users',auth.currentUser.uid,'profile','main'),{birthDate,ageVerifiedAt:serverTimestamp()},{merge:true});}catch(e){reportBackgroundError('Penyimpanan verifikasi usia gagal',e);}}else localStorage.setItem('guestBirthDate',birthDate);sessionStorage.setItem(`ageVerified_${auth.currentUser?.uid||'guest'}_${required}`,'1');modal.classList.remove('show');document.body.style.overflow='';window.ageGateResolver=null;resolver(true);}
-        async function ensureAgeAccess(comicId){const comic=window.comicsData[comicId]||{},required=Number(String(comic.ageRating||'').match(/\d+/)?.[0]||0);if(required<17)return true;const sessionKey=`ageVerified_${auth.currentUser?.uid||'guest'}_${required}`;if(sessionStorage.getItem(sessionKey)==='1')return true;const knownBirth=window.socialProfile?.birthDate||localStorage.getItem('guestBirthDate')||'';window.ageGateRequired=required;document.getElementById('ageGateTitle').textContent=`Konten ${required}+`;document.getElementById('ageGateMessage').textContent=`${comic.title||'Konten ini'} memiliki batas usia ${required}+. Verifikasi tanggal lahir untuk melanjutkan.`;document.getElementById('ageGateBirthDate').value=knownBirth;document.getElementById('ageGateConfirm').checked=false;document.getElementById('ageGateContinue').disabled=true;document.getElementById('ageGateModal').classList.add('show');document.body.style.overflow='hidden';return await new Promise(resolve=>{window.ageGateResolver=resolve;});}
+        window.ageGateResolver=null;window.ageGateRequired=17;window.ageGateBaseMessage='';
+        function requiredAgeForComic(comic={}) {
+            const raw=String(comic.ageRating ?? comic.ageRestriction ?? comic.ratingAge ?? '').trim();
+            const numeric=Number(raw.match(/\d+/)?.[0]||0);
+            if(numeric>0)return numeric;
+            const normalized=raw.toLowerCase();
+            if(/dewasa|adult|mature|restricted|nc\s*-?\s*17|\br\b/.test(normalized))return 17;
+            return 0;
+        }
+        window.updateAgeGateButton=function(){
+            const date=document.getElementById('ageGateBirthDate').value;
+            const checked=document.getElementById('ageGateConfirm').checked;
+            const age=profileAge(date),required=Number(window.ageGateRequired||17);
+            const button=document.getElementById('ageGateContinue');
+            const status=document.getElementById('ageGateStatus');
+            const valid=age!==null&&age>=required;
+            button.disabled=!checked||!valid;
+            status.className='age-gate-status';
+            status.textContent='';
+            if(date&&age===null){status.classList.add('show','denied');status.textContent='Tanggal lahir tidak valid. Pastikan tanggal tidak berada di masa depan.';}
+            else if(age!==null&&age<required){status.classList.add('show','denied');status.textContent=`Akses ditolak: usia Anda ${age} tahun, sedangkan konten ini khusus ${required} tahun ke atas.`;}
+            else if(age!==null){status.classList.add('show','allowed');status.textContent=`Usia terverifikasi (${age} tahun). Centang pernyataan untuk melanjutkan.`;}
+        }
+        window.resolveAgeGate=async function(accepted){
+            const modal=document.getElementById('ageGateModal'),resolver=window.ageGateResolver;
+            if(!resolver)return;
+            if(!accepted){modal.classList.remove('show');document.body.style.overflow='';window.ageGateResolver=null;resolver(false);return;}
+            const birthDate=document.getElementById('ageGateBirthDate').value,age=profileAge(birthDate),required=window.ageGateRequired;
+            if(age===null){window.updateAgeGateButton();return window.showToast('Masukkan tanggal lahir yang valid');}
+            if(age<required){window.updateAgeGateButton();window.showToast(`Akses hanya untuk usia ${required} tahun ke atas`);return;}
+            if(!document.getElementById('ageGateConfirm').checked)return window.showToast('Centang pernyataan verifikasi terlebih dahulu');
+            if(auth.currentUser){window.socialProfile.birthDate=birthDate;localStorage.setItem('socialProfile_'+auth.currentUser.uid,JSON.stringify(window.socialProfile));try{await setDoc(doc(db,'users',auth.currentUser.uid,'profile','main'),{birthDate,ageVerifiedAt:serverTimestamp()},{merge:true});}catch(e){reportBackgroundError('Penyimpanan verifikasi usia gagal',e);}}
+            else localStorage.setItem('guestBirthDate',birthDate);
+            sessionStorage.setItem(`ageVerified_${auth.currentUser?.uid||'guest'}_${required}`,'1');modal.classList.remove('show');document.body.style.overflow='';window.ageGateResolver=null;resolver(true);
+        }
+        async function ensureAgeAccess(comicId){
+            const comic=window.comicsData[comicId]||{},required=requiredAgeForComic(comic);
+            if(required<17)return true;
+            const sessionKey=`ageVerified_${auth.currentUser?.uid||'guest'}_${required}`;
+            if(sessionStorage.getItem(sessionKey)==='1')return true;
+            if(window.ageGateResolver)return false;
+            const knownBirth=window.socialProfile?.birthDate||localStorage.getItem('guestBirthDate')||'';
+            window.ageGateRequired=required;
+            window.ageGateBaseMessage=`${comic.title||'Konten ini'} memiliki batas usia ${required}+. Verifikasi tanggal lahir untuk melanjutkan.`;
+            document.getElementById('ageGateTitle').textContent=`Konten ${required}+`;
+            document.getElementById('ageGateMessage').textContent=window.ageGateBaseMessage;
+            const dateInput=document.getElementById('ageGateBirthDate');dateInput.value=knownBirth;dateInput.max=new Date().toISOString().slice(0,10);
+            document.getElementById('ageGateConfirm').checked=false;
+            document.getElementById('ageGateContinue').disabled=true;
+            document.getElementById('ageGateStatus').className='age-gate-status';
+            document.getElementById('ageGateModal').classList.add('show');document.body.style.overflow='hidden';
+            window.updateAgeGateButton();
+            return await new Promise(resolve=>{window.ageGateResolver=resolve;});
+        }
 
         // ================= HALAMAN DETAIL UTAMA =================
         window.openDetail = async function(comicId, fromHistory = false) {
@@ -4026,6 +4093,7 @@
             }
             if(window.readerProgressScrollHandler) {
                 window.removeEventListener('scroll', window.readerProgressScrollHandler);
+                document.removeEventListener('scroll', window.readerProgressScrollHandler, true);
                 window.readerProgressScrollTarget?.removeEventListener('scroll', window.readerProgressScrollHandler);
                 window.readerProgressScrollHandler = null;
                 window.readerProgressScrollTarget = null;
@@ -4034,19 +4102,30 @@
                 cancelAnimationFrame(window.readerProgressFrame);
                 window.readerProgressFrame = null;
             }
+            if(window.readerProgressTimer) {
+                clearInterval(window.readerProgressTimer);
+                window.readerProgressTimer = null;
+            }
         }
         function detectCurrentReaderPage(comicId, chapterId, chapterNum) {
-            const images = [...document.querySelectorAll('#readerImagesContainer img[data-page]')];
+            const container=document.getElementById('readerImagesContainer');
+            const images = [...container.querySelectorAll('img[data-page]')];
             if(!images.length || document.getElementById('reader-page')?.style.display !== 'block') return;
-            const viewportTarget = Math.max(1, window.innerHeight * 0.42);
+            const horizontal=container.classList.contains('mode-horizontal');
+            const viewportTarget = horizontal ? Math.max(1,window.innerWidth*0.5) : Math.max(1,window.innerHeight*0.42);
             let best = null;
             let bestDistance = Infinity;
             images.forEach(img => {
                 const rect = img.getBoundingClientRect();
-                if(rect.bottom <= 0 || rect.top >= window.innerHeight) return;
-                const focus = Math.min(Math.max(viewportTarget, rect.top), rect.bottom);
+                const visible=horizontal
+                    ? rect.right>0&&rect.left<window.innerWidth&&rect.bottom>0&&rect.top<window.innerHeight
+                    : rect.bottom>0&&rect.top<window.innerHeight&&rect.right>0&&rect.left<window.innerWidth;
+                if(!visible)return;
+                const start=horizontal?rect.left:rect.top,end=horizontal?rect.right:rect.bottom;
+                const focus = Math.min(Math.max(viewportTarget, start), end);
                 const distance = Math.abs(focus - viewportTarget);
-                if(distance < bestDistance) { bestDistance = distance; best = img; }
+                const page=Number(img.dataset.page||1),bestPage=Number(best?.dataset.page||0);
+                if(distance < bestDistance-1 || (Math.abs(distance-bestDistance)<=1&&page>bestPage)) { bestDistance = distance; best = img; }
             });
             if(!best) return;
             const visiblePage = Number(best.dataset.page || 1);
@@ -4065,12 +4144,16 @@
                 });
             };
             window.addEventListener('scroll', window.readerProgressScrollHandler, {passive:true});
+            document.addEventListener('scroll', window.readerProgressScrollHandler, {passive:true,capture:true});
             window.readerProgressScrollTarget = document.getElementById('readerImagesContainer');
             window.readerProgressScrollTarget?.addEventListener('scroll', window.readerProgressScrollHandler, {passive:true});
             window.readerObserver = new IntersectionObserver(() => window.readerProgressScrollHandler(), {
                 threshold:[0, 0.01, 0.05], rootMargin:'-10% 0px -10% 0px'
             });
             document.querySelectorAll('#readerImagesContainer img[data-page]').forEach(img => window.readerObserver.observe(img));
+            window.readerProgressTimer=setInterval(()=>{
+                if(document.getElementById('reader-page')?.style.display==='block')window.readerProgressScrollHandler();
+            },500);
             window.readerProgressScrollHandler();
         }
         window.bookmarkReaderPage = function() {

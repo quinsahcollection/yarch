@@ -870,7 +870,7 @@
                     <div class="card">
                         <div style="display:flex;justify-content:space-between;gap:12px;align-items:center;margin-bottom:15px;flex-wrap:wrap">
                             <div><h3>Pemeriksaan Judul & Media</h3><div class="help-text">Mendeteksi cover rusak/kosong, folder tanpa media, durasi, subtitle, kualitas video, dan season tidak lengkap.</div></div>
-                            <button class="mod-btn primary" onclick="loadContentHealth(true)"><i class="fa-solid fa-rotate"></i> Pindai ulang</button>
+                            <div style="display:flex;gap:8px;flex-wrap:wrap"><select id="healthFilter" class="form-control" style="width:auto;padding:8px" onchange="renderContentHealth()"><option value="all">Semua status</option><option value="critical">Kritis</option><option value="warning">Peringatan</option><option value="healthy">Sehat</option></select><button class="mod-btn" onclick="exportContentHealth()"><i class="fa-solid fa-file-arrow-down"></i> Export laporan</button><button class="mod-btn primary" onclick="loadContentHealth(true)"><i class="fa-solid fa-rotate"></i> Pindai ulang</button></div>
                         </div>
                         <div class="health-list" id="healthList"><div class="loading-text">Memuat pemeriksaan...</div></div>
                     </div>
@@ -2878,7 +2878,7 @@
             list.innerHTML='<div class="loading-text">Memeriksa judul, folder, dan media...</div>';
             try {
                 const comicSnap = await getDocs(collection(db,'comics'));
-                let totalFolders=0, healthy=0, critical=0;
+                let totalFolders=0,totalMedia=0,healthy=0,critical=0,offlineReady=0;
                 const rows=await mapInBatches(comicSnap.docs,8,async comicDoc=>{
                     const comic={id:comicDoc.id,...comicDoc.data()};
                     const chapterSnap=await getDocs(collection(db,'comics',comic.id,'chapters'));
@@ -2890,23 +2890,28 @@
                     const isFilm=comic.format==='film';
                     chapters.forEach(ch=>{
                         const label=`S${Number(ch.seasonNumber||1)} ${isFilm?'E':'C'}${ch.chapterNumber||'-'}`;
-                        if(!Array.isArray(ch.images)||!ch.images.length) issues.push({text:`${label} tanpa media`,level:'critical'});
+                        const qualityValues=Array.isArray(ch.videoQualities||ch.qualities)?(ch.videoQualities||ch.qualities).map(item=>item?.url):(Object.values(ch.videoQualities||ch.qualities||{}));
+                        const media=[...(Array.isArray(ch.images)?ch.images:[]),ch.videoUrl,ch.streamUrl,...qualityValues].filter(Boolean).filter((url,index,array)=>array.indexOf(url)===index);totalMedia+=media.length;
+                        if(!media.length) issues.push({text:`${label} tanpa media`,level:'critical'});
+                        if(!(ch.thumbnailUrl||ch.posterUrl||comic.coverUrl)) issues.push({text:`${label} tanpa thumbnail/fallback`,level:'warning'});
+                        media.filter(url=>!/^https?:\/\//i.test(String(url||''))).forEach(()=>issues.push({text:`${label} URL media tidak valid`,level:'critical'}));
                         if(isFilm&&!Number(ch.durationSeconds||ch.durationMinutes||0)) issues.push({text:`${label} tanpa durasi`,level:'warning'});
                         if(isFilm&&(!Array.isArray(ch.subtitles)||!ch.subtitles.length)) issues.push({text:`${label} tanpa subtitle`,level:'warning'});
                         if(isFilm&&!Object.keys(ch.videoQualities||ch.qualities||{}).length) issues.push({text:`${label} hanya satu kualitas`,level:'warning'});
+                        if(isFilm&&media.some(url=>/\.mkv(?:$|[?#])/i.test(String(url)))) issues.push({text:`${label} MKV mungkin tidak kompatibel offline`,level:'warning'});
                     });
                     const planned=comic.seasonTotals||{};
                     Object.entries(planned).forEach(([season,count])=>{
                         const actual=chapters.filter(ch=>Number(ch.seasonNumber||1)===Number(season)).length;
                         if(Number(count)>0&&actual<Number(count)) issues.push({text:`Season ${season}: ${actual}/${count} tersedia`,level:'warning'});
                     });
-                    if(!issues.length) healthy++; else if(issues.some(issue=>issue.level==='critical')) critical++;
+                    if(!issues.length){healthy++;offlineReady++;}else if(issues.some(issue=>issue.level==='critical'))critical++;else if(chapters.length&&!issues.some(issue=>/tanpa media|URL media|Cover/.test(issue.text)))offlineReady++;
                     return {comic,issues};
                 });
                 const warningCount=rows.reduce((sum,row)=>sum+row.issues.length,0);
-                summary.innerHTML=`<div class="health-stat"><strong>${comicSnap.size}</strong><span>Total judul</span></div><div class="health-stat"><strong>${totalFolders}</strong><span>Total folder</span></div><div class="health-stat"><strong style="color:#07825e">${healthy}</strong><span>Judul sehat</span></div><div class="health-stat"><strong style="color:#d9485f">${warningCount}</strong><span>Masalah ditemukan</span></div>`;
+                summary.innerHTML=`<div class="health-stat"><strong>${comicSnap.size}</strong><span>Total judul</span></div><div class="health-stat"><strong>${totalFolders}</strong><span>Chapter/episode</span></div><div class="health-stat"><strong>${totalMedia}</strong><span>Total file media</span></div><div class="health-stat"><strong style="color:#07825e">${healthy}</strong><span>Judul sehat</span></div><div class="health-stat"><strong style="color:#5b5cf0">${offlineReady}</strong><span>Siap download offline</span></div><div class="health-stat"><strong style="color:#d9485f">${critical}</strong><span>Judul kritis</span></div><div class="health-stat"><strong style="color:#d9485f">${warningCount}</strong><span>Total masalah</span></div>`;
                 rows.sort((a,b)=>(b.issues.some(x=>x.level==='critical')?2:b.issues.length?1:0)-(a.issues.some(x=>x.level==='critical')?2:a.issues.length?1:0));
-                list.innerHTML=rows.map(({comic,issues})=>`<div class="health-item"><div><div class="health-item-title">${adminSafe(comic.title||'Tanpa judul')}</div><div class="health-item-meta">${adminSafe(comic.format==='film'?'Film / Anime':'Komik')} • ${comic.isPublished?'Dipublikasikan':'Draft'}</div></div><div class="health-issues">${issues.length?issues.slice(0,12).map(issue=>`<span class="health-chip ${issue.level==='warning'?'warning':''}">${adminSafe(issue.text)}</span>`).join(''):'<span class="health-ok"><i class="fa-solid fa-circle-check"></i> Semua pemeriksaan lolos</span>'}${issues.length>12?`<span class="health-chip warning">+${issues.length-12} lainnya</span>`:''}</div><button class="mod-btn primary" onclick="editComic('${comic.id}')"><i class="fa-solid fa-pen"></i> Perbaiki</button></div>`).join('')||'<div class="loading-text">Belum ada konten.</div>';
+                window.contentHealthRows=rows;renderContentHealth();
             } catch(error) {
                 summary.innerHTML='<div class="health-stat"><strong>!</strong><span>Pemindaian gagal</span></div>';
                 list.innerHTML=`<div class="loading-text">Gagal memeriksa konten: ${adminSafe(error.message)}</div>`;
@@ -3245,6 +3250,8 @@
                 Swal.fire('Download gagal', error.message || 'Alamat media tidak valid.', 'error');
             }
         };
+        window.renderContentHealth=function(){const list=document.getElementById('healthList');if(!list)return;const filter=document.getElementById('healthFilter')?.value||'all';let rows=window.contentHealthRows||[];if(filter==='critical')rows=rows.filter(row=>row.issues.some(issue=>issue.level==='critical'));if(filter==='warning')rows=rows.filter(row=>row.issues.length&&!row.issues.some(issue=>issue.level==='critical'));if(filter==='healthy')rows=rows.filter(row=>!row.issues.length);list.innerHTML=rows.map(({comic,issues})=>`<div class="health-item"><div><div class="health-item-title">${adminSafe(comic.title||'Tanpa judul')}</div><div class="health-item-meta">${adminSafe(comic.format==='film'?'Film / Anime':'Komik')} • ${comic.isPublished?'Dipublikasikan':'Draft'}</div></div><div class="health-issues">${issues.length?issues.slice(0,12).map(issue=>`<span class="health-chip ${issue.level==='warning'?'warning':''}">${adminSafe(issue.text)}</span>`).join(''):'<span class="health-ok"><i class="fa-solid fa-circle-check"></i> Semua pemeriksaan lolos</span>'}${issues.length>12?`<span class="health-chip warning">+${issues.length-12} lainnya</span>`:''}</div><button class="mod-btn primary" onclick="editComic('${comic.id}')"><i class="fa-solid fa-pen"></i> Perbaiki</button></div>`).join('')||'<div class="loading-text">Tidak ada konten pada filter ini.</div>';};
+        window.exportContentHealth=function(){const rows=window.contentHealthRows||[];if(!rows.length)return Swal.fire('Belum ada laporan','Jalankan pemindaian terlebih dahulu.','info');const payload={generatedAt:new Date().toISOString(),summary:{titles:rows.length,healthy:rows.filter(row=>!row.issues.length).length,issues:rows.reduce((sum,row)=>sum+row.issues.length,0)},items:rows.map(row=>({id:row.comic.id,title:row.comic.title||'',format:row.comic.format||'',published:row.comic.isPublished===true,issues:row.issues}))};const blob=new Blob([JSON.stringify(payload,null,2)],{type:'application/json'}),url=URL.createObjectURL(blob),anchor=document.createElement('a');anchor.href=url;anchor.download=`yarch-content-health-${new Date().toISOString().slice(0,10)}.json`;anchor.click();setTimeout(()=>URL.revokeObjectURL(url),1000);};
         window.downloadGalleryVideo = window.downloadGalleryMedia;
 
         window.chooseVideoThumbnail = async function(url) {

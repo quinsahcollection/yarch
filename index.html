@@ -1452,7 +1452,7 @@
                     <ul class="user-menu-list"><li class="install-app-item" id="installAppUser" hidden onclick="installApp()"><div class="left-info"><i class="fa-solid fa-mobile-screen-button"></i> Pasang Aplikasi</div><i class="fa-solid fa-download"></i></li><li onclick="switchNav('bookmark')"><div class="left-info"><i class="fa-solid fa-layer-group"></i> Kelola Koleksi Saya</div><i class="fa-solid fa-chevron-right"></i></li><li class="logout-item" onclick="doLogout()"><div class="left-info"><i class="fa-solid fa-right-from-bracket"></i> Keluar dari Akun</div><i class="fa-solid fa-chevron-right"></i></li></ul>
                 </div>
             </div>
-            <div class="app-version-card"><div><strong>Versi Aplikasi</strong><span id="currentVersionLabel">V20.1.21 • Memeriksa pembaruan...</span></div><button class="version-check-btn" onclick="checkAppConfiguration(true)"><i class="fa-solid fa-rotate"></i> Periksa</button></div>
+            <div class="app-version-card"><div><strong>Versi Aplikasi</strong><span id="currentVersionLabel">V20.1.22 • Memeriksa pembaruan...</span></div><button class="version-check-btn" onclick="checkAppConfiguration(true)"><i class="fa-solid fa-rotate"></i> Periksa</button></div>
         </div>
 
         <!-- ================= BOTTOM NAVIGATION (DITAMBAHKAN DISCOVERY) ================= -->
@@ -1499,7 +1499,7 @@
     <div class="profile-modal-backdrop" id="profileEditorModal" onclick="if(event.target===this)closeProfileEditor()"><section class="profile-modal-sheet" role="dialog" aria-modal="true" aria-labelledby="profileEditorTitle"><div class="profile-modal-head"><div class="profile-modal-icon"><i class="fa-solid fa-user-pen"></i></div><div class="profile-modal-title"><h3 id="profileEditorTitle">Lengkapi Profil</h3><p>Informasi tanggal lahir disimpan secara privat untuk verifikasi usia.</p></div><button class="profile-modal-close" onclick="closeProfileEditor()"><i class="fa-solid fa-xmark"></i></button></div><div class="profile-modal-form"><label for="profileDisplayName">Nama tampilan</label><input id="profileDisplayName" maxlength="35" placeholder="Nama tampilan"><label for="profileBioInput">Bio singkat</label><textarea id="profileBioInput" maxlength="160" placeholder="Ceritakan genre atau karakter favoritmu..."></textarea><div class="profile-modal-grid"><div><label for="profileBirthDate">Tanggal lahir</label><input id="profileBirthDate" type="date"></div><div><label for="profileGender">Jenis kelamin</label><select id="profileGender"><option value="">Tidak disebutkan</option><option value="Laki-laki">Laki-laki</option><option value="Perempuan">Perempuan</option><option value="Lainnya">Lainnya</option></select></div></div><label for="profileLocation">Kota / lokasi (opsional)</label><input id="profileLocation" maxlength="60" placeholder="Contoh: Jakarta"><button class="profile-modal-save" onclick="saveSocialProfile()"><i class="fa-solid fa-floppy-disk"></i> Simpan Profil</button></div></section></div>
     <div class="profile-modal-backdrop" id="shareProfileModal" onclick="if(event.target===this)closeShareProfile()"><section class="profile-modal-sheet" role="dialog" aria-modal="true"><div class="profile-modal-head"><div class="profile-modal-icon"><i class="fa-solid fa-share-nodes"></i></div><div class="profile-modal-title"><h3>Bagikan Profil</h3><p>Undang teman melihat profil, statistik, dan favorit yang kamu izinkan.</p></div><button class="profile-modal-close" onclick="closeShareProfile()"><i class="fa-solid fa-xmark"></i></button></div><div class="share-profile-preview"><img id="shareProfileAvatar" alt="Foto profil"><div><strong id="shareProfileName">Pembaca Yarch</strong><span id="shareProfileLevel">Profil pembaca</span></div></div><div class="share-url-row"><input id="shareProfileUrl" readonly><button onclick="shareProfileVia('copy')" aria-label="Salin tautan"><i class="fa-regular fa-copy"></i></button></div><div class="share-option-grid"><button class="share-option" onclick="shareProfileVia('native')"><i class="fa-solid fa-arrow-up-from-bracket"></i>Bagikan</button><button class="share-option" onclick="shareProfileVia('whatsapp')"><i class="fa-brands fa-whatsapp" style="color:#18a957"></i>WhatsApp</button><button class="share-option" onclick="shareProfileVia('telegram')"><i class="fa-brands fa-telegram" style="color:#2b9bd7"></i>Telegram</button><button class="share-option" onclick="shareProfileVia('copy')"><i class="fa-solid fa-link"></i>Salin</button></div></section></div>
     <div class="profile-modal-backdrop" id="ageGateModal"><section class="profile-modal-sheet age-gate-sheet" role="dialog" aria-modal="true" aria-labelledby="ageGateTitle"><div class="age-gate-shield"><i class="fa-solid fa-shield-halved"></i></div><h3 id="ageGateTitle">Verifikasi Usia</h3><p id="ageGateMessage">Konten ini ditujukan untuk pengguna yang telah memenuhi batas usia.</p><div class="profile-modal-form"><label for="ageGateBirthDate" style="text-align:left">Tanggal lahir</label><input id="ageGateBirthDate" type="date" oninput="updateAgeGateButton()" onchange="updateAgeGateButton()"><div class="age-gate-status" id="ageGateStatus" role="status" aria-live="polite"></div><label class="age-confirm-check"><input id="ageGateConfirm" type="checkbox" onchange="updateAgeGateButton()"><span>Saya menyatakan tanggal lahir yang dimasukkan benar dan memahami bahwa konten dapat memuat tema dewasa.</span></label></div><div class="age-gate-actions"><button class="age-cancel" onclick="resolveAgeGate(false)">Kembali</button><button class="age-continue" id="ageGateContinue" disabled onclick="resolveAgeGate(true)">Verifikasi & Masuk</button></div></section></div>
-    <div class="update-modal-backdrop" id="updateModal"><div class="update-sheet"><div class="update-icon"><i class="fa-solid fa-cloud-arrow-down"></i></div><h2>Versi baru tersedia</h2><p>Pembaruan aplikasi sudah siap. Proses ini akan membersihkan cache antarmuka lama tanpa menghapus akun, bookmark, atau riwayat Anda.</p><div class="update-version-line"><span id="updateCurrentVersion">V20.1.21</span><i class="fa-solid fa-arrow-right"></i><span id="updateLatestVersion">V20.1.21</span></div><div class="update-changelog" id="updateChangelog">Peningkatan stabilitas dan tampilan.</div><div class="update-actions"><button class="update-action update-later" onclick="dismissAppUpdate()">Nanti</button><button class="update-action update-now" onclick="applyAppUpdate()"><i class="fa-solid fa-bolt"></i> Perbarui Sekarang</button></div></div></div>
+    <div class="update-modal-backdrop" id="updateModal"><div class="update-sheet"><div class="update-icon"><i class="fa-solid fa-cloud-arrow-down"></i></div><h2>Versi baru tersedia</h2><p>Pembaruan aplikasi sudah siap. Proses ini akan membersihkan cache antarmuka lama tanpa menghapus akun, bookmark, atau riwayat Anda.</p><div class="update-version-line"><span id="updateCurrentVersion">V20.1.22</span><i class="fa-solid fa-arrow-right"></i><span id="updateLatestVersion">V20.1.22</span></div><div class="update-changelog" id="updateChangelog">Peningkatan stabilitas dan tampilan.</div><div class="update-actions"><button class="update-action update-later" onclick="dismissAppUpdate()">Nanti</button><button class="update-action update-now" onclick="applyAppUpdate()"><i class="fa-solid fa-bolt"></i> Perbarui Sekarang</button></div></div></div>
 
     <div class="home-action-backdrop" id="requestContentModal" role="dialog" aria-modal="true" aria-labelledby="requestContentTitle" onclick="if(event.target===this)closeRequestModal()">
         <div class="home-action-sheet">
@@ -1564,7 +1564,7 @@
         const app = initializeApp(firebaseConfig);
         const db = getFirestore(app);
         const auth = getAuth(app);
-        const APP_VERSION = '20.1.21';
+        const APP_VERSION = '20.1.22';
         const ADMIN_UID = 'dWUWpKAWQRRxMOzjzaOA3zXWZLp2';
 
         window.comicsData = {};
@@ -2898,12 +2898,16 @@
             try { localHist = JSON.parse(localStorage.getItem('comicHistoryDetail') || '{}'); }
             catch(error) { reportBackgroundError('Riwayat lokal rusak dan dibuat ulang', error); }
             const previousHistory = localHist[comicId] || {};
+            if(previousHistory.chapterId === chapterId && Number(previousHistory.pageIndex || 0) > historyItem.pageIndex) {
+                historyItem.pageIndex = Number(previousHistory.pageIndex);
+                historyItem.pageTotal = Math.max(historyItem.pageTotal, Number(previousHistory.pageTotal || 0));
+                historyItem.progressPercent = Math.min(100, Math.round(historyItem.pageIndex / Math.max(1, historyItem.pageTotal) * 100));
+            }
             localHist[comicId] = {...previousHistory, ...historyItem};
             localStorage.setItem('comicHistoryDetail', JSON.stringify(localHist));
 
-            // Perbarui tampilan langsung dari data lokal; sinkronisasi cloud berjalan sesudahnya.
-            renderReadingHistory(true);
-            renderUpdatesFeed();
+            // Tampilan akan membaca progres terbaru ketika Home/Riwayat dibuka.
+            if(document.getElementById('home-page')?.style.display === 'block') renderReadingHistory(true);
             refreshVisibleFullHistory();
 
             if (auth.currentUser) {
@@ -2916,9 +2920,15 @@
 
         window.saveVideoProgress = async function(comicId, chapterId, chapterNum, currentSecond, durationSecond, syncCloud = true) {
             if(!comicId || !chapterId) return;
-            const second = Math.max(0, Math.floor(Number(currentSecond || 0)));
-            const duration = Math.max(0, Math.floor(Number(durationSecond || 0)));
+            let second = Math.max(0, Math.floor(Number(currentSecond || 0)));
+            let duration = Math.max(0, Math.floor(Number(durationSecond || 0)));
             const comicData = window.comicsData[comicId] || {};
+            const localHist = safeJsonParse(localStorage.getItem('comicHistoryDetail'), {});
+            const previousHistory = localHist[comicId] || {};
+            if(previousHistory.chapterId === chapterId) {
+                second = Math.max(second, Number(previousHistory.videoSecond || 0));
+                duration = Math.max(duration, Number(previousHistory.videoDuration || 0));
+            }
             const historyItem = {
                 comicId, chapterId, chapterNumber:chapterNum || '1', pageIndex:1,
                 videoSecond:second, videoDuration:duration,
@@ -2926,7 +2936,6 @@
                 comicTitle:comicData.title || 'Konten', coverUrl:comicData.coverUrl || '',
                 mediaFormat:comicData.format || 'film', mediaType:comicData.type || '', updatedAt:Date.now()
             };
-            const localHist = safeJsonParse(localStorage.getItem('comicHistoryDetail'), {});
             localHist[comicId] = {...(localHist[comicId] || {}), ...historyItem};
             localStorage.setItem('comicHistoryDetail', JSON.stringify(localHist));
             localStorage.setItem(`videoResume_${comicId}_${chapterId}`, String(second));
@@ -2957,6 +2966,31 @@
             return Number(value || 0);
         }
 
+        function reconcileHistoryItem(localItem, remoteItem) {
+            if(!localItem) return remoteItem;
+            if(!remoteItem) return localItem;
+            if(localItem.chapterId && localItem.chapterId === remoteItem.chapterId) {
+                const isVideoHistory = Number(localItem.videoDuration || remoteItem.videoDuration || 0) > 0 ||
+                    Number(localItem.videoSecond || remoteItem.videoSecond || 0) > 0 ||
+                    /film|movie|anime|video/i.test(String(localItem.mediaFormat || remoteItem.mediaFormat || localItem.mediaType || remoteItem.mediaType || ''));
+                if(isVideoHistory) {
+                    const winner = Number(remoteItem.videoSecond || 0) > Number(localItem.videoSecond || 0) ? remoteItem : localItem;
+                    const merged = {...(winner === remoteItem ? localItem : remoteItem), ...winner};
+                    merged.videoSecond = Math.max(Number(localItem.videoSecond || 0), Number(remoteItem.videoSecond || 0));
+                    merged.videoDuration = Math.max(Number(localItem.videoDuration || 0), Number(remoteItem.videoDuration || 0));
+                    merged.progressPercent = merged.videoDuration > 0 ? Math.min(100, Math.round(merged.videoSecond / merged.videoDuration * 100)) : 0;
+                    return merged;
+                }
+                const winner = Number(remoteItem.pageIndex || 1) > Number(localItem.pageIndex || 1) ? remoteItem : localItem;
+                const merged = {...(winner === remoteItem ? localItem : remoteItem), ...winner};
+                merged.pageIndex = Math.max(Number(localItem.pageIndex || 1), Number(remoteItem.pageIndex || 1));
+                merged.pageTotal = Math.max(Number(localItem.pageTotal || 0), Number(remoteItem.pageTotal || 0), merged.pageIndex);
+                merged.progressPercent = Math.min(100, Math.round(merged.pageIndex / Math.max(1, merged.pageTotal) * 100));
+                return merged;
+            }
+            return historyUpdatedMillis(remoteItem) > historyUpdatedMillis(localItem) ? remoteItem : localItem;
+        }
+
         async function renderReadingHistory(preferLocal = false) {
             const container = document.getElementById('history-container');
             if (!container) return;
@@ -2966,7 +3000,7 @@
             const localHist = safeJsonParse(localStorage.getItem('comicHistoryDetail'), {});
             const historyByComic = new Map(Object.values(localHist).filter(item => item?.comicId).map(item => [item.comicId, item]));
 
-            if (auth.currentUser && (!preferLocal || historyByComic.size === 0)) {
+            if (auth.currentUser) {
                 try {
                     const histRef = collection(db, "users", auth.currentUser.uid, "history");
                     const q = query(histRef, orderBy("updatedAt", "desc"), limit(10));
@@ -2974,9 +3008,7 @@
                     snap.forEach(historyDoc => {
                         const remoteItem = historyDoc.data();
                         const localItem = historyByComic.get(remoteItem.comicId);
-                        if(!localItem || historyUpdatedMillis(remoteItem) > historyUpdatedMillis(localItem)) {
-                            historyByComic.set(remoteItem.comicId, remoteItem);
-                        }
+                        historyByComic.set(remoteItem.comicId, reconcileHistoryItem(localItem, remoteItem));
                     });
                 } catch(e) { }
             }
@@ -3027,6 +3059,9 @@
                 hiddenComicIds.forEach(comicId => delete newestLocalHistory[comicId]);
                 localStorage.setItem('comicHistoryDetail', JSON.stringify(newestLocalHistory));
             }
+            const reconciledLocalHistory = safeJsonParse(localStorage.getItem('comicHistoryDetail'), {});
+            historyList.forEach(item => { reconciledLocalHistory[item.comicId] = reconcileHistoryItem(reconciledLocalHistory[item.comicId], item); });
+            localStorage.setItem('comicHistoryDetail', JSON.stringify(reconciledLocalHistory));
             if(renderToken !== window.readingHistoryRenderToken) return;
 
             const statHistEl = document.getElementById('statHistoryCount');
@@ -4043,17 +4078,38 @@
             if(!target) return window.showToast(direction > 0 ? 'Sudah chapter terbaru' : 'Ini chapter pertama');
             window.openReader(window.currentActiveComicId, target.id, target.chapterNumber, 1);
         }
+        function restoreReaderPageAfterLayoutChange() {
+            if(document.getElementById('reader-page')?.style.display!=='block') return;
+            const preservedPage=Math.max(1,Number(window.currentReaderPage||1));
+            const comicId=window.currentActiveComicId,chapterId=window.currentActiveChapterId,chapterNum=window.currentActiveChapterNum;
+            window.readerLayoutChanging=true;
+            stopReaderProgressTracking();
+            requestAnimationFrame(()=>requestAnimationFrame(()=>{
+                const target=document.querySelector(`#readerImagesContainer img[data-page="${preservedPage}"]`);
+                target?.scrollIntoView({behavior:'auto',block:'center',inline:'center'});
+                updateReaderPage(preservedPage,chapterNum);
+                window.saveReadingProgress(comicId,chapterId,chapterNum,preservedPage);
+                startReaderProgressTracking(comicId,chapterId,chapterNum);
+                setTimeout(()=>{window.readerLayoutChanging=false;detectCurrentReaderPage(comicId,chapterId,chapterNum);},180);
+            }));
+        }
         window.setReaderMode = function(mode) {
+            const preservedPage=window.currentReaderPage;
             window.readerMode = ['horizontal','double'].includes(mode) ? mode : 'vertical';
-            localStorage.setItem('readerMode', window.readerMode); applyReaderPreferences();
+            window.currentReaderPage=preservedPage;
+            localStorage.setItem('readerMode', window.readerMode); applyReaderPreferences(); restoreReaderPageAfterLayoutChange();
         }
         window.setReaderDirection = function(direction) {
+            const preservedPage=window.currentReaderPage;
             window.readerDirection = direction === 'rtl' ? 'rtl' : 'ltr';
-            localStorage.setItem('readerDirection', window.readerDirection); applyReaderPreferences();
+            window.currentReaderPage=preservedPage;
+            localStorage.setItem('readerDirection', window.readerDirection); applyReaderPreferences(); restoreReaderPageAfterLayoutChange();
         }
         window.setReaderFit = function(fit) {
+            const preservedPage=window.currentReaderPage;
             window.readerFit = fit === 'height' ? 'height' : 'width';
-            localStorage.setItem('readerFit', window.readerFit); applyReaderPreferences();
+            window.currentReaderPage=preservedPage;
+            localStorage.setItem('readerFit', window.readerFit); applyReaderPreferences(); restoreReaderPageAfterLayoutChange();
         }
         window.setReaderBrightness = function(value) {
             const brightness = Math.max(45, Math.min(120, Number(value) || 100));
@@ -4108,6 +4164,7 @@
             }
         }
         function detectCurrentReaderPage(comicId, chapterId, chapterNum) {
+            if(window.readerLayoutChanging)return;
             const container=document.getElementById('readerImagesContainer');
             const images = [...container.querySelectorAll('img[data-page]')];
             if(!images.length || document.getElementById('reader-page')?.style.display !== 'block') return;

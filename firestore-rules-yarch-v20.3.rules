@@ -1,0 +1,534 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // ==========================================
+    // FUNGSI DASAR
+    // ==========================================
+    function isAdmin() {
+      return request.auth != null
+        && request.auth.uid == 'dWUWpKAWQRRxMOzjzaOA3zXWZLp2';
+    }
+
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    function onlyFieldsChanged(fields) {
+      return request.resource.data
+        .diff(resource.data)
+        .affectedKeys()
+        .hasOnly(fields);
+    }
+
+    // Pengguna hanya boleh menambahkan atau menghapus
+    // UID miliknya sendiri dari likedBy.
+    function validOwnLikeChange() {
+      let oldLikes = resource.data.get('likedBy', []).toSet();
+      let newLikes = request.resource.data.get('likedBy', []).toSet();
+
+      return isSignedIn()
+        && onlyFieldsChanged(['likedBy'])
+        && request.resource.data.get('likedBy', []) is list
+        && request.resource.data.get('likedBy', []).size() <= 5000
+        && newLikes.difference(oldLikes).hasOnly([request.auth.uid])
+        && oldLikes.difference(newLikes).hasOnly([request.auth.uid]);
+    }
+
+    // ==========================================
+    // COLLECTION GROUP KOMENTAR
+    // ==========================================
+    // Diperlukan oleh dashboard dan moderasi admin:
+    // collectionGroup(db, 'comments')
+    match /{path=**}/comments/{commentId} {
+      allow read: if isAdmin();
+    }
+
+    // ==========================================
+    // 1. DATA PRIBADI PENGGUNA
+    // ==========================================
+    match /users/{userId} {
+      allow read, write: if isSignedIn()
+        && request.auth.uid == userId;
+
+      // Semua data akun biasa tetap hanya dapat diakses pemiliknya.
+      // Gamifikasi dikecualikan agar memperoleh validasi khusus di bawah.
+      match /{userCollection}/{document=**} {
+        allow read, write: if isSignedIn()
+          && request.auth.uid == userId
+          && userCollection != 'gamification';
+      }
+
+      match /gamification/{documentId} {
+        allow read, delete: if isSignedIn()
+          && request.auth.uid == userId;
+
+        allow create, update: if isSignedIn()
+          && request.auth.uid == userId
+          && request.resource.data.keys().hasOnly([
+            'points',
+            'streak',
+            'lastCheckIn',
+            'chapterCount',
+            'watchSeconds',
+            'commentCount',
+            'awardedChapters',
+            'weekly',
+            'updatedAt'
+          ])
+          && request.resource.data.points is int
+          && request.resource.data.points >= 0
+          && request.resource.data.points <= 1000000
+          && request.resource.data.streak is int
+          && request.resource.data.streak >= 0
+          && request.resource.data.streak <= 10000
+          && request.resource.data.lastCheckIn is string
+          && request.resource.data.lastCheckIn.size() <= 10
+          && request.resource.data.chapterCount is int
+          && request.resource.data.chapterCount >= 0
+          && request.resource.data.chapterCount <= 5000
+          && request.resource.data.watchSeconds is int
+          && request.resource.data.watchSeconds >= 0
+          && request.resource.data.watchSeconds <= 315360000
+          && request.resource.data.commentCount is int
+          && request.resource.data.commentCount >= 0
+          && request.resource.data.commentCount <= 1000000
+          && request.resource.data.awardedChapters is map
+          && request.resource.data.awardedChapters.keys().size() <= 5000
+          && request.resource.data.chapterCount
+            == request.resource.data.awardedChapters.keys().size()
+          && request.resource.data.weekly is map
+          && request.resource.data.updatedAt == request.time;
+      }
+    }
+
+    // ==========================================
+    // 2. KOMIK, FILM, DAN ANIME
+    // ==========================================
+    match /comics/{comicId} {
+
+      // Admin dapat membaca semuanya.
+      // Pengunjung hanya dapat membaca konten publish.
+      allow read: if isAdmin()
+        || resource.data.isPublished == true;
+
+      allow create, delete: if isAdmin();
+
+      // Admin dapat mengubah seluruh metadata.
+      // Pengunjung hanya dapat menambahkan satu view.
+      // Pengguna login dapat mengubah commentCount satu angka.
+      // Rating aggregate divalidasi melalui transaksi.
+      allow update: if isAdmin()
+        || (
+          onlyFieldsChanged(['views'])
+          && request.resource.data.get('views', 0)
+            == resource.data.get('views', 0) + 1
+        )
+        || (
+          isSignedIn()
+          && onlyFieldsChanged(['commentCount'])
+          && (
+            request.resource.data.get('commentCount', 0)
+              == resource.data.get('commentCount', 0) + 1
+            ||
+            request.resource.data.get('commentCount', 0)
+              == resource.data.get('commentCount', 0) - 1
+          )
+          && request.resource.data.get('commentCount', 0) >= 0
+        )
+        || validRatingAggregate(comicId);
+
+      // ========================================
+      // CHAPTER DAN EPISODE
+      // ========================================
+      match /chapters/{chapterId} {
+        allow read: if isAdmin()
+          || get(
+            /databases/$(database)/documents/comics/$(comicId)
+          ).data.isPublished == true;
+
+        allow create, update, delete: if isAdmin();
+      }
+
+      // ========================================
+      // KOMENTAR
+      // ========================================
+      match /comments/{commentId} {
+        allow read: if isAdmin()
+          || get(
+            /databases/$(database)/documents/comics/$(comicId)
+          ).data.isPublished == true;
+
+        allow create: if isSignedIn()
+          && request.resource.data.keys().hasAll([
+            'userId',
+            'username',
+            'text',
+            'parentId',
+            'likedBy',
+            'isPinned',
+            'timestamp'
+          ])
+          && request.resource.data.keys().hasOnly([
+            'userId',
+            'username',
+            'text',
+            'parentId',
+            'likedBy',
+            'isPinned',
+            'timestamp'
+          ])
+          && request.resource.data.userId == request.auth.uid
+          && request.resource.data.username is string
+          && request.resource.data.username.size() >= 1
+          && request.resource.data.username.size() <= 80
+          && request.resource.data.text is string
+          && request.resource.data.text.size() >= 2
+          && request.resource.data.text.size() <= 800
+          && (
+            request.resource.data.parentId == null
+            || request.resource.data.parentId is string
+          )
+          && request.resource.data.likedBy is list
+          && request.resource.data.likedBy.size() == 0
+          && request.resource.data.isPinned == false
+          && request.resource.data.timestamp == request.time;
+
+        // Pemilik komentar dapat mengubah teks.
+        // Pengguna lain hanya dapat mengubah like miliknya.
+        // Admin dapat melakukan moderasi dan pin.
+        allow update: if isAdmin()
+          || (
+            isSignedIn()
+            && resource.data.userId == request.auth.uid
+            && request.resource.data.userId
+              == resource.data.userId
+            && onlyFieldsChanged(['text', 'editedAt'])
+            && request.resource.data.text is string
+            && request.resource.data.text.size() >= 2
+            && request.resource.data.text.size() <= 800
+            && request.resource.data.editedAt == request.time
+          )
+          || validOwnLikeChange();
+
+        allow delete: if isAdmin()
+          || (
+            isSignedIn()
+            && resource.data.userId == request.auth.uid
+          );
+      }
+
+      // ========================================
+      // RATING
+      // ========================================
+      match /ratings/{userId} {
+        allow read: if isAdmin()
+          || get(
+            /databases/$(database)/documents/comics/$(comicId)
+          ).data.isPublished == true;
+
+        allow create, update: if isSignedIn()
+          && request.auth.uid == userId
+          && request.resource.data.keys().hasAll([
+            'rating',
+            'updatedAt'
+          ])
+          && request.resource.data.keys().hasOnly([
+            'rating',
+            'updatedAt'
+          ])
+          && request.resource.data.rating is int
+          && request.resource.data.rating >= 1
+          && request.resource.data.rating <= 5
+          && request.resource.data.updatedAt == request.time;
+
+        // Pengguna tidak boleh menghapus rating sendiri. Admin tetap dapat
+        // menghapusnya ketika sebuah judul dihapus permanen dari Trash.
+        allow delete: if isAdmin();
+      }
+    }
+
+    // ==========================================
+    // VALIDASI RATING AGGREGATE
+    // ==========================================
+    function validRatingAggregate(comicId) {
+      let ratingPath =
+        /databases/$(database)/documents/comics/$(comicId)/ratings/$(request.auth.uid);
+
+      let hadRating =
+        isSignedIn() && exists(ratingPath);
+
+      let oldRating =
+        hadRating ? get(ratingPath).data.rating : 0;
+
+      let newRating =
+        isSignedIn() ? getAfter(ratingPath).data.rating : 0;
+
+      return isSignedIn()
+        && onlyFieldsChanged([
+          'ratingCount',
+          'ratingTotal'
+        ])
+        && newRating is int
+        && newRating >= 1
+        && newRating <= 5
+        && request.resource.data.get('ratingCount', 0)
+          == resource.data.get('ratingCount', 0)
+            + (hadRating ? 0 : 1)
+        && request.resource.data.get('ratingTotal', 0)
+          == resource.data.get('ratingTotal', 0)
+            - oldRating
+            + newRating
+        && request.resource.data.get('ratingCount', 0) >= 0
+        && request.resource.data.get('ratingTotal', 0) >= 0;
+    }
+
+    // ==========================================
+    // 3. LAPORAN KOMENTAR
+    // ==========================================
+    match /commentReports/{reportId} {
+      allow create: if isSignedIn()
+        && request.resource.data.keys().hasAll([
+          'comicId',
+          'commentId',
+          'reporterId',
+          'reason',
+          'status',
+          'createdAt'
+        ])
+        && request.resource.data.keys().hasOnly([
+          'comicId',
+          'commentId',
+          'reporterId',
+          'reason',
+          'status',
+          'createdAt'
+        ])
+        && request.resource.data.reporterId
+          == request.auth.uid
+        && request.resource.data.comicId is string
+        && request.resource.data.commentId is string
+        && request.resource.data.reason is string
+        && request.resource.data.reason.size() >= 3
+        && request.resource.data.reason.size() <= 300
+        && request.resource.data.status == 'open'
+        && request.resource.data.createdAt == request.time;
+
+      allow read, update, delete: if isAdmin();
+    }
+
+    // ==========================================
+    // 4. PROFIL PUBLIK DAN RANKING
+    // ==========================================
+    match /publicProfiles/{userId} {
+      allow read: if resource.data.publicProfile == true
+        || (
+          isSignedIn()
+          && request.auth.uid == userId
+        )
+        || isAdmin();
+
+      allow create, update: if isSignedIn()
+        && request.auth.uid == userId
+        && request.resource.data.keys().hasOnly([
+          'userId',
+          'displayName',
+          'bio',
+          'photoData',
+          'publicProfile',
+          'showStats',
+          'showFavorites',
+          'favorites',
+          'points',
+          'level',
+          'chapterCount',
+          'watchSeconds',
+          'streak',
+          'updatedAt'
+        ])
+        && request.resource.data.userId
+          == request.auth.uid
+        && request.resource.data.displayName is string
+        && request.resource.data.displayName.size() >= 2
+        && request.resource.data.displayName.size() <= 35
+        && request.resource.data.bio is string
+        && request.resource.data.bio.size() <= 160
+        && request.resource.data.photoData is string
+        && request.resource.data.photoData.size() <= 250000
+        && (
+          request.resource.data.photoData == ''
+          || request.resource.data.photoData.matches(
+            '^data:image/(jpeg|jpg|png|webp);base64,[A-Za-z0-9+/=]+$'
+          )
+        )
+        && request.resource.data.publicProfile is bool
+        && request.resource.data.showStats is bool
+        && request.resource.data.showFavorites is bool
+        && request.resource.data.points is int
+        && request.resource.data.points >= 0
+        && request.resource.data.points <= 1000000
+        && request.resource.data.level is int
+        && request.resource.data.level >= 1
+        && request.resource.data.level <= 10001
+        && request.resource.data.chapterCount is int
+        && request.resource.data.chapterCount >= 0
+        && request.resource.data.chapterCount <= 5000
+        && request.resource.data.watchSeconds is int
+        && request.resource.data.watchSeconds >= 0
+        && request.resource.data.watchSeconds <= 315360000
+        && request.resource.data.streak is int
+        && request.resource.data.streak >= 0
+        && request.resource.data.streak <= 10000
+        && request.resource.data.favorites is list
+        && request.resource.data.favorites.size() <= 30
+        && request.resource.data.updatedAt == request.time;
+
+      allow delete: if (
+        isSignedIn()
+        && request.auth.uid == userId
+      ) || isAdmin();
+    }
+
+    // ==========================================
+    // 5. ANALYTICS HARIAN
+    // ==========================================
+    match /analyticsDaily/{day}/users/{userId} {
+      allow read: if isAdmin();
+
+      allow create: if isSignedIn()
+        && request.auth.uid == userId
+        && request.resource.data.userId
+          == request.auth.uid
+        && request.resource.data.keys().hasOnly([
+          'userId',
+          'lastActiveAt',
+          'sessions',
+          'views',
+          'comments',
+          'chapters',
+          'watchSeconds'
+        ])
+        && request.resource.data.lastActiveAt == request.time
+        && request.resource.data.get('sessions', 0) >= 0
+        && request.resource.data.get('sessions', 0) <= 1
+        && request.resource.data.get('views', 0) >= 0
+        && request.resource.data.get('views', 0) <= 1
+        && request.resource.data.get('comments', 0) >= 0
+        && request.resource.data.get('comments', 0) <= 1
+        && request.resource.data.get('chapters', 0) >= 0
+        && request.resource.data.get('chapters', 0) <= 1
+        && request.resource.data.get('watchSeconds', 0) >= 0
+        && request.resource.data.get('watchSeconds', 0) <= 60;
+
+      allow update: if isSignedIn()
+        && request.auth.uid == userId
+        && request.resource.data.userId
+          == request.auth.uid
+        && request.resource.data
+          .diff(resource.data)
+          .affectedKeys()
+          .hasOnly([
+            'lastActiveAt',
+            'sessions',
+            'views',
+            'comments',
+            'chapters',
+            'watchSeconds'
+          ])
+        && request.resource.data.lastActiveAt == request.time
+        && request.resource.data.get('sessions', 0)
+          >= resource.data.get('sessions', 0)
+        && request.resource.data.get('sessions', 0)
+          <= resource.data.get('sessions', 0) + 1
+        && request.resource.data.get('views', 0)
+          >= resource.data.get('views', 0)
+        && request.resource.data.get('views', 0)
+          <= resource.data.get('views', 0) + 1
+        && request.resource.data.get('comments', 0)
+          >= resource.data.get('comments', 0)
+        && request.resource.data.get('comments', 0)
+          <= resource.data.get('comments', 0) + 1
+        && request.resource.data.get('chapters', 0)
+          >= resource.data.get('chapters', 0)
+        && request.resource.data.get('chapters', 0)
+          <= resource.data.get('chapters', 0) + 1
+        && request.resource.data.get('watchSeconds', 0)
+          >= resource.data.get('watchSeconds', 0)
+        && request.resource.data.get('watchSeconds', 0)
+          <= resource.data.get('watchSeconds', 0) + 60;
+
+      allow delete: if isAdmin();
+    }
+
+    // ==========================================
+    // 6. WAKTU TONTON
+    // ==========================================
+    match /contentWatch/{comicId}/users/{userId} {
+      allow read: if isAdmin();
+
+      allow create: if isSignedIn()
+        && request.auth.uid == userId
+        && request.resource.data.userId
+          == request.auth.uid
+        && request.resource.data.comicId == comicId
+        && request.resource.data.keys().hasOnly([
+          'userId',
+          'comicId',
+          'watchSeconds',
+          'updatedAt'
+        ])
+        && request.resource.data.watchSeconds is number
+        && request.resource.data.watchSeconds >= 0
+        && request.resource.data.watchSeconds <= 60
+        && request.resource.data.updatedAt == request.time;
+
+      allow update: if isSignedIn()
+        && request.auth.uid == userId
+        && request.resource.data.userId
+          == request.auth.uid
+        && request.resource.data.comicId == comicId
+        && request.resource.data
+          .diff(resource.data)
+          .affectedKeys()
+          .hasOnly([
+            'watchSeconds',
+            'updatedAt'
+          ])
+        && request.resource.data.watchSeconds is number
+        && request.resource.data.watchSeconds
+          >= resource.data.get('watchSeconds', 0)
+        && request.resource.data.watchSeconds
+          <= resource.data.get('watchSeconds', 0) + 60
+        && request.resource.data.updatedAt == request.time;
+
+      allow delete: if isAdmin();
+    }
+
+    // ==========================================
+    // 7. AUDIT LOG ADMIN
+    // ==========================================
+    match /adminAuditLogs/{logId} {
+      allow read, create: if isAdmin();
+      allow update, delete: if false;
+    }
+
+    // ==========================================
+    // 8. PENGATURAN APLIKASI
+    // ==========================================
+    match /settings/{document=**} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+
+    // ==========================================
+    // 9. MEDIA GALLERY
+    // ==========================================
+    match /media_gallery/{document=**} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+
+    // Koleksi lain yang tidak disebutkan otomatis ditolak.
+  }
+}

@@ -876,7 +876,7 @@
                     </div>
                 </div>
                 
-                <div id="view-pengaturan" class="admin-view"><h1 class="page-title">Update & Maintenance</h1><div class="card"><div class="app-config-grid"><div class="form-group"><label>Versi terbaru</label><input id="configLatestVersion" type="text" placeholder="20.1.0"><div class="config-help">Gunakan format angka seperti 20.0.1.</div></div><div class="form-group"><label>Judul maintenance</label><input id="configMaintenanceTitle" type="text" placeholder="Sedang dalam pemeliharaan"></div><div class="form-group full"><label>Changelog</label><textarea id="configChangelog" rows="5" placeholder="Tuliskan perubahan versi terbaru..."></textarea></div><div class="form-group full"><label>Pesan maintenance</label><textarea id="configMaintenanceMessage" rows="3" placeholder="Aplikasi akan segera kembali..."></textarea></div><div class="config-switch"><div><strong>Update wajib</strong><div class="config-help">Pengingat akan terus muncul sampai pengguna memperbarui.</div></div><input id="configUpdateRequired" type="checkbox"></div><div class="config-switch"><div><strong>Mode maintenance</strong><div class="config-help">Pengguna biasa melihat halaman maintenance; admin tetap dapat masuk.</div></div><input id="configMaintenanceMode" type="checkbox"></div><div class="full"><button class="btn-submit" onclick="saveAppConfiguration()"><i class="fa-solid fa-cloud-arrow-up"></i> Simpan Pengaturan Aplikasi</button><div class="config-status" id="configStatus"></div></div></div></div></div>
+                <div id="view-pengaturan" class="admin-view"><h1 class="page-title">Update & Maintenance</h1><div class="card"><div class="app-config-grid"><div class="form-group"><label>Versi terbaru</label><input id="configLatestVersion" type="text" placeholder="20.3.0"><div class="config-help">Gunakan format angka seperti 20.3.0.</div></div><div class="form-group"><label>Judul maintenance</label><input id="configMaintenanceTitle" type="text" placeholder="Sedang dalam pemeliharaan"></div><div class="form-group full"><label>Changelog</label><textarea id="configChangelog" rows="5" placeholder="Tuliskan perubahan versi terbaru..."></textarea></div><div class="form-group full"><label>Pesan maintenance</label><textarea id="configMaintenanceMessage" rows="3" placeholder="Aplikasi akan segera kembali..."></textarea></div><div class="config-switch"><div><strong>Update wajib</strong><div class="config-help">Pengingat akan terus muncul sampai pengguna memperbarui.</div></div><input id="configUpdateRequired" type="checkbox"></div><div class="config-switch"><div><strong>Mode maintenance</strong><div class="config-help">Pengguna biasa melihat halaman maintenance; admin tetap dapat masuk.</div></div><input id="configMaintenanceMode" type="checkbox"></div><div class="full"><button class="btn-submit" onclick="saveAppConfiguration()"><i class="fa-solid fa-cloud-arrow-up"></i> Simpan Pengaturan Aplikasi</button><div class="config-status" id="configStatus"></div></div></div></div></div>
                 <div id="view-moderasi" class="admin-view"><h1 class="page-title">Moderasi Komentar</h1><div class="moderation-toolbar"><button class="mod-btn primary" onclick="loadModeration(true)"><i class="fa-solid fa-rotate"></i> Muat ulang</button><button class="mod-btn" onclick="setModerationFilter('all')">Semua</button><button class="mod-btn" onclick="setModerationFilter('reported')">Dilaporkan</button><button class="mod-btn" onclick="setModerationFilter('pinned')">Disematkan</button><span id="moderationCount" class="moderation-meta"></span></div><div id="moderationList"><div class="loading-text">Memuat moderasi...</div></div><div style="text-align:center;margin-top:16px"><button id="moderationLoadMore" class="mod-btn primary" onclick="loadModeration(false)" style="display:none"><i class="fa-solid fa-chevron-down"></i> Muat 50 komentar berikutnya</button></div></div>
                 <div id="view-trash" class="admin-view"><h1 class="page-title">Trash</h1><div class="trash-toolbar"><div><strong><i class="fa-solid fa-recycle"></i> Penghapusan aman</strong><div style="margin-top:4px;color:#9a5b16;font-size:11px">Judul dan folder dapat dipulihkan sebelum dihapus permanen beserta medianya.</div></div><button class="mod-btn primary" onclick="loadTrash()"><i class="fa-solid fa-rotate"></i> Muat ulang</button></div><div class="trash-grid" id="trashList"><div class="loading-text">Memuat Trash...</div></div></div>
 
@@ -1492,6 +1492,7 @@
                 renderSearchableOptions('chapterComicList', 'chapterComicId', 'chapterComicSearch', window.allComicsList);
                 renderSearchableOptions('filterChapterList', 'filterChapterId', 'filterChapterSearch', window.allComicsList);
                 if(typeof window.loadProfessionalDashboard==='function') window.loadProfessionalDashboard();
+                setTimeout(() => backfillCatalogSummaries(window.allComicsList), 400);
 
             } catch (e) {
                 console.error(e);
@@ -1536,9 +1537,54 @@
             return urls;
         }
 
-        async function syncChapterCount(comicId) {
+        async function syncCatalogSummary(comicId) {
             const snapshot = await getDocs(collection(db, 'comics', comicId, 'chapters'));
-            await updateDoc(doc(db, 'comics', comicId), { chaptersCount: snapshot.size });
+            const chapters = snapshot.docs.map(item => ({id:item.id,...item.data()})).sort((a,b) => {
+                const seasonOrder = Number(b.seasonNumber ?? 1) - Number(a.seasonNumber ?? 1);
+                if(seasonOrder) return seasonOrder;
+                const numberOrder = Number(b.chapterNumber || 0) - Number(a.chapterNumber || 0);
+                if(numberOrder) return numberOrder;
+                const timeValue = value => value?.toMillis?.() || value?.toDate?.().getTime?.() || new Date(value || 0).getTime() || 0;
+                return timeValue(b.updatedAt || b.updateDate || b.createdAt) - timeValue(a.updatedAt || a.updateDate || a.createdAt);
+            });
+            const recentChapters = chapters.slice(0,3).map(item => ({
+                id:item.id,
+                chapterNumber:Number(item.chapterNumber || 0),
+                seasonNumber:Number(item.seasonNumber ?? 1),
+                title:String(item.title || '').slice(0,180),
+                updateDate:String(item.updateDate || '').slice(0,30),
+                updatedAt:item.updatedAt || item.createdAt || null,
+                durationSeconds:Math.max(0,Number(item.durationSeconds || 0)),
+                thumbnailUrl:normalizeUrl(item.thumbnailUrl || item.posterUrl || '')
+            }));
+            const latest = recentChapters[0] || null;
+            await updateDoc(doc(db, 'comics', comicId), {
+                chaptersCount:snapshot.size,
+                recentChapters,
+                realLatestChapter:latest?.chapterNumber || null,
+                realLatestTitle:latest?.title || '',
+                realUpdateDate:latest?.updatedAt || latest?.updateDate || null,
+                catalogSummaryVersion:1,
+                catalogSummaryUpdatedAt:serverTimestamp()
+            });
+        }
+
+        async function syncChapterCount(comicId) {
+            return syncCatalogSummary(comicId);
+        }
+
+        async function backfillCatalogSummaries(items) {
+            if(window.catalogBackfillRunning) return;
+            const pending = (items || []).filter(item => Number(item.catalogSummaryVersion || 0) < 1).slice(0,20);
+            if(!pending.length) return;
+            window.catalogBackfillRunning = true;
+            try {
+                for(const item of pending) {
+                    try { await syncCatalogSummary(item.id); }
+                    catch(error) { console.warn(`Ringkasan katalog ${item.id} belum dapat dibuat:`,error); }
+                }
+                await writeAudit('BACKFILL_CATALOG_SUMMARY','comics',`${pending.length} judul`);
+            } finally { window.catalogBackfillRunning = false; }
         }
 
         window.deleteComic = async function(id) {
@@ -1891,6 +1937,7 @@
                         folderUpdate.durationMinutes = Math.max(1, Math.round(durationSeconds / 60));
                     }
                     await updateDoc(doc(db, "comics", comicId, "chapters", targetChapterId), folderUpdate);
+                    await syncCatalogSummary(comicId);
                     statusEl.innerHTML = "✅ Identitas Node (Folder) ini sudah ada dan datanya berhasil diupdate!<br>Silakan lanjut Buka File Manager di Langkah 2.";
                 } else {
                     const newChapterData = {
@@ -2482,6 +2529,7 @@
                 }
 
                 await updateDoc(chapterDocRef, publishData);
+                await syncCatalogSummary(comicId);
 
                 closeMediaGallery();
                 Swal.fire('Selesai!', 'Integrasi Database Berhasil Dipublikasikan!', 'success');
@@ -2669,6 +2717,7 @@
                     editData.subtitles = result.value.subtitles;
                 }
                 await updateDoc(chapterRef, editData);
+                await syncCatalogSummary(comicId);
                 await writeAudit('UPDATE_CHAPTER_FOLDER', chapterId, `${comicId} • ${term} ${result.value.chapterNumber}`);
 
                 if (fromTable && document.getElementById('filterChapterId')?.value === comicId) {
@@ -2933,7 +2982,7 @@
 
         window.loadAppConfiguration=async function(){
             const status=document.getElementById('configStatus');
-            try{const snap=await getDoc(doc(db,'settings','appConfig'));const c=snap.exists()?snap.data():{};document.getElementById('configLatestVersion').value=c.latestVersion||'20.1.0';document.getElementById('configChangelog').value=c.changelog||'';document.getElementById('configMaintenanceTitle').value=c.maintenanceTitle||'Sedang dalam pemeliharaan';document.getElementById('configMaintenanceMessage').value=c.maintenanceMessage||'Kami sedang melakukan peningkatan agar aplikasi menjadi lebih baik. Silakan coba kembali beberapa saat lagi.';document.getElementById('configUpdateRequired').checked=c.updateRequired===true;document.getElementById('configMaintenanceMode').checked=c.maintenanceMode===true;if(status)status.className='config-status';}catch(e){if(status){status.textContent='Gagal memuat pengaturan aplikasi.';status.className='config-status show error';}}
+            try{const snap=await getDoc(doc(db,'settings','appConfig'));const c=snap.exists()?snap.data():{};document.getElementById('configLatestVersion').value=c.latestVersion||'20.3.0';document.getElementById('configChangelog').value=c.changelog||'';document.getElementById('configMaintenanceTitle').value=c.maintenanceTitle||'Sedang dalam pemeliharaan';document.getElementById('configMaintenanceMessage').value=c.maintenanceMessage||'Kami sedang melakukan peningkatan agar aplikasi menjadi lebih baik. Silakan coba kembali beberapa saat lagi.';document.getElementById('configUpdateRequired').checked=c.updateRequired===true;document.getElementById('configMaintenanceMode').checked=c.maintenanceMode===true;if(status)status.className='config-status';}catch(e){if(status){status.textContent='Gagal memuat pengaturan aplikasi.';status.className='config-status show error';}}
             try{const snap=await getDoc(doc(db,'settings','appConfig')),c=snap.exists()?snap.data():{};document.getElementById('configAppName').value=c.appName||'Komik & Anime';document.getElementById('configThemeColor').value=c.themeColor||'#625af2';document.getElementById('configAnnouncement').value=c.announcement||'';document.getElementById('configRecommendations').checked=c.enableRecommendations!==false;document.getElementById('configGamification').checked=c.enableGamification!==false;}catch(e){console.error(e);if(status){status.textContent=`Sebagian pengaturan gagal dimuat: ${e.message}`;status.className='config-status show error';}}
         }
         window.saveBaseAppConfiguration=async function(){
@@ -2957,7 +3006,7 @@
         window.previewBulkMetadata=async function(file){const box=document.getElementById('bulkPreview');if(!file)return;try{const data=JSON.parse(await file.text());if(!Array.isArray(data))throw new Error('JSON harus berupa array');window.bulkMetadata=data.slice(0,500);box.innerHTML=`${window.bulkMetadata.length} data siap. <button class="ops-btn" onclick="executeBulkMetadata()">Import Sekarang</button>`;}catch(e){box.textContent='File tidak valid: '+e.message;}}
         window.executeBulkMetadata=async function(){if(!window.bulkMetadata?.length)return;const result=await Swal.fire({title:`Import ${window.bulkMetadata.length} data?`,text:'Semua data ditambahkan sebagai draft.',icon:'warning',showCancelButton:true,confirmButtonText:'Import',cancelButtonText:'Batal'});if(!result.isConfirmed)return;let success=0;for(const item of window.bulkMetadata){if(!item?.title)continue;await addDoc(collection(db,'comics'),{title:String(item.title).slice(0,180),altTitle:String(item.altTitle||''),type:String(item.type||'Manga'),format:item.format==='film'?'film':'komik',status:String(item.status||'Ongoing'),ageRating:String(item.ageRating||''),releaseDate:String(item.releaseDate||''),genres:Array.isArray(item.genres)?item.genres.slice(0,20):[],synopsis:String(item.synopsis||''),coverUrl:String(item.coverUrl||''),author:String(item.author||''),directors:Array.isArray(item.directors)?item.directors:[],isPublished:false,publicationStatus:'draft',createdAt:serverTimestamp()});success++;}await writeAudit('BULK_IMPORT','comics',`${success} metadata`);window.bulkMetadata=[];document.getElementById('bulkPreview').textContent=`${success} data berhasil diimpor sebagai draft.`;await window.loadComicsList();renderPublicationQueue();}
         function exportValue(v){if(v?.toDate)return v.toDate().toISOString();if(Array.isArray(v))return v.map(exportValue);if(v&&typeof v==='object')return Object.fromEntries(Object.entries(v).map(([k,x])=>[k,exportValue(x)]));return v;}
-        window.backupAllMetadata=async function(){const output=[];const comics=await getDocs(collection(db,'comics'));for(const c of comics.docs){const chapters=[];const s=await getDocs(collection(db,'comics',c.id,'chapters'));s.forEach(ch=>chapters.push({id:ch.id,...exportValue(ch.data())}));output.push({id:c.id,...exportValue(c.data()),chapters});}const blob=new Blob([JSON.stringify({version:'20.1.0',exportedAt:new Date().toISOString(),comics:output},null,2)],{type:'application/json'});const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=`manga-backup-${dateKeyOffset(0)}.json`;a.click();URL.revokeObjectURL(a.href);await writeAudit('BACKUP_METADATA','comics',`${output.length} judul`);}
+        window.backupAllMetadata=async function(){const output=[];const comics=await getDocs(collection(db,'comics'));for(const c of comics.docs){const chapters=[];const s=await getDocs(collection(db,'comics',c.id,'chapters'));s.forEach(ch=>chapters.push({id:ch.id,...exportValue(ch.data())}));output.push({id:c.id,...exportValue(c.data()),chapters});}const blob=new Blob([JSON.stringify({version:'20.3.0',exportedAt:new Date().toISOString(),comics:output},null,2)],{type:'application/json'});const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=`manga-backup-${dateKeyOffset(0)}.json`;a.click();URL.revokeObjectURL(a.href);await writeAudit('BACKUP_METADATA','comics',`${output.length} judul`);}
         window.loadAuditLogs=async function(){const box=document.getElementById('auditLogList');if(!box)return;try{const snap=await getDocs(query(collection(db,'adminAuditLogs'),orderBy('createdAt','desc'),limit(100)));box.innerHTML=snap.docs.map(d=>{const x=d.data();return `<div class="audit-row"><strong>${adminSafe(x.action)} • ${adminSafe(x.target||'-')}</strong><span>${adminSafe(x.adminEmail||x.adminId||'Admin')} • ${timeMs(x.createdAt)?new Date(timeMs(x.createdAt)).toLocaleString('id-ID'):'Baru'}<br>${adminSafe(x.detail||'')}</span></div>`;}).join('')||'<div class="loading-text">Belum ada audit log.</div>';}catch(e){box.innerHTML='<div class="loading-text">Audit log gagal dimuat.</div>';}}
 
         // V20.1: dashboard tunggal, cache lima menit, dan query komentar lintas koleksi.

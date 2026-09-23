@@ -1,4 +1,12 @@
-# Yarch V20.4.1 — Light Shorts & Folder Upload Workflow
+# Yarch V20.4.2 — YouTube-style Feed & Category Filters
+
+## Penyempurnaan V20.4.2
+
+- Feed video memakai kartu 16:9 seperti beranda YouTube.
+- Kategori metadata otomatis menjadi filter chip pada halaman Shorts.
+- Judul, kanal, waktu, deskripsi, kategori, dan tag ditampilkan pada kartu.
+- Tombol `+ Shorts Baru` ditambahkan pada Admin dan tampilan upload mobile dirapikan.
+- Ikon play pada navigasi dipusatkan secara eksplisit.
 
 ## Penyempurnaan V20.4.1
 
@@ -13,7 +21,7 @@
 - Pengelolaan Shorts pada Admin: tambah, edit, draft, publikasi, dan hapus.
 - Daftar pengguna publik dan tombol mengikuti sebagai dasar chat pribadi/grup.
 - Avatar tanpa foto atau foto lama yang rusak otomatis memakai huruf inisial.
-- Deploy `firestore-rules-yarch-v20.4.1.rules` sebelum memakai Shorts dan tombol ikuti.
+- Deploy `firestore-rules-yarch-v20.4.2.rules` sebelum memakai Shorts dan tombol ikuti.
 
 ## Hotfix V20.3.1
 
@@ -23,7 +31,7 @@
 
 ## Wajib dilakukan setelah memasang file aplikasi
 
-1. Publikasikan `firestore-rules-yarch-v20.4.1.rules` melalui Firebase Console atau Firebase CLI.
+1. Publikasikan `firestore-rules-yarch-v20.4.2.rules` melalui Firebase Console atau Firebase CLI.
 2. Masuk ke panel admin sekali. Panel akan membuat ringkasan katalog untuk maksimal 20 judul lama setiap kali dibuka sampai seluruh data selesai dimigrasikan.
 3. Saat chapter atau episode dibuat, diedit, dipublikasikan, dihapus, atau dipulihkan, ringkasan katalog akan diperbarui otomatis.
 

@@ -1,4 +1,11 @@
-# Yarch V20.4.0 — Shorts, Social Foundation & Stability
+# Yarch V20.4.1 — Light Shorts & Folder Upload Workflow
+
+## Penyempurnaan V20.4.1
+
+- Tema Shorts diubah menjadi terang dan ikon tidak aktif tidak lagi hitam.
+- Admin membuat folder metadata terlebih dahulu: judul, deskripsi, kanal, kategori, visibilitas, tag, dan thumbnail.
+- Video/thumbnail dapat diunggah langsung ke R2 dengan progres (video maksimum 95 MB), atau memakai URL R2.
+- Folder tersimpan sebagai draft sebelum upload sehingga pekerjaan tidak hilang ketika koneksi terputus.
 
 ## Fitur V20.4.0
 
@@ -6,7 +13,7 @@
 - Pengelolaan Shorts pada Admin: tambah, edit, draft, publikasi, dan hapus.
 - Daftar pengguna publik dan tombol mengikuti sebagai dasar chat pribadi/grup.
 - Avatar tanpa foto atau foto lama yang rusak otomatis memakai huruf inisial.
-- Deploy `firestore-rules-yarch-v20.4.rules` sebelum memakai Shorts dan tombol ikuti.
+- Deploy `firestore-rules-yarch-v20.4.1.rules` sebelum memakai Shorts dan tombol ikuti.
 
 ## Hotfix V20.3.1
 
@@ -16,7 +23,7 @@
 
 ## Wajib dilakukan setelah memasang file aplikasi
 
-1. Publikasikan `firestore-rules-yarch-v20.4.rules` melalui Firebase Console atau Firebase CLI.
+1. Publikasikan `firestore-rules-yarch-v20.4.1.rules` melalui Firebase Console atau Firebase CLI.
 2. Masuk ke panel admin sekali. Panel akan membuat ringkasan katalog untuk maksimal 20 judul lama setiap kali dibuka sampai seluruh data selesai dimigrasikan.
 3. Saat chapter atau episode dibuat, diedit, dipublikasikan, dihapus, atau dipulihkan, ringkasan katalog akan diperbarui otomatis.
 

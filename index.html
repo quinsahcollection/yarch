@@ -1263,7 +1263,7 @@
                 <h1>Yarch terus berkembang</h1>
                 <p>Lihat fitur baru, peningkatan pengalaman, dan bug yang telah diperbaiki dari versi terbaru hingga versi sebelumnya.</p>
             </section>
-            <div class="changelog-current"><span><strong id="changelogCurrentVersion">V20.3.0</strong><br>Versi yang sedang digunakan</span><button type="button" onclick="checkAppConfiguration(true)"><i class="fa-solid fa-rotate"></i> Periksa update</button></div>
+            <div class="changelog-current"><span><strong id="changelogCurrentVersion">V20.3.1</strong><br>Versi yang sedang digunakan</span><button type="button" onclick="checkAppConfiguration(true)"><i class="fa-solid fa-rotate"></i> Periksa update</button></div>
             <main class="changelog-timeline" id="changelogTimeline" aria-live="polite"></main>
         </div>
 
@@ -1607,14 +1607,14 @@
             <button class="account-menu-item" type="button" onclick="openAppInfo('about')"><i class="fa-solid fa-circle-info"></i><span>Tentang Yarch</span><i class="fa-solid fa-chevron-right"></i></button>
             <button class="account-menu-item" type="button" onclick="closeAccountMenu();openAdminContact()"><i class="fa-solid fa-headset"></i><span>Hubungi Admin</span><i class="fa-solid fa-chevron-right"></i></button>
             <div class="account-menu-divider" style="margin-top:11px"></div>
-            <button class="account-menu-item updates-menu-item" type="button" onclick="closeAccountMenu();openChangelogPage()"><i class="fa-solid fa-clock-rotate-left"></i><span class="account-menu-item-copy"><strong>Updates</strong><small>V20.3.0 • Riwayat perbaikan</small></span><i class="fa-solid fa-chevron-right"></i></button>
+            <button class="account-menu-item updates-menu-item" type="button" onclick="closeAccountMenu();openChangelogPage()"><i class="fa-solid fa-clock-rotate-left"></i><span class="account-menu-item-copy"><strong>Updates</strong><small>V20.3.1 • Riwayat perbaikan</small></span><i class="fa-solid fa-chevron-right"></i></button>
             <button class="account-menu-item danger" id="accountMenuLogout" type="button" onclick="closeAccountMenu();doLogout()"><i class="fa-solid fa-right-from-bracket"></i><span>Keluar dari Akun</span><i class="fa-solid fa-chevron-right"></i></button>
         </aside>
     </div>
     <div class="profile-modal-backdrop" id="profileEditorModal" onclick="if(event.target===this)closeProfileEditor()"><section class="profile-modal-sheet" role="dialog" aria-modal="true" aria-labelledby="profileEditorTitle"><div class="profile-modal-head"><div class="profile-modal-icon"><i class="fa-solid fa-user-pen"></i></div><div class="profile-modal-title"><h3 id="profileEditorTitle">Lengkapi Profil</h3><p>Informasi tanggal lahir disimpan secara privat untuk verifikasi usia.</p></div><button class="profile-modal-close" onclick="closeProfileEditor()"><i class="fa-solid fa-xmark"></i></button></div><div class="profile-modal-form"><label for="profileDisplayName">Nama tampilan</label><input id="profileDisplayName" maxlength="35" placeholder="Nama tampilan"><label for="profileBioInput">Bio singkat</label><textarea id="profileBioInput" maxlength="160" placeholder="Ceritakan genre atau karakter favoritmu..."></textarea><div class="profile-modal-grid"><div><label for="profileBirthDate">Tanggal lahir</label><input id="profileBirthDate" type="date"></div><div><label for="profileGender">Jenis kelamin</label><select id="profileGender"><option value="">Tidak disebutkan</option><option value="Laki-laki">Laki-laki</option><option value="Perempuan">Perempuan</option><option value="Lainnya">Lainnya</option></select></div></div><label for="profileLocation">Kota / lokasi (opsional)</label><input id="profileLocation" maxlength="60" placeholder="Contoh: Jakarta"><button class="profile-modal-save" onclick="saveSocialProfile()"><i class="fa-solid fa-floppy-disk"></i> Simpan Profil</button></div></section></div>
     <div class="profile-modal-backdrop" id="shareProfileModal" onclick="if(event.target===this)closeShareProfile()"><section class="profile-modal-sheet" role="dialog" aria-modal="true"><div class="profile-modal-head"><div class="profile-modal-icon"><i class="fa-solid fa-share-nodes"></i></div><div class="profile-modal-title"><h3>Bagikan Profil</h3><p>Undang teman melihat profil, statistik, dan favorit yang kamu izinkan.</p></div><button class="profile-modal-close" onclick="closeShareProfile()"><i class="fa-solid fa-xmark"></i></button></div><div class="share-profile-preview"><img id="shareProfileAvatar" alt="Foto profil"><div><strong id="shareProfileName">Pembaca Yarch</strong><span id="shareProfileLevel">Profil pembaca</span></div></div><div class="share-url-row"><input id="shareProfileUrl" readonly><button onclick="shareProfileVia('copy')" aria-label="Salin tautan"><i class="fa-regular fa-copy"></i></button></div><div class="share-option-grid"><button class="share-option" onclick="shareProfileVia('native')"><i class="fa-solid fa-arrow-up-from-bracket"></i>Bagikan</button><button class="share-option" onclick="shareProfileVia('whatsapp')"><i class="fa-brands fa-whatsapp" style="color:#18a957"></i>WhatsApp</button><button class="share-option" onclick="shareProfileVia('telegram')"><i class="fa-brands fa-telegram" style="color:#2b9bd7"></i>Telegram</button><button class="share-option" onclick="shareProfileVia('copy')"><i class="fa-solid fa-link"></i>Salin</button></div></section></div>
     <div class="profile-modal-backdrop" id="ageGateModal"><section class="profile-modal-sheet age-gate-sheet" role="dialog" aria-modal="true" aria-labelledby="ageGateTitle"><div class="age-gate-shield"><i class="fa-solid fa-shield-halved"></i></div><h3 id="ageGateTitle">Verifikasi Usia</h3><p id="ageGateMessage">Konten ini ditujukan untuk pengguna yang telah memenuhi batas usia.</p><div class="profile-modal-form"><label for="ageGateBirthDate" style="text-align:left">Tanggal lahir</label><input id="ageGateBirthDate" type="date" oninput="updateAgeGateButton()" onchange="updateAgeGateButton()"><div class="age-gate-status" id="ageGateStatus" role="status" aria-live="polite"></div><label class="age-confirm-check"><input id="ageGateConfirm" type="checkbox" onchange="updateAgeGateButton()"><span>Saya menyatakan tanggal lahir yang dimasukkan benar dan memahami bahwa konten dapat memuat tema dewasa.</span></label></div><div class="age-gate-actions"><button class="age-cancel" onclick="resolveAgeGate(false)">Kembali</button><button class="age-continue" id="ageGateContinue" disabled onclick="resolveAgeGate(true)">Verifikasi & Masuk</button></div></section></div>
-    <div class="update-modal-backdrop" id="updateModal"><div class="update-sheet"><div class="update-icon"><i class="fa-solid fa-cloud-arrow-down"></i></div><h2>Versi baru tersedia</h2><p>Pembaruan aplikasi sudah siap. Proses ini akan membersihkan cache antarmuka lama tanpa menghapus akun, bookmark, atau riwayat Anda.</p><div class="update-version-line"><span id="updateCurrentVersion">V20.3.0</span><i class="fa-solid fa-arrow-right"></i><span id="updateLatestVersion">V20.3.0</span></div><div class="update-changelog" id="updateChangelog">Peningkatan stabilitas dan tampilan.</div><div class="update-actions"><button class="update-action update-later" onclick="dismissAppUpdate()">Nanti</button><button class="update-action update-now" onclick="applyAppUpdate()"><i class="fa-solid fa-bolt"></i> Perbarui Sekarang</button></div></div></div>
+    <div class="update-modal-backdrop" id="updateModal"><div class="update-sheet"><div class="update-icon"><i class="fa-solid fa-cloud-arrow-down"></i></div><h2>Versi baru tersedia</h2><p>Pembaruan aplikasi sudah siap. Proses ini akan membersihkan cache antarmuka lama tanpa menghapus akun, bookmark, atau riwayat Anda.</p><div class="update-version-line"><span id="updateCurrentVersion">V20.3.1</span><i class="fa-solid fa-arrow-right"></i><span id="updateLatestVersion">V20.3.1</span></div><div class="update-changelog" id="updateChangelog">Peningkatan stabilitas dan tampilan.</div><div class="update-actions"><button class="update-action update-later" onclick="dismissAppUpdate()">Nanti</button><button class="update-action update-now" onclick="applyAppUpdate()"><i class="fa-solid fa-bolt"></i> Perbarui Sekarang</button></div></div></div>
 
     <div class="home-action-backdrop" id="requestContentModal" role="dialog" aria-modal="true" aria-labelledby="requestContentTitle" onclick="if(event.target===this)closeRequestModal()">
         <div class="home-action-sheet">
@@ -1679,7 +1679,7 @@
         const app = initializeApp(firebaseConfig);
         const db = getFirestore(app);
         const auth = getAuth(app);
-        const APP_VERSION = '20.3.0';
+        const APP_VERSION = '20.3.1';
         const ADMIN_UID = 'dWUWpKAWQRRxMOzjzaOA3zXWZLp2';
 
         // ================= PENYIMPANAN OFFLINE (INDEXEDDB) =================
@@ -1797,7 +1797,8 @@
         }
         window.accountMenuNavigate=function(page){closeAccountMenu();switchNav(page);}
         const APP_CHANGELOG = [
-            {version:'20.3.0',label:'Terbaru',title:'Performa katalog dan keamanan akun',changes:['Katalog memakai ringkasan pada dokumen judul sehingga tidak lagi membaca seluruh subkoleksi chapter untuk setiap konten.','Admin memperbarui ringkasan katalog otomatis saat chapter atau episode berubah dan memigrasikan data lama secara bertahap.','Profil publik, foto, statistik, dan gamifikasi dinormalisasi serta dibatasi sebelum disimpan atau ditampilkan.'],fixes:['Menambah jarak aman antara thumbnail video dengan judul serta metadata episode.','Mengurangi render berulang, pembacaan Firestore, dan risiko data profil tidak valid.']},
+            {version:'20.3.1',label:'Terbaru',title:'Pemulihan daftar Update',changes:['Update konten lama langsung dimuat kembali meskipun ringkasan katalog belum selesai dimigrasikan.','Fallback hanya membaca maksimal tiga chapter atau episode terbaru per judul dan menyimpannya di cache selama enam jam.'],fixes:['Memperbaiki halaman Update yang kosong setelah optimasi katalog V20.3.0.']},
+            {version:'20.3.0',label:'Sebelumnya',title:'Performa katalog dan keamanan akun',changes:['Katalog memakai ringkasan pada dokumen judul sehingga tidak lagi membaca seluruh subkoleksi chapter untuk setiap konten.','Admin memperbarui ringkasan katalog otomatis saat chapter atau episode berubah dan memigrasikan data lama secara bertahap.','Profil publik, foto, statistik, dan gamifikasi dinormalisasi serta dibatasi sebelum disimpan atau ditampilkan.'],fixes:['Menambah jarak aman antara thumbnail video dengan judul serta metadata episode.','Mengurangi render berulang, pembacaan Firestore, dan risiko data profil tidak valid.']},
             {version:'20.2.6',title:'Indeks abjad dan thumbnail video',changes:['Thumbnail video diperbesar lagi sementara ukuran thumbnail komik tetap dipertahankan.','Sorting Judul A–Z dan Z–A kini menampilkan pemisah huruf besar beserta kumpulan judul di bawahnya.','Huruf kecil pada indeks atas kini menjadi pintasan menuju kelompok judul yang dipilih.'],fixes:['Huruf tanpa hasil setelah filter otomatis dibuat nonaktif dan urutan kelompok mengikuti arah sorting.']},
             {version:'20.2.5',title:'Thumbnail media lebih jelas',changes:['Thumbnail komik, video, film, dan episode diperbesar sedikit pada layar ponsel tanpa mengubah ukuran kartu daftar isi.'],fixes:['Ukuran teks, tombol, serta jarak antar-episode tetap dipertahankan seperti versi sebelumnya.']},
             {version:'20.2.4',title:'Daftar episode lebih rapi',changes:['Thumbnail episode dan film diperbesar agar lebih mudah dikenali pada layar ponsel.','Judul, tanggal, durasi, bahasa, dan tombol aksi kini memiliki area terpisah.'],fixes:['Mencegah judul serta informasi di bawahnya bertabrakan dengan tombol Tonton dan Offline pada judul yang panjang.']},
@@ -2065,7 +2066,7 @@
             const button=document.querySelector('.update-now');button.disabled=true;button.innerHTML='<i class="fa-solid fa-spinner fa-spin"></i> Memperbarui...';
             try{if('serviceWorker'in navigator){const registration=await navigator.serviceWorker.getRegistration('./');if(registration)await registration.unregister();}if('caches'in window){const keys=await caches.keys();await Promise.all(keys.filter(key=>key.startsWith('komik-anime-')).map(key=>caches.delete(key)));}localStorage.removeItem('dismissedAppVersion');const url=new URL(location.href);url.searchParams.set('appVersion',Date.now());location.replace(url.href);}catch(e){button.disabled=false;button.innerHTML='<i class="fa-solid fa-bolt"></i> Perbarui Sekarang';window.showToast('Pembaruan gagal. Silakan muat ulang halaman.');}
         }
-        if('serviceWorker' in navigator && location.protocol !== 'file:') navigator.serviceWorker.register('./sw-v20.1.js?v=20.3.0-performance-security',{updateViaCache:'none'}).then(reg=>reg.update()).catch(() => {});
+        if('serviceWorker' in navigator && location.protocol !== 'file:') navigator.serviceWorker.register('./sw-v20.1.js?v=20.3.1-update-feed-recovery',{updateViaCache:'none'}).then(reg=>reg.update()).catch(() => {});
         document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible'){window.checkAppConfiguration(false);recordDailyAnalytics({});}});
         async function applyRemoteDisplayConfig(){try{const snap=await getDoc(doc(db,'settings','appConfig'));if(!snap.exists())return;const c=snap.data();if(c.appName)document.title=c.appName;if(/^#[0-9a-f]{6}$/i.test(c.themeColor||''))document.documentElement.style.setProperty('--primary-blue',c.themeColor);const recommendation=document.getElementById('recommendationSection');if(recommendation)recommendation.style.display=c.enableRecommendations===false?'none':'block';document.body.classList.toggle('gamification-off',c.enableGamification===false);if(c.announcement&&localStorage.getItem('seenAnnouncementV20.1')!==c.announcement){localStorage.setItem('seenAnnouncementV20.1',c.announcement);setTimeout(()=>window.showToast(c.announcement),1200);}}catch(e){}}
         applyRemoteDisplayConfig();
@@ -2528,6 +2529,66 @@
         window.setScheduleDay=function(day){window.scheduleDay=Number(day);document.querySelectorAll('.schedule-day').forEach(x=>x.classList.toggle('active',Number(x.dataset.day)===window.scheduleDay));renderReleaseSchedule();}
         function renderReleaseSchedule(){const tabs=document.getElementById('scheduleDayTabs'),container=document.getElementById('releaseScheduleContainer');if(!tabs||!container)return;const names=['Min','Sen','Sel','Rab','Kam','Jum','Sab'];tabs.innerHTML=names.map((name,i)=>`<button class="schedule-day ${i===window.scheduleDay?'active':''}" data-day="${i}" onclick="setScheduleDay(${i})">${name}</button>`).join('');let items=Object.entries(window.comicsData).filter(([,comic])=>{const raw=comic.releaseDay??comic.scheduleDay;if(raw!==undefined&&raw!==null){const normalized=typeof raw==='number'?raw:names.findIndex(x=>normalizeSearch(raw).startsWith(normalizeSearch(x)));return normalized===window.scheduleDay;}const time=getTimeValue(comic.realUpdateDate);return time&&new Date(time).getDay()===window.scheduleDay;});if(!items.length)items=Object.entries(window.comicsData).slice(0,6);container.innerHTML=items.slice(0,8).map(([id,comic])=>smartCard(id,comic,`Jadwal ${names[window.scheduleDay]}`)).join('')||'<div class="smart-empty">Belum ada jadwal hari ini.</div>';}
 
+        const LEGACY_UPDATE_CACHE_KEY='yarchRecentUpdatesV2031';
+        function compactLegacyChapter(snapshot) {
+            const item=snapshot.data()||{};
+            const rawTime=item.updatedAt||item.createdAt||item.updateDate||'';
+            const timeMs=getTimeValue(rawTime);
+            return {
+                id:snapshot.id,
+                chapterNumber:Number(item.chapterNumber||0),
+                seasonNumber:Number(item.seasonNumber??1),
+                title:String(item.title||'').slice(0,180),
+                updateDate:String(item.updateDate||'').slice(0,30),
+                updatedAt:timeMs?new Date(timeMs).toISOString():'',
+                durationSeconds:Math.max(0,Number(item.durationSeconds||0)),
+                thumbnailUrl:String(item.thumbnailUrl||item.posterUrl||'').slice(0,1500)
+            };
+        }
+        async function hydrateLegacyRecentUpdates() {
+            const comics=window.comicsData||{};
+            const missingIds=Object.keys(comics).filter(id=>!Array.isArray(comics[id].recentChapters));
+            if(!missingIds.length){window.catalogFallbackLoading=false;return;}
+            window.catalogFallbackLoading=true;
+            const cached=safeJsonParse(localStorage.getItem(LEGACY_UPDATE_CACHE_KEY),{});
+            const cacheFresh=Date.now()-Number(cached.savedAt||0)<6*60*60*1000;
+            const cachedItems=cacheFresh&&cached.items&&typeof cached.items==='object'?cached.items:{};
+            const unresolved=[];
+            missingIds.forEach(id=>{
+                if(Array.isArray(cachedItems[id])) comics[id].recentChapters=cachedItems[id];
+                else unresolved.push(id);
+            });
+            renderUpdatesFeed();
+            if(!unresolved.length){window.catalogFallbackLoading=false;return;}
+
+            const freshItems={...cachedItems};
+            let cursor=0;
+            const worker=async()=>{
+                while(cursor<unresolved.length){
+                    const id=unresolved[cursor++];
+                    try{
+                        const chapterRef=collection(db,'comics',id,'chapters');
+                        let snap=await getDocs(query(chapterRef,orderBy('updatedAt','desc'),limit(3)));
+                        // Chapter sangat lama mungkin belum memiliki updatedAt.
+                        if(snap.empty) snap=await getDocs(query(chapterRef,orderBy('chapterNumber','desc'),limit(3)));
+                        freshItems[id]=snap.docs.map(compactLegacyChapter);
+                    }catch(error){
+                        try{
+                            const snap=await getDocs(query(collection(db,'comics',id,'chapters'),orderBy('chapterNumber','desc'),limit(3)));
+                            freshItems[id]=snap.docs.map(compactLegacyChapter);
+                        }catch(fallbackError){
+                            console.warn(`Ringkasan update lama gagal dimuat untuk ${id}.`,fallbackError);
+                            delete freshItems[id];
+                        }
+                    }
+                    if(Array.isArray(freshItems[id])) comics[id].recentChapters=freshItems[id];
+                }
+            };
+            await Promise.all(Array.from({length:Math.min(4,unresolved.length)},worker));
+            try{localStorage.setItem(LEGACY_UPDATE_CACHE_KEY,JSON.stringify({savedAt:Date.now(),items:freshItems}));}catch(error){}
+            window.catalogFallbackLoading=false;
+        }
+
         async function fetchAllComics() {
             try {
                 // Buang cache katalog lama agar konten yang baru saja di-unpublish tidak tetap muncul.
@@ -2634,10 +2695,14 @@
                 renderHomeInsights();
                 if(!window.sharedProfileLoaded){window.sharedProfileLoaded=true;loadSharedProfileFromUrl();}
 
-                // Ringkasan chapter/episode terbaru sudah disimpan pada dokumen
-                // judul oleh panel admin. Katalog pengguna cukup memakai satu
-                // query utama tanpa membaca subkoleksi setiap judul.
+                // Dokumen baru memakai ringkasan katalog. Data lama dipulihkan
+                // lewat query terbatas tiga item per judul dan cache enam jam,
+                // sehingga halaman Update tidak kosong selama migrasi Admin.
                 renderUpdatesFeed();
+                hydrateLegacyRecentUpdates().then(()=>{
+                    renderUpdatesFeed();
+                    renderReleaseSchedule();
+                }).catch(error=>{window.catalogFallbackLoading=false;console.warn('Pemulihan update lama gagal.',error);renderUpdatesFeed();});
 
             } catch (error) {
                 console.error("Gagal load konten:", error);
@@ -2753,6 +2818,10 @@
             const container = document.getElementById('updatesFeed');
             if(!container) return;
             const updates = getAllRecentUpdates();
+            if(!updates.length && window.catalogFallbackLoading){
+                container.innerHTML='<div class="loading-text"><i class="fa-solid fa-spinner fa-spin"></i> Memuat update lama...</div>';
+                return;
+            }
             const seenAt = Number(localStorage.getItem('lastUpdatesSeen') || 0);
             const filtered = updates.filter(item => matchesUpdatePeriod(item.time, window.updatePeriod));
             container.innerHTML = filtered.map(({comicId,comic,chapter,time}) => {

@@ -1,4 +1,10 @@
-# Yarch V20.3.0 — Performance & Security
+# Yarch V20.3.1 — Performance, Security & Update Feed Recovery
+
+## Hotfix V20.3.1
+
+- Memulihkan halaman Update untuk katalog lama yang belum memiliki `recentChapters`.
+- Fallback hanya membaca maksimal 3 chapter/episode terbaru per judul dan memakai cache lokal selama 6 jam.
+- Chapter lama tanpa `updatedAt` otomatis memakai urutan `chapterNumber` sebagai cadangan.
 
 ## Wajib dilakukan setelah memasang file aplikasi
 

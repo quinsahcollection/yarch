@@ -58,7 +58,8 @@ service cloud.firestore {
         allow read, write: if isSignedIn()
           && request.auth.uid == userId
           && userCollection != 'gamification'
-          && userCollection != 'following';
+          && userCollection != 'following'
+          && userCollection != 'savedFeeds';
       }
 
       match /following/{targetUserId} {
@@ -76,6 +77,48 @@ service cloud.firestore {
           && request.resource.data.createdAt == request.time;
 
         allow update: if false;
+      }
+
+      match /savedFeeds/{feedId} {
+        allow read, delete: if isSignedIn()
+          && request.auth.uid == userId;
+
+        allow create, update: if isSignedIn()
+          && request.auth.uid == userId
+          && request.resource.data.keys().hasOnly([
+            'feedId',
+            'title',
+            'thumbnailUrl',
+            'videoUrl',
+            'authorName',
+            'relatedContentId',
+            'relatedContentTitle',
+            'relatedContentFormat',
+            'relatedChapterId',
+            'relatedChapterNumber',
+            'relatedCtaLabel',
+            'savedAt'
+          ])
+          && request.resource.data.feedId == feedId
+          && request.resource.data.title is string
+          && request.resource.data.title.size() > 0
+          && request.resource.data.title.size() <= 120
+          && request.resource.data.thumbnailUrl is string
+          && request.resource.data.thumbnailUrl.size() <= 2048
+          && request.resource.data.videoUrl is string
+          && request.resource.data.videoUrl.size() <= 2048
+          && request.resource.data.authorName is string
+          && request.resource.data.authorName.size() <= 50
+          && request.resource.data.relatedContentId is string
+          && request.resource.data.relatedContentId.size() <= 128
+          && request.resource.data.relatedContentTitle is string
+          && request.resource.data.relatedContentTitle.size() <= 180
+          && request.resource.data.relatedContentFormat in ['film', 'komik']
+          && request.resource.data.relatedChapterId is string
+          && request.resource.data.relatedChapterId.size() <= 128
+          && request.resource.data.relatedCtaLabel is string
+          && request.resource.data.relatedCtaLabel.size() <= 40
+          && request.resource.data.savedAt == request.time;
       }
 
       match /gamification/{documentId} {

@@ -125,7 +125,7 @@ service cloud.firestore {
         allow read, delete: if isSignedIn()
           && request.auth.uid == userId;
 
-        allow create, update: if isSignedIn()
+        allow create: if isSignedIn()
           && request.auth.uid == userId
           && request.resource.data.keys().hasOnly([
             'points',
@@ -160,7 +160,68 @@ service cloud.firestore {
           && request.resource.data.chapterCount
             == request.resource.data.awardedChapters.keys().size()
           && request.resource.data.weekly is map
+          && request.resource.data.points == 0
+          && request.resource.data.streak == 0
+          && request.resource.data.lastCheckIn == ''
+          && request.resource.data.chapterCount == 0
+          && request.resource.data.watchSeconds == 0
+          && request.resource.data.commentCount == 0
           && request.resource.data.updatedAt == request.time;
+
+        allow update: if isSignedIn()
+          && request.auth.uid == userId
+          && request.resource.data.keys().hasOnly([
+            'points','streak','lastCheckIn','chapterCount','watchSeconds',
+            'commentCount','awardedChapters','weekly','updatedAt'
+          ])
+          && request.resource.data.points is int
+          && request.resource.data.points >= resource.data.points
+          && request.resource.data.points <= resource.data.points + 10
+          && request.resource.data.streak is int
+          && request.resource.data.streak >= 0
+          && request.resource.data.streak <= resource.data.streak + 1
+          && request.resource.data.lastCheckIn is string
+          && request.resource.data.lastCheckIn.size() <= 10
+          && request.resource.data.chapterCount is int
+          && request.resource.data.chapterCount >= resource.data.chapterCount
+          && request.resource.data.chapterCount <= resource.data.chapterCount + 1
+          && request.resource.data.watchSeconds is int
+          && request.resource.data.watchSeconds >= resource.data.watchSeconds
+          && request.resource.data.watchSeconds <= resource.data.watchSeconds + 30
+          && request.resource.data.commentCount is int
+          && request.resource.data.commentCount >= resource.data.commentCount
+          && request.resource.data.commentCount <= resource.data.commentCount + 1
+          && request.resource.data.awardedChapters is map
+          && request.resource.data.awardedChapters.keys().size() <= 5000
+          && request.resource.data.awardedChapters.keys().toSet()
+            .difference(resource.data.awardedChapters.keys().toSet()).size() <= 1
+          && resource.data.awardedChapters.keys().toSet()
+            .difference(request.resource.data.awardedChapters.keys().toSet()).size() == 0
+          && request.resource.data.chapterCount
+            == request.resource.data.awardedChapters.keys().size()
+          && request.resource.data.weekly is map
+          && request.resource.data.updatedAt == request.time
+          && (
+            (
+              request.resource.data.points == resource.data.points
+              && request.resource.data.chapterCount == resource.data.chapterCount
+              && request.resource.data.commentCount == resource.data.commentCount
+            )
+            || (
+              request.resource.data.points == resource.data.points + 5
+              && request.resource.data.chapterCount == resource.data.chapterCount + 1
+              && request.resource.data.awardedChapters.keys().size()
+                == resource.data.awardedChapters.keys().size() + 1
+            )
+            || (
+              request.resource.data.points == resource.data.points + 2
+              && request.resource.data.commentCount == resource.data.commentCount + 1
+            )
+            || (
+              request.resource.data.points == resource.data.points + 10
+              && request.resource.data.lastCheckIn != resource.data.lastCheckIn
+            )
+          );
       }
     }
 
@@ -177,14 +238,17 @@ service cloud.firestore {
       allow create, delete: if isAdmin();
 
       // Admin dapat mengubah seluruh metadata.
-      // Pengunjung hanya dapat menambahkan satu view.
+      // Pengguna login hanya dapat menambahkan satu view per judul.
       // Pengguna login dapat mengubah commentCount satu angka.
       // Rating aggregate divalidasi melalui transaksi.
       allow update: if isAdmin()
         || (
-          onlyFieldsChanged(['views'])
+          isSignedIn()
+          && onlyFieldsChanged(['views'])
           && request.resource.data.get('views', 0)
             == resource.data.get('views', 0) + 1
+          && !exists(/databases/$(database)/documents/comics/$(comicId)/viewers/$(request.auth.uid))
+          && existsAfter(/databases/$(database)/documents/comics/$(comicId)/viewers/$(request.auth.uid))
         )
         || (
           isSignedIn()
@@ -210,6 +274,18 @@ service cloud.firestore {
           ).data.isPublished == true;
 
         allow create, update, delete: if isAdmin();
+      }
+
+      match /viewers/{userId} {
+        allow read: if isAdmin()
+          || (isSignedIn() && request.auth.uid == userId);
+        allow create: if isSignedIn()
+          && request.auth.uid == userId
+          && request.resource.data.keys().hasOnly(['userId','viewedAt'])
+          && request.resource.data.userId == request.auth.uid
+          && request.resource.data.viewedAt == request.time;
+        allow update: if false;
+        allow delete: if isAdmin();
       }
 
       // ========================================
@@ -441,6 +517,16 @@ service cloud.firestore {
         && request.resource.data.streak is int
         && request.resource.data.streak >= 0
         && request.resource.data.streak <= 10000
+        && exists(/databases/$(database)/documents/users/$(userId)/gamification/main)
+        && request.resource.data.points
+          == get(/databases/$(database)/documents/users/$(userId)/gamification/main).data.points
+        && request.resource.data.chapterCount
+          == get(/databases/$(database)/documents/users/$(userId)/gamification/main).data.chapterCount
+        && request.resource.data.watchSeconds
+          == get(/databases/$(database)/documents/users/$(userId)/gamification/main).data.watchSeconds
+        && request.resource.data.streak
+          == get(/databases/$(database)/documents/users/$(userId)/gamification/main).data.streak
+        && request.resource.data.level <= (request.resource.data.points / 100) + 1
         && request.resource.data.favorites is list
         && request.resource.data.favorites.size() <= 30
         && request.resource.data.updatedAt == request.time;

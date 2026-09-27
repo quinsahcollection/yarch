@@ -1641,7 +1641,7 @@
             <button class="account-menu-item" type="button" onclick="openAppInfo('about')"><i class="fa-solid fa-circle-info"></i><span>Tentang Yarch</span><i class="fa-solid fa-chevron-right"></i></button>
             <button class="account-menu-item" type="button" onclick="closeAccountMenu();openAdminContact()"><i class="fa-solid fa-headset"></i><span>Hubungi Admin</span><i class="fa-solid fa-chevron-right"></i></button>
             <div class="account-menu-divider" style="margin-top:11px"></div>
-            <button class="account-menu-item updates-menu-item" type="button" onclick="closeAccountMenu();openChangelogPage()"><i class="fa-solid fa-clock-rotate-left"></i><span class="account-menu-item-copy"><strong>Updates</strong><small>V20.4.11 • Riwayat perbaikan</small></span><i class="fa-solid fa-chevron-right"></i></button>
+            <button class="account-menu-item updates-menu-item" type="button" onclick="closeAccountMenu();openChangelogPage()"><i class="fa-solid fa-clock-rotate-left"></i><span class="account-menu-item-copy"><strong>Updates</strong><small>V20.4.12 • Riwayat perbaikan</small></span><i class="fa-solid fa-chevron-right"></i></button>
             <button class="account-menu-item danger" id="accountMenuLogout" type="button" onclick="closeAccountMenu();doLogout()"><i class="fa-solid fa-right-from-bracket"></i><span>Keluar dari Akun</span><i class="fa-solid fa-chevron-right"></i></button>
         </aside>
     </div>
@@ -1713,7 +1713,7 @@
         const app = initializeApp(firebaseConfig);
         const db = getFirestore(app);
         const auth = getAuth(app);
-        const APP_VERSION = '20.4.11';
+        const APP_VERSION = '20.4.12';
         const ADMIN_UID = 'dWUWpKAWQRRxMOzjzaOA3zXWZLp2';
 
         // ================= PENYIMPANAN OFFLINE (INDEXEDDB) =================
@@ -1831,7 +1831,8 @@
         }
         window.accountMenuNavigate=function(page){closeAccountMenu();switchNav(page);}
         const APP_CHANGELOG = [
-            {version:'20.4.11',label:'Terbaru',title:'Posisi awal dan tautan Feed',changes:['Feed biasa selalu dibuka dari bagian paling atas setelah video selesai dimuat.','Tautan Feed dari WhatsApp atau aplikasi lain langsung membuka video yang dibagikan.'],fixes:['Posisi scroll tidak lagi terdorong melewati video pertama saat berpindah dari menu lain.','Parameter video dibersihkan saat meninggalkan Feed agar tidak memengaruhi kunjungan berikutnya.','URL share dibangun konsisten dari origin dan path aplikasi.']},
+            {version:'20.4.12',label:'Terbaru',title:'Subtitle folder episode dan chapter',changes:['Pilihan bahasa/subtitle langsung menjadi tag ketika dipilih.','Folder chapter komik kini memiliki pilihan bahasa atau subtitle.','Label subtitle ditampilkan pada detail episode maupun chapter.'],fixes:['Pilihan subtitle tidak lagi hilang jika folder langsung disimpan setelah memilih dropdown.','Edit Folder Chapter kini dapat membaca, mengubah, dan menyimpan languageLabels.','Penyimpanan ulang folder mempertahankan struktur bahasa yang sama untuk film dan komik.']},
+            {version:'20.4.11',label:'Sebelumnya',title:'Posisi awal dan tautan Feed',changes:['Feed biasa selalu dibuka dari bagian paling atas setelah video selesai dimuat.','Tautan Feed dari WhatsApp atau aplikasi lain langsung membuka video yang dibagikan.'],fixes:['Posisi scroll tidak lagi terdorong melewati video pertama saat berpindah dari menu lain.','Parameter video dibersihkan saat meninggalkan Feed agar tidak memengaruhi kunjungan berikutnya.','URL share dibangun konsisten dari origin dan path aplikasi.']},
             {version:'20.4.10',label:'Sebelumnya',title:'Target Feed dan profil admin',changes:['Feed dari Tonton Nanti langsung memutar video yang dipilih.','Foto profil admin dapat langsung diunggah dari header atau Pengaturan.','Jarak tombol Baca/Tonton dibuat lebih lega dari informasi di bawahnya.'],fixes:['Pemilih autoplay dikunci sementara pada video tujuan agar tidak beralih ke video lain.','Foto profil rusak atau kosong kembali ke inisial tanpa kotak putih.','Nama dan foto admin kini tersimpan oleh fungsi pengaturan terbaru.']},
             {version:'20.4.9',label:'Sebelumnya',title:'Konten terkait dan Tonton Nanti Feed',changes:['Admin dapat menghubungkan Feed ke komik, film, chapter, atau episode.','Tombol Baca/Tonton membawa pengguna langsung ke konten tujuan.','Feed dapat disimpan ke Tonton Nanti dan dibuka dari Koleksi Saya.'],fixes:['Status Simpan tersinkron per akun dan aman saat login atau logout.','Feed lama tanpa konten terkait tetap dapat diputar seperti biasa.']},
             {version:'20.4.8',label:'Sebelumnya',title:'Fokus video dan suara Feed',changes:['Video aktif dipilih berdasarkan posisi terdekat dengan area fokus layar seperti YouTube.','Tombol Aktifkan suara mengingat pilihan selama sesi Feed.','Scroll kembali ke video sebelumnya akan memutarnya lagi dan menghentikan video lain.'],fixes:['Video paling bawah tidak lagi terpilih hanya karena callback scroll terakhir.','Pergantian video menunggu scroll stabil agar pemutaran tidak melompat-lompat.']},
@@ -2112,7 +2113,7 @@
             const button=document.querySelector('.update-now');button.disabled=true;button.innerHTML='<i class="fa-solid fa-spinner fa-spin"></i> Memperbarui...';
             try{if('serviceWorker'in navigator){const registration=await navigator.serviceWorker.getRegistration('./');if(registration)await registration.unregister();}if('caches'in window){const keys=await caches.keys();await Promise.all(keys.filter(key=>key.startsWith('komik-anime-')).map(key=>caches.delete(key)));}localStorage.removeItem('dismissedAppVersion');const url=new URL(location.href);url.searchParams.set('appVersion',Date.now());location.replace(url.href);}catch(e){button.disabled=false;button.innerHTML='<i class="fa-solid fa-bolt"></i> Perbarui Sekarang';window.showToast('Pembaruan gagal. Silakan muat ulang halaman.');}
         }
-        if('serviceWorker' in navigator && location.protocol !== 'file:') navigator.serviceWorker.register('./sw-v20.1.js?v=20.4.11-feed-deep-link-scroll',{updateViaCache:'none'}).then(reg=>reg.update()).catch(() => {});
+        if('serviceWorker' in navigator && location.protocol !== 'file:') navigator.serviceWorker.register('./sw-v20.1.js?v=20.4.12-chapter-subtitle-labels',{updateViaCache:'none'}).then(reg=>reg.update()).catch(() => {});
         document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible'){window.checkAppConfiguration(false);recordDailyAnalytics({});}});
         async function applyRemoteDisplayConfig(){try{const snap=await getDoc(doc(db,'settings','appConfig'));if(!snap.exists())return;const c=snap.data();if(c.appName)document.title=c.appName;if(/^#[0-9a-f]{6}$/i.test(c.themeColor||''))document.documentElement.style.setProperty('--primary-blue',c.themeColor);const recommendation=document.getElementById('recommendationSection');if(recommendation)recommendation.style.display=c.enableRecommendations===false?'none':'block';document.body.classList.toggle('gamification-off',c.enableGamification===false);if(c.announcement&&localStorage.getItem('seenAnnouncementV20.1')!==c.announcement){localStorage.setItem('seenAnnouncementV20.1',c.announcement);setTimeout(()=>window.showToast(c.announcement),1200);}}catch(e){}}
         applyRemoteDisplayConfig();
@@ -4331,7 +4332,7 @@
                         const mediaMeta = isVideo
                             ? (durationText ? `<span class="episode-media-meta"><i class="fa-regular fa-clock"></i> Durasi: ${durationText}</span>` : '')
                             : (pageCount > 0 ? `<span class="episode-media-meta"><i class="fa-regular fa-images"></i> ${pageCount} halaman</span>` : '');
-                        const languageMeta = isVideo && languageText ? `<span class="episode-language-meta">${safeText(languageText)}</span>` : '';
+                        const languageMeta = languageText ? `<span class="episode-language-meta"><i class="fa-solid fa-language"></i> ${safeText(languageText)}</span>` : '';
                         const fullMovie = isFullMovieChapter(comicRecord, ch, chapterDocs.length);
                         const title = ch.title && !fullMovie ? ` — ${ch.title}` : '';
                         const titleDisplay = `${getMediaPartLabel(comicRecord, ch, chapterDocs.length)}${title}`;

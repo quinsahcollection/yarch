@@ -1641,7 +1641,7 @@
             <button class="account-menu-item" type="button" onclick="openAppInfo('about')"><i class="fa-solid fa-circle-info"></i><span>Tentang Yarch</span><i class="fa-solid fa-chevron-right"></i></button>
             <button class="account-menu-item" type="button" onclick="closeAccountMenu();openAdminContact()"><i class="fa-solid fa-headset"></i><span>Hubungi Admin</span><i class="fa-solid fa-chevron-right"></i></button>
             <div class="account-menu-divider" style="margin-top:11px"></div>
-            <button class="account-menu-item updates-menu-item" type="button" onclick="closeAccountMenu();openChangelogPage()"><i class="fa-solid fa-clock-rotate-left"></i><span class="account-menu-item-copy"><strong>Updates</strong><small>V20.4.10 • Riwayat perbaikan</small></span><i class="fa-solid fa-chevron-right"></i></button>
+            <button class="account-menu-item updates-menu-item" type="button" onclick="closeAccountMenu();openChangelogPage()"><i class="fa-solid fa-clock-rotate-left"></i><span class="account-menu-item-copy"><strong>Updates</strong><small>V20.4.11 • Riwayat perbaikan</small></span><i class="fa-solid fa-chevron-right"></i></button>
             <button class="account-menu-item danger" id="accountMenuLogout" type="button" onclick="closeAccountMenu();doLogout()"><i class="fa-solid fa-right-from-bracket"></i><span>Keluar dari Akun</span><i class="fa-solid fa-chevron-right"></i></button>
         </aside>
     </div>
@@ -1713,7 +1713,7 @@
         const app = initializeApp(firebaseConfig);
         const db = getFirestore(app);
         const auth = getAuth(app);
-        const APP_VERSION = '20.4.10';
+        const APP_VERSION = '20.4.11';
         const ADMIN_UID = 'dWUWpKAWQRRxMOzjzaOA3zXWZLp2';
 
         // ================= PENYIMPANAN OFFLINE (INDEXEDDB) =================
@@ -1831,7 +1831,8 @@
         }
         window.accountMenuNavigate=function(page){closeAccountMenu();switchNav(page);}
         const APP_CHANGELOG = [
-            {version:'20.4.10',label:'Terbaru',title:'Target Feed dan profil admin',changes:['Feed dari Tonton Nanti langsung memutar video yang dipilih.','Foto profil admin dapat langsung diunggah dari header atau Pengaturan.','Jarak tombol Baca/Tonton dibuat lebih lega dari informasi di bawahnya.'],fixes:['Pemilih autoplay dikunci sementara pada video tujuan agar tidak beralih ke video lain.','Foto profil rusak atau kosong kembali ke inisial tanpa kotak putih.','Nama dan foto admin kini tersimpan oleh fungsi pengaturan terbaru.']},
+            {version:'20.4.11',label:'Terbaru',title:'Posisi awal dan tautan Feed',changes:['Feed biasa selalu dibuka dari bagian paling atas setelah video selesai dimuat.','Tautan Feed dari WhatsApp atau aplikasi lain langsung membuka video yang dibagikan.'],fixes:['Posisi scroll tidak lagi terdorong melewati video pertama saat berpindah dari menu lain.','Parameter video dibersihkan saat meninggalkan Feed agar tidak memengaruhi kunjungan berikutnya.','URL share dibangun konsisten dari origin dan path aplikasi.']},
+            {version:'20.4.10',label:'Sebelumnya',title:'Target Feed dan profil admin',changes:['Feed dari Tonton Nanti langsung memutar video yang dipilih.','Foto profil admin dapat langsung diunggah dari header atau Pengaturan.','Jarak tombol Baca/Tonton dibuat lebih lega dari informasi di bawahnya.'],fixes:['Pemilih autoplay dikunci sementara pada video tujuan agar tidak beralih ke video lain.','Foto profil rusak atau kosong kembali ke inisial tanpa kotak putih.','Nama dan foto admin kini tersimpan oleh fungsi pengaturan terbaru.']},
             {version:'20.4.9',label:'Sebelumnya',title:'Konten terkait dan Tonton Nanti Feed',changes:['Admin dapat menghubungkan Feed ke komik, film, chapter, atau episode.','Tombol Baca/Tonton membawa pengguna langsung ke konten tujuan.','Feed dapat disimpan ke Tonton Nanti dan dibuka dari Koleksi Saya.'],fixes:['Status Simpan tersinkron per akun dan aman saat login atau logout.','Feed lama tanpa konten terkait tetap dapat diputar seperti biasa.']},
             {version:'20.4.8',label:'Sebelumnya',title:'Fokus video dan suara Feed',changes:['Video aktif dipilih berdasarkan posisi terdekat dengan area fokus layar seperti YouTube.','Tombol Aktifkan suara mengingat pilihan selama sesi Feed.','Scroll kembali ke video sebelumnya akan memutarnya lagi dan menghentikan video lain.'],fixes:['Video paling bawah tidak lagi terpilih hanya karena callback scroll terakhir.','Pergantian video menunggu scroll stabil agar pemutaran tidak melompat-lompat.']},
             {version:'20.4.7',label:'Sebelumnya',title:'Autoplay Feed seperti YouTube',changes:['Video pertama otomatis diputar tanpa suara saat Feed dibuka.','Slider waktu baru tersedia setelah video mulai berjalan.','Menggeser ke video berikutnya otomatis memutar video baru dan menghentikan video sebelumnya.'],fixes:['Semua video Feed langsung berhenti ketika pengguna berpindah menu, menutup halaman, atau aplikasi masuk latar belakang.','Sebelum video diputar hanya tombol Play dan durasi yang terlihat.']},
@@ -2111,7 +2112,7 @@
             const button=document.querySelector('.update-now');button.disabled=true;button.innerHTML='<i class="fa-solid fa-spinner fa-spin"></i> Memperbarui...';
             try{if('serviceWorker'in navigator){const registration=await navigator.serviceWorker.getRegistration('./');if(registration)await registration.unregister();}if('caches'in window){const keys=await caches.keys();await Promise.all(keys.filter(key=>key.startsWith('komik-anime-')).map(key=>caches.delete(key)));}localStorage.removeItem('dismissedAppVersion');const url=new URL(location.href);url.searchParams.set('appVersion',Date.now());location.replace(url.href);}catch(e){button.disabled=false;button.innerHTML='<i class="fa-solid fa-bolt"></i> Perbarui Sekarang';window.showToast('Pembaruan gagal. Silakan muat ulang halaman.');}
         }
-        if('serviceWorker' in navigator && location.protocol !== 'file:') navigator.serviceWorker.register('./sw-v20.1.js?v=20.4.10-feed-target-admin-avatar',{updateViaCache:'none'}).then(reg=>reg.update()).catch(() => {});
+        if('serviceWorker' in navigator && location.protocol !== 'file:') navigator.serviceWorker.register('./sw-v20.1.js?v=20.4.11-feed-deep-link-scroll',{updateViaCache:'none'}).then(reg=>reg.update()).catch(() => {});
         document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible'){window.checkAppConfiguration(false);recordDailyAnalytics({});}});
         async function applyRemoteDisplayConfig(){try{const snap=await getDoc(doc(db,'settings','appConfig'));if(!snap.exists())return;const c=snap.data();if(c.appName)document.title=c.appName;if(/^#[0-9a-f]{6}$/i.test(c.themeColor||''))document.documentElement.style.setProperty('--primary-blue',c.themeColor);const recommendation=document.getElementById('recommendationSection');if(recommendation)recommendation.style.display=c.enableRecommendations===false?'none':'block';document.body.classList.toggle('gamification-off',c.enableGamification===false);if(c.announcement&&localStorage.getItem('seenAnnouncementV20.1')!==c.announcement){localStorage.setItem('seenAnnouncementV20.1',c.announcement);setTimeout(()=>window.showToast(c.announcement),1200);}}catch(e){}}
         applyRemoteDisplayConfig();
@@ -5065,7 +5066,7 @@
             button.disabled=true;const ref=doc(db,'shorts',shortId,'likes',auth.currentUser.uid);
             try{const liked=(await getDoc(ref)).exists();if(liked)await deleteDoc(ref);else await setDoc(ref,{userId:auth.currentUser.uid,createdAt:serverTimestamp()});await hydrateFeedEngagement(shortId);window.showToast(liked?'Like dihapus':'Feed disukai');}catch(error){window.showToast('Like belum dapat disimpan. Publikasikan Firestore Rules terbaru.');reportBackgroundError('Like Feed gagal',error);}finally{button.disabled=false;}
         }
-        window.shareShort=async function(shortId){const item=window.shortItems.find(x=>x.id===shortId),url=`${location.href.split('?')[0]}?short=${encodeURIComponent(shortId)}`,tags=Array.isArray(item?.tags)?item.tags.slice(0,5).map(tag=>`#${tag}`).join(' '):'',excerpt=String(item?.caption||'').trim().replace(/\s+/g,' ').slice(0,220),text=[`🎬 ${item?.title||'Feed pilihan dari Yarch'}`,`👤 ${item?.authorName||'Yarch'}${item?.category?` • ${item.category}`:''}`,excerpt,tags,'Tonton selengkapnya di Yarch:'].filter(Boolean).join('\n\n');try{if(navigator.share)await navigator.share({title:item?.title||'Yarch Feed',text,url});else{await navigator.clipboard.writeText(`${text}\n${url}`);window.showToast('Template berbagi dan tautan Feed disalin');}}catch(error){if(error.name!=='AbortError')window.showToast('Feed belum dapat dibagikan');}}
+        window.shareShort=async function(shortId){const item=window.shortItems.find(x=>x.id===shortId),shareUrl=new URL(location.origin+location.pathname);shareUrl.searchParams.set('short',shortId);const url=shareUrl.href,tags=Array.isArray(item?.tags)?item.tags.slice(0,5).map(tag=>`#${tag}`).join(' '):'',excerpt=String(item?.caption||'').trim().replace(/\s+/g,' ').slice(0,220),text=[`🎬 ${item?.title||'Feed pilihan dari Yarch'}`,`👤 ${item?.authorName||'Yarch'}${item?.category?` • ${item.category}`:''}`,excerpt,tags,'Tonton selengkapnya di Yarch:'].filter(Boolean).join('\n\n');try{if(navigator.share)await navigator.share({title:item?.title||'Yarch Feed',text,url});else{await navigator.clipboard.writeText(`${text}\n${url}`);window.showToast('Template berbagi dan tautan Feed disalin');}}catch(error){if(error.name!=='AbortError')window.showToast('Feed belum dapat dibagikan');}}
         window.shortCategoryFilter='Semua';
         window.shortTagFilter='';
         window.shortDisplayLimit=20;
@@ -5122,6 +5123,10 @@
             if(pageId !== 'shorts')window.pauseAllFeedVideos?.(true);
             if(document.getElementById('feedCommentModal')?.classList.contains('show'))window.closeFeedComments();else document.body.style.overflow='';
             if(!fromHistory && history.state?.view !== pageId) pushAppState(pageId);
+            if(pageId !== 'shorts'){
+                window.pendingFeedTarget='';window.feedTargetHandled='';clearTimeout(window.pendingFeedTargetTimer);
+                const cleanUrl=new URL(location.href);if(cleanUrl.searchParams.has('short')){cleanUrl.searchParams.delete('short');history.replaceState(history.state,'',cleanUrl);}
+            }
             document.querySelectorAll('.app-container > div').forEach(el => {
                 if(el.id !== 'mainBottomNav') el.style.display = 'none';
             });
@@ -5129,7 +5134,11 @@
             document.getElementById('mainBottomNav').style.display = 'flex';
             if(pageId === 'home') renderReadingHistory(true);
             if(pageId === 'updates') renderUpdatesFeed();
-            if(pageId === 'shorts') window.loadShorts();
+            if(pageId === 'shorts'){
+                const hasTarget=Boolean(window.pendingFeedTarget||new URLSearchParams(location.search).get('short'));
+                if(!hasTarget)window.scrollTo({top:0,left:0,behavior:'auto'});
+                Promise.resolve(window.loadShorts()).finally(()=>{if(!window.pendingFeedTarget&&!new URLSearchParams(location.search).get('short'))requestAnimationFrame(()=>window.scrollTo({top:0,left:0,behavior:'auto'}));});
+            }
             
             if(element) {
                 document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
@@ -5143,8 +5152,15 @@
                 if(pageId === 'bookmark') document.querySelectorAll('.nav-item')[4].classList.add('active');
                 if(pageId === 'profile') document.querySelectorAll('.nav-item')[5].classList.add('active');
             }
-            window.scrollTo(0,0);
+            if(pageId !== 'shorts'||(!window.pendingFeedTarget&&!new URLSearchParams(location.search).get('short')))window.scrollTo({top:0,left:0,behavior:'auto'});
         }
+        function openInitialFeedDeepLink(){
+            const feedId=new URLSearchParams(location.search).get('short');if(!feedId)return;
+            window.feedTargetHandled=feedId;window.pendingFeedTarget=feedId;window.shortCategoryFilter='Semua';window.shortTagFilter='';
+            history.replaceState({...(history.state||{}),comicApp:true,view:'shorts',scrollY:0},'',location.href);
+            window.switchNav('shorts',null,true);
+        }
+        openInitialFeedDeepLink();
         document.addEventListener('visibilitychange',()=>{if(document.hidden)window.pauseAllFeedVideos?.(true);});
         window.addEventListener('pagehide',()=>window.pauseAllFeedVideos?.(true));
 

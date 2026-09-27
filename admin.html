@@ -2008,7 +2008,7 @@
            LANGKAH 2: LOGIKA FILE MANAGER & UPLOAD
            ========================================= */
         const CLOUD_IMAGE_ACCEPT = 'image/jpeg,image/png,image/webp,image/gif,image/avif,.jpg,.jpeg,.png,.webp,.gif,.avif';
-        const CLOUD_VIDEO_ACCEPT = 'video/mp4,video/webm,video/ogg,video/quicktime,video/x-m4v,video/x-matroska,.mp4,.webm,.ogv,.ogg,.mov,.m4v,.mkv';
+        const CLOUD_VIDEO_ACCEPT = 'video/mp4,video/webm,video/ogg,video/quicktime,video/x-m4v,video/x-matroska,video/matroska,.mp4,.webm,.ogv,.ogg,.mov,.m4v,.mkv';
         const CLOUD_IMAGE_EXT = /\.(?:jpe?g|png|webp|gif|avif)(?:$|[?#])/i;
         const CLOUD_VIDEO_EXT = /\.(?:mp4|webm|ogv|ogg|mov|m4v|mkv)(?:$|[?#])/i;
 
@@ -2046,8 +2046,21 @@
                 : (type.startsWith('image/') || CLOUD_IMAGE_EXT.test(name));
         }
 
+        function normalizeCloudUploadFile(file) {
+            if (!file || !/\.mkv$/i.test(String(file.name || ''))) return file;
+            if (String(file.type || '').toLowerCase() === 'video/x-matroska') return file;
+            try {
+                return new File([file], file.name, { type:'video/x-matroska', lastModified:file.lastModified || Date.now() });
+            } catch (_) {
+                const normalized = file.slice(0, file.size, 'video/x-matroska');
+                Object.defineProperty(normalized, 'name', { value:file.name });
+                Object.defineProperty(normalized, 'lastModified', { value:file.lastModified || Date.now() });
+                return normalized;
+            }
+        }
+
         window.processCloudUpload = async function(inputElement) {
-            const files = Array.from(inputElement.files || []);
+            const files = Array.from(inputElement.files || []).map(normalizeCloudUploadFile);
             if(files.length === 0) return;
 
             if (window.cloudUploadInProgress) {

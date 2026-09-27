@@ -41,3 +41,11 @@ Endpoint harus berada pada Worker yang sama dengan `WORKER_URL`, memverifikasi F
 ```
 
 Nilai yang tidak dapat diverifikasi sebaiknya dikembalikan sebagai string kosong, array kosong, atau `null`. Worker juga perlu membatasi panjang judul, rate limit per admin, timeout permintaan AI, dan ukuran respons. Cover sengaja tidak diambil otomatis untuk menghindari hotlink dan masalah hak penggunaan gambar; admin tetap mengunggah cover melalui R2.
+# Video MKV
+
+Worker media harus menerima kedua MIME Matroska berikut karena perangkat Android dapat mengirim salah satunya:
+
+- `video/x-matroska`
+- `video/matroska`
+
+Ekstensi `.mkv` harus diizinkan pada upload biasa dan inisialisasi multipart. Aplikasi admin V20.4.13 menormalkan upload MKV menjadi `video/x-matroska` untuk kompatibilitas dengan Worker lama.

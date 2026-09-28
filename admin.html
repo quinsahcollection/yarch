@@ -1023,6 +1023,19 @@
         window.allComicsList = []; // Array universal menampung komik & film
         window.allComicsRaw = [];
         window.galleryState = { level: 'root', comicId: null, comicName: '', entryFormat: 'komik', chapterFolderId: null, chapterFolderName: '', currentChapterImages: [] };
+        // File Manager dan form metadata berada pada scope script yang berbeda.
+        window.getAdminSeasonName = function(comic, seasonNumber) {
+            return String(comic?.seasonNames?.[seasonNumber] || comic?.seasonNames?.[String(seasonNumber)] || '').trim();
+        };
+        window.getAdminSeasonLabel = function(comic, seasonNumber) {
+            const name = window.getAdminSeasonName(comic, seasonNumber);
+            return `Season ${seasonNumber}${name ? ` — ${name}` : ''}`;
+        };
+        window.getAdminArcName = function(comic, seasonNumber, chapterNumber) {
+            const number = Number(chapterNumber);
+            const match = (Array.isArray(comic?.seasonArcs) ? comic.seasonArcs : []).find(arc => Number(arc.season || 1) === Number(seasonNumber) && number >= Number(arc.start) && number <= Number(arc.end));
+            return String(match?.name || '').trim();
+        };
         // Hanya diisi setelah Langkah 1 berhasil pada sesi halaman saat ini.
         window.pendingChapterFolder = null;
         window.editingComicId = null;
@@ -1942,7 +1955,7 @@
             const durationSeconds = parseAdminDurationSeconds(document.getElementById('episodeDurationMinutes')?.value);
             const thumbnailUrl = String(document.getElementById('episodeThumbnailUrl')?.value || '').trim();
             const languageLabels = Array.isArray(window.selectedMediaLanguages) ? [...window.selectedMediaLanguages] : [];
-            const arcName = typeof getAdminArcName === 'function' ? getAdminArcName(selectedComic, seasonNumber, chapterNum) : '';
+            const arcName = typeof window.getAdminArcName === 'function' ? window.getAdminArcName(selectedComic, seasonNumber, chapterNum) : '';
             const statusEl = document.getElementById('saveFolderStatus');
 
             if(!comicId) { Swal.fire('Peringatan', "Pilih judul terlebih dahulu dari daftar pencarian!", 'warning'); return; }
@@ -2008,7 +2021,7 @@
 
                 const sectionName = parseFloat(chapterNum) === 1 && chapterTitle === 'Full Movie'
                     ? 'Full Movie'
-                    : `${usesSeasons ? `${getAdminSeasonLabel(selectedComic, seasonNumber)} • ` : ''}${entryFormat === 'film' ? 'Episode' : 'Chapter'} ${chapterNum}`;
+                    : `${usesSeasons ? `${window.getAdminSeasonLabel(selectedComic, seasonNumber)} • ` : ''}${entryFormat === 'film' ? 'Episode' : 'Chapter'} ${chapterNum}`;
 
                 // Penanda ini membuktikan Langkah 1 baru saja berhasil.
                 window.pendingChapterFolder = {
@@ -2426,7 +2439,7 @@
                             const seasonNumber = Number(ch.seasonNumber ?? 1);
                             const folderComic = window.allComicsList.find(item => item.id === window.galleryState.comicId);
                             const usesSeasons = Number(folderComic?.totalSeasons ?? 1) > 0;
-                            const folderLabel = ch.chapterNumber === 1 && ch.title === "Full Movie" ? "Full Movie" : `${usesSeasons ? `${getAdminSeasonLabel(folderComic, seasonNumber)} • ` : ''}${term} ${ch.chapterNumber}`;
+                            const folderLabel = ch.chapterNumber === 1 && ch.title === "Full Movie" ? "Full Movie" : `${usesSeasons ? `${window.getAdminSeasonLabel(folderComic, seasonNumber)} • ` : ''}${term} ${ch.chapterNumber}`;
                             const folderColor = isFilm ? '#8b5cf6' : '#fbbf24';
                             
                             grid.innerHTML += `
@@ -2663,7 +2676,7 @@
                 
                 chapters.forEach(ch => {
                     const date = ch.updateDate || (ch.createdAt ? ch.createdAt.toDate().toLocaleDateString('id-ID', {day:'numeric', month:'short', year:'numeric'}) : '-');
-                    const labelPart = ch.chapterNumber === 1 && ch.title === "Full Movie" ? "Full Movie" : `${usesSeasons ? `${getAdminSeasonLabel(activeDoc, Number(ch.seasonNumber ?? 1))} • ` : ''}${term} ${ch.chapterNumber}`;
+                    const labelPart = ch.chapterNumber === 1 && ch.title === "Full Movie" ? "Full Movie" : `${usesSeasons ? `${window.getAdminSeasonLabel(activeDoc, Number(ch.seasonNumber ?? 1))} • ` : ''}${term} ${ch.chapterNumber}`;
 
                     tbody.innerHTML += `
                         <tr>
@@ -2721,7 +2734,7 @@
                     html: `
                         ${isFilm ? `<label style="display:flex;align-items:center;gap:9px;text-align:left;padding:10px 12px;margin:0 0 12px;background:#f5f3ff;border:1px solid #ddd6fe;border-radius:10px"><input id="editFolderFullMovie" type="checkbox" ${isFullMovie ? 'checked' : ''} style="width:18px;height:18px;accent-color:#7c3aed"> Jadikan sebagai Full Movie</label>` : ''}
                         <label for="editFolderSeason" style="text-align:left">Season</label>
-                        <select id="editFolderSeason" class="swal2-select" style="display:block;width:100%;margin:0 0 14px">${usesSeasons ? Array.from({length:Math.max(1,Number(comic?.totalSeasons ?? 1))},(_,i)=>`<option value="${i+1}">${adminSafe(getAdminSeasonLabel(comic, i+1))}</option>`).join('') : '<option value="0">Tanpa Season</option>'}</select>
+                        <select id="editFolderSeason" class="swal2-select" style="display:block;width:100%;margin:0 0 14px">${usesSeasons ? Array.from({length:Math.max(1,Number(comic?.totalSeasons ?? 1))},(_,i)=>`<option value="${i+1}">${adminSafe(window.getAdminSeasonLabel(comic, i+1))}</option>`).join('') : '<option value="0">Tanpa Season</option>'}</select>
                         <label for="editFolderNumber" style="text-align:left">Nomor ${term}</label>
                         <input id="editFolderNumber" class="swal2-input" type="number" min="0.1" step="0.1" style="max-width:100%!important;margin:0 0 14px!important" placeholder="Contoh: 1 atau 1.5">
                         <label for="editFolderTitle" style="text-align:left">Judul tambahan (opsional)</label>
@@ -2782,7 +2795,7 @@
                 const editData = {
                     chapterNumber: result.value.chapterNumber,
                     seasonNumber: result.value.seasonNumber,
-                    arcName: getAdminArcName(comic, result.value.seasonNumber, result.value.chapterNumber),
+                    arcName: window.getAdminArcName(comic, result.value.seasonNumber, result.value.chapterNumber),
                     title: result.value.title,
                     languageLabels: result.value.languageLabels,
                     updatedAt: serverTimestamp()
@@ -2882,21 +2895,6 @@
             document.getElementById('groupTrailer').style.display = isFilm ? 'block' : 'none';
         }
 
-        function getAdminSeasonName(comic, seasonNumber) {
-            return String(comic?.seasonNames?.[seasonNumber] || comic?.seasonNames?.[String(seasonNumber)] || '').trim();
-        }
-
-        function getAdminSeasonLabel(comic, seasonNumber) {
-            const name = getAdminSeasonName(comic, seasonNumber);
-            return `Season ${seasonNumber}${name ? ` — ${name}` : ''}`;
-        }
-
-        function getAdminArcName(comic, seasonNumber, chapterNumber) {
-            const number = Number(chapterNumber);
-            const match = (Array.isArray(comic?.seasonArcs) ? comic.seasonArcs : []).find(arc => Number(arc.season || 1) === Number(seasonNumber) && number >= Number(arc.start) && number <= Number(arc.end));
-            return String(match?.name || '').trim();
-        }
-
         window.renderSeasonTotalInputs = function(forcedCount, forcedTotals, forcedNames, forcedArcs) {
             const countInput = document.getElementById('totalSeasons');
             const container = document.getElementById('seasonTotalsContainer');
@@ -2992,7 +2990,7 @@
                     chapterSnapshot.forEach(item => { highestExistingSeason = Math.max(highestExistingSeason, Number(item.data().seasonNumber ?? 1)); });
                 }
                 const count = Math.max(1, Number(latest.totalSeasons || 1), highestExistingSeason, ...seasonKeys);
-                select.innerHTML = Array.from({length:count}, (_, index) => `<option value="${index + 1}">${adminSafe(getAdminSeasonLabel(latest, index + 1))}</option>`).join('');
+                select.innerHTML = Array.from({length:count}, (_, index) => `<option value="${index + 1}">${adminSafe(window.getAdminSeasonLabel(latest, index + 1))}</option>`).join('');
                 select.value = Number(previousValue) <= count ? previousValue : '1';
             } catch (error) {
                 if (Number(comic?.totalSeasons ?? 1) === 0) {
@@ -3001,7 +2999,7 @@
                     return;
                 }
                 const fallbackCount = Math.max(1, Number(comic?.totalSeasons || 1), ...Object.keys(comic?.seasonTotals || {}).map(Number).filter(Number.isFinite));
-                select.innerHTML = Array.from({length:fallbackCount}, (_, index) => `<option value="${index + 1}">${adminSafe(getAdminSeasonLabel(comic, index + 1))}</option>`).join('');
+                select.innerHTML = Array.from({length:fallbackCount}, (_, index) => `<option value="${index + 1}">${adminSafe(window.getAdminSeasonLabel(comic, index + 1))}</option>`).join('');
                 console.warn('Metadata season gagal dimuat ulang:', error);
             }
         };
@@ -3114,7 +3112,7 @@
 
         window.loadAppConfiguration=async function(){
             const status=document.getElementById('configStatus');
-            try{const snap=await getDoc(doc(db,'settings','appConfig'));const c=snap.exists()?snap.data():{};document.getElementById('configLatestVersion').value=c.latestVersion||'20.4.35';document.getElementById('configChangelog').value=c.changelog||'';document.getElementById('configMaintenanceTitle').value=c.maintenanceTitle||'Sedang dalam pemeliharaan';document.getElementById('configMaintenanceMessage').value=c.maintenanceMessage||'Kami sedang melakukan peningkatan agar aplikasi menjadi lebih baik. Silakan coba kembali beberapa saat lagi.';document.getElementById('configUpdateRequired').checked=c.updateRequired===true;document.getElementById('configMaintenanceMode').checked=c.maintenanceMode===true;if(status)status.className='config-status';}catch(e){if(status){status.textContent='Gagal memuat pengaturan aplikasi.';status.className='config-status show error';}}
+            try{const snap=await getDoc(doc(db,'settings','appConfig'));const c=snap.exists()?snap.data():{};document.getElementById('configLatestVersion').value=c.latestVersion||'20.4.36';document.getElementById('configChangelog').value=c.changelog||'';document.getElementById('configMaintenanceTitle').value=c.maintenanceTitle||'Sedang dalam pemeliharaan';document.getElementById('configMaintenanceMessage').value=c.maintenanceMessage||'Kami sedang melakukan peningkatan agar aplikasi menjadi lebih baik. Silakan coba kembali beberapa saat lagi.';document.getElementById('configUpdateRequired').checked=c.updateRequired===true;document.getElementById('configMaintenanceMode').checked=c.maintenanceMode===true;if(status)status.className='config-status';}catch(e){if(status){status.textContent='Gagal memuat pengaturan aplikasi.';status.className='config-status show error';}}
             try{const snap=await getDoc(doc(db,'settings','appConfig')),c=snap.exists()?snap.data():{};document.getElementById('configAppName').value=c.appName||'Komik & Anime';document.getElementById('configThemeColor').value=c.themeColor||'#625af2';document.getElementById('configAnnouncement').value=c.announcement||'';document.getElementById('configRecommendations').checked=c.enableRecommendations!==false;document.getElementById('configGamification').checked=c.enableGamification!==false;}catch(e){console.error(e);if(status){status.textContent=`Sebagian pengaturan gagal dimuat: ${e.message}`;status.className='config-status show error';}}
             try{const snap=await getDoc(doc(db,'settings','appConfig')),c=snap.exists()?snap.data():{};const name=String(c.adminName||'Yarch'),avatar=normalizeUrl(c.adminAvatarUrl||'');document.getElementById('configAdminName').value=name;document.getElementById('configAdminAvatarUrl').value=avatar;renderAdminHeaderProfile(name,avatar);}catch(e){console.warn('Profil admin belum dapat dimuat.',e);}
         }
@@ -3149,7 +3147,7 @@
         window.previewBulkMetadata=async function(file){const box=document.getElementById('bulkPreview');if(!file)return;try{const data=JSON.parse(await file.text());if(!Array.isArray(data))throw new Error('JSON harus berupa array');window.bulkMetadata=data.slice(0,500);box.innerHTML=`${window.bulkMetadata.length} data siap. <button class="ops-btn" onclick="executeBulkMetadata()">Import Sekarang</button>`;}catch(e){box.textContent='File tidak valid: '+e.message;}}
         window.executeBulkMetadata=async function(){if(!window.bulkMetadata?.length)return;const result=await Swal.fire({title:`Import ${window.bulkMetadata.length} data?`,text:'Semua data ditambahkan sebagai draft.',icon:'warning',showCancelButton:true,confirmButtonText:'Import',cancelButtonText:'Batal'});if(!result.isConfirmed)return;let success=0;for(const item of window.bulkMetadata){if(!item?.title)continue;await addDoc(collection(db,'comics'),{title:String(item.title).slice(0,180),altTitle:String(item.altTitle||''),type:String(item.type||'Manga'),format:item.format==='film'?'film':'komik',status:String(item.status||'Ongoing'),ageRating:String(item.ageRating||''),releaseDate:String(item.releaseDate||''),genres:Array.isArray(item.genres)?item.genres.slice(0,20):[],synopsis:String(item.synopsis||''),coverUrl:String(item.coverUrl||''),author:String(item.author||''),directors:Array.isArray(item.directors)?item.directors:[],isPublished:false,publicationStatus:'draft',createdAt:serverTimestamp()});success++;}await writeAudit('BULK_IMPORT','comics',`${success} metadata`);window.bulkMetadata=[];document.getElementById('bulkPreview').textContent=`${success} data berhasil diimpor sebagai draft.`;await window.loadComicsList();renderPublicationQueue();}
         function exportValue(v){if(v?.toDate)return v.toDate().toISOString();if(Array.isArray(v))return v.map(exportValue);if(v&&typeof v==='object')return Object.fromEntries(Object.entries(v).map(([k,x])=>[k,exportValue(x)]));return v;}
-        window.backupAllMetadata=async function(){const output=[];const comics=await getDocs(collection(db,'comics'));for(const c of comics.docs){const chapters=[];const s=await getDocs(collection(db,'comics',c.id,'chapters'));s.forEach(ch=>chapters.push({id:ch.id,...exportValue(ch.data())}));output.push({id:c.id,...exportValue(c.data()),chapters});}const blob=new Blob([JSON.stringify({version:'20.4.35',schemaVersion:2,exportedAt:new Date().toISOString(),comics:output},null,2)],{type:'application/json'});const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=`yarch-metadata-v20.4.35-${dateKeyOffset(0)}.json`;a.click();URL.revokeObjectURL(a.href);await writeAudit('BACKUP_METADATA','comics',`${output.length} judul • V20.4.35`);}
+        window.backupAllMetadata=async function(){const output=[];const comics=await getDocs(collection(db,'comics'));for(const c of comics.docs){const chapters=[];const s=await getDocs(collection(db,'comics',c.id,'chapters'));s.forEach(ch=>chapters.push({id:ch.id,...exportValue(ch.data())}));output.push({id:c.id,...exportValue(c.data()),chapters});}const blob=new Blob([JSON.stringify({version:'20.4.36',schemaVersion:2,exportedAt:new Date().toISOString(),comics:output},null,2)],{type:'application/json'});const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=`yarch-metadata-v20.4.36-${dateKeyOffset(0)}.json`;a.click();URL.revokeObjectURL(a.href);await writeAudit('BACKUP_METADATA','comics',`${output.length} judul • V20.4.36`);}
         window.loadAuditLogs=async function(){const box=document.getElementById('auditLogList');if(!box)return;try{const snap=await getDocs(query(collection(db,'adminAuditLogs'),orderBy('createdAt','desc'),limit(100)));box.innerHTML=snap.docs.map(d=>{const x=d.data();return `<div class="audit-row"><strong>${adminSafe(x.action)} • ${adminSafe(x.target||'-')}</strong><span>${adminSafe(x.adminEmail||x.adminId||'Admin')} • ${timeMs(x.createdAt)?new Date(timeMs(x.createdAt)).toLocaleString('id-ID'):'Baru'}<br>${adminSafe(x.detail||'')}</span></div>`;}).join('')||'<div class="loading-text">Belum ada audit log.</div>';}catch(e){box.innerHTML='<div class="loading-text">Audit log gagal dimuat.</div>';}}
 
         // V20.1: dashboard tunggal, cache lima menit, dan query komentar lintas koleksi.

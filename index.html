@@ -1641,7 +1641,7 @@
             <button class="account-menu-item" type="button" onclick="openAppInfo('about')"><i class="fa-solid fa-circle-info"></i><span>Tentang Yarch</span><i class="fa-solid fa-chevron-right"></i></button>
             <button class="account-menu-item" type="button" onclick="closeAccountMenu();openAdminContact()"><i class="fa-solid fa-headset"></i><span>Hubungi Admin</span><i class="fa-solid fa-chevron-right"></i></button>
             <div class="account-menu-divider" style="margin-top:11px"></div>
-            <button class="account-menu-item updates-menu-item" type="button" onclick="closeAccountMenu();openChangelogPage()"><i class="fa-solid fa-clock-rotate-left"></i><span class="account-menu-item-copy"><strong>Updates</strong><small>V20.4.19 • Riwayat perbaikan</small></span><i class="fa-solid fa-chevron-right"></i></button>
+            <button class="account-menu-item updates-menu-item" type="button" onclick="closeAccountMenu();openChangelogPage()"><i class="fa-solid fa-clock-rotate-left"></i><span class="account-menu-item-copy"><strong>Updates</strong><small>V20.4.20 • Riwayat perbaikan</small></span><i class="fa-solid fa-chevron-right"></i></button>
             <button class="account-menu-item danger" id="accountMenuLogout" type="button" onclick="closeAccountMenu();doLogout()"><i class="fa-solid fa-right-from-bracket"></i><span>Keluar dari Akun</span><i class="fa-solid fa-chevron-right"></i></button>
         </aside>
     </div>
@@ -1713,7 +1713,7 @@
         const app = initializeApp(firebaseConfig);
         const db = getFirestore(app);
         const auth = getAuth(app);
-        const APP_VERSION = '20.4.19';
+        const APP_VERSION = '20.4.20';
         const ADMIN_UID = 'dWUWpKAWQRRxMOzjzaOA3zXWZLp2';
 
         // ================= PENYIMPANAN OFFLINE (INDEXEDDB) =================
@@ -1831,7 +1831,8 @@
         }
         window.accountMenuNavigate=function(page){closeAccountMenu();switchNav(page);}
         const APP_CHANGELOG = [
-            {version:'20.4.19',label:'Terbaru',title:'Navigasi profil publik',changes:['Profil pengguna tetap dapat dibuka dari daftar pengguna Feed dan tautan yang dibagikan.'],fixes:['Parameter profil dibersihkan ketika modal ditutup atau pengguna berpindah menu.','Refresh pada menu lain tidak lagi membuka kembali profil pengguna sebelumnya.','Respons pemuatan profil yang terlambat tidak dapat memunculkan kembali modal yang sudah ditutup.']},
+            {version:'20.4.20',label:'Terbaru',title:'Upload media Feed',changes:['Upload video dan thumbnail Feed tetap membersihkan media lama yang sudah tidak digunakan.'],fixes:['Fungsi pembersihan media kini tersedia pada seluruh modul halaman admin.','Upload WebM tidak lagi dilaporkan gagal setelah file dan URL sebenarnya berhasil tersimpan.','Pembersihan media memiliki fallback aman agar tidak membatalkan alur upload.']},
+            {version:'20.4.19',title:'Navigasi profil publik',changes:['Profil pengguna tetap dapat dibuka dari daftar pengguna Feed dan tautan yang dibagikan.'],fixes:['Parameter profil dibersihkan ketika modal ditutup atau pengguna berpindah menu.','Refresh pada menu lain tidak lagi membuka kembali profil pengguna sebelumnya.','Respons pemuatan profil yang terlambat tidak dapat memunculkan kembali modal yang sudah ditutup.']},
             {version:'20.4.18',title:'Jumlah tayangan Feed',changes:['Setiap kartu Feed menampilkan jumlah tayangan di samping waktu publikasi.','Tayangan baru tercatat setelah video berjalan selama tiga detik.','Satu akun hanya dihitung sekali pada setiap Feed.'],fixes:['Viewer disimpan sebagai dokumen terpisah agar angka tidak dapat ditambah berulang oleh akun yang sama.','Penghapusan Feed turut membersihkan data viewers.','Pengunjung tanpa login dapat melihat counter tanpa dapat memanipulasinya.']},
             {version:'20.4.17',title:'Skalabilitas Feed dan kebersihan media',changes:['Komentar Feed dimuat 30 per halaman dengan tombol muat berikutnya.','Jumlah suka dan komentar menggunakan cache singkat agar render ulang tidak menambah pembacaan berulang.','Mode indeks cadangan kini terlihat jelas tanpa menghentikan Feed.','Media Feed dan avatar admin lama dibersihkan setelah penggantian berhasil.'],fixes:['Alur render Feed disederhanakan menjadi fungsi inti dan dekorator yang jelas.','Media yang masih dipakai Feed lain atau profil admin tidak ikut terhapus.','Kegagalan membersihkan file lama tidak membatalkan penyimpanan data baru.']},
             {version:'20.4.16',title:'Stabilitas dan optimasi menengah',changes:['Like komentar Feed diperbarui tanpa membaca ulang seluruh diskusi.','Foto profil baru dikompresi lebih kecil dengan dukungan data foto lama.','Upload MKV menjelaskan risiko codec dan player memberi pesan yang mudah dipahami.','Pemeriksaan service worker berjalan saat aplikasi dibuka kembali.'],fixes:['Menghapus loader Feed lama yang tidak lagi dipakai.','Mengurangi pembacaan komentar dan mencegah hasil pemuatan lama masuk ke diskusi yang berbeda.','Versi baru otomatis mengambil alih tab aplikasi yang masih terbuka.']},
@@ -2156,7 +2157,7 @@
         if('serviceWorker' in navigator && location.protocol !== 'file:'){
             let reloadingForWorker=false;
             navigator.serviceWorker.addEventListener('controllerchange',()=>{if(reloadingForWorker)return;reloadingForWorker=true;location.reload();});
-            navigator.serviceWorker.register('./sw-v20.1.js?v=20.4.19-profile-navigation',{updateViaCache:'none'}).then(reg=>{reg.update();document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible')reg.update();});window.addEventListener('pageshow',()=>reg.update());}).catch(()=>{});
+            navigator.serviceWorker.register('./sw-v20.1.js?v=20.4.20-feed-upload-fix',{updateViaCache:'none'}).then(reg=>{reg.update();document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible')reg.update();});window.addEventListener('pageshow',()=>reg.update());}).catch(()=>{});
         }
         document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible'){window.checkAppConfiguration(false);recordDailyAnalytics({});}});
         async function applyRemoteDisplayConfig(){try{const snap=await getDoc(doc(db,'settings','appConfig'));if(!snap.exists())return;const c=snap.data();if(c.appName)document.title=c.appName;if(/^#[0-9a-f]{6}$/i.test(c.themeColor||''))document.documentElement.style.setProperty('--primary-blue',c.themeColor);const recommendation=document.getElementById('recommendationSection');if(recommendation)recommendation.style.display=c.enableRecommendations===false?'none':'block';document.body.classList.toggle('gamification-off',c.enableGamification===false);if(c.announcement&&localStorage.getItem('seenAnnouncementV20.1')!==c.announcement){localStorage.setItem('seenAnnouncementV20.1',c.announcement);setTimeout(()=>window.showToast(c.announcement),1200);}}catch(e){}}

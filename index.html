@@ -1285,7 +1285,7 @@
                 <h1>Yarch terus berkembang</h1>
                 <p>Lihat fitur baru, peningkatan pengalaman, dan bug yang telah diperbaiki dari versi terbaru hingga versi sebelumnya.</p>
             </section>
-            <div class="changelog-current"><span><strong id="changelogCurrentVersion">V20.4.29</strong><br>Versi yang sedang digunakan</span><button type="button" onclick="checkAppConfiguration(true)"><i class="fa-solid fa-rotate"></i> Periksa update</button></div>
+            <div class="changelog-current"><span><strong id="changelogCurrentVersion">V20.4.30</strong><br>Versi yang sedang digunakan</span><button type="button" onclick="checkAppConfiguration(true)"><i class="fa-solid fa-rotate"></i> Periksa update</button></div>
             <main class="changelog-timeline" id="changelogTimeline" aria-live="polite"></main>
         </div>
 
@@ -1648,14 +1648,14 @@
             <button class="account-menu-item" type="button" onclick="openAppInfo('about')"><i class="fa-solid fa-circle-info"></i><span>Tentang Yarch</span><i class="fa-solid fa-chevron-right"></i></button>
             <button class="account-menu-item" type="button" onclick="closeAccountMenu();openAdminContact()"><i class="fa-solid fa-headset"></i><span>Hubungi Admin</span><i class="fa-solid fa-chevron-right"></i></button>
             <div class="account-menu-divider" style="margin-top:11px"></div>
-            <button class="account-menu-item updates-menu-item" type="button" onclick="closeAccountMenu();openChangelogPage()"><i class="fa-solid fa-clock-rotate-left"></i><span class="account-menu-item-copy"><strong>Updates</strong><small>V20.4.29 • Riwayat perbaikan</small></span><i class="fa-solid fa-chevron-right"></i></button>
+            <button class="account-menu-item updates-menu-item" type="button" onclick="closeAccountMenu();openChangelogPage()"><i class="fa-solid fa-clock-rotate-left"></i><span class="account-menu-item-copy"><strong>Updates</strong><small>V20.4.30 • Riwayat perbaikan</small></span><i class="fa-solid fa-chevron-right"></i></button>
             <button class="account-menu-item danger" id="accountMenuLogout" type="button" onclick="closeAccountMenu();doLogout()"><i class="fa-solid fa-right-from-bracket"></i><span>Keluar dari Akun</span><i class="fa-solid fa-chevron-right"></i></button>
         </aside>
     </div>
     <div class="profile-modal-backdrop" id="profileEditorModal" onclick="if(event.target===this)closeProfileEditor()"><section class="profile-modal-sheet" role="dialog" aria-modal="true" aria-labelledby="profileEditorTitle"><div class="profile-modal-head"><div class="profile-modal-icon"><i class="fa-solid fa-user-pen"></i></div><div class="profile-modal-title"><h3 id="profileEditorTitle">Lengkapi Profil</h3><p>Informasi tanggal lahir disimpan secara privat untuk verifikasi usia.</p></div><button class="profile-modal-close" onclick="closeProfileEditor()"><i class="fa-solid fa-xmark"></i></button></div><div class="profile-modal-form"><label for="profileDisplayName">Nama tampilan</label><input id="profileDisplayName" maxlength="35" placeholder="Nama tampilan"><label for="profileBioInput">Bio singkat</label><textarea id="profileBioInput" maxlength="160" placeholder="Ceritakan genre atau karakter favoritmu..."></textarea><div class="profile-modal-grid"><div><label for="profileBirthDate">Tanggal lahir</label><input id="profileBirthDate" type="date"></div><div><label for="profileGender">Jenis kelamin</label><select id="profileGender"><option value="">Tidak disebutkan</option><option value="Laki-laki">Laki-laki</option><option value="Perempuan">Perempuan</option><option value="Lainnya">Lainnya</option></select></div></div><label for="profileLocation">Kota / lokasi (opsional)</label><input id="profileLocation" maxlength="60" placeholder="Contoh: Jakarta"><button class="profile-modal-save" onclick="saveSocialProfile()"><i class="fa-solid fa-floppy-disk"></i> Simpan Profil</button></div></section></div>
     <div class="profile-modal-backdrop" id="shareProfileModal" onclick="if(event.target===this)closeShareProfile()"><section class="profile-modal-sheet" role="dialog" aria-modal="true"><div class="profile-modal-head"><div class="profile-modal-icon"><i class="fa-solid fa-share-nodes"></i></div><div class="profile-modal-title"><h3>Bagikan Profil</h3><p>Undang teman melihat profil, statistik, dan favorit yang kamu izinkan.</p></div><button class="profile-modal-close" onclick="closeShareProfile()"><i class="fa-solid fa-xmark"></i></button></div><div class="share-profile-preview"><img id="shareProfileAvatar" alt="Foto profil"><div><strong id="shareProfileName">Pembaca Yarch</strong><span id="shareProfileLevel">Profil pembaca</span></div></div><div class="share-url-row"><input id="shareProfileUrl" readonly><button onclick="shareProfileVia('copy')" aria-label="Salin tautan"><i class="fa-regular fa-copy"></i></button></div><div class="share-option-grid"><button class="share-option" onclick="shareProfileVia('native')"><i class="fa-solid fa-arrow-up-from-bracket"></i>Bagikan</button><button class="share-option" onclick="shareProfileVia('whatsapp')"><i class="fa-brands fa-whatsapp" style="color:#18a957"></i>WhatsApp</button><button class="share-option" onclick="shareProfileVia('telegram')"><i class="fa-brands fa-telegram" style="color:#2b9bd7"></i>Telegram</button><button class="share-option" onclick="shareProfileVia('copy')"><i class="fa-solid fa-link"></i>Salin</button></div></section></div>
     <div class="profile-modal-backdrop" id="ageGateModal"><section class="profile-modal-sheet age-gate-sheet" role="dialog" aria-modal="true" aria-labelledby="ageGateTitle"><div class="age-gate-shield"><i class="fa-solid fa-shield-halved"></i></div><h3 id="ageGateTitle">Verifikasi Usia</h3><p id="ageGateMessage">Konten ini ditujukan untuk pengguna yang telah memenuhi batas usia.</p><div class="profile-modal-form"><label for="ageGateBirthDate" style="text-align:left">Tanggal lahir</label><input id="ageGateBirthDate" type="date" oninput="updateAgeGateButton()" onchange="updateAgeGateButton()"><div class="age-gate-status" id="ageGateStatus" role="status" aria-live="polite"></div><label class="age-confirm-check"><input id="ageGateConfirm" type="checkbox" onchange="updateAgeGateButton()"><span>Saya menyatakan tanggal lahir yang dimasukkan benar dan memahami bahwa konten dapat memuat tema dewasa.</span></label></div><div class="age-gate-actions"><button class="age-cancel" onclick="resolveAgeGate(false)">Kembali</button><button class="age-continue" id="ageGateContinue" disabled onclick="resolveAgeGate(true)">Verifikasi & Masuk</button></div></section></div>
-    <div class="update-modal-backdrop" id="updateModal"><div class="update-sheet"><div class="update-icon"><i class="fa-solid fa-cloud-arrow-down"></i></div><h2>Versi baru tersedia</h2><p>Pembaruan aplikasi sudah siap. Proses ini akan membersihkan cache antarmuka lama tanpa menghapus akun, bookmark, atau riwayat Anda.</p><div class="update-version-line"><span id="updateCurrentVersion">V20.4.29</span><i class="fa-solid fa-arrow-right"></i><span id="updateLatestVersion">V20.4.29</span></div><div class="update-changelog" id="updateChangelog">Peningkatan stabilitas dan tampilan.</div><div class="update-actions"><button class="update-action update-later" onclick="dismissAppUpdate()">Nanti</button><button class="update-action update-now" onclick="applyAppUpdate()"><i class="fa-solid fa-bolt"></i> Perbarui Sekarang</button></div></div></div>
+    <div class="update-modal-backdrop" id="updateModal"><div class="update-sheet"><div class="update-icon"><i class="fa-solid fa-cloud-arrow-down"></i></div><h2>Versi baru tersedia</h2><p>Pembaruan aplikasi sudah siap. Proses ini akan membersihkan cache antarmuka lama tanpa menghapus akun, bookmark, atau riwayat Anda.</p><div class="update-version-line"><span id="updateCurrentVersion">V20.4.30</span><i class="fa-solid fa-arrow-right"></i><span id="updateLatestVersion">V20.4.30</span></div><div class="update-changelog" id="updateChangelog">Peningkatan stabilitas dan tampilan.</div><div class="update-actions"><button class="update-action update-later" onclick="dismissAppUpdate()">Nanti</button><button class="update-action update-now" onclick="applyAppUpdate()"><i class="fa-solid fa-bolt"></i> Perbarui Sekarang</button></div></div></div>
 
     <div class="home-action-backdrop" id="requestContentModal" role="dialog" aria-modal="true" aria-labelledby="requestContentTitle" onclick="if(event.target===this)closeRequestModal()">
         <div class="home-action-sheet">
@@ -1720,7 +1720,7 @@
         const app = initializeApp(firebaseConfig);
         const db = getFirestore(app);
         const auth = getAuth(app);
-        const APP_VERSION = '20.4.29';
+        const APP_VERSION = '20.4.30';
         const ADMIN_UID = 'dWUWpKAWQRRxMOzjzaOA3zXWZLp2';
 
         // ================= PENYIMPANAN OFFLINE (INDEXEDDB) =================
@@ -1844,7 +1844,8 @@
         }
         window.accountMenuNavigate=function(page){closeAccountMenu();switchNav(page);}
         const APP_CHANGELOG = [
-            {version:'20.4.29',label:'Terbaru',title:'Keamanan penghapusan dan detail episode',changes:['Penghapusan Feed memakai status proses yang dapat dilanjutkan ulang.','Versi tampilan dan metadata backup diselaraskan.','Tulisan durasi episode diperbesar secara responsif.'],fixes:['Kegagalan koneksi tidak lagi membuat proses penghapusan Feed kehilangan referensi media.','Versi lama tidak lagi muncul sesaat pada halaman update.','Durasi lebih mudah dibaca tanpa menimpa thumbnail.']},
+            {version:'20.4.30',label:'Terbaru',title:'Finalisasi stabilitas dan sinkronisasi',changes:['Status penghapusan Feed tertunda ditampilkan dengan aksi Lanjutkan Hapus.','Implementasi Feed lama yang sudah tidak dipakai dibersihkan.','Kegagalan sinkronisasi bookmark dan riwayat sekarang dilaporkan.'],fixes:['Feed yang sedang dihapus tidak dapat diedit atau dipublikasikan kembali secara tidak sengaja.','Komentar dan filter Feed hanya memakai satu implementasi aktif.','Perubahan lokal tidak lagi seolah-olah sudah tersinkron ketika Firestore gagal.']},
+            {version:'20.4.29',title:'Keamanan penghapusan dan detail episode',changes:['Penghapusan Feed memakai status proses yang dapat dilanjutkan ulang.','Versi tampilan dan metadata backup diselaraskan.','Tulisan durasi episode diperbesar secara responsif.'],fixes:['Kegagalan koneksi tidak lagi membuat proses penghapusan Feed kehilangan referensi media.','Versi lama tidak lagi muncul sesaat pada halaman update.','Durasi lebih mudah dibaca tanpa menimpa thumbnail.']},
             {version:'20.4.28',title:'Stabilitas cache dan panel admin',changes:['Cache halaman aplikasi dan panel admin dipisahkan.','Tombol navigasi, galeri, pemilih judul, dan pratinjau admin tersedia konsisten pada browser module.','Renderer foto profil admin disatukan.'],fixes:['Halaman admin tidak lagi dapat menimpa cache halaman utama.','Tombol panel admin tidak lagi gagal karena fungsi module tidak tersedia.','Foto admin tidak lagi hilang ketika pengaturan dimuat atau disimpan.']},
             {version:'20.4.27',title:'Rasio thumbnail dan posisi durasi',changes:['Thumbnail episode dikembalikan ke format landscape seperti sebelumnya.','Durasi memakai baris khusus tepat di bawah thumbnail.'],fixes:['Pembesaran transform yang membuat thumbnail terlihat kotak telah dihapus.','Durasi tidak lagi tertimpa thumbnail maupun tombol aksi.','Ukuran landscape disesuaikan untuk layar normal dan ponsel kecil.']},
             {version:'20.4.26',title:'Susunan episode dan berbagi langsung',changes:['Durasi episode dipindahkan ke bawah thumbnail.','Tanggal update, jumlah tayangan, dan informasi Sub/Dub tersusun dalam satu baris.','Tombol Bagikan ditambahkan setelah jempol turun.'],fixes:['Template berbagi menampilkan judul konten dan episode secara rapi.','Tautan berbagi membuka chapter atau episode yang bersangkutan secara langsung.','Parameter tautan dibersihkan ketika pengguna berpindah ke menu lain.']},
@@ -2185,7 +2186,7 @@
         if('serviceWorker' in navigator && location.protocol !== 'file:'){
             let reloadingForWorker=false;
             navigator.serviceWorker.addEventListener('controllerchange',()=>{if(reloadingForWorker)return;reloadingForWorker=true;location.reload();});
-            navigator.serviceWorker.register('./sw-v20.1.js?v=20.4.29-medium-priority-fix',{updateViaCache:'none'}).then(reg=>{reg.update();document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible')reg.update();});window.addEventListener('pageshow',()=>reg.update());}).catch(()=>{});
+            navigator.serviceWorker.register('./sw-v20.1.js?v=20.4.30-final-stability-fix',{updateViaCache:'none'}).then(reg=>{reg.update();document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible')reg.update();});window.addEventListener('pageshow',()=>reg.update());}).catch(()=>{});
         }
         document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible'){window.checkAppConfiguration(false);recordDailyAnalytics({});}});
         async function applyRemoteDisplayConfig(){try{const snap=await getDoc(doc(db,'settings','appConfig'));if(!snap.exists())return;const c=snap.data();if(c.appName)document.title=c.appName;if(/^#[0-9a-f]{6}$/i.test(c.themeColor||''))document.documentElement.style.setProperty('--primary-blue',c.themeColor);const recommendation=document.getElementById('recommendationSection');if(recommendation)recommendation.style.display=c.enableRecommendations===false?'none':'block';document.body.classList.toggle('gamification-off',c.enableGamification===false);if(c.announcement&&localStorage.getItem('seenAnnouncementV20.1')!==c.announcement){localStorage.setItem('seenAnnouncementV20.1',c.announcement);setTimeout(()=>window.showToast(c.announcement),1200);}}catch(e){}}
@@ -2376,7 +2377,7 @@
                 window.userBookmarks = [];
                 bmSnap.forEach(doc => window.userBookmarks.push(doc.id));
                 localStorage.setItem('localBookmarks_' + uid, JSON.stringify(window.userBookmarks));
-            } catch(e) { }
+            } catch(e) { reportBackgroundError('Bookmark cloud belum dapat dimuat', e); }
 
             try {
                 const followsSnap = await getDocs(collection(db, "users", uid, "follows"));
@@ -2390,7 +2391,7 @@
                 const settingsSnap=await getDoc(doc(db,'users',uid,'settings','notifications'));
                 if(settingsSnap.exists())window.notificationSettings={...window.notificationSettings,...settingsSnap.data()};
                 localStorage.setItem('notificationSettings',JSON.stringify(window.notificationSettings));
-            } catch(error) {}
+            } catch(error) { reportBackgroundError('Pengaturan notifikasi cloud belum dapat dimuat', error); }
 
             try {
                 const librarySnap = await getDocs(collection(db,"users",uid,"library"));
@@ -3455,7 +3456,7 @@
                         const localItem = historyByComic.get(remoteItem.comicId);
                         historyByComic.set(remoteItem.comicId, reconcileHistoryItem(localItem, remoteItem));
                     });
-                } catch(e) { }
+                } catch(e) { reportBackgroundError('Riwayat cloud belum dapat dimuat', e); }
             }
             let historyList = [...historyByComic.values()].sort((a,b) => historyUpdatedMillis(b) - historyUpdatedMillis(a)).slice(0, 10);
             if(renderToken !== window.readingHistoryRenderToken) return;
@@ -3490,7 +3491,7 @@
                     hiddenComicIds.push(item.comicId);
                     if(auth.currentUser) {
                         try { await deleteDoc(doc(db, 'users', auth.currentUser.uid, 'history', item.comicId)); }
-                        catch(error) { }
+                        catch(error) { reportBackgroundError('Pembersihan riwayat cloud tertunda', error); }
                     }
                     continue;
                 }
@@ -3604,7 +3605,7 @@
                         const local = merged.get(remote.comicId);
                         if(!local || getTimeValue(remote.updatedAt) >= getTimeValue(local.updatedAt)) merged.set(remote.comicId, remote);
                     });
-                } catch(error) { }
+                } catch(error) { reportBackgroundError('Riwayat lengkap cloud belum dapat dimuat', error); }
             }
 
             const resolved = [];
@@ -3797,13 +3798,13 @@
                 delete window.userLibrary[cid];
                 checkBookmarkStatus(cid);
                 window.showToast("Dihapus dari Bookmark!");
-                try { await Promise.all([deleteDoc(doc(db, "users", auth.currentUser.uid, "bookmarks", cid)),deleteDoc(doc(db,"users",auth.currentUser.uid,"library",cid))]); } catch(err) { }
+                try { await Promise.all([deleteDoc(doc(db, "users", auth.currentUser.uid, "bookmarks", cid)),deleteDoc(doc(db,"users",auth.currentUser.uid,"library",cid))]); } catch(err) { reportBackgroundError('Hapus bookmark cloud tertunda',err);window.showToast('Bookmark dihapus di perangkat; sinkronisasi akun tertunda.'); }
             } else {
                 window.userBookmarks.push(cid);
                 window.userLibrary[cid]={comicId:cid,status:'want',updatedAt:Date.now()};
                 checkBookmarkStatus(cid);
                 window.showToast("Berhasil ditambahkan ke Bookmark!");
-                try { await Promise.all([setDoc(doc(db, "users", auth.currentUser.uid, "bookmarks", cid), { comicId: cid, addedAt:serverTimestamp() }),setDoc(doc(db,"users",auth.currentUser.uid,"library",cid),{comicId:cid,status:'want',updatedAt:serverTimestamp()})]); } catch(err) { }
+                try { await Promise.all([setDoc(doc(db, "users", auth.currentUser.uid, "bookmarks", cid), { comicId: cid, addedAt:serverTimestamp() }),setDoc(doc(db,"users",auth.currentUser.uid,"library",cid),{comicId:cid,status:'want',updatedAt:serverTimestamp()})]); } catch(err) { reportBackgroundError('Simpan bookmark cloud tertunda',err);window.showToast('Bookmark tersimpan di perangkat; sinkronisasi akun tertunda.'); }
             }
             
             localStorage.setItem('localBookmarks_' + auth.currentUser.uid, JSON.stringify(window.userBookmarks));
@@ -3827,12 +3828,12 @@
             if(isSaved) {
                 window.userBookmarks = window.userBookmarks.filter(id => id !== comicId);
                 delete window.userLibrary[comicId];
-                try { await Promise.all([deleteDoc(doc(db, 'users', auth.currentUser.uid, 'bookmarks', comicId)),deleteDoc(doc(db,'users',auth.currentUser.uid,'library',comicId))]); } catch(e) {}
+                try { await Promise.all([deleteDoc(doc(db, 'users', auth.currentUser.uid, 'bookmarks', comicId)),deleteDoc(doc(db,'users',auth.currentUser.uid,'library',comicId))]); } catch(e) { reportBackgroundError('Hapus bookmark kartu tertunda',e);window.showToast('Perubahan tersimpan di perangkat; sinkronisasi akun tertunda.'); }
                 window.showToast('Dihapus dari Bookmark');
             } else {
                 window.userBookmarks.push(comicId);
                 window.userLibrary[comicId]={comicId,status:'want',updatedAt:Date.now()};
-                try { await Promise.all([setDoc(doc(db, 'users', auth.currentUser.uid, 'bookmarks', comicId), { comicId, addedAt:serverTimestamp() }),setDoc(doc(db,'users',auth.currentUser.uid,'library',comicId),{comicId,status:'want',updatedAt:serverTimestamp()})]); } catch(e) {}
+                try { await Promise.all([setDoc(doc(db, 'users', auth.currentUser.uid, 'bookmarks', comicId), { comicId, addedAt:serverTimestamp() }),setDoc(doc(db,'users',auth.currentUser.uid,'library',comicId),{comicId,status:'want',updatedAt:serverTimestamp()})]); } catch(e) { reportBackgroundError('Simpan bookmark kartu tertunda',e);window.showToast('Bookmark tersimpan di perangkat; sinkronisasi akun tertunda.'); }
                 window.showToast('Disimpan ke Bookmark');
             }
             localStorage.setItem('localBookmarks_' + auth.currentUser.uid, JSON.stringify(window.userBookmarks));
@@ -3854,7 +3855,7 @@
             if(auth.currentUser) {
                 try {
                     await Promise.all([deleteDoc(doc(db, "users", auth.currentUser.uid, "bookmarks", id)),deleteDoc(doc(db,"users",auth.currentUser.uid,"library",id))]);
-                } catch(err) {}
+                } catch(err) { reportBackgroundError('Hapus bookmark langsung tertunda',err);window.showToast('Bookmark dihapus di perangkat; sinkronisasi akun tertunda.'); }
                 localStorage.setItem('localBookmarks_' + auth.currentUser.uid, JSON.stringify(window.userBookmarks));
                 localStorage.setItem('userLibrary_' + auth.currentUser.uid, JSON.stringify(window.userLibrary));
             }
@@ -3896,7 +3897,19 @@
         window.setCollectionStatus=async function(comicId,status){
             if(!auth.currentUser){window.showToast('Login untuk menggunakan Koleksi Saya');document.getElementById('detailCollectionStatus').value='';switchNav('profile');return;}
             if(!comicId)return;
-            if(status){window.userLibrary[comicId]={comicId,status,updatedAt:Date.now()};if(!window.userBookmarks.includes(comicId))window.userBookmarks.push(comicId);try{await Promise.all([setDoc(doc(db,'users',auth.currentUser.uid,'library',comicId),{comicId,status,updatedAt:serverTimestamp()}),setDoc(doc(db,'users',auth.currentUser.uid,'bookmarks',comicId),{comicId,addedAt:serverTimestamp()})]);}catch(e){window.showToast('Koleksi disimpan di perangkat; sinkronisasi tertunda.');}window.showToast(`Masuk ke ${getLibraryStatusLabels(window.comicsData[comicId]||{})[status]}`);}else{delete window.userLibrary[comicId];window.userBookmarks=window.userBookmarks.filter(id=>id!==comicId);try{await Promise.all([deleteDoc(doc(db,'users',auth.currentUser.uid,'library',comicId)),deleteDoc(doc(db,'users',auth.currentUser.uid,'bookmarks',comicId))]);}catch(e){}window.showToast('Dihapus dari koleksi');}
+            let cloudSynced=true;
+            if(status){
+                window.userLibrary[comicId]={comicId,status,updatedAt:Date.now()};
+                if(!window.userBookmarks.includes(comicId))window.userBookmarks.push(comicId);
+                try{await Promise.all([setDoc(doc(db,'users',auth.currentUser.uid,'library',comicId),{comicId,status,updatedAt:serverTimestamp()}),setDoc(doc(db,'users',auth.currentUser.uid,'bookmarks',comicId),{comicId,addedAt:serverTimestamp()})]);}
+                catch(error){cloudSynced=false;reportBackgroundError('Simpan status koleksi tertunda',error);}
+                window.showToast(cloudSynced?`Masuk ke ${getLibraryStatusLabels(window.comicsData[comicId]||{})[status]}`:'Koleksi disimpan di perangkat; sinkronisasi akun tertunda.');
+            }else{
+                delete window.userLibrary[comicId];window.userBookmarks=window.userBookmarks.filter(id=>id!==comicId);
+                try{await Promise.all([deleteDoc(doc(db,'users',auth.currentUser.uid,'library',comicId)),deleteDoc(doc(db,'users',auth.currentUser.uid,'bookmarks',comicId))]);}
+                catch(error){cloudSynced=false;reportBackgroundError('Hapus status koleksi tertunda',error);}
+                window.showToast(cloudSynced?'Dihapus dari koleksi':'Koleksi dihapus di perangkat; sinkronisasi akun tertunda.');
+            }
             localStorage.setItem('userLibrary_'+auth.currentUser.uid,JSON.stringify(window.userLibrary));localStorage.setItem('localBookmarks_'+auth.currentUser.uid,JSON.stringify(window.userBookmarks));checkBookmarkStatus(comicId);renderBookmarks();renderDiscoveryGrid(false);renderRecommendations();updateNotificationBadge();const stat=document.getElementById('statBookmarkCount');if(stat)stat.textContent=window.userBookmarks.length;
         }
         window.setBookmarkView = function(view) {
@@ -4075,7 +4088,7 @@
                     await updateDoc(doc(db,'comics',comicId,'comments',window.commentMode.commentId),{text,editedAt:serverTimestamp()});
                 } else {
                     await addDoc(collection(db, "comics", comicId, "comments"), {userId:auth.currentUser.uid,username:window.socialProfile.displayName||auth.currentUser.displayName||auth.currentUser.email?.split('@')[0]||'Pengguna',text,parentId:window.commentMode.type==='reply'?window.commentMode.parentId:null,likedBy:[],isPinned:false,timestamp:serverTimestamp()});
-                    try { await updateDoc(doc(db,"comics",comicId),{commentCount:increment(1)}); if(window.comicsData[comicId]) window.comicsData[comicId].commentCount=(window.comicsData[comicId].commentCount||0)+1; } catch(counterError) {}
+                    try { await updateDoc(doc(db,"comics",comicId),{commentCount:increment(1)}); if(window.comicsData[comicId]) window.comicsData[comicId].commentCount=(window.comicsData[comicId].commentCount||0)+1; } catch(counterError) { reportBackgroundError('Penghitung komentar belum tersinkron',counterError); }
                     window.gameData.commentCount=(window.gameData.commentCount||0)+1;window.gameData.points=(window.gameData.points||0)+2;ensureWeekly();window.gameData.weekly.comments=(window.gameData.weekly.comments||0)+1;recordDailyAnalytics({comments:1});syncGamification();
                 }
                 localStorage.setItem('lastCommentAt',String(Date.now()));
@@ -4137,7 +4150,7 @@
                             if(idx < val) { s.className = 'fa-solid fa-star active'; }
                         });
                     }
-                } catch(e) {}
+                } catch(e) { reportBackgroundError('Rating pengguna belum dapat dimuat',e); }
             }
         }
 
@@ -5237,8 +5250,6 @@
         function updateFeedFilterHeader(){const title=document.getElementById('feedHeaderTitle'),subtitle=document.getElementById('feedHeaderSubtitle');if(window.shortTagFilter){title.textContent=`Feed #${window.shortTagFilter}`;subtitle.textContent=`Semua video dengan tag #${window.shortTagFilter}`;}else if(window.shortCategoryFilter!=='Semua'){title.textContent=`Feed ${window.shortCategoryFilter}`;subtitle.textContent=`Video dalam kategori ${window.shortCategoryFilter}`;}else{title.textContent='Feed';subtitle.textContent='Video terbaru dan pengguna yang dapat kamu ikuti.';}}
         window.feedConfiguredCategories=[];
         function renderShortCategoryChips(){const box=document.getElementById('shortCategoryChips');if(!box)return;const categories=['Semua',...new Set([...window.feedConfiguredCategories,...window.shortItems.map(item=>String(item.category||'Lainnya').trim())].filter(Boolean))];if(!categories.includes(window.shortCategoryFilter))window.shortCategoryFilter='Semua';box.innerHTML=categories.map(category=>`<button class="${window.shortCategoryFilter===category&&!window.shortTagFilter?'active':''}" onclick="setShortCategory('${encodeURIComponent(category)}')">${safeText(category)}</button>`).join('');}
-        window.setShortCategory=function(encoded){window.shortCategoryFilter=decodeURIComponent(encoded||'Semua');window.shortTagFilter='';window.shortDisplayLimit=20;window.feedAutoPlayArmed=false;updateFeedFilterHeader();renderShortCategoryChips();renderShortFeed();}
-        window.filterFeedByTag=function(encoded){window.shortTagFilter=decodeURIComponent(encoded||'').trim();window.shortCategoryFilter='Semua';window.shortDisplayLimit=20;window.feedAutoPlayArmed=false;updateFeedFilterHeader();renderShortCategoryChips();renderShortFeed();window.scrollTo({top:0,behavior:'smooth'});}
         window.toggleFeedDescription=function(id,button){const panel=document.getElementById(`feed-description-${id}`),open=!panel?.classList.contains('open');panel?.classList.toggle('open',open);button?.classList.toggle('open',open);button?.setAttribute('aria-expanded',String(open));}
         window.feedEngagementCache=new Map();
         async function hydrateFeedEngagement(shortId,force=false){const likeButton=document.querySelector(`[data-feed-like="${CSS.escape(shortId)}"]`),commentCount=document.querySelector(`[data-feed-comments="${CSS.escape(shortId)}"]`),viewerCount=document.querySelector(`[data-feed-views="${CSS.escape(shortId)}"]`),cached=window.feedEngagementCache.get(shortId),apply=value=>{if(likeButton){likeButton.querySelector('[data-like-count]').textContent=String(value.likes);likeButton.classList.toggle('liked',value.liked);likeButton.querySelector('i').className=`fa-${value.liked?'solid':'regular'} fa-heart`;}if(commentCount)commentCount.textContent=String(value.comments);if(viewerCount)viewerCount.innerHTML=`<i class="fa-regular fa-eye"></i> ${Number(value.views||0).toLocaleString('id-ID')} tayangan`;};if(!force&&cached&&Date.now()-cached.fetchedAt<60000){apply(cached);return;}try{const tasks=[getCountFromServer(collection(db,'shorts',shortId,'likes')),getCountFromServer(collection(db,'shorts',shortId,'comments')),getCountFromServer(collection(db,'shorts',shortId,'viewers'))];if(auth.currentUser)tasks.push(getDoc(doc(db,'shorts',shortId,'likes',auth.currentUser.uid)));const [likes,comments,views,ownLike]=await Promise.all(tasks),value={likes:likes.data().count,comments:comments.data().count,views:views.data().count,liked:Boolean(ownLike?.exists()),fetchedAt:Date.now()};window.feedEngagementCache.set(shortId,value);apply(value);}catch(error){if(cached)apply(cached);reportBackgroundError('Jumlah interaksi Feed gagal dimuat',error);}}
@@ -5315,7 +5326,7 @@
         window.activeFeedCommentId='';
         window.openFeedComments=async function(feedId){const item=window.shortItems.find(value=>value.id===feedId);window.activeFeedCommentId=feedId;window.feedCommentCursor=null;window.feedCommentsHaveMore=true;window.activeFeedComments=[];window.activeFeedCommentProfiles=new Map();window.cancelFeedCommentMode?.();document.getElementById('feedCommentSubtitle').textContent=item?.title||'Diskusi video';document.getElementById('feedCommentModal').classList.add('show');document.body.style.overflow='hidden';await loadFeedComments();}
         window.closeFeedComments=function(){document.getElementById('feedCommentModal').classList.remove('show');document.body.style.overflow='';window.cancelFeedCommentMode?.();window.activeFeedCommentId='';}
-        async function loadFeedComments(){const box=document.getElementById('feedCommentList'),feedId=window.activeFeedCommentId;if(!box||!feedId)return;box.innerHTML='<div class="loading-text">Memuat komentar...</div>';try{const snap=await getDocs(query(collection(db,'shorts',feedId,'comments'),orderBy('createdAt','desc'),limit(100))),comments=snap.docs.map(value=>({id:value.id,...value.data()}));box.innerHTML=comments.map(comment=>{const name=String(comment.username||'Pengguna'),avatar=commentAvatarSource({avatarUrl:comment.avatarUrl},name),own=auth.currentUser?.uid===comment.userId,time=formatRelativeUpdateTime(comment.createdAt);return `<article class="feed-comment-item"><img class="feed-comment-avatar" src="${safeAttr(avatar)}" alt="${safeAttr(name)}"><div class="feed-comment-copy"><strong>${safeText(name)} <time>${safeText(time||'Baru')}</time></strong><p>${safeText(comment.text||'')}</p></div>${own?`<button class="feed-comment-delete" onclick="deleteFeedComment('${safeAttr(comment.id)}')" aria-label="Hapus komentar"><i class="fa-regular fa-trash-can"></i></button>`:''}</article>`;}).join('')||'<div class="empty-history" style="margin-top:24px">Belum ada komentar. Jadilah yang pertama.</div>';}catch(error){box.innerHTML='<div class="empty-history" style="margin-top:24px">Komentar belum dapat dimuat.</div>';reportBackgroundError('Komentar Feed gagal dimuat',error);}}
+        let loadFeedComments;
         window.feedCommentMode={type:'new',commentId:'',parentId:'',username:''};
         window.cancelFeedCommentMode=function(){window.feedCommentMode={type:'new',commentId:'',parentId:'',username:''};document.getElementById('feedCommentContext')?.classList.remove('show');const input=document.getElementById('feedCommentInput');if(input){input.value='';input.placeholder='Tulis komentar...';}}
         window.replyFeedComment=function(id,encodedName){const username=decodeURIComponent(encodedName||'Pengguna');window.feedCommentMode={type:'reply',commentId:'',parentId:id,username};document.getElementById('feedCommentContextText').textContent=`Membalas @${username}`;document.getElementById('feedCommentContext').classList.add('show');const input=document.getElementById('feedCommentInput');input.placeholder=`Balas @${username}...`;input.focus();}

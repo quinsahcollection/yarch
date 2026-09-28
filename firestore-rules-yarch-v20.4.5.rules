@@ -568,6 +568,24 @@ service cloud.firestore {
         allow update: if false;
       }
 
+      // Tayangan unik Feed: satu dokumen untuk satu akun pada setiap video.
+      match /viewers/{userId} {
+        allow read: if isAdmin()
+          || get(/databases/$(database)/documents/shorts/$(shortId)).data.published == true;
+
+        allow create: if isSignedIn()
+          && request.auth.uid == userId
+          && request.resource.data.keys().hasOnly([
+            'userId',
+            'viewedAt'
+          ])
+          && request.resource.data.userId == request.auth.uid
+          && request.resource.data.viewedAt == request.time;
+
+        allow update: if false;
+        allow delete: if isAdmin();
+      }
+
       match /comments/{commentId} {
         allow read: if isAdmin()
           || get(/databases/$(database)/documents/shorts/$(shortId)).data.published == true;

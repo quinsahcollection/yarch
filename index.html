@@ -1641,7 +1641,7 @@
             <button class="account-menu-item" type="button" onclick="openAppInfo('about')"><i class="fa-solid fa-circle-info"></i><span>Tentang Yarch</span><i class="fa-solid fa-chevron-right"></i></button>
             <button class="account-menu-item" type="button" onclick="closeAccountMenu();openAdminContact()"><i class="fa-solid fa-headset"></i><span>Hubungi Admin</span><i class="fa-solid fa-chevron-right"></i></button>
             <div class="account-menu-divider" style="margin-top:11px"></div>
-            <button class="account-menu-item updates-menu-item" type="button" onclick="closeAccountMenu();openChangelogPage()"><i class="fa-solid fa-clock-rotate-left"></i><span class="account-menu-item-copy"><strong>Updates</strong><small>V20.4.14 • Riwayat perbaikan</small></span><i class="fa-solid fa-chevron-right"></i></button>
+            <button class="account-menu-item updates-menu-item" type="button" onclick="closeAccountMenu();openChangelogPage()"><i class="fa-solid fa-clock-rotate-left"></i><span class="account-menu-item-copy"><strong>Updates</strong><small>V20.4.15 • Riwayat perbaikan</small></span><i class="fa-solid fa-chevron-right"></i></button>
             <button class="account-menu-item danger" id="accountMenuLogout" type="button" onclick="closeAccountMenu();doLogout()"><i class="fa-solid fa-right-from-bracket"></i><span>Keluar dari Akun</span><i class="fa-solid fa-chevron-right"></i></button>
         </aside>
     </div>
@@ -1713,7 +1713,7 @@
         const app = initializeApp(firebaseConfig);
         const db = getFirestore(app);
         const auth = getAuth(app);
-        const APP_VERSION = '20.4.14';
+        const APP_VERSION = '20.4.15';
         const ADMIN_UID = 'dWUWpKAWQRRxMOzjzaOA3zXWZLp2';
 
         // ================= PENYIMPANAN OFFLINE (INDEXEDDB) =================
@@ -1831,7 +1831,8 @@
         }
         window.accountMenuNavigate=function(page){closeAccountMenu();switchNav(page);}
         const APP_CHANGELOG = [
-            {version:'20.4.14',label:'Terbaru',title:'Performa Feed dan keamanan statistik',changes:['Feed memakai pagination Firestore asli sebanyak 20 video per halaman.','Foto profil pengguna tampil pada komentar Feed lama maupun baru.','Views dihitung satu kali per akun untuk setiap judul.'],fixes:['Feed tidak lagi dirender dan membaca engagement dua kali saat dibuka.','Link dan Tonton Nanti tetap dapat mengambil video target di luar halaman pertama.','Ranking hanya menerima statistik yang sama dengan gamifikasi tersimpan.','Perubahan poin, chapter, komentar, streak, dan waktu tonton dibatasi oleh Firestore Rules.']},
+            {version:'20.4.15',label:'Terbaru',title:'Mode kompatibilitas Feed',changes:['Feed tetap dapat dibuka ketika indeks komposit Firestore masih dibuat atau belum terpasang.','Pagination Firestore otomatis kembali digunakan saat indeks sudah aktif.'],fixes:['Mencegah halaman Feed kosong akibat error indeks tanpa menghilangkan filter, tautan langsung, atau Tonton Nanti.']},
+            {version:'20.4.14',title:'Performa Feed dan keamanan statistik',changes:['Feed memakai pagination Firestore asli sebanyak 20 video per halaman.','Foto profil pengguna tampil pada komentar Feed lama maupun baru.','Views dihitung satu kali per akun untuk setiap judul.'],fixes:['Feed tidak lagi dirender dan membaca engagement dua kali saat dibuka.','Link dan Tonton Nanti tetap dapat mengambil video target di luar halaman pertama.','Ranking hanya menerima statistik yang sama dengan gamifikasi tersimpan.','Perubahan poin, chapter, komentar, streak, dan waktu tonton dibatasi oleh Firestore Rules.']},
             {version:'20.4.13',label:'Sebelumnya',title:'Upload video MKV Android',changes:['File MKV dengan MIME video/matroska kini diterima oleh pemilih media.','MIME MKV dinormalisasi sebelum upload kecil maupun multipart.'],fixes:['Worker tidak lagi menerima tipe video/matroska yang berbeda dari video/x-matroska.','Nama, ukuran, dan waktu modifikasi file tetap dipertahankan saat normalisasi.']},
             {version:'20.4.12',label:'Sebelumnya',title:'Subtitle folder episode dan chapter',changes:['Pilihan bahasa/subtitle langsung menjadi tag ketika dipilih.','Folder chapter komik kini memiliki pilihan bahasa atau subtitle.','Label subtitle ditampilkan pada detail episode maupun chapter.'],fixes:['Pilihan subtitle tidak lagi hilang jika folder langsung disimpan setelah memilih dropdown.','Edit Folder Chapter kini dapat membaca, mengubah, dan menyimpan languageLabels.','Penyimpanan ulang folder mempertahankan struktur bahasa yang sama untuk film dan komik.']},
             {version:'20.4.11',label:'Sebelumnya',title:'Posisi awal dan tautan Feed',changes:['Feed biasa selalu dibuka dari bagian paling atas setelah video selesai dimuat.','Tautan Feed dari WhatsApp atau aplikasi lain langsung membuka video yang dibagikan.'],fixes:['Posisi scroll tidak lagi terdorong melewati video pertama saat berpindah dari menu lain.','Parameter video dibersihkan saat meninggalkan Feed agar tidak memengaruhi kunjungan berikutnya.','URL share dibangun konsisten dari origin dan path aplikasi.']},
@@ -2130,7 +2131,7 @@
             const button=document.querySelector('.update-now');button.disabled=true;button.innerHTML='<i class="fa-solid fa-spinner fa-spin"></i> Memperbarui...';
             try{if('serviceWorker'in navigator){const registration=await navigator.serviceWorker.getRegistration('./');if(registration)await registration.unregister();}if('caches'in window){const keys=await caches.keys();await Promise.all(keys.filter(key=>key.startsWith('komik-anime-')).map(key=>caches.delete(key)));}localStorage.removeItem('dismissedAppVersion');const url=new URL(location.href);url.searchParams.set('appVersion',Date.now());location.replace(url.href);}catch(e){button.disabled=false;button.innerHTML='<i class="fa-solid fa-bolt"></i> Perbarui Sekarang';window.showToast('Pembaruan gagal. Silakan muat ulang halaman.');}
         }
-        if('serviceWorker' in navigator && location.protocol !== 'file:') navigator.serviceWorker.register('./sw-v20.1.js?v=20.4.14-feed-pagination-security',{updateViaCache:'none'}).then(reg=>reg.update()).catch(() => {});
+        if('serviceWorker' in navigator && location.protocol !== 'file:') navigator.serviceWorker.register('./sw-v20.1.js?v=20.4.15-feed-index-fallback',{updateViaCache:'none'}).then(reg=>reg.update()).catch(() => {});
         document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible'){window.checkAppConfiguration(false);recordDailyAnalytics({});}});
         async function applyRemoteDisplayConfig(){try{const snap=await getDoc(doc(db,'settings','appConfig'));if(!snap.exists())return;const c=snap.data();if(c.appName)document.title=c.appName;if(/^#[0-9a-f]{6}$/i.test(c.themeColor||''))document.documentElement.style.setProperty('--primary-blue',c.themeColor);const recommendation=document.getElementById('recommendationSection');if(recommendation)recommendation.style.display=c.enableRecommendations===false?'none':'block';document.body.classList.toggle('gamification-off',c.enableGamification===false);if(c.announcement&&localStorage.getItem('seenAnnouncementV20.1')!==c.announcement){localStorage.setItem('seenAnnouncementV20.1',c.announcement);setTimeout(()=>window.showToast(c.announcement),1200);}}catch(e){}}
         applyRemoteDisplayConfig();
@@ -5116,11 +5117,26 @@
         window.openSavedFeed=function(feedId){window.feedTargetHandled=feedId;window.pendingFeedTarget=feedId;window.shortCategoryFilter='Semua';window.shortTagFilter='';const targetIndex=window.shortItems.findIndex(item=>item.id===feedId);if(targetIndex>=window.shortDisplayLimit)window.shortDisplayLimit=targetIndex+1;pauseAllFeedVideos(true);const url=new URL(location.href);url.searchParams.set('short',feedId);history.pushState({comicApp:true,view:'shorts'},'',url);window.switchNav('shorts');setTimeout(focusPendingFeedTarget,80);};
         const toggleSaveFeedCore=window.toggleSaveFeed;
         window.toggleSaveFeed=async function(feedId,button){await toggleSaveFeedCore(feedId,button);renderShortFeed();};
-        window.loadMoreFeed=async function(){await window.loadShorts(false,true);}
+        window.loadMoreFeed=async function(){if(window.shortFallbackMode){window.shortDisplayLimit+=20;renderShortFeed();return;}await window.loadShorts(false,true);}
         window.loadShorts=async function(force=false){const feed=document.getElementById('shortsFeed');if(!feed)return;if(!window.shortItems.length||force)feed.innerHTML='<div class="loading-text" style="color:#85899b;padding-top:90px"><i class="fa-solid fa-spinner fa-spin"></i> Memuat Feed...</div>';loadShortPeople();try{const [snap,taxonomySnap]=await Promise.all([getDocs(query(collection(db,'shorts'),where('published','==',true),limit(100))),getDoc(doc(db,'settings','feedTaxonomy')).catch(()=>null)]);window.shortItems=snap.docs.map(item=>({id:item.id,...item.data()})).sort((a,b)=>getTimeValue(b.updatedAt||b.publishedAt||b.createdAt)-getTimeValue(a.updatedAt||a.publishedAt||a.createdAt));window.feedConfiguredCategories=taxonomySnap?.exists()?taxonomySnap.data().categories||[]:[];window.shortDisplayLimit=20;window.feedAutoPlayArmed=false;updateFeedFilterHeader();renderShortCategoryChips();renderShortFeed();}catch(error){feed.innerHTML='<div class="short-empty"><i class="fa-solid fa-triangle-exclamation"></i><h3>Feed belum dapat dimuat</h3><p>Periksa koneksi atau aturan Firestore.</p></div>';reportBackgroundError('Feed gagal dimuat',error);}}
 
-        window.shortPageSize=20;window.shortCursor=null;window.shortHasMore=true;window.shortLoading=false;window.shortQueryKey='';
+        window.shortPageSize=20;window.shortCursor=null;window.shortHasMore=true;window.shortLoading=false;window.shortQueryKey='';window.shortFallbackMode=false;
         function currentFeedQueryKey(){return window.shortTagFilter?`tag:${window.shortTagFilter}`:`category:${window.shortCategoryFilter}`;}
+        async function loadShortsWithoutCompositeIndex(){
+            const [pageSnap,configSnap,taxonomySnap]=await Promise.all([
+                getDocs(query(collection(db,'shorts'),where('published','==',true),limit(100))),
+                getDoc(doc(db,'settings','appConfig')).catch(()=>null),
+                getDoc(doc(db,'settings','feedTaxonomy')).catch(()=>null)
+            ]);
+            if(configSnap?.exists()){const config=configSnap.data();window.feedAdminProfile={name:String(config.adminName||'Yarch'),avatarUrl:safeMediaUrl(config.adminAvatarUrl||'')};}
+            window.feedConfiguredCategories=taxonomySnap?.exists()?taxonomySnap.data().categories||[]:window.feedConfiguredCategories;
+            let items=pageSnap.docs.map(item=>({id:item.id,...item.data()})).sort((a,b)=>getTimeValue(b.updatedAt||b.publishedAt||b.createdAt)-getTimeValue(a.updatedAt||a.publishedAt||a.createdAt));
+            const requested=window.pendingFeedTarget||new URLSearchParams(location.search).get('short');
+            if(requested&&!items.some(item=>item.id===requested)){const targetSnap=await getDoc(doc(db,'shorts',requested)).catch(()=>null);if(targetSnap?.exists()&&targetSnap.data().published===true)items.unshift({id:targetSnap.id,...targetSnap.data()});}
+            window.shortItems=items.map(item=>({...item,authorName:item.authorName||window.feedAdminProfile.name,authorAvatar:window.feedAdminProfile.avatarUrl||safeMediaUrl(item.authorAvatar)}));
+            window.shortCursor=null;window.shortHasMore=false;window.shortFallbackMode=true;window.shortDisplayLimit=20;window.feedAutoPlayArmed=false;
+            updateFeedFilterHeader();renderShortCategoryChips();renderShortFeed();
+        }
         window.loadShorts=async function(force=false,loadMore=false){
             const feed=document.getElementById('shortsFeed');if(!feed||window.shortLoading)return;
             const queryKey=currentFeedQueryKey(),reset=force||!loadMore||queryKey!==window.shortQueryKey;
@@ -5135,7 +5151,7 @@
                 if(!reset&&window.shortCursor)constraints.push(startAfter(window.shortCursor));
                 constraints.push(limit(window.shortPageSize));
                 const configPromise=getDoc(doc(db,'settings','appConfig')).catch(()=>null),taxonomyPromise=getDoc(doc(db,'settings','feedTaxonomy')).catch(()=>null),pagePromise=getDocs(query(collection(db,'shorts'),...constraints));
-                const [configSnap,taxonomySnap,pageSnap]=await Promise.all([configPromise,taxonomyPromise,pagePromise]);
+                const [configSnap,taxonomySnap,pageSnap]=await Promise.all([configPromise,taxonomyPromise,pagePromise]);window.shortFallbackMode=false;
                 if(configSnap?.exists()){const config=configSnap.data();window.feedAdminProfile={name:String(config.adminName||'Yarch'),avatarUrl:safeMediaUrl(config.adminAvatarUrl||'')};}
                 window.feedConfiguredCategories=taxonomySnap?.exists()?taxonomySnap.data().categories||[]:window.feedConfiguredCategories;
                 let pageItems=pageSnap.docs.map(item=>({id:item.id,...item.data()}));
@@ -5144,7 +5160,11 @@
                 const normalizeItem=item=>({...item,authorName:item.authorName||window.feedAdminProfile.name,authorAvatar:window.feedAdminProfile.avatarUrl||safeMediaUrl(item.authorAvatar)});
                 if(reset)window.shortItems=pageItems.map(normalizeItem);else{const known=new Set(window.shortItems.map(item=>item.id));window.shortItems.push(...pageItems.filter(item=>!known.has(item.id)).map(normalizeItem));}
                 window.shortCursor=pageSnap.docs.at(-1)||window.shortCursor;window.shortHasMore=pageSnap.size===window.shortPageSize;window.shortDisplayLimit=window.shortItems.length;window.feedAutoPlayArmed=false;updateFeedFilterHeader();renderShortCategoryChips();renderShortFeed();
-            }catch(error){if(reset)feed.innerHTML='<div class="short-empty"><i class="fa-solid fa-triangle-exclamation"></i><h3>Feed belum dapat dimuat</h3><p>Periksa koneksi atau deploy indeks Firestore terbaru.</p></div>';reportBackgroundError('Feed gagal dimuat',error);}finally{window.shortLoading=false;}
+            }catch(error){
+                try{await loadShortsWithoutCompositeIndex();window.showToast('Feed memakai mode kompatibilitas sementara.');}
+                catch(fallbackError){if(reset)feed.innerHTML='<div class="short-empty"><i class="fa-solid fa-triangle-exclamation"></i><h3>Feed belum dapat dimuat</h3><p>Periksa koneksi dan Firestore Rules terbaru.</p></div>';reportBackgroundError('Feed gagal dimuat',fallbackError);}
+                reportBackgroundError('Indeks Feed belum aktif, mode kompatibilitas digunakan',error);
+            }finally{window.shortLoading=false;}
         };
         window.setShortCategory=function(encoded){window.shortCategoryFilter=decodeURIComponent(encoded||'Semua');window.shortTagFilter='';window.shortQueryKey='';updateFeedFilterHeader();renderShortCategoryChips();window.scrollTo({top:0,behavior:'auto'});window.loadShorts(true);};
         window.filterFeedByTag=function(encoded){window.shortTagFilter=decodeURIComponent(encoded||'').trim();window.shortCategoryFilter='Semua';window.shortQueryKey='';updateFeedFilterHeader();renderShortCategoryChips();window.scrollTo({top:0,behavior:'auto'});window.loadShorts(true);};

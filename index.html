@@ -1648,7 +1648,7 @@
             <button class="account-menu-item" type="button" onclick="openAppInfo('about')"><i class="fa-solid fa-circle-info"></i><span>Tentang Yarch</span><i class="fa-solid fa-chevron-right"></i></button>
             <button class="account-menu-item" type="button" onclick="closeAccountMenu();openAdminContact()"><i class="fa-solid fa-headset"></i><span>Hubungi Admin</span><i class="fa-solid fa-chevron-right"></i></button>
             <div class="account-menu-divider" style="margin-top:11px"></div>
-            <button class="account-menu-item updates-menu-item" type="button" onclick="closeAccountMenu();openChangelogPage()"><i class="fa-solid fa-clock-rotate-left"></i><span class="account-menu-item-copy"><strong>Updates</strong><small>V20.4.27 • Riwayat perbaikan</small></span><i class="fa-solid fa-chevron-right"></i></button>
+            <button class="account-menu-item updates-menu-item" type="button" onclick="closeAccountMenu();openChangelogPage()"><i class="fa-solid fa-clock-rotate-left"></i><span class="account-menu-item-copy"><strong>Updates</strong><small>V20.4.28 • Riwayat perbaikan</small></span><i class="fa-solid fa-chevron-right"></i></button>
             <button class="account-menu-item danger" id="accountMenuLogout" type="button" onclick="closeAccountMenu();doLogout()"><i class="fa-solid fa-right-from-bracket"></i><span>Keluar dari Akun</span><i class="fa-solid fa-chevron-right"></i></button>
         </aside>
     </div>
@@ -1720,7 +1720,7 @@
         const app = initializeApp(firebaseConfig);
         const db = getFirestore(app);
         const auth = getAuth(app);
-        const APP_VERSION = '20.4.27';
+        const APP_VERSION = '20.4.28';
         const ADMIN_UID = 'dWUWpKAWQRRxMOzjzaOA3zXWZLp2';
 
         // ================= PENYIMPANAN OFFLINE (INDEXEDDB) =================
@@ -1844,7 +1844,8 @@
         }
         window.accountMenuNavigate=function(page){closeAccountMenu();switchNav(page);}
         const APP_CHANGELOG = [
-            {version:'20.4.27',label:'Terbaru',title:'Rasio thumbnail dan posisi durasi',changes:['Thumbnail episode dikembalikan ke format landscape seperti sebelumnya.','Durasi memakai baris khusus tepat di bawah thumbnail.'],fixes:['Pembesaran transform yang membuat thumbnail terlihat kotak telah dihapus.','Durasi tidak lagi tertimpa thumbnail maupun tombol aksi.','Ukuran landscape disesuaikan untuk layar normal dan ponsel kecil.']},
+            {version:'20.4.28',label:'Terbaru',title:'Stabilitas cache dan panel admin',changes:['Cache halaman aplikasi dan panel admin dipisahkan.','Tombol navigasi, galeri, pemilih judul, dan pratinjau admin tersedia konsisten pada browser module.','Renderer foto profil admin disatukan.'],fixes:['Halaman admin tidak lagi dapat menimpa cache halaman utama.','Tombol panel admin tidak lagi gagal karena fungsi module tidak tersedia.','Foto admin tidak lagi hilang ketika pengaturan dimuat atau disimpan.']},
+            {version:'20.4.27',title:'Rasio thumbnail dan posisi durasi',changes:['Thumbnail episode dikembalikan ke format landscape seperti sebelumnya.','Durasi memakai baris khusus tepat di bawah thumbnail.'],fixes:['Pembesaran transform yang membuat thumbnail terlihat kotak telah dihapus.','Durasi tidak lagi tertimpa thumbnail maupun tombol aksi.','Ukuran landscape disesuaikan untuk layar normal dan ponsel kecil.']},
             {version:'20.4.26',title:'Susunan episode dan berbagi langsung',changes:['Durasi episode dipindahkan ke bawah thumbnail.','Tanggal update, jumlah tayangan, dan informasi Sub/Dub tersusun dalam satu baris.','Tombol Bagikan ditambahkan setelah jempol turun.'],fixes:['Template berbagi menampilkan judul konten dan episode secara rapi.','Tautan berbagi membuka chapter atau episode yang bersangkutan secara langsung.','Parameter tautan dibersihkan ketika pengguna berpindah ke menu lain.']},
             {version:'20.4.25',title:'Metrik chapter dan episode',changes:['Setiap chapter dan episode menampilkan jumlah tayangan.','Tombol jempol naik dan jempol turun tersedia di samping tombol download.','Pilihan penilaian dan angka agregat disimpan di Firestore.'],fixes:['Satu akun hanya dihitung sekali sebagai penonton setiap chapter atau episode.','Satu akun hanya memiliki satu pilihan penilaian yang dapat diganti atau dibatalkan.','Status penilaian dimuat secara bertahap untuk menjaga performa daftar isi.']},
             {version:'20.4.24',title:'Tampilan tamu dan akses Feed',changes:['Avatar pengguna yang belum login memakai ikon tamu premium.','Halaman Feed menampilkan ajakan login yang jelas untuk pengguna tamu.'],fixes:['Feed tidak lagi menampilkan pesan error Firestore hanya karena pengguna belum login.','Setelah login ketika berada di halaman Feed, konten dimuat otomatis tanpa harus berpindah menu.']},
@@ -2183,7 +2184,7 @@
         if('serviceWorker' in navigator && location.protocol !== 'file:'){
             let reloadingForWorker=false;
             navigator.serviceWorker.addEventListener('controllerchange',()=>{if(reloadingForWorker)return;reloadingForWorker=true;location.reload();});
-            navigator.serviceWorker.register('./sw-v20.1.js?v=20.4.27-thumbnail-duration-fix',{updateViaCache:'none'}).then(reg=>{reg.update();document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible')reg.update();});window.addEventListener('pageshow',()=>reg.update());}).catch(()=>{});
+            navigator.serviceWorker.register('./sw-v20.1.js?v=20.4.28-cache-admin-avatar-fix',{updateViaCache:'none'}).then(reg=>{reg.update();document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible')reg.update();});window.addEventListener('pageshow',()=>reg.update());}).catch(()=>{});
         }
         document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible'){window.checkAppConfiguration(false);recordDailyAnalytics({});}});
         async function applyRemoteDisplayConfig(){try{const snap=await getDoc(doc(db,'settings','appConfig'));if(!snap.exists())return;const c=snap.data();if(c.appName)document.title=c.appName;if(/^#[0-9a-f]{6}$/i.test(c.themeColor||''))document.documentElement.style.setProperty('--primary-blue',c.themeColor);const recommendation=document.getElementById('recommendationSection');if(recommendation)recommendation.style.display=c.enableRecommendations===false?'none':'block';document.body.classList.toggle('gamification-off',c.enableGamification===false);if(c.announcement&&localStorage.getItem('seenAnnouncementV20.1')!==c.announcement){localStorage.setItem('seenAnnouncementV20.1',c.announcement);setTimeout(()=>window.showToast(c.announcement),1200);}}catch(e){}}

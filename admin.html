@@ -3032,9 +3032,9 @@
 
         window.loadAppConfiguration=async function(){
             const status=document.getElementById('configStatus');
-            try{const snap=await getDoc(doc(db,'settings','appConfig'));const c=snap.exists()?snap.data():{};document.getElementById('configLatestVersion').value=c.latestVersion||'20.4.27';document.getElementById('configChangelog').value=c.changelog||'';document.getElementById('configMaintenanceTitle').value=c.maintenanceTitle||'Sedang dalam pemeliharaan';document.getElementById('configMaintenanceMessage').value=c.maintenanceMessage||'Kami sedang melakukan peningkatan agar aplikasi menjadi lebih baik. Silakan coba kembali beberapa saat lagi.';document.getElementById('configUpdateRequired').checked=c.updateRequired===true;document.getElementById('configMaintenanceMode').checked=c.maintenanceMode===true;if(status)status.className='config-status';}catch(e){if(status){status.textContent='Gagal memuat pengaturan aplikasi.';status.className='config-status show error';}}
+            try{const snap=await getDoc(doc(db,'settings','appConfig'));const c=snap.exists()?snap.data():{};document.getElementById('configLatestVersion').value=c.latestVersion||'20.4.28';document.getElementById('configChangelog').value=c.changelog||'';document.getElementById('configMaintenanceTitle').value=c.maintenanceTitle||'Sedang dalam pemeliharaan';document.getElementById('configMaintenanceMessage').value=c.maintenanceMessage||'Kami sedang melakukan peningkatan agar aplikasi menjadi lebih baik. Silakan coba kembali beberapa saat lagi.';document.getElementById('configUpdateRequired').checked=c.updateRequired===true;document.getElementById('configMaintenanceMode').checked=c.maintenanceMode===true;if(status)status.className='config-status';}catch(e){if(status){status.textContent='Gagal memuat pengaturan aplikasi.';status.className='config-status show error';}}
             try{const snap=await getDoc(doc(db,'settings','appConfig')),c=snap.exists()?snap.data():{};document.getElementById('configAppName').value=c.appName||'Komik & Anime';document.getElementById('configThemeColor').value=c.themeColor||'#625af2';document.getElementById('configAnnouncement').value=c.announcement||'';document.getElementById('configRecommendations').checked=c.enableRecommendations!==false;document.getElementById('configGamification').checked=c.enableGamification!==false;}catch(e){console.error(e);if(status){status.textContent=`Sebagian pengaturan gagal dimuat: ${e.message}`;status.className='config-status show error';}}
-            try{const snap=await getDoc(doc(db,'settings','appConfig')),c=snap.exists()?snap.data():{};const name=String(c.adminName||'Yarch'),avatar=normalizeUrl(c.adminAvatarUrl||'');document.getElementById('configAdminName').value=name;document.getElementById('configAdminAvatarUrl').value=avatar;document.getElementById('adminHeaderName').textContent=name;const header=document.getElementById('adminHeaderAvatar');header.textContent=(name.charAt(0)||'A').toUpperCase();header.style.backgroundImage=avatar?`url("${avatar.replace(/"/g,'%22')}")`:'';header.style.backgroundSize='cover';header.style.backgroundPosition='center';}catch(e){console.warn('Profil admin belum dapat dimuat.',e);}
+            try{const snap=await getDoc(doc(db,'settings','appConfig')),c=snap.exists()?snap.data():{};const name=String(c.adminName||'Yarch'),avatar=normalizeUrl(c.adminAvatarUrl||'');document.getElementById('configAdminName').value=name;document.getElementById('configAdminAvatarUrl').value=avatar;renderAdminHeaderProfile(name,avatar);}catch(e){console.warn('Profil admin belum dapat dimuat.',e);}
         }
         function renderAdminHeaderProfile(name='Yarch',avatar=''){
             const header=document.getElementById('adminHeaderAvatar');if(!header)return;
@@ -3054,7 +3054,7 @@
             try{await setDoc(doc(db,'settings','appConfig'),{latestVersion:version,changelog:document.getElementById('configChangelog').value.trim(),maintenanceTitle:document.getElementById('configMaintenanceTitle').value.trim()||'Sedang dalam pemeliharaan',maintenanceMessage:document.getElementById('configMaintenanceMessage').value.trim()||'Kami sedang melakukan peningkatan aplikasi.',updateRequired:document.getElementById('configUpdateRequired').checked,maintenanceMode:document.getElementById('configMaintenanceMode').checked,updatedAt:serverTimestamp(),updatedBy:auth.currentUser?.uid||''},{merge:true});await writeAudit('UPDATE_APP_SETTINGS','settings/appConfig',`Versi ${version}`);status.textContent='Pengaturan berhasil disimpan. Aplikasi pengguna akan memeriksanya saat dibuka atau kembali aktif.';status.className='config-status show success';}catch(e){status.textContent='Gagal menyimpan. Pastikan akun ini adalah admin pada Firestore Rules.';status.className='config-status show error';}
         }
 
-        window.saveAppConfiguration=async function(){await window.saveBaseAppConfiguration();try{let adminAvatarUrl=normalizeUrl(document.getElementById('configAdminAvatarUrl').value),avatarFile=document.getElementById('configAdminAvatarFile').files[0];if(avatarFile){if(avatarFile.size>8*1024*1024)throw new Error('Foto admin maksimal 8 MB.');adminAvatarUrl=await uploadShortAsset(avatarFile,()=>{});document.getElementById('configAdminAvatarUrl').value=adminAvatarUrl;}const adminName=document.getElementById('configAdminName').value.trim()||'Yarch';await setDoc(doc(db,'settings','appConfig'),{appName:document.getElementById('configAppName').value.trim()||'Komik & Anime',themeColor:document.getElementById('configThemeColor').value,announcement:document.getElementById('configAnnouncement').value.trim(),enableRecommendations:document.getElementById('configRecommendations').checked,enableGamification:document.getElementById('configGamification').checked,adminName,adminAvatarUrl,updatedAt:serverTimestamp(),updatedBy:auth.currentUser?.uid||''},{merge:true});document.getElementById('adminHeaderName').textContent=adminName;const header=document.getElementById('adminHeaderAvatar');header.textContent=(adminName.charAt(0)||'A').toUpperCase();header.style.backgroundImage=adminAvatarUrl?`url("${adminAvatarUrl.replace(/"/g,'%22')}")`:'';header.style.backgroundSize='cover';header.style.backgroundPosition='center';await writeAudit('UPDATE_DISPLAY_SETTINGS','settings/appConfig','Tampilan, fitur, dan profil admin');}catch(e){Swal.fire('Gagal',e.message||'Pengaturan tampilan belum dapat disimpan.','error');}}
+        window.saveAppConfiguration=async function(){await window.saveBaseAppConfiguration();try{let adminAvatarUrl=normalizeUrl(document.getElementById('configAdminAvatarUrl').value),avatarFile=document.getElementById('configAdminAvatarFile').files[0];if(avatarFile){if(avatarFile.size>8*1024*1024)throw new Error('Foto admin maksimal 8 MB.');adminAvatarUrl=await uploadShortAsset(avatarFile,()=>{});document.getElementById('configAdminAvatarUrl').value=adminAvatarUrl;}const adminName=document.getElementById('configAdminName').value.trim()||'Yarch';await setDoc(doc(db,'settings','appConfig'),{appName:document.getElementById('configAppName').value.trim()||'Komik & Anime',themeColor:document.getElementById('configThemeColor').value,announcement:document.getElementById('configAnnouncement').value.trim(),enableRecommendations:document.getElementById('configRecommendations').checked,enableGamification:document.getElementById('configGamification').checked,adminName,adminAvatarUrl,updatedAt:serverTimestamp(),updatedBy:auth.currentUser?.uid||''},{merge:true});renderAdminHeaderProfile(adminName,adminAvatarUrl);await writeAudit('UPDATE_DISPLAY_SETTINGS','settings/appConfig','Tampilan, fitur, dan profil admin');}catch(e){Swal.fire('Gagal',e.message||'Pengaturan tampilan belum dapat disimpan.','error');}}
 
         // ================= V20.1: DASHBOARD PROFESIONAL =================
         window.adminCharts={};
@@ -3239,7 +3239,7 @@
         window.editAdminShort=function(id){editAdminShortCore(id);const item=window.adminShortItems.find(value=>value.id===id);prepareFeedRelatedSelectors(item?.relatedContentId||'',item?.relatedChapterId||'');};
         window.deleteAdminShort=async function(id){const result=await Swal.fire({title:'Hapus Feed?',text:'Video, thumbnail, like, dan komentar akan dihapus permanen.',icon:'warning',showCancelButton:true,confirmButtonColor:'#dc3545',confirmButtonText:'Hapus',cancelButtonText:'Batal'});if(!result.isConfirmed)return;try{const feedRef=doc(db,'shorts',id),feedSnap=await getDoc(feedRef),media=feedSnap.exists()?[feedSnap.data().videoUrl,feedSnap.data().thumbnailUrl]:[];for(const child of ['likes','comments','viewers']){const records=await getDocs(collection(db,'shorts',id,child));for(let start=0;start<records.docs.length;start+=400){const batch=writeBatch(db);records.docs.slice(start,start+400).forEach(item=>batch.delete(item.ref));await batch.commit();}}await deleteDoc(feedRef);await cleanupReplacedMedia(media,[],'DELETE_FEED_MEDIA');await writeAudit('DELETE_FEED',id,'Feed, media, like, komentar, dan viewers dihapus');await window.loadAdminShorts();}catch(error){Swal.fire('Gagal',error.message||'Feed belum dapat dihapus.','error');}}
 
-        function switchView(viewId, element) {
+        window.switchView = function(viewId, element) {
             document.querySelectorAll('.sidebar-menu a').forEach(el => el.classList.remove('active'));
             if(element) element.classList.add('active');
             document.querySelectorAll('.admin-view').forEach(view => view.classList.remove('active'));
@@ -3266,14 +3266,14 @@
         document.getElementById('sidebarToggle').addEventListener('click', toggleSidebar);
         overlay.addEventListener('click', toggleSidebar);
 
-        function previewImage(event) {
+        window.previewImage = function(event) {
             const reader = new FileReader();
             reader.onload = function(){ document.getElementById('coverPreview').src = reader.result; document.getElementById('coverPreview').style.display = 'block'; };
             if(event.target.files[0]) reader.readAsDataURL(event.target.files[0]);
         }
 
-        function toggleCustomSelect(listId) { document.getElementById(listId).classList.toggle('show'); }
-        function filterCustomSelect(inputElement, listId) {
+        window.toggleCustomSelect = function(listId) { document.getElementById(listId)?.classList.toggle('show'); }
+        window.filterCustomSelect = function(inputElement, listId) {
             let filter = inputElement.value.toUpperCase();
             let divs = document.getElementById(listId).getElementsByTagName('div');
             for (let i = 0; i < divs.length; i++) {
@@ -3347,7 +3347,7 @@
             window.loadCloudGallery(); 
         }
 
-        function openMediaGallery() {
+        window.openMediaGallery = function() {
             document.getElementById('cloudGalleryModal').classList.remove('hidden');
             const pending = window.pendingChapterFolder;
 
@@ -3371,7 +3371,7 @@
             window.loadCloudGallery();
         }
         
-        function closeMediaGallery() { document.getElementById('cloudGalleryModal').classList.add('hidden'); }
+        window.closeMediaGallery = function() { document.getElementById('cloudGalleryModal')?.classList.add('hidden'); }
 
         window.openLightboxPreview = function(url) {
             const isVideo = typeof window.isCloudVideoMedia === 'function'

@@ -1,4 +1,4 @@
-const CACHE_VERSION = "komik-anime-v20.4.27";
+const CACHE_VERSION = "komik-anime-v20.4.28";
 const CACHE_PREFIX = "komik-anime-";
 
 const REQUIRED_SHELL = [
@@ -86,7 +86,8 @@ self.addEventListener("fetch", (event) => {
     return;
   }
 
-  // Halaman HTML menggunakan network-first.
+  // Halaman HTML menggunakan network-first dan setiap halaman disimpan
+  // dengan URL-nya sendiri agar admin.html tidak menimpa index.html.
   if (
     request.mode === "navigate" ||
     request.destination === "document"
@@ -101,7 +102,7 @@ self.addEventListener("fetch", (event) => {
             }
           );
 
-          if (response.ok) {
+          if (response.ok && url.origin === self.location.origin) {
             // Clone dilakukan sebelum response
             // dikembalikan ke browser.
             const copy = response.clone();
@@ -111,18 +112,26 @@ self.addEventListener("fetch", (event) => {
                 CACHE_VERSION
               );
 
-            await cache.put(
-              "./index.html",
-              copy
-            );
+            const pageUrl = new URL(request.url);
+            pageUrl.search = "";
+            pageUrl.hash = "";
+            if (pageUrl.pathname.endsWith("/")) {
+              pageUrl.pathname += "index.html";
+            }
+
+            await cache.put(pageUrl.href, copy);
           }
 
           return response;
         } catch (error) {
-          const cachedPage =
-            await caches.match(
-              "./index.html"
-            );
+          const pageUrl = new URL(request.url);
+          pageUrl.search = "";
+          pageUrl.hash = "";
+          if (pageUrl.pathname.endsWith("/")) {
+            pageUrl.pathname += "index.html";
+          }
+
+          const cachedPage = await caches.match(pageUrl.href);
 
           return (
             cachedPage ||

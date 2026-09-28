@@ -2089,6 +2089,10 @@
                 );
                 return;
             }
+            if(videoMode&&files.some(file=>/\.mkv$/i.test(String(file.name||'')))){
+                const choice=await Swal.fire({icon:'info',title:'Kompatibilitas MKV',html:'File MKV dapat disimpan, tetapi sebagian codec MKV tidak bisa diputar langsung di Chrome/Android.<br><br>Untuk kompatibilitas terbaik gunakan <b>MP4 H.264 + AAC</b>.',confirmButtonText:'Tetap upload MKV',showCancelButton:true,cancelButtonText:'Batal'});
+                if(!choice.isConfirmed){inputElement.value='';return;}
+            }
 
             const statusEl = document.getElementById('galleryUploadStatus');
             statusEl.style.display = 'block';

@@ -1,4 +1,4 @@
-const CACHE_VERSION = "komik-anime-v20.4.15";
+const CACHE_VERSION = "komik-anime-v20.4.16";
 const CACHE_PREFIX = "komik-anime-";
 
 const REQUIRED_SHELL = [
@@ -52,6 +52,10 @@ self.addEventListener("activate", (event) => {
         )
       )
       .then(() => self.clients.claim())
+      .then(async () => {
+        const clients = await self.clients.matchAll({ type: "window", includeUncontrolled: true });
+        clients.forEach((client) => client.postMessage({ type: "APP_UPDATED", version: CACHE_VERSION }));
+      })
   );
 });
 

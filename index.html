@@ -218,8 +218,8 @@
         .season-card.seasonless-card { overflow:visible; border:0; box-shadow:none; background:transparent; }
         .season-card.seasonless-card .season-episodes { padding:0; background:transparent; }
         .season-card .chapter-info { flex:1; min-width:0; }
-        .season-card .chapter-title { display:block; padding-right:92px; overflow:visible; text-overflow:clip; white-space:normal; overflow-wrap:anywhere; word-break:normal; font-size:13px; font-weight:750; line-height:1.45; }
-        .season-card .chapter-date { display:flex; align-items:center; flex-wrap:nowrap; gap:0; margin-top:5px; max-width:100%; overflow:hidden; white-space:nowrap; font-size:10px; line-height:1.35; letter-spacing:-.1px; }
+        .season-card .chapter-title { display:block; padding-right:220px; overflow:visible; text-overflow:clip; white-space:normal; overflow-wrap:anywhere; word-break:normal; font-size:13px; font-weight:750; line-height:1.45; }
+        .season-card .chapter-date { display:flex; align-items:center; flex-wrap:wrap; gap:0; margin-top:5px; max-width:100%; overflow:visible; white-space:normal; font-size:10px; line-height:1.35; letter-spacing:-.1px; }
         .season-card .chapter-date > span { min-width:0; flex:0 1 auto; }
         .season-card .chapter-date > span + span::before { content:'|'; margin:0 6px; color:#c3c5ce; font-weight:500; }
         .episode-media-meta { display:inline-flex; align-items:center; gap:4px; color:#716d88; font-weight:650; }
@@ -229,6 +229,7 @@
         .chapter-offline-btn { position:static; width:32px; height:32px; flex:0 0 32px; display:grid; place-items:center; border:0; border-radius:10px; color:#625af2; background:#efeeff; cursor:pointer; }
         .chapter-offline-btn.downloaded { color:#12825d; background:#e5f8f0; }
         .chapter-offline-btn.downloading i { animation:offlineSpin 1s linear infinite; }
+        .chapter-view-count{display:inline-flex!important;align-items:center;gap:4px;color:#777c8e;font-weight:700}.chapter-reaction-btn{position:static;min-width:32px;height:32px;display:inline-flex;align-items:center;justify-content:center;gap:4px;padding:0 8px;border:0;border-radius:10px;color:#74798b;background:#f1f2f6;cursor:pointer;font-size:9px;font-weight:850;transition:.18s}.chapter-reaction-btn i{font-size:12px}.chapter-reaction-btn.up.active{color:#16845d;background:#e4f8ef}.chapter-reaction-btn.down.active{color:#d55368;background:#fff0f2}.chapter-reaction-btn:disabled{opacity:.58;cursor:wait}
         @keyframes offlineSpin { to { transform:rotate(360deg); } }
         .offline-download-panel { position:fixed; left:50%; bottom:76px; z-index:10020; width:min(420px,calc(100% - 28px)); padding:14px 15px; border:1px solid #e6e4ff; border-radius:17px; background:rgba(255,255,255,.97); box-shadow:0 16px 44px rgba(31,34,63,.2); transform:translate(-50%,24px); opacity:0; pointer-events:none; transition:.22s ease; }
         .offline-download-panel.show { transform:translate(-50%,0); opacity:1; pointer-events:auto; }
@@ -244,7 +245,7 @@
             .season-card .chapter-info{grid-area:info;width:100%;min-width:0}.season-card .chapter-title{padding-right:0;font-size:12.8px;line-height:1.43;overflow-wrap:anywhere}
             .season-card .chapter-date{flex-wrap:wrap;row-gap:4px;margin-top:6px;overflow:visible;white-space:normal;font-size:9.4px;line-height:1.35;letter-spacing:-.12px}.season-card .chapter-date>span+span::before{margin:0 5px}
             .chapter-action-group{position:static;grid-area:actions;justify-self:start;display:flex;align-items:center;gap:6px;z-index:auto}
-            .season-card .chapter-action{padding:7px 11px;font-size:10px;line-height:1.2}.chapter-offline-btn{width:31px;height:31px;flex-basis:31px}
+            .season-card .chapter-action{padding:7px 11px;font-size:10px;line-height:1.2}.chapter-offline-btn{width:31px;height:31px;flex-basis:31px}.chapter-reaction-btn{height:31px;min-width:31px;padding:0 7px}
         }
         @media(max-width:360px){
             .season-card .chapter-item{grid-template-columns:80px minmax(0,1fr);column-gap:9px}.episode-thumbnail{width:80px;height:55px;flex-basis:80px}.season-card .chapter-title{font-size:12.2px}.season-card .chapter-date{font-size:8.9px}
@@ -1646,7 +1647,7 @@
             <button class="account-menu-item" type="button" onclick="openAppInfo('about')"><i class="fa-solid fa-circle-info"></i><span>Tentang Yarch</span><i class="fa-solid fa-chevron-right"></i></button>
             <button class="account-menu-item" type="button" onclick="closeAccountMenu();openAdminContact()"><i class="fa-solid fa-headset"></i><span>Hubungi Admin</span><i class="fa-solid fa-chevron-right"></i></button>
             <div class="account-menu-divider" style="margin-top:11px"></div>
-            <button class="account-menu-item updates-menu-item" type="button" onclick="closeAccountMenu();openChangelogPage()"><i class="fa-solid fa-clock-rotate-left"></i><span class="account-menu-item-copy"><strong>Updates</strong><small>V20.4.24 • Riwayat perbaikan</small></span><i class="fa-solid fa-chevron-right"></i></button>
+            <button class="account-menu-item updates-menu-item" type="button" onclick="closeAccountMenu();openChangelogPage()"><i class="fa-solid fa-clock-rotate-left"></i><span class="account-menu-item-copy"><strong>Updates</strong><small>V20.4.25 • Riwayat perbaikan</small></span><i class="fa-solid fa-chevron-right"></i></button>
             <button class="account-menu-item danger" id="accountMenuLogout" type="button" onclick="closeAccountMenu();doLogout()"><i class="fa-solid fa-right-from-bracket"></i><span>Keluar dari Akun</span><i class="fa-solid fa-chevron-right"></i></button>
         </aside>
     </div>
@@ -1718,7 +1719,7 @@
         const app = initializeApp(firebaseConfig);
         const db = getFirestore(app);
         const auth = getAuth(app);
-        const APP_VERSION = '20.4.24';
+        const APP_VERSION = '20.4.25';
         const ADMIN_UID = 'dWUWpKAWQRRxMOzjzaOA3zXWZLp2';
 
         // ================= PENYIMPANAN OFFLINE (INDEXEDDB) =================
@@ -1842,7 +1843,8 @@
         }
         window.accountMenuNavigate=function(page){closeAccountMenu();switchNav(page);}
         const APP_CHANGELOG = [
-            {version:'20.4.24',label:'Terbaru',title:'Tampilan tamu dan akses Feed',changes:['Avatar pengguna yang belum login memakai ikon tamu premium.','Halaman Feed menampilkan ajakan login yang jelas untuk pengguna tamu.'],fixes:['Feed tidak lagi menampilkan pesan error Firestore hanya karena pengguna belum login.','Setelah login ketika berada di halaman Feed, konten dimuat otomatis tanpa harus berpindah menu.']},
+            {version:'20.4.25',label:'Terbaru',title:'Metrik chapter dan episode',changes:['Setiap chapter dan episode menampilkan jumlah tayangan.','Tombol jempol naik dan jempol turun tersedia di samping tombol download.','Pilihan penilaian dan angka agregat disimpan di Firestore.'],fixes:['Satu akun hanya dihitung sekali sebagai penonton setiap chapter atau episode.','Satu akun hanya memiliki satu pilihan penilaian yang dapat diganti atau dibatalkan.','Status penilaian dimuat secara bertahap untuk menjaga performa daftar isi.']},
+            {version:'20.4.24',title:'Tampilan tamu dan akses Feed',changes:['Avatar pengguna yang belum login memakai ikon tamu premium.','Halaman Feed menampilkan ajakan login yang jelas untuk pengguna tamu.'],fixes:['Feed tidak lagi menampilkan pesan error Firestore hanya karena pengguna belum login.','Setelah login ketika berada di halaman Feed, konten dimuat otomatis tanpa harus berpindah menu.']},
             {version:'20.4.23',title:'Migrasi profil dan QA autentikasi',changes:['Profil versi lama dimigrasikan otomatis ke skema profil cloud terbaru.','Pembaca profil mendukung nama kolom lama untuk tanggal lahir, jenis kelamin, lokasi, nama, dan foto.','Pesan login Google mencakup akun dengan metode berbeda dan gangguan jaringan.'],fixes:['Kolom yang tidak ada pada dokumen remote tidak lagi menghapus nilai lama yang masih tersimpan.','Data profil lama pada dokumen utama pengguna dapat dipulihkan ke dokumen profil privat.','Seluruh ID dan fungsi tombol autentikasi telah diperiksa ulang tanpa duplikasi.']},
             {version:'20.4.22',title:'Profil cloud dan pilihan login',changes:['Halaman masuk menyediakan Lupa Password dan Masuk dengan Google.','Login Google mendukung popup serta fallback redirect untuk browser seluler.','Penyimpanan profil privat diberi versi skema agar tetap konsisten pada pembaruan berikutnya.'],fixes:['Editor profil menunggu data Firestore selesai dimuat sebelum ditampilkan.','Tanggal lahir, jenis kelamin, dan lokasi selalu disegarkan dari database ke formulir.','Kegagalan sinkronisasi profil publik tidak lagi membuat penyimpanan profil privat dianggap gagal.']},
             {version:'20.4.21',title:'Publikasi dan pemuatan Feed',changes:['Feed baru secara default disiapkan sebagai publik.','Admin memiliki tombol Publikasikan untuk video yang masih tersimpan sebagai draft.','Status tombol simpan sekarang menjelaskan apakah Feed akan dipublikasikan atau disimpan sebagai draft.'],fixes:['Mode kompatibilitas memuat dokumen terbaru secara terurut agar Feed baru tidak terlewat.','Banner dan toast mode kompatibilitas tidak lagi mengganggu tampilan Feed.','Pesan selesai upload mengingatkan langkah publikasi yang masih diperlukan.']},
@@ -2178,7 +2180,7 @@
         if('serviceWorker' in navigator && location.protocol !== 'file:'){
             let reloadingForWorker=false;
             navigator.serviceWorker.addEventListener('controllerchange',()=>{if(reloadingForWorker)return;reloadingForWorker=true;location.reload();});
-            navigator.serviceWorker.register('./sw-v20.1.js?v=20.4.24-guest-feed-login',{updateViaCache:'none'}).then(reg=>{reg.update();document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible')reg.update();});window.addEventListener('pageshow',()=>reg.update());}).catch(()=>{});
+            navigator.serviceWorker.register('./sw-v20.1.js?v=20.4.25-chapter-engagement',{updateViaCache:'none'}).then(reg=>{reg.update();document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible')reg.update();});window.addEventListener('pageshow',()=>reg.update());}).catch(()=>{});
         }
         document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible'){window.checkAppConfiguration(false);recordDailyAnalytics({});}});
         async function applyRemoteDisplayConfig(){try{const snap=await getDoc(doc(db,'settings','appConfig'));if(!snap.exists())return;const c=snap.data();if(c.appName)document.title=c.appName;if(/^#[0-9a-f]{6}$/i.test(c.themeColor||''))document.documentElement.style.setProperty('--primary-blue',c.themeColor);const recommendation=document.getElementById('recommendationSection');if(recommendation)recommendation.style.display=c.enableRecommendations===false?'none':'block';document.body.classList.toggle('gamification-off',c.enableGamification===false);if(c.announcement&&localStorage.getItem('seenAnnouncementV20.1')!==c.announcement){localStorage.setItem('seenAnnouncementV20.1',c.announcement);setTimeout(()=>window.showToast(c.announcement),1200);}}catch(e){}}
@@ -2254,6 +2256,8 @@
             updateHomeAccountIdentity(user);
         }
         onAuthStateChanged(auth, async (user) => {
+            window.chapterReactionState?.clear();
+            document.querySelectorAll('.chapter-reaction-btn').forEach(button=>{button.classList.remove('active');const icon=button.querySelector('i');if(icon)icon.className=`fa-regular ${button.classList.contains('up')?'fa-thumbs-up':'fa-thumbs-down'}`;});
             if (user) {
                 document.getElementById('authSection').style.display = 'none';
                 document.getElementById('userSection').style.display = 'block';
@@ -2267,6 +2271,7 @@
                 await synchronizeProgressAcrossDevices(user.uid);
                 await loadSocialData(user.uid);
                 updateHomeGreeting(user);
+                if(window.currentActiveComicId)observeChapterReactionButtons(window.currentActiveComicId);
                 if(document.getElementById('shorts-page')?.style.display!=='none')window.loadShorts?.(true);
                 if(!window.analyticsSessionRecorded){window.analyticsSessionRecorded=true;recordDailyAnalytics({sessions:1});}
             } else {
@@ -4378,6 +4383,36 @@
             return `${hours}:${String(minutes).padStart(2, '0')}:${String(remainingSeconds).padStart(2, '0')}`;
         }
 
+        window.chapterReactionState=new Map();
+        window.chapterViewsRecordedSession=new Set();
+        function chapterMetricKey(comicId,chapterId){return `${comicId}__${chapterId}`;}
+        function formatChapterMetric(value){const number=Math.max(0,Math.floor(Number(value)||0));return number>=1000000?`${(number/1000000).toFixed(number>=10000000?0:1).replace('.0','')} jt`:number>=1000?`${(number/1000).toFixed(number>=10000?0:1).replace('.0','')} rb`:String(number);}
+        function updateChapterMetricUI(comicId,chapterId,counts={},reaction){
+            const selector=`[data-chapter-metric="${CSS.escape(chapterMetricKey(comicId,chapterId))}"]`,root=document.querySelector(selector);if(!root)return;const card=root.closest('.chapter-item')||root;
+            const view=card.querySelector('[data-chapter-views]'),up=root.querySelector('[data-chapter-up]'),down=root.querySelector('[data-chapter-down]');
+            if(view)view.textContent=formatChapterMetric(counts.viewCount??view.dataset.value??0);
+            if(up){const value=Math.max(0,Number(counts.upCount??up.dataset.value??0));up.dataset.value=value;up.querySelector('span').textContent=formatChapterMetric(value);up.classList.toggle('active',reaction==='up');up.querySelector('i').className=`fa-${reaction==='up'?'solid':'regular'} fa-thumbs-up`;}
+            if(down){const value=Math.max(0,Number(counts.downCount??down.dataset.value??0));down.dataset.value=value;down.querySelector('span').textContent=formatChapterMetric(value);down.classList.toggle('active',reaction==='down');down.querySelector('i').className=`fa-${reaction==='down'?'solid':'regular'} fa-thumbs-down`;}
+        }
+        async function hydrateChapterReaction(comicId,chapterId){
+            if(!auth.currentUser)return;const key=chapterMetricKey(comicId,chapterId);if(window.chapterReactionState.has(key)){updateChapterMetricUI(comicId,chapterId,{},window.chapterReactionState.get(key));return;}
+            try{const snap=await getDoc(doc(db,'comics',comicId,'chapters',chapterId,'reactions',auth.currentUser.uid)),reaction=snap.exists()?String(snap.data().reaction||''):'';window.chapterReactionState.set(key,reaction);updateChapterMetricUI(comicId,chapterId,{},reaction);}catch(error){reportBackgroundError('Status penilaian chapter gagal dimuat',error);}
+        }
+        function observeChapterReactionButtons(comicId){
+            if(!auth.currentUser)return;const roots=[...document.querySelectorAll('[data-chapter-metric]')];
+            if(!('IntersectionObserver'in window)){roots.forEach(root=>hydrateChapterReaction(comicId,root.dataset.chapterId));return;}
+            const observer=new IntersectionObserver(entries=>entries.forEach(entry=>{if(!entry.isIntersecting)return;const root=entry.target;observer.unobserve(root);hydrateChapterReaction(comicId,root.dataset.chapterId);}),{rootMargin:'160px'});roots.forEach(root=>observer.observe(root));
+        }
+        window.toggleChapterReaction=async function(comicId,chapterId,reaction,button){
+            if(!auth.currentUser){window.showToast('Silakan login untuk memberi penilaian.');return window.switchNav('profile');}
+            if(!['up','down'].includes(reaction)||!comicId||!chapterId)return;const group=button.closest('[data-chapter-metric]'),buttons=group?[...group.querySelectorAll('.chapter-reaction-btn')]:[button];buttons.forEach(item=>item.disabled=true);
+            try{const chapterRef=doc(db,'comics',comicId,'chapters',chapterId),reactionRef=doc(db,'comics',comicId,'chapters',chapterId,'reactions',auth.currentUser.uid);const result=await runTransaction(db,async transaction=>{const chapterSnap=await transaction.get(chapterRef),reactionSnap=await transaction.get(reactionRef);if(!chapterSnap.exists())throw new Error('Chapter tidak ditemukan');const data=chapterSnap.data(),oldReaction=reactionSnap.exists()?String(reactionSnap.data().reaction||''):'',nextReaction=oldReaction===reaction?'':reaction;let upCount=Math.max(0,Number(data.upCount||0)),downCount=Math.max(0,Number(data.downCount||0));if(oldReaction==='up')upCount=Math.max(0,upCount-1);if(oldReaction==='down')downCount=Math.max(0,downCount-1);if(nextReaction==='up')upCount+=1;if(nextReaction==='down')downCount+=1;transaction.update(chapterRef,{upCount,downCount});if(nextReaction)transaction.set(reactionRef,{userId:auth.currentUser.uid,reaction:nextReaction,updatedAt:serverTimestamp()});else if(reactionSnap.exists())transaction.delete(reactionRef);return{upCount,downCount,reaction:nextReaction,viewCount:Number(data.viewCount||0)};});window.chapterReactionState.set(chapterMetricKey(comicId,chapterId),result.reaction);updateChapterMetricUI(comicId,chapterId,result,result.reaction);}catch(error){window.showToast('Penilaian belum dapat disimpan. Publikasikan Firestore Rules terbaru.');reportBackgroundError('Penilaian chapter gagal',error);}finally{buttons.forEach(item=>item.disabled=false);}
+        };
+        async function recordChapterView(comicId,chapterId){
+            const uid=auth.currentUser?.uid,key=`${uid||''}:${comicId}:${chapterId}`;if(!uid||!comicId||!chapterId||window.chapterViewsRecordedSession.has(key))return;window.chapterViewsRecordedSession.add(key);
+            try{const chapterRef=doc(db,'comics',comicId,'chapters',chapterId),viewerRef=doc(db,'comics',comicId,'chapters',chapterId,'viewers',uid),count=await runTransaction(db,async transaction=>{const viewer=await transaction.get(viewerRef);if(viewer.exists())return null;const chapter=await transaction.get(chapterRef);if(!chapter.exists())return null;const viewCount=Math.max(0,Number(chapter.data().viewCount||0))+1;transaction.update(chapterRef,{viewCount});transaction.set(viewerRef,{userId:uid,viewedAt:serverTimestamp()});return viewCount;});if(count!==null)updateChapterMetricUI(comicId,chapterId,{viewCount:count},window.chapterReactionState.get(chapterMetricKey(comicId,chapterId))||'');}catch(error){window.chapterViewsRecordedSession.delete(key);reportBackgroundError('Tayangan chapter gagal dicatat',error);}
+        }
+
         async function fetchChapters(comicId) {
             const container = document.getElementById('chapterListContainer');
             const badge = document.getElementById('chapterBadge');
@@ -4419,6 +4454,11 @@
                             ? (durationText ? `<span class="episode-media-meta"><i class="fa-regular fa-clock"></i> Durasi: ${durationText}</span>` : '')
                             : (pageCount > 0 ? `<span class="episode-media-meta"><i class="fa-regular fa-images"></i> ${pageCount} halaman</span>` : '');
                         const languageMeta = languageText ? `<span class="episode-language-meta"><i class="fa-solid fa-language"></i> ${safeText(languageText)}</span>` : '';
+                        const viewCount = Math.max(0, Math.floor(Number(ch.viewCount || 0)));
+                        const upCount = Math.max(0, Math.floor(Number(ch.upCount || 0)));
+                        const downCount = Math.max(0, Math.floor(Number(ch.downCount || 0)));
+                        const metricKey = chapterMetricKey(comicId,ch.id);
+                        const viewMeta = `<span class="chapter-view-count"><i class="fa-regular fa-eye"></i> <b data-chapter-views data-value="${viewCount}">${formatChapterMetric(viewCount)}</b> tayangan</span>`;
                         const fullMovie = isFullMovieChapter(comicRecord, ch, chapterDocs.length);
                         const title = ch.title && !fullMovie ? ` — ${ch.title}` : '';
                         const titleDisplay = `${getMediaPartLabel(comicRecord, ch, chapterDocs.length)}${title}`;
@@ -4428,7 +4468,7 @@
                         const fallbackThumbnailUrl = safeMediaUrl(comicRecord.coverUrl || firstChapterImage || '');
                         const episodeThumbnailUrl = safeMediaUrl(isVideo ? (ch.thumbnailUrl || ch.posterUrl || firstChapterImage || comicRecord.coverUrl || '') : (ch.thumbnailUrl || ch.posterUrl || comicRecord.coverUrl || firstChapterImage || ''));
                         const leadingVisual = episodeThumbnailUrl ? `<div class="episode-thumbnail ${isVideo ? '' : 'comic-thumbnail'}"><img src="${episodeThumbnailUrl}" data-fallback="${safeAttr(fallbackThumbnailUrl)}" onerror="const fallback=this.dataset.fallback;if(fallback&&this.src!==fallback){this.dataset.fallback='';this.src=fallback;}else{this.closest('.episode-thumbnail')?.classList.add('image-unavailable');}" loading="lazy" decoding="async" alt="Thumbnail ${safeAttr(titleDisplay)}"><span class="episode-thumbnail-label">${fullMovie ? 'MOVIE' : `${isVideo ? 'E' : 'C'}${safeText(ch.chapterNumber)}`}</span></div>` : `<div class="episode-index">${shortPrefix}</div>`;
-                        return `<div class="chapter-item ${readClass}" onclick="handleMediaOpen('${safeAttr(comicId)}','${safeAttr(ch.id)}','${safeAttr(ch.chapterNumber)}')">${leadingVisual}<div class="chapter-info"><span class="chapter-title" data-read-label="${isVideo ? 'Sudah ditonton' : 'Sudah dibaca'}">${safeText(titleDisplay)}</span><span class="chapter-date"><span><i class="fa-regular fa-calendar"></i> ${safeText(date)}</span>${mediaMeta}${languageMeta}</span></div><div class="chapter-action-group"><div class="${actionClass}"><i class="fa-solid ${isVideo ? 'fa-play' : 'fa-book-open'}"></i> ${actionText}</div><button class="chapter-offline-btn" type="button" data-comic="${safeAttr(comicId)}" data-chapter="${safeAttr(ch.id)}" onclick="event.stopPropagation();downloadMediaForOffline('${safeAttr(comicId)}','${safeAttr(ch.id)}','${safeAttr(ch.chapterNumber)}',this)" title="Simpan offline" aria-label="Simpan offline"><i class="fa-solid fa-download"></i></button></div></div>`;
+                        return `<div class="chapter-item ${readClass}" onclick="handleMediaOpen('${safeAttr(comicId)}','${safeAttr(ch.id)}','${safeAttr(ch.chapterNumber)}')">${leadingVisual}<div class="chapter-info"><span class="chapter-title" data-read-label="${isVideo ? 'Sudah ditonton' : 'Sudah dibaca'}">${safeText(titleDisplay)}</span><span class="chapter-date"><span><i class="fa-regular fa-calendar"></i> ${safeText(date)}</span>${mediaMeta}${languageMeta}${viewMeta}</span></div><div class="chapter-action-group" data-chapter-metric="${safeAttr(metricKey)}" data-chapter-id="${safeAttr(ch.id)}"><div class="${actionClass}"><i class="fa-solid ${isVideo ? 'fa-play' : 'fa-book-open'}"></i> ${actionText}</div><button class="chapter-offline-btn" type="button" data-comic="${safeAttr(comicId)}" data-chapter="${safeAttr(ch.id)}" onclick="event.stopPropagation();downloadMediaForOffline('${safeAttr(comicId)}','${safeAttr(ch.id)}','${safeAttr(ch.chapterNumber)}',this)" title="Simpan offline" aria-label="Simpan offline"><i class="fa-solid fa-download"></i></button><button class="chapter-reaction-btn up" type="button" data-chapter-up data-value="${upCount}" onclick="event.stopPropagation();toggleChapterReaction('${safeAttr(comicId)}','${safeAttr(ch.id)}','up',this)" title="Suka" aria-label="Jempol naik"><i class="fa-regular fa-thumbs-up"></i><span>${formatChapterMetric(upCount)}</span></button><button class="chapter-reaction-btn down" type="button" data-chapter-down data-value="${downCount}" onclick="event.stopPropagation();toggleChapterReaction('${safeAttr(comicId)}','${safeAttr(ch.id)}','down',this)" title="Tidak suka" aria-label="Jempol turun"><i class="fa-regular fa-thumbs-down"></i><span>${formatChapterMetric(downCount)}</span></button></div></div>`;
                     }).join('');
                     chapterHTML += usesSeasons
                         ? `<section class="season-card ${seasonIndex === 0 ? '' : 'collapsed'}"><button type="button" class="season-header" onclick="toggleSeasonCard(this)" aria-expanded="${seasonIndex === 0 ? 'true' : 'false'}"><span class="season-number">${seasonNumber}</span><span class="season-heading"><strong>Season ${seasonNumber}</strong><small>${episodes.length} ${isVideo ? 'episode' : 'chapter'} tersedia${completed ? ` • ${completed} selesai` : ''}</small></span><span class="season-progress">${episodes.length}${planned ? ` / ${planned}` : ''}</span><span class="season-chevron"><i class="fa-solid fa-chevron-down"></i></span></button><div class="season-episodes">${episodeHtml}</div></section>`
@@ -4439,6 +4479,7 @@
                     container.innerHTML = chapterHTML;
                     badge.innerText = total; badge.style.display = 'inline-block';
                     refreshOfflineButtons();
+                    observeChapterReactionButtons(comicId);
                 } else {
                     container.innerHTML = `<div class="loading-text">Belum ada ${chapterPrefix.toLowerCase()} dirilis.</div>`;
                 }
@@ -4701,6 +4742,7 @@
                     if(offlineRecord&&!offlineRecord.isVideo){window.activeOfflineMediaUrls?.forEach(URL.revokeObjectURL);window.activeOfflineMediaUrls=(offlineRecord.blobs||[]).map(blob=>URL.createObjectURL(blob));chapterData={images:window.activeOfflineMediaUrls,title:offlineRecord.chapterTitle||''};if(!window.comicsData[comicId])window.comicsData[comicId]={title:offlineRecord.title,coverUrl:offlineRecord.coverUrl,format:offlineRecord.format,type:offlineRecord.type};window.showToast('Membuka chapter dari penyimpanan offline.');}
                 }
                 if(chapterData && chapterData.images) {
+                    recordChapterView(comicId,chapterId);
                     const images = chapterData.images;
                     window.currentReaderTotal = images.length || 1;
                     document.getElementById('readerPageJump').max = window.currentReaderTotal;
@@ -4785,6 +4827,7 @@
                 try{const snap=await getDoc(doc(db,"comics",comicId,"chapters",chapterId));if(snap.exists())data=snap.data();}catch(networkError){}
                 if(!data){const offlineRecord=await getOfflineRecord(comicId,chapterId);if(offlineRecord?.isVideo&&offlineRecord.blobs?.[0]){if(window.activeOfflineVideoUrl)URL.revokeObjectURL(window.activeOfflineVideoUrl);offlineVideoUrl=URL.createObjectURL(offlineRecord.blobs[0]);window.activeOfflineVideoUrl=offlineVideoUrl;data={title:offlineRecord.chapterTitle||'',durationSeconds:offlineRecord.durationSeconds||0,videoUrl:offlineVideoUrl};if(!window.comicsData[comicId])window.comicsData[comicId]={title:offlineRecord.title,coverUrl:offlineRecord.coverUrl,format:offlineRecord.format,type:offlineRecord.type};window.showToast('Memutar video dari penyimpanan offline.');}}
                 if(data) {
+                    recordChapterView(comicId,chapterId);
                     window.currentVideoSegment={introStart:Number(data.introStart||0),introEnd:Number(data.introEnd||0),outroStart:Number(data.outroStart||0),outroEnd:Number(data.outroEnd||0),target:0,label:''};
                     document.getElementById('playerTitle').innerText = getMediaPartLabel(comicRecord, data, window.currentChapterSequence.length);
                     const qualities = data.videoQualities || data.qualities || {};

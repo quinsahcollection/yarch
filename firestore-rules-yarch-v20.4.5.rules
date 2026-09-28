@@ -273,7 +273,63 @@ service cloud.firestore {
             /databases/$(database)/documents/comics/$(comicId)
           ).data.isPublished == true;
 
-        allow create, update, delete: if isAdmin();
+        function validChapterViewAggregate() {
+          let viewerPath = /databases/$(database)/documents/comics/$(comicId)/chapters/$(chapterId)/viewers/$(request.auth.uid);
+          return isSignedIn()
+            && onlyFieldsChanged(['viewCount'])
+            && request.resource.data.get('viewCount', 0)
+              == resource.data.get('viewCount', 0) + 1
+            && !exists(viewerPath)
+            && existsAfter(viewerPath);
+        }
+
+        function validChapterReactionAggregate() {
+          let reactionPath = /databases/$(database)/documents/comics/$(comicId)/chapters/$(chapterId)/reactions/$(request.auth.uid);
+          let oldReaction = exists(reactionPath) ? get(reactionPath).data.reaction : '';
+          let newReaction = existsAfter(reactionPath) ? getAfter(reactionPath).data.reaction : '';
+          let upDelta = (newReaction == 'up' ? 1 : 0) - (oldReaction == 'up' ? 1 : 0);
+          let downDelta = (newReaction == 'down' ? 1 : 0) - (oldReaction == 'down' ? 1 : 0);
+          return isSignedIn()
+            && onlyFieldsChanged(['upCount', 'downCount'])
+            && (oldReaction == '' || oldReaction == 'up' || oldReaction == 'down')
+            && (newReaction == '' || newReaction == 'up' || newReaction == 'down')
+            && request.resource.data.get('upCount', 0)
+              == resource.data.get('upCount', 0) + upDelta
+            && request.resource.data.get('downCount', 0)
+              == resource.data.get('downCount', 0) + downDelta
+            && request.resource.data.get('upCount', 0) >= 0
+            && request.resource.data.get('downCount', 0) >= 0;
+        }
+
+        allow create, delete: if isAdmin();
+        allow update: if isAdmin()
+          || validChapterViewAggregate()
+          || validChapterReactionAggregate();
+
+        match /viewers/{userId} {
+          allow read: if isAdmin()
+            || get(/databases/$(database)/documents/comics/$(comicId)).data.isPublished == true;
+          allow create: if isSignedIn()
+            && request.auth.uid == userId
+            && request.resource.data.keys().hasOnly(['userId', 'viewedAt'])
+            && request.resource.data.userId == request.auth.uid
+            && request.resource.data.viewedAt == request.time;
+          allow update: if false;
+          allow delete: if isAdmin();
+        }
+
+        match /reactions/{userId} {
+          allow read: if isAdmin()
+            || get(/databases/$(database)/documents/comics/$(comicId)).data.isPublished == true;
+          allow create, update: if isSignedIn()
+            && request.auth.uid == userId
+            && request.resource.data.keys().hasOnly(['userId', 'reaction', 'updatedAt'])
+            && request.resource.data.userId == request.auth.uid
+            && (request.resource.data.reaction == 'up' || request.resource.data.reaction == 'down')
+            && request.resource.data.updatedAt == request.time;
+          allow delete: if isAdmin()
+            || (isSignedIn() && request.auth.uid == userId);
+        }
       }
 
       match /viewers/{userId} {

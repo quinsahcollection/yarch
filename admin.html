@@ -1096,7 +1096,7 @@
 
             const totalSeasons = document.getElementById('totalSeasons');
             if (totalSeasons) totalSeasons.value = '1';
-            window.renderSeasonTotalInputs?.(1, {});
+            window.renderSeasonTotalInputs?.(1, {}, {});
 
             // Nilai dasar hanya dipakai bila AI memang tidak mengembalikan tipe/status.
             setAiSelectValue('type', format === 'film' ? 'Anime' : 'Manga');
@@ -1152,7 +1152,7 @@
                 document.getElementById('trailerUrl').value = String(data.trailerUrl || '').slice(0, 500);
                 document.getElementById('castCrew').value = Array.isArray(data.castCrew) ? data.castCrew.join(', ') : String(data.castCrew || '');
                 document.getElementById('totalSeasons').value = Math.max(0, Math.min(100, Number(data.totalSeasons ?? 1)));
-                window.renderSeasonTotalInputs?.(undefined, data.seasonTotals && typeof data.seasonTotals === 'object' ? data.seasonTotals : {});
+                window.renderSeasonTotalInputs?.(undefined, data.seasonTotals && typeof data.seasonTotals === 'object' ? data.seasonTotals : {}, data.seasonNames && typeof data.seasonNames === 'object' ? data.seasonNames : {});
                 await writeAudit('AI_METADATA_FILL', 'content-form', title);
                 Swal.fire({ title:'Metadata terisi', text:'Silakan periksa hasil AI dan unggah cover sebelum menyimpan.', icon:'success', timer:2300, showConfirmButton:false });
             } catch (error) {
@@ -1707,7 +1707,7 @@
                     document.getElementById('totalSeasons').value = Math.max(0, Number(data.totalSeasons ?? 1));
                     window.renderSeasonTotalInputs?.(data.totalSeasons ?? 1, data.seasonTotals || {
                         1: data.format === 'film' ? (data.totalEpisodes || data.totalParts || '') : (data.totalChapters || data.totalParts || '')
-                    });
+                    }, data.seasonNames || {}, Array.isArray(data.seasonArcs) ? data.seasonArcs : []);
                     document.getElementById('releaseDate').value = data.releaseDate || '';
                     document.getElementById('scheduleDay').value = data.scheduleDay ?? '';
                     document.getElementById('publicationStatus').value = data.publicationStatus || (data.isPublished === false ? 'draft' : 'published');
@@ -1742,7 +1742,7 @@
             document.querySelector(`input[name="entryFormat"][value="komik"]`).checked = true;
             window.selectFormatEntry('komik');
             document.getElementById('totalSeasons').value = 1;
-            window.renderSeasonTotalInputs?.(1, {});
+            window.renderSeasonTotalInputs?.(1, {}, {});
 
             document.getElementById('coverPreview').style.display = 'none';
             document.getElementById('coverImage').setAttribute('required', 'true');
@@ -1794,7 +1794,7 @@
                 document.querySelectorAll('.director-check:checked').forEach(cb => directors.push(cb.value));
 
                 const entryFormat = document.querySelector('input[name="entryFormat"]:checked').value;
-                const seasonMeta = window.collectSeasonTotals ? window.collectSeasonTotals() : {totalSeasons:1,seasonTotals:{},totalParts:0};
+                const seasonMeta = window.collectSeasonTotals ? window.collectSeasonTotals() : {totalSeasons:1,seasonTotals:{},seasonNames:{},totalParts:0};
 
                 const dbData = {
                     title: document.getElementById('title').value,
@@ -1813,6 +1813,8 @@
                     format: entryFormat,
                     totalSeasons: seasonMeta.totalSeasons,
                     seasonTotals: seasonMeta.seasonTotals,
+                    seasonNames: seasonMeta.seasonNames,
+                    seasonArcs: seasonMeta.seasonArcs,
                     totalParts: seasonMeta.totalParts || null,
                     totalChapters: entryFormat === 'komik' && seasonMeta.totalParts > 0 ? seasonMeta.totalParts : null,
                     totalEpisodes: entryFormat === 'film' && seasonMeta.totalParts > 0 ? seasonMeta.totalParts : null
@@ -1933,6 +1935,7 @@
             const durationSeconds = parseAdminDurationSeconds(document.getElementById('episodeDurationMinutes')?.value);
             const thumbnailUrl = String(document.getElementById('episodeThumbnailUrl')?.value || '').trim();
             const languageLabels = [...window.selectedMediaLanguages];
+            const arcName = getAdminArcName(selectedComic, seasonNumber, chapterNum);
             const statusEl = document.getElementById('saveFolderStatus');
 
             if(!comicId) { Swal.fire('Peringatan', "Pilih judul terlebih dahulu dari daftar pencarian!", 'warning'); return; }
@@ -1957,7 +1960,7 @@
                     const docSnap = matchingDoc;
                     targetChapterId = docSnap.id;
                     targetChapterImages = Array.isArray(docSnap.data().images) ? docSnap.data().images : [];
-                    const folderUpdate = { title: chapterTitle, seasonNumber, updatedAt: serverTimestamp() };
+                    const folderUpdate = { title: chapterTitle, seasonNumber, arcName, updatedAt: serverTimestamp() };
                     if (thumbnailUrl) folderUpdate.thumbnailUrl = thumbnailUrl;
                     folderUpdate.languageLabels = languageLabels;
                     if (entryFormat === 'film' && durationSeconds > 0) {
@@ -1971,6 +1974,7 @@
                     const newChapterData = {
                         chapterNumber: parseFloat(chapterNum),
                         seasonNumber,
+                        arcName,
                         title: chapterTitle,
                         languageLabels,
                         thumbnailUrl,
@@ -1995,7 +1999,7 @@
 
                 const sectionName = parseFloat(chapterNum) === 1 && chapterTitle === 'Full Movie'
                     ? 'Full Movie'
-                    : `${usesSeasons ? `Season ${seasonNumber} • ` : ''}${entryFormat === 'film' ? 'Episode' : 'Chapter'} ${chapterNum}`;
+                    : `${usesSeasons ? `${getAdminSeasonLabel(selectedComic, seasonNumber)} • ` : ''}${entryFormat === 'film' ? 'Episode' : 'Chapter'} ${chapterNum}`;
 
                 // Penanda ini membuktikan Langkah 1 baru saja berhasil.
                 window.pendingChapterFolder = {
@@ -2400,8 +2404,9 @@
                             const totalMedia = ch.images ? ch.images.length : 0;
                             const safeTitle = adminSafe(ch.title || '');
                             const seasonNumber = Number(ch.seasonNumber ?? 1);
-                            const usesSeasons = Number(window.allComicsList.find(item => item.id === window.galleryState.comicId)?.totalSeasons ?? 1) > 0;
-                            const folderLabel = ch.chapterNumber === 1 && ch.title === "Full Movie" ? "Full Movie" : `${usesSeasons ? `Season ${seasonNumber} • ` : ''}${term} ${ch.chapterNumber}`;
+                            const folderComic = window.allComicsList.find(item => item.id === window.galleryState.comicId);
+                            const usesSeasons = Number(folderComic?.totalSeasons ?? 1) > 0;
+                            const folderLabel = ch.chapterNumber === 1 && ch.title === "Full Movie" ? "Full Movie" : `${usesSeasons ? `${getAdminSeasonLabel(folderComic, seasonNumber)} • ` : ''}${term} ${ch.chapterNumber}`;
                             const folderColor = isFilm ? '#8b5cf6' : '#fbbf24';
                             
                             grid.innerHTML += `
@@ -2631,7 +2636,7 @@
                 
                 chapters.forEach(ch => {
                     const date = ch.updateDate || (ch.createdAt ? ch.createdAt.toDate().toLocaleDateString('id-ID', {day:'numeric', month:'short', year:'numeric'}) : '-');
-                    const labelPart = ch.chapterNumber === 1 && ch.title === "Full Movie" ? "Full Movie" : `${usesSeasons ? `Season ${Number(ch.seasonNumber ?? 1)} • ` : ''}${term} ${ch.chapterNumber}`;
+                    const labelPart = ch.chapterNumber === 1 && ch.title === "Full Movie" ? "Full Movie" : `${usesSeasons ? `${getAdminSeasonLabel(activeDoc, Number(ch.seasonNumber ?? 1))} • ` : ''}${term} ${ch.chapterNumber}`;
 
                     tbody.innerHTML += `
                         <tr>
@@ -2689,7 +2694,7 @@
                     html: `
                         ${isFilm ? `<label style="display:flex;align-items:center;gap:9px;text-align:left;padding:10px 12px;margin:0 0 12px;background:#f5f3ff;border:1px solid #ddd6fe;border-radius:10px"><input id="editFolderFullMovie" type="checkbox" ${isFullMovie ? 'checked' : ''} style="width:18px;height:18px;accent-color:#7c3aed"> Jadikan sebagai Full Movie</label>` : ''}
                         <label for="editFolderSeason" style="text-align:left">Season</label>
-                        <select id="editFolderSeason" class="swal2-select" style="display:block;width:100%;margin:0 0 14px">${usesSeasons ? Array.from({length:Math.max(1,Number(comic?.totalSeasons ?? 1))},(_,i)=>`<option value="${i+1}">Season ${i+1}</option>`).join('') : '<option value="0">Tanpa Season</option>'}</select>
+                        <select id="editFolderSeason" class="swal2-select" style="display:block;width:100%;margin:0 0 14px">${usesSeasons ? Array.from({length:Math.max(1,Number(comic?.totalSeasons ?? 1))},(_,i)=>`<option value="${i+1}">${adminSafe(getAdminSeasonLabel(comic, i+1))}</option>`).join('') : '<option value="0">Tanpa Season</option>'}</select>
                         <label for="editFolderNumber" style="text-align:left">Nomor ${term}</label>
                         <input id="editFolderNumber" class="swal2-input" type="number" min="0.1" step="0.1" style="max-width:100%!important;margin:0 0 14px!important" placeholder="Contoh: 1 atau 1.5">
                         <label for="editFolderTitle" style="text-align:left">Judul tambahan (opsional)</label>
@@ -2750,6 +2755,7 @@
                 const editData = {
                     chapterNumber: result.value.chapterNumber,
                     seasonNumber: result.value.seasonNumber,
+                    arcName: getAdminArcName(comic, result.value.seasonNumber, result.value.chapterNumber),
                     title: result.value.title,
                     languageLabels: result.value.languageLabels,
                     updatedAt: serverTimestamp()
@@ -2849,16 +2855,39 @@
             document.getElementById('groupTrailer').style.display = isFilm ? 'block' : 'none';
         }
 
-        window.renderSeasonTotalInputs = function(forcedCount, forcedTotals) {
+        function getAdminSeasonName(comic, seasonNumber) {
+            return String(comic?.seasonNames?.[seasonNumber] || comic?.seasonNames?.[String(seasonNumber)] || '').trim();
+        }
+
+        function getAdminSeasonLabel(comic, seasonNumber) {
+            const name = getAdminSeasonName(comic, seasonNumber);
+            return `Season ${seasonNumber}${name ? ` — ${name}` : ''}`;
+        }
+
+        function getAdminArcName(comic, seasonNumber, chapterNumber) {
+            const number = Number(chapterNumber);
+            const match = (Array.isArray(comic?.seasonArcs) ? comic.seasonArcs : []).find(arc => Number(arc.season || 1) === Number(seasonNumber) && number >= Number(arc.start) && number <= Number(arc.end));
+            return String(match?.name || '').trim();
+        }
+
+        window.renderSeasonTotalInputs = function(forcedCount, forcedTotals, forcedNames, forcedArcs) {
             const countInput = document.getElementById('totalSeasons');
             const container = document.getElementById('seasonTotalsContainer');
             if (!countInput || !container) return;
             const previous = {};
+            const previousNames = {};
+            const previousArcs = {};
             container.querySelectorAll('[data-season-total]').forEach(input => previous[input.dataset.seasonTotal] = input.value);
+            container.querySelectorAll('[data-season-name]').forEach(input => previousNames[input.dataset.seasonName] = input.value);
+            container.querySelectorAll('[data-season-arcs]').forEach(input => previousArcs[input.dataset.seasonArcs] = input.value);
             const rawCount = forcedCount !== undefined ? forcedCount : (countInput.value === '' ? 1 : countInput.value);
             const count = Math.max(0, Math.min(100, Number(rawCount ?? 1)));
             countInput.value = count;
             const totals = forcedTotals || previous;
+            const names = forcedNames || previousNames;
+            const arcLines = Array.isArray(forcedArcs)
+                ? forcedArcs.reduce((result, arc) => { const season = String(Math.max(1, Number(arc.season || 1))); (result[season] ||= []).push(`${arc.name || ''}|${arc.start || ''}-${arc.end || ''}`); return result; }, {})
+                : previousArcs;
             const isFilm = document.querySelector('input[name="entryFormat"]:checked')?.value === 'film';
             if (count === 0) {
                 container.innerHTML = `<div style="padding:11px;border:1px dashed #c4b5fd;border-radius:9px;background:#faf5ff;color:#6d28d9;font-size:12px;font-weight:700">Tanpa Season — daftar isi akan langsung menampilkan ${isFilm ? 'episode / Full Movie' : 'chapter'}.</div>`;
@@ -2867,7 +2896,9 @@
             container.innerHTML = Array.from({length:count}, (_, index) => {
                 const season = index + 1;
                 const value = Number(totals?.[season] || totals?.[String(season)] || 0) || '';
-                return `<div style="padding:10px;border:1px solid var(--border);border-radius:9px;background:#f8fafc"><label style="margin-bottom:6px">Season ${season} — Total ${isFilm ? 'Episode' : 'Chapter'}</label><input type="number" min="1" step="1" inputmode="numeric" data-season-total="${season}" value="${value}" placeholder="Contoh: 12"></div>`;
+                const name = String(names?.[season] || names?.[String(season)] || '').slice(0, 80);
+                const arcs = Array.isArray(arcLines?.[season]) ? arcLines[season].join('\n') : String(arcLines?.[season] || '');
+                return `<div style="padding:10px;border:1px solid var(--border);border-radius:9px;background:#f8fafc"><label style="margin-bottom:6px">Season ${season} — Nama Season (Opsional)</label><input type="text" maxlength="80" data-season-name="${season}" value="${adminSafe(name)}" placeholder="Contoh: Season pertama"><label style="margin:10px 0 6px">Daftar Arc / OVA</label><textarea data-season-arcs="${season}" rows="3" placeholder="Satu per baris: Nama Arc|Episode awal-akhir&#10;Agent of the Shinigami Arc|1-20&#10;Soul Society Arc|21-63">${adminSafe(arcs)}</textarea><span class="help-text">Format: Nama Arc|1-20. Satu season boleh memiliki beberapa arc.</span><label style="margin:10px 0 6px">Total ${isFilm ? 'Episode' : 'Chapter'}</label><input type="number" min="1" step="1" inputmode="numeric" data-season-total="${season}" value="${value}" placeholder="Contoh: 63"></div>`;
             }).join('');
         };
 
@@ -2875,12 +2906,28 @@
             const rawValue = document.getElementById('totalSeasons')?.value;
             const totalSeasons = Math.max(0, Math.min(100, Number(rawValue === '' ? 1 : rawValue)));
             const seasonTotals = {};
+            const seasonNames = {};
+            const seasonArcs = [];
             let totalParts = 0;
             document.querySelectorAll('[data-season-total]').forEach(input => {
                 const value = Math.max(0, Math.floor(Number(input.value || 0)));
                 if (value > 0) { seasonTotals[input.dataset.seasonTotal] = value; totalParts += value; }
             });
-            return {totalSeasons, seasonTotals, totalParts};
+            document.querySelectorAll('[data-season-name]').forEach(input => {
+                const value = String(input.value || '').trim().slice(0, 80);
+                if (value) seasonNames[input.dataset.seasonName] = value;
+            });
+            document.querySelectorAll('[data-season-arcs]').forEach(input => {
+                const season = Math.max(1, Number(input.dataset.seasonArcs || 1));
+                String(input.value || '').split(/\r?\n/).forEach(line => {
+                    const [rawName, rawRange] = line.split('|');
+                    const match = String(rawRange || '').trim().match(/^(\d+(?:\.\d+)?)\s*-\s*(\d+(?:\.\d+)?)$/);
+                    const name = String(rawName || '').trim().slice(0, 100);
+                    if (name && match && Number(match[2]) >= Number(match[1])) seasonArcs.push({season, name, start:Number(match[1]), end:Number(match[2])});
+                });
+            });
+            seasonArcs.sort((a,b) => a.season-b.season || a.start-b.start);
+            return {totalSeasons, seasonTotals, seasonNames, seasonArcs, totalParts};
         };
 
         window.syncChapterSeasonOptions = async function(comic) {
@@ -2910,7 +2957,7 @@
                     chapterSnapshot.forEach(item => { highestExistingSeason = Math.max(highestExistingSeason, Number(item.data().seasonNumber ?? 1)); });
                 }
                 const count = Math.max(1, Number(latest.totalSeasons || 1), highestExistingSeason, ...seasonKeys);
-                select.innerHTML = Array.from({length:count}, (_, index) => `<option value="${index + 1}">Season ${index + 1}</option>`).join('');
+                select.innerHTML = Array.from({length:count}, (_, index) => `<option value="${index + 1}">${adminSafe(getAdminSeasonLabel(latest, index + 1))}</option>`).join('');
                 select.value = Number(previousValue) <= count ? previousValue : '1';
             } catch (error) {
                 if (Number(comic?.totalSeasons ?? 1) === 0) {
@@ -2919,7 +2966,7 @@
                     return;
                 }
                 const fallbackCount = Math.max(1, Number(comic?.totalSeasons || 1), ...Object.keys(comic?.seasonTotals || {}).map(Number).filter(Number.isFinite));
-                select.innerHTML = Array.from({length:fallbackCount}, (_, index) => `<option value="${index + 1}">Season ${index + 1}</option>`).join('');
+                select.innerHTML = Array.from({length:fallbackCount}, (_, index) => `<option value="${index + 1}">${adminSafe(getAdminSeasonLabel(comic, index + 1))}</option>`).join('');
                 console.warn('Metadata season gagal dimuat ulang:', error);
             }
         };
@@ -3032,7 +3079,7 @@
 
         window.loadAppConfiguration=async function(){
             const status=document.getElementById('configStatus');
-            try{const snap=await getDoc(doc(db,'settings','appConfig'));const c=snap.exists()?snap.data():{};document.getElementById('configLatestVersion').value=c.latestVersion||'20.4.30';document.getElementById('configChangelog').value=c.changelog||'';document.getElementById('configMaintenanceTitle').value=c.maintenanceTitle||'Sedang dalam pemeliharaan';document.getElementById('configMaintenanceMessage').value=c.maintenanceMessage||'Kami sedang melakukan peningkatan agar aplikasi menjadi lebih baik. Silakan coba kembali beberapa saat lagi.';document.getElementById('configUpdateRequired').checked=c.updateRequired===true;document.getElementById('configMaintenanceMode').checked=c.maintenanceMode===true;if(status)status.className='config-status';}catch(e){if(status){status.textContent='Gagal memuat pengaturan aplikasi.';status.className='config-status show error';}}
+            try{const snap=await getDoc(doc(db,'settings','appConfig'));const c=snap.exists()?snap.data():{};document.getElementById('configLatestVersion').value=c.latestVersion||'20.4.31';document.getElementById('configChangelog').value=c.changelog||'';document.getElementById('configMaintenanceTitle').value=c.maintenanceTitle||'Sedang dalam pemeliharaan';document.getElementById('configMaintenanceMessage').value=c.maintenanceMessage||'Kami sedang melakukan peningkatan agar aplikasi menjadi lebih baik. Silakan coba kembali beberapa saat lagi.';document.getElementById('configUpdateRequired').checked=c.updateRequired===true;document.getElementById('configMaintenanceMode').checked=c.maintenanceMode===true;if(status)status.className='config-status';}catch(e){if(status){status.textContent='Gagal memuat pengaturan aplikasi.';status.className='config-status show error';}}
             try{const snap=await getDoc(doc(db,'settings','appConfig')),c=snap.exists()?snap.data():{};document.getElementById('configAppName').value=c.appName||'Komik & Anime';document.getElementById('configThemeColor').value=c.themeColor||'#625af2';document.getElementById('configAnnouncement').value=c.announcement||'';document.getElementById('configRecommendations').checked=c.enableRecommendations!==false;document.getElementById('configGamification').checked=c.enableGamification!==false;}catch(e){console.error(e);if(status){status.textContent=`Sebagian pengaturan gagal dimuat: ${e.message}`;status.className='config-status show error';}}
             try{const snap=await getDoc(doc(db,'settings','appConfig')),c=snap.exists()?snap.data():{};const name=String(c.adminName||'Yarch'),avatar=normalizeUrl(c.adminAvatarUrl||'');document.getElementById('configAdminName').value=name;document.getElementById('configAdminAvatarUrl').value=avatar;renderAdminHeaderProfile(name,avatar);}catch(e){console.warn('Profil admin belum dapat dimuat.',e);}
         }
@@ -3067,7 +3114,7 @@
         window.previewBulkMetadata=async function(file){const box=document.getElementById('bulkPreview');if(!file)return;try{const data=JSON.parse(await file.text());if(!Array.isArray(data))throw new Error('JSON harus berupa array');window.bulkMetadata=data.slice(0,500);box.innerHTML=`${window.bulkMetadata.length} data siap. <button class="ops-btn" onclick="executeBulkMetadata()">Import Sekarang</button>`;}catch(e){box.textContent='File tidak valid: '+e.message;}}
         window.executeBulkMetadata=async function(){if(!window.bulkMetadata?.length)return;const result=await Swal.fire({title:`Import ${window.bulkMetadata.length} data?`,text:'Semua data ditambahkan sebagai draft.',icon:'warning',showCancelButton:true,confirmButtonText:'Import',cancelButtonText:'Batal'});if(!result.isConfirmed)return;let success=0;for(const item of window.bulkMetadata){if(!item?.title)continue;await addDoc(collection(db,'comics'),{title:String(item.title).slice(0,180),altTitle:String(item.altTitle||''),type:String(item.type||'Manga'),format:item.format==='film'?'film':'komik',status:String(item.status||'Ongoing'),ageRating:String(item.ageRating||''),releaseDate:String(item.releaseDate||''),genres:Array.isArray(item.genres)?item.genres.slice(0,20):[],synopsis:String(item.synopsis||''),coverUrl:String(item.coverUrl||''),author:String(item.author||''),directors:Array.isArray(item.directors)?item.directors:[],isPublished:false,publicationStatus:'draft',createdAt:serverTimestamp()});success++;}await writeAudit('BULK_IMPORT','comics',`${success} metadata`);window.bulkMetadata=[];document.getElementById('bulkPreview').textContent=`${success} data berhasil diimpor sebagai draft.`;await window.loadComicsList();renderPublicationQueue();}
         function exportValue(v){if(v?.toDate)return v.toDate().toISOString();if(Array.isArray(v))return v.map(exportValue);if(v&&typeof v==='object')return Object.fromEntries(Object.entries(v).map(([k,x])=>[k,exportValue(x)]));return v;}
-        window.backupAllMetadata=async function(){const output=[];const comics=await getDocs(collection(db,'comics'));for(const c of comics.docs){const chapters=[];const s=await getDocs(collection(db,'comics',c.id,'chapters'));s.forEach(ch=>chapters.push({id:ch.id,...exportValue(ch.data())}));output.push({id:c.id,...exportValue(c.data()),chapters});}const blob=new Blob([JSON.stringify({version:'20.4.30',schemaVersion:2,exportedAt:new Date().toISOString(),comics:output},null,2)],{type:'application/json'});const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=`yarch-metadata-v20.4.30-${dateKeyOffset(0)}.json`;a.click();URL.revokeObjectURL(a.href);await writeAudit('BACKUP_METADATA','comics',`${output.length} judul • V20.4.30`);}
+        window.backupAllMetadata=async function(){const output=[];const comics=await getDocs(collection(db,'comics'));for(const c of comics.docs){const chapters=[];const s=await getDocs(collection(db,'comics',c.id,'chapters'));s.forEach(ch=>chapters.push({id:ch.id,...exportValue(ch.data())}));output.push({id:c.id,...exportValue(c.data()),chapters});}const blob=new Blob([JSON.stringify({version:'20.4.31',schemaVersion:2,exportedAt:new Date().toISOString(),comics:output},null,2)],{type:'application/json'});const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=`yarch-metadata-v20.4.31-${dateKeyOffset(0)}.json`;a.click();URL.revokeObjectURL(a.href);await writeAudit('BACKUP_METADATA','comics',`${output.length} judul • V20.4.31`);}
         window.loadAuditLogs=async function(){const box=document.getElementById('auditLogList');if(!box)return;try{const snap=await getDocs(query(collection(db,'adminAuditLogs'),orderBy('createdAt','desc'),limit(100)));box.innerHTML=snap.docs.map(d=>{const x=d.data();return `<div class="audit-row"><strong>${adminSafe(x.action)} • ${adminSafe(x.target||'-')}</strong><span>${adminSafe(x.adminEmail||x.adminId||'Admin')} • ${timeMs(x.createdAt)?new Date(timeMs(x.createdAt)).toLocaleString('id-ID'):'Baru'}<br>${adminSafe(x.detail||'')}</span></div>`;}).join('')||'<div class="loading-text">Belum ada audit log.</div>';}catch(e){box.innerHTML='<div class="loading-text">Audit log gagal dimuat.</div>';}}
 
         // V20.1: dashboard tunggal, cache lima menit, dan query komentar lintas koleksi.

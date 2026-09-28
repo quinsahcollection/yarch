@@ -939,6 +939,13 @@
                     <input type="date" id="modalChapterUpdateDate" style="padding: 6px; border: 1px solid #cbd5e1; border-radius: 6px; font-size: 13px; outline: none; background: white; cursor: pointer;">
                 </div>
 
+                <div id="introTimingControls" style="display:none;align-items:center;gap:8px;flex-wrap:wrap;background:#f5f3ff;padding:8px 12px;border-radius:8px;border:1px solid #ddd6fe;">
+                    <span style="font-size:12px;font-weight:800;color:#5b4dcc"><i class="fa-solid fa-forward"></i> Lewati Intro</span>
+                    <label style="font-size:11px;font-weight:700;margin:0">Mulai <input type="text" id="episodeIntroStart" inputmode="numeric" placeholder="00:00" oninput="window.galleryState.introStartInput=this.value" style="width:78px;padding:6px;border:1px solid #c4b5fd;border-radius:6px"></label>
+                    <label style="font-size:11px;font-weight:700;margin:0">Selesai <input type="text" id="episodeIntroEnd" inputmode="numeric" placeholder="01:30" oninput="window.galleryState.introEndInput=this.value" style="width:78px;padding:6px;border:1px solid #c4b5fd;border-radius:6px"></label>
+                    <span style="font-size:9px;color:#756ca5">Format MM:SS atau HH:MM:SS</span>
+                </div>
+
                 <button class="btn-success-sm" style="display: inline-flex; padding: 12px 20px; font-size: 15px;" onclick="window.confirmAndPublishChapter()">
                     <i class="fa-solid fa-paper-plane"></i> Simpan & Publikasikan
                 </button>
@@ -2357,8 +2364,17 @@
             breadcrumb.innerHTML = bcHtml;
 
             const isInsideFolder = (window.galleryState.level === 'chapter_folder');
+            const showIntroTiming = isInsideFolder && window.galleryState.entryFormat === 'film';
             btnUpload.style.display = isInsideFolder ? 'flex' : 'none';
             footerPublish.style.display = isInsideFolder ? 'flex' : 'none';
+            const introControls = document.getElementById('introTimingControls');
+            if (introControls) introControls.style.display = showIntroTiming ? 'flex' : 'none';
+            if (showIntroTiming) {
+                const startInput = document.getElementById('episodeIntroStart');
+                const endInput = document.getElementById('episodeIntroEnd');
+                startInput.value = window.galleryState.introStartInput ?? formatAdminDuration(window.galleryState.introStart || 0);
+                endInput.value = window.galleryState.introEndInput ?? formatAdminDuration(window.galleryState.introEnd || 0);
+            }
             syncCloudMediaMode();
 
             grid.innerHTML = '<div style="grid-column: 1/-1; text-align:center; padding:30px; font-weight:500;"><i class="fa-solid fa-spinner fa-spin"></i> Sinkronisasi Folder...</div>';
@@ -2414,7 +2430,7 @@
                             const folderColor = isFilm ? '#8b5cf6' : '#fbbf24';
                             
                             grid.innerHTML += `
-                                <div class="folder-card" onclick="window.navGalleryToChapterFolder('${ch.id}', '${folderLabel}', window.encodeImgs('${encodeInlineValue(JSON.stringify(ch.images || []))}'), decodeURIComponent('${encodeInlineValue(ch.thumbnailUrl || '')}'))">
+                                <div class="folder-card" onclick="window.navGalleryToChapterFolder('${ch.id}', '${folderLabel}', window.encodeImgs('${encodeInlineValue(JSON.stringify(ch.images || []))}'), decodeURIComponent('${encodeInlineValue(ch.thumbnailUrl || '')}'), ${Math.max(0,Number(ch.introStart||0))}, ${Math.max(0,Number(ch.introEnd||0))})">
                                     <button type="button" class="btn-edit-folder" onclick="event.stopPropagation(); window.editChapterFolder('${window.galleryState.comicId}', '${ch.id}')" title="Edit folder" aria-label="Edit folder"><i class="fa-solid fa-pen"></i></button>
                                     <button class="btn-delete-folder" onclick="event.stopPropagation(); window.deleteChapterFolder('${window.galleryState.comicId}', '${ch.id}')" title="Pindahkan ke Trash"><i class="fa-solid fa-trash-can-arrow-up"></i></button>
                                     <i class="fa-solid fa-folder-open folder-icon" style="color: ${folderColor};"></i>
@@ -2469,7 +2485,7 @@
                         `;
                     });
                 }
-            } catch(e) { console.error(e); grid.innerHTML = `<div style="grid-column: 1/-1; text-align:center; padding:20px; color:red;">Koneksi Storage Terputus.</div>`; }
+            } catch(e) { console.error(e); const offline=!navigator.onLine; grid.innerHTML = `<div style="grid-column:1/-1;text-align:center;padding:34px 20px;color:#b42338"><i class="fa-solid fa-triangle-exclamation" style="font-size:30px;margin-bottom:12px"></i><strong style="display:block;font-size:15px">${offline?'Perangkat sedang offline':'Folder belum dapat dimuat'}</strong><span style="display:block;margin:8px auto 14px;max-width:360px;color:#6b7280;font-size:11px">${offline?'Sambungkan internet lalu coba kembali.':'Koneksi database atau sesi admin mungkin terputus. Media yang sudah tersimpan tidak terhapus.'}</span><button type="button" class="mod-btn primary" onclick="window.loadCloudGallery()"><i class="fa-solid fa-rotate"></i> Coba Lagi</button><small style="display:block;margin-top:10px;color:#9ca3af">${adminSafe(e.message||'Permintaan gagal')}</small></div>`; }
         }
 
         window.encodeImgs = function(str) { return str; };
@@ -2560,6 +2576,12 @@
                     updatedAt: serverTimestamp()
                 };
                 if (isFilm) {
+                    const introStart = parseAdminDurationSeconds(document.getElementById('episodeIntroStart')?.value || '');
+                    const introEnd = parseAdminDurationSeconds(document.getElementById('episodeIntroEnd')?.value || '');
+                    if (introStart < 0 || introEnd < 0) throw new Error('Format waktu intro harus MM:SS atau HH:MM:SS.');
+                    if ((introStart > 0 || introEnd > 0) && introEnd <= introStart) throw new Error('Waktu selesai intro harus lebih besar dari waktu mulai.');
+                    publishData.introStart = introStart;
+                    publishData.introEnd = introEnd;
                     const manualThumbnail = String(document.getElementById('episodeThumbnailUrl')?.value || previousChapter.thumbnailUrl || '').trim();
                     const firstUploadedImage = finalUrls.find(url => !isCloudVideo(url));
                     publishData.thumbnailUrl = manualThumbnail || firstUploadedImage || previousChapter.thumbnailUrl || '';
@@ -2569,6 +2591,7 @@
                         : Number(previousChapter.durationSeconds || (Number(previousChapter.durationMinutes || 0) * 60));
                     const firstVideo = finalUrls.find(url => isCloudVideo(url));
                     const detectedSeconds = firstVideo ? await readVideoDurationSeconds(firstVideo) : 0;
+                    if (detectedSeconds > 0 && introEnd > detectedSeconds) throw new Error('Waktu selesai intro melebihi durasi video.');
                     if (detectedSeconds > 0) {
                         publishData.durationSeconds = detectedSeconds;
                         publishData.durationMinutes = Math.max(1, Math.round(detectedSeconds / 60));
@@ -3091,7 +3114,7 @@
 
         window.loadAppConfiguration=async function(){
             const status=document.getElementById('configStatus');
-            try{const snap=await getDoc(doc(db,'settings','appConfig'));const c=snap.exists()?snap.data():{};document.getElementById('configLatestVersion').value=c.latestVersion||'20.4.34';document.getElementById('configChangelog').value=c.changelog||'';document.getElementById('configMaintenanceTitle').value=c.maintenanceTitle||'Sedang dalam pemeliharaan';document.getElementById('configMaintenanceMessage').value=c.maintenanceMessage||'Kami sedang melakukan peningkatan agar aplikasi menjadi lebih baik. Silakan coba kembali beberapa saat lagi.';document.getElementById('configUpdateRequired').checked=c.updateRequired===true;document.getElementById('configMaintenanceMode').checked=c.maintenanceMode===true;if(status)status.className='config-status';}catch(e){if(status){status.textContent='Gagal memuat pengaturan aplikasi.';status.className='config-status show error';}}
+            try{const snap=await getDoc(doc(db,'settings','appConfig'));const c=snap.exists()?snap.data():{};document.getElementById('configLatestVersion').value=c.latestVersion||'20.4.35';document.getElementById('configChangelog').value=c.changelog||'';document.getElementById('configMaintenanceTitle').value=c.maintenanceTitle||'Sedang dalam pemeliharaan';document.getElementById('configMaintenanceMessage').value=c.maintenanceMessage||'Kami sedang melakukan peningkatan agar aplikasi menjadi lebih baik. Silakan coba kembali beberapa saat lagi.';document.getElementById('configUpdateRequired').checked=c.updateRequired===true;document.getElementById('configMaintenanceMode').checked=c.maintenanceMode===true;if(status)status.className='config-status';}catch(e){if(status){status.textContent='Gagal memuat pengaturan aplikasi.';status.className='config-status show error';}}
             try{const snap=await getDoc(doc(db,'settings','appConfig')),c=snap.exists()?snap.data():{};document.getElementById('configAppName').value=c.appName||'Komik & Anime';document.getElementById('configThemeColor').value=c.themeColor||'#625af2';document.getElementById('configAnnouncement').value=c.announcement||'';document.getElementById('configRecommendations').checked=c.enableRecommendations!==false;document.getElementById('configGamification').checked=c.enableGamification!==false;}catch(e){console.error(e);if(status){status.textContent=`Sebagian pengaturan gagal dimuat: ${e.message}`;status.className='config-status show error';}}
             try{const snap=await getDoc(doc(db,'settings','appConfig')),c=snap.exists()?snap.data():{};const name=String(c.adminName||'Yarch'),avatar=normalizeUrl(c.adminAvatarUrl||'');document.getElementById('configAdminName').value=name;document.getElementById('configAdminAvatarUrl').value=avatar;renderAdminHeaderProfile(name,avatar);}catch(e){console.warn('Profil admin belum dapat dimuat.',e);}
         }
@@ -3126,7 +3149,7 @@
         window.previewBulkMetadata=async function(file){const box=document.getElementById('bulkPreview');if(!file)return;try{const data=JSON.parse(await file.text());if(!Array.isArray(data))throw new Error('JSON harus berupa array');window.bulkMetadata=data.slice(0,500);box.innerHTML=`${window.bulkMetadata.length} data siap. <button class="ops-btn" onclick="executeBulkMetadata()">Import Sekarang</button>`;}catch(e){box.textContent='File tidak valid: '+e.message;}}
         window.executeBulkMetadata=async function(){if(!window.bulkMetadata?.length)return;const result=await Swal.fire({title:`Import ${window.bulkMetadata.length} data?`,text:'Semua data ditambahkan sebagai draft.',icon:'warning',showCancelButton:true,confirmButtonText:'Import',cancelButtonText:'Batal'});if(!result.isConfirmed)return;let success=0;for(const item of window.bulkMetadata){if(!item?.title)continue;await addDoc(collection(db,'comics'),{title:String(item.title).slice(0,180),altTitle:String(item.altTitle||''),type:String(item.type||'Manga'),format:item.format==='film'?'film':'komik',status:String(item.status||'Ongoing'),ageRating:String(item.ageRating||''),releaseDate:String(item.releaseDate||''),genres:Array.isArray(item.genres)?item.genres.slice(0,20):[],synopsis:String(item.synopsis||''),coverUrl:String(item.coverUrl||''),author:String(item.author||''),directors:Array.isArray(item.directors)?item.directors:[],isPublished:false,publicationStatus:'draft',createdAt:serverTimestamp()});success++;}await writeAudit('BULK_IMPORT','comics',`${success} metadata`);window.bulkMetadata=[];document.getElementById('bulkPreview').textContent=`${success} data berhasil diimpor sebagai draft.`;await window.loadComicsList();renderPublicationQueue();}
         function exportValue(v){if(v?.toDate)return v.toDate().toISOString();if(Array.isArray(v))return v.map(exportValue);if(v&&typeof v==='object')return Object.fromEntries(Object.entries(v).map(([k,x])=>[k,exportValue(x)]));return v;}
-        window.backupAllMetadata=async function(){const output=[];const comics=await getDocs(collection(db,'comics'));for(const c of comics.docs){const chapters=[];const s=await getDocs(collection(db,'comics',c.id,'chapters'));s.forEach(ch=>chapters.push({id:ch.id,...exportValue(ch.data())}));output.push({id:c.id,...exportValue(c.data()),chapters});}const blob=new Blob([JSON.stringify({version:'20.4.34',schemaVersion:2,exportedAt:new Date().toISOString(),comics:output},null,2)],{type:'application/json'});const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=`yarch-metadata-v20.4.34-${dateKeyOffset(0)}.json`;a.click();URL.revokeObjectURL(a.href);await writeAudit('BACKUP_METADATA','comics',`${output.length} judul • V20.4.34`);}
+        window.backupAllMetadata=async function(){const output=[];const comics=await getDocs(collection(db,'comics'));for(const c of comics.docs){const chapters=[];const s=await getDocs(collection(db,'comics',c.id,'chapters'));s.forEach(ch=>chapters.push({id:ch.id,...exportValue(ch.data())}));output.push({id:c.id,...exportValue(c.data()),chapters});}const blob=new Blob([JSON.stringify({version:'20.4.35',schemaVersion:2,exportedAt:new Date().toISOString(),comics:output},null,2)],{type:'application/json'});const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=`yarch-metadata-v20.4.35-${dateKeyOffset(0)}.json`;a.click();URL.revokeObjectURL(a.href);await writeAudit('BACKUP_METADATA','comics',`${output.length} judul • V20.4.35`);}
         window.loadAuditLogs=async function(){const box=document.getElementById('auditLogList');if(!box)return;try{const snap=await getDocs(query(collection(db,'adminAuditLogs'),orderBy('createdAt','desc'),limit(100)));box.innerHTML=snap.docs.map(d=>{const x=d.data();return `<div class="audit-row"><strong>${adminSafe(x.action)} • ${adminSafe(x.target||'-')}</strong><span>${adminSafe(x.adminEmail||x.adminId||'Admin')} • ${timeMs(x.createdAt)?new Date(timeMs(x.createdAt)).toLocaleString('id-ID'):'Baru'}<br>${adminSafe(x.detail||'')}</span></div>`;}).join('')||'<div class="loading-text">Belum ada audit log.</div>';}catch(e){box.innerHTML='<div class="loading-text">Audit log gagal dimuat.</div>';}}
 
         // V20.1: dashboard tunggal, cache lima menit, dan query komentar lintas koleksi.
@@ -3414,13 +3437,17 @@
             localStorage.setItem('activeComicName', comicTitle);
             window.loadCloudGallery(); 
         }
-        window.navGalleryToChapterFolder = function(chapterId, chapterName, encodedImgsJson, thumbnailUrl = '') { 
+        window.navGalleryToChapterFolder = function(chapterId, chapterName, encodedImgsJson, thumbnailUrl = '', introStart = 0, introEnd = 0) { 
             const images = JSON.parse(decodeURIComponent(encodedImgsJson));
             window.galleryState.level = 'chapter_folder'; 
             window.galleryState.chapterFolderId = chapterId; 
             window.galleryState.chapterFolderName = chapterName; 
             window.galleryState.currentChapterImages = images;
             window.galleryState.chapterThumbnailUrl = thumbnailUrl;
+            window.galleryState.introStart = Math.max(0, Number(introStart || 0));
+            window.galleryState.introEnd = Math.max(0, Number(introEnd || 0));
+            window.galleryState.introStartInput = formatAdminDuration(window.galleryState.introStart);
+            window.galleryState.introEndInput = formatAdminDuration(window.galleryState.introEnd);
             localStorage.setItem('activeChapterFolderId', chapterId);
             window.loadCloudGallery(); 
         }

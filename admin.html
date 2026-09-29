@@ -2412,9 +2412,13 @@
                     if (item && typeof item === 'object') return item.url || item.downloadURL || item.src || '';
                     return '';
                 }).filter(value => typeof value === 'string' && value.trim()).map(value => value.trim());
+                // Pertahankan format yang dipilih dari folder judul. URL dari R2
+                // kadang tidak memiliki ekstensi, sehingga menebak ulang dari URL
+                // dapat mengubah folder film menjadi komik.
+                const currentEntryFormat = window.galleryState.entryFormat;
                 const parentComic = (window.allComicsList || []).find(item => item.id === comicId);
                 const hasVideoMedia = mediaUrls.some(url => /\.(?:mp4|webm|ogv|ogg|mov|m4v|mkv)(?:$|[?#])/i.test(url));
-                window.galleryState.entryFormat = parentComic?.format === 'film' || hasVideoMedia ? 'film' : 'komik';
+                window.galleryState.entryFormat = currentEntryFormat === 'film' || parentComic?.format === 'film' || hasVideoMedia ? 'film' : 'komik';
 
                 window.galleryState.level = 'chapter_folder';
                 window.galleryState.chapterFolderId = chapterId;

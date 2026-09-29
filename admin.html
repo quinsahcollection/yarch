@@ -2412,9 +2412,13 @@
                     if (item && typeof item === 'object') return item.url || item.downloadURL || item.src || '';
                     return '';
                 }).filter(value => typeof value === 'string' && value.trim()).map(value => value.trim());
+                // Keep the format selected on the parent title. R2 media URLs
+                // can be extensionless, so inferring type from the URL resets a
+                // film folder to comic and hides its intro settings.
+                const selectedEntryFormat = window.galleryState.entryFormat;
                 const parentComic = (window.allComicsList || []).find(item => item.id === comicId);
                 const hasVideoMedia = mediaUrls.some(url => /\.(?:mp4|webm|ogv|ogg|mov|m4v|mkv)(?:$|[?#])/i.test(url));
-                window.galleryState.entryFormat = parentComic?.format === 'film' || hasVideoMedia ? 'film' : 'komik';
+                window.galleryState.entryFormat = selectedEntryFormat === 'film' || parentComic?.format === 'film' || hasVideoMedia ? 'film' : 'komik';
 
                 window.galleryState.level = 'chapter_folder';
                 window.galleryState.chapterFolderId = chapterId;
@@ -2464,7 +2468,8 @@
             const uploaderIsVideo = Boolean(uploadInput?.accept?.includes('video/')) || /video/i.test(uploadButtonLabel);
             const isFilmFolder = window.galleryState.entryFormat === 'film' || parentComic?.format === 'film' || hasVideoMedia || uploaderIsVideo;
             if (isInsideFolder && isFilmFolder) window.galleryState.entryFormat = 'film';
-            const showIntroTiming = isInsideFolder && isFilmFolder;
+            // The intro controls are folder settings; always show them on an episode folder.
+            const showIntroTiming = isInsideFolder;
             btnUpload.style.setProperty('display', isInsideFolder ? 'flex' : 'none', 'important');
             footerPublish.style.setProperty('display', isInsideFolder ? 'flex' : 'none', 'important');
             const introControls = document.getElementById('introTimingControls');
@@ -2674,13 +2679,13 @@
                     updateDate: finalUpdateDate,
                     updatedAt: serverTimestamp()
                 };
+                const introStart = parseAdminDurationSeconds(document.getElementById('episodeIntroStart')?.value || '');
+                const introEnd = parseAdminDurationSeconds(document.getElementById('episodeIntroEnd')?.value || '');
+                if (introStart < 0 || introEnd < 0) throw new Error('Format waktu intro harus HH:MM:SS; nilai menit dan detik harus di bawah 60.');
+                if ((introStart > 0 || introEnd > 0) && introEnd <= introStart) throw new Error('Waktu selesai intro harus lebih besar dari waktu mulai.');
+                publishData.introStart = introStart;
+                publishData.introEnd = introEnd;
                 if (isFilm) {
-                    const introStart = parseAdminDurationSeconds(document.getElementById('episodeIntroStart')?.value || '');
-                    const introEnd = parseAdminDurationSeconds(document.getElementById('episodeIntroEnd')?.value || '');
-                    if (introStart < 0 || introEnd < 0) throw new Error('Format waktu intro harus HH:MM:SS; nilai menit dan detik harus di bawah 60.');
-                    if ((introStart > 0 || introEnd > 0) && introEnd <= introStart) throw new Error('Waktu selesai intro harus lebih besar dari waktu mulai.');
-                    publishData.introStart = introStart;
-                    publishData.introEnd = introEnd;
                     const manualThumbnail = String(document.getElementById('episodeThumbnailUrl')?.value || previousChapter.thumbnailUrl || '').trim();
                     const firstUploadedImage = finalUrls.find(url => !isCloudVideo(url));
                     publishData.thumbnailUrl = manualThumbnail || firstUploadedImage || previousChapter.thumbnailUrl || '';

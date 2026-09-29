@@ -190,6 +190,17 @@
         .upload-progress-panel.error { background: #fef2f2; border-color: #fecaca; color: #b91c1c; }
 
         .gallery-grid { flex-grow: 1; padding: 20px; overflow-y: auto; display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 15px; background: var(--bg-light); align-content: start; }
+        .intro-timing-controls { display:none; flex:1 1 100%; width:100%; min-width:0; grid-template-columns:repeat(2,minmax(0,1fr)); gap:12px; padding:14px; border:1px solid #ddd6fe; border-radius:14px; background:linear-gradient(145deg,#faf8ff,#f2f0ff); box-shadow:0 4px 14px rgba(91,76,205,.07); }
+        .intro-timing-heading { grid-column:1/-1; display:flex; align-items:center; gap:10px; }
+        .intro-timing-icon { width:36px; height:36px; display:grid; place-items:center; flex:0 0 36px; border-radius:12px; color:#5b4dcc; background:#e9e5ff; }
+        .intro-timing-heading strong,.intro-timing-heading small { display:block; }
+        .intro-timing-heading strong { color:#40358f; font-size:13px; }
+        .intro-timing-heading small { margin-top:2px; color:#777393; font-size:10px; }
+        .intro-time-field { display:grid; gap:6px; min-width:0; margin:0; color:#545269; font-size:11px; font-weight:750; }
+        .intro-time-field input { box-sizing:border-box; width:100%; min-width:0; height:42px; margin:0; padding:0 11px; border:1px solid #c9c2f2; border-radius:10px; outline:none; background:#fff; color:#29273a; font-size:16px; font-variant-numeric:tabular-nums; letter-spacing:.04em; }
+        .intro-time-field input:focus { border-color:#7565e8; box-shadow:0 0 0 3px rgba(117,101,232,.14); }
+        .intro-timing-help { grid-column:1/-1; margin:0; color:#787591; font-size:10px; line-height:1.4; }
+        @media(max-width:430px){ .intro-timing-controls { gap:10px; padding:12px; } .intro-time-field input { height:44px; } }
         
         .folder-card { background: var(--white); border-radius: 12px; border: 1px solid var(--border); padding: 20px; text-align: center; cursor: pointer; transition: 0.2s; display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 160px; box-shadow: 0 2px 8px rgba(0,0,0,0.03); position: relative; }
         .folder-card:hover { transform: translateY(-4px); box-shadow: 0 8px 20px rgba(0,0,0,0.08); border-color: var(--primary); }
@@ -939,11 +950,11 @@
                     <input type="date" id="modalChapterUpdateDate" style="padding: 6px; border: 1px solid #cbd5e1; border-radius: 6px; font-size: 13px; outline: none; background: white; cursor: pointer;">
                 </div>
 
-                <div id="introTimingControls" style="display:none;align-items:center;gap:8px;flex-wrap:wrap;background:#f5f3ff;padding:8px 12px;border-radius:8px;border:1px solid #ddd6fe;">
-                    <span style="font-size:12px;font-weight:800;color:#5b4dcc"><i class="fa-solid fa-forward"></i> Lewati Intro</span>
-                    <label style="font-size:11px;font-weight:700;margin:0">Mulai <input type="text" id="episodeIntroStart" inputmode="numeric" pattern="[0-9]*" maxlength="8" autocomplete="off" placeholder="00:00:00" aria-label="Waktu mulai intro jam menit detik" oninput="window.handleIntroTimeInput(this, 'introStart')" style="width:104px;padding:6px;border:1px solid #c4b5fd;border-radius:6px;font-variant-numeric:tabular-nums"></label>
-                    <label style="font-size:11px;font-weight:700;margin:0">Selesai <input type="text" id="episodeIntroEnd" inputmode="numeric" pattern="[0-9]*" maxlength="8" autocomplete="off" placeholder="00:00:00" aria-label="Waktu selesai intro jam menit detik" oninput="window.handleIntroTimeInput(this, 'introEnd')" style="width:104px;padding:6px;border:1px solid #c4b5fd;border-radius:6px;font-variant-numeric:tabular-nums"></label>
-                    <span style="font-size:9px;color:#756ca5">Ketik jam, menit, detik; tanda : muncul otomatis</span>
+                <div id="introTimingControls" class="intro-timing-controls">
+                    <div class="intro-timing-heading"><span class="intro-timing-icon"><i class="fa-solid fa-forward"></i></span><span><strong>Lewati Intro</strong><small>Atur bagian awal yang ingin dilewati</small></span></div>
+                    <label class="intro-time-field"><span>Mulai intro</span><input type="text" id="episodeIntroStart" inputmode="numeric" pattern="[0-9]*" maxlength="8" autocomplete="off" placeholder="00:00:00" aria-label="Waktu mulai intro jam menit detik" oninput="window.handleIntroTimeInput(this, 'introStart')" onblur="window.completeIntroTimeInput(this, 'introStart')"></label>
+                    <label class="intro-time-field"><span>Selesai intro</span><input type="text" id="episodeIntroEnd" inputmode="numeric" pattern="[0-9]*" maxlength="8" autocomplete="off" placeholder="00:00:00" aria-label="Waktu selesai intro jam menit detik" oninput="window.handleIntroTimeInput(this, 'introEnd')" onblur="window.completeIntroTimeInput(this, 'introEnd')"></label>
+                    <p class="intro-timing-help">Ketik jam, menit, detik. Tanda titik dua akan muncul otomatis.</p>
                 </div>
 
                 <button class="btn-success-sm" style="display: inline-flex; padding: 12px 20px; font-size: 15px;" onclick="window.confirmAndPublishChapter()">
@@ -1923,6 +1934,13 @@
                 try { input.setSelectionRange(nextCursor, nextCursor); } catch (_) {}
             });
         };
+        window.completeIntroTimeInput = function(input, stateKey) {
+            if (!input || !['introStart', 'introEnd'].includes(stateKey)) return;
+            const digits = String(input.value || '').replace(/\D/g, '').slice(0, 6);
+            const formatted = digits ? digits.padEnd(6, '0').match(/.{2}/g).join(':') : '';
+            input.value = formatted;
+            window.galleryState[`${stateKey}Input`] = formatted;
+        };
 
         window.selectedMediaLanguages = [];
 
@@ -2436,7 +2454,7 @@
             btnUpload.style.display = isInsideFolder ? 'flex' : 'none';
             footerPublish.style.display = isInsideFolder ? 'flex' : 'none';
             const introControls = document.getElementById('introTimingControls');
-            if (introControls) introControls.style.display = showIntroTiming ? 'flex' : 'none';
+            if (introControls) introControls.style.display = showIntroTiming ? 'grid' : 'none';
             if (showIntroTiming) {
                 const startInput = document.getElementById('episodeIntroStart');
                 const endInput = document.getElementById('episodeIntroEnd');

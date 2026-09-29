@@ -349,9 +349,10 @@
         .player-header { padding: 15px 20px; display: flex; justify-content: space-between; align-items: center; background: rgba(0,0,0,0.8); z-index: 601; width: 100%; max-width: 480px; position: fixed; top: 0; }
         .video-container { position: relative; width: 100%; height: 100vh; display: flex; align-items: center; justify-content: center; flex: 1; padding-top: 50px;}
         video { width: 100%; max-height: 100vh; outline: none; }
-        .video-container:fullscreen,.video-container:-webkit-full-screen { width:100vw; height:100vh; padding:0; background:#000; }
-        .video-container:fullscreen video,.video-container:-webkit-full-screen video { width:100vw; height:100vh; max-height:none; object-fit:contain; }
-        .video-container:fullscreen .player-tools,.video-container:-webkit-full-screen .player-tools { bottom:max(12px,env(safe-area-inset-bottom)); }
+        .video-container:fullscreen,.video-container:-webkit-full-screen { position:fixed; inset:0; box-sizing:border-box; width:100vw; height:100dvh; min-height:100dvh; overflow:hidden; padding:0; background:#000; }
+        .video-container:fullscreen video,.video-container:-webkit-full-screen video { width:100vw; height:100dvh; max-width:100vw; max-height:100dvh; object-fit:contain; }
+        .video-container:fullscreen .player-tools,.video-container:-webkit-full-screen .player-tools { bottom:max(14px,env(safe-area-inset-bottom)); }
+        .video-container:fullscreen .player-timeline,.video-container:-webkit-full-screen .player-timeline { bottom:max(82px,calc(env(safe-area-inset-bottom) + 78px)); }
         
         .quality-selector { position: absolute; top: 60px; right: 20px; background: rgba(20,20,20,0.95); border: 1px solid #444; border-radius: 8px; overflow: hidden; z-index: 602; display: none; flex-direction: column; box-shadow: 0 4px 15px rgba(0,0,0,0.5);}
         .quality-btn { background: transparent; color: white; border: none; padding: 12px 24px; font-size: 13px; font-weight: 600; cursor: pointer; border-bottom: 1px solid #333; text-align: left; transition: 0.2s;}
@@ -362,6 +363,10 @@
         .btn-toggle-quality:hover { background: rgba(255,255,255,0.3); }
         .player-header { gap:10px; background:rgba(8,9,14,.88); backdrop-filter:blur(18px); }
         .player-tools { position:absolute; left:50%; bottom:max(16px,env(safe-area-inset-bottom)); z-index:603; display:flex; align-items:center; justify-content:center; gap:7px; width:max-content; max-width:calc(100% - 24px); padding:9px; border:1px solid rgba(255,255,255,.09); border-radius:20px; background:rgba(15,16,23,.9); box-shadow:0 12px 35px rgba(0,0,0,.38); backdrop-filter:blur(18px); transform:translateX(-50%); }
+        .player-timeline { position:absolute; left:16px; right:16px; bottom:max(82px,calc(env(safe-area-inset-bottom) + 78px)); z-index:602; display:flex; align-items:center; gap:10px; min-height:32px; padding:4px 10px; border:1px solid rgba(255,255,255,.08); border-radius:12px; color:#fff; background:rgba(12,13,19,.68); backdrop-filter:blur(12px); }
+        .player-time-label { min-width:40px; color:#f6f6fa; font-size:10px; font-variant-numeric:tabular-nums; font-weight:700; text-align:center; white-space:nowrap; }
+        .player-seek-range { flex:1; min-width:0; height:5px; margin:0; accent-color:#756cff; cursor:pointer; touch-action:pan-x; }
+        .player-volume-btn { flex:0 0 40px; width:40px; padding:0; display:grid; place-items:center; cursor:pointer; font-size:13px; }
         .player-control { height:40px; min-width:0; padding:0 11px; border:1px solid rgba(255,255,255,.12); border-radius:12px; color:#fff; background:rgba(255,255,255,.08); font-size:11px; font-weight:750; outline:none; transition:.18s ease; }
         .player-control:hover,.player-control:focus-visible { background:rgba(255,255,255,.16); border-color:rgba(255,255,255,.3); transform:translateY(-1px); }
         select.player-control { width:100%; color-scheme:dark; }
@@ -380,7 +385,7 @@
         .player-setting-field { display:grid; gap:6px; color:#aeb2c1; font-size:10px; font-weight:750; }
         .player-settings-actions { display:grid; grid-template-columns:repeat(3,1fr); gap:8px; margin-top:12px; }
         .player-settings-actions button { width:100%; }
-        .player-skip-btn { position:absolute; right:16px; bottom:84px; z-index:604; display:none; border:1px solid rgba(255,255,255,.25); border-radius:12px; padding:10px 13px; color:#fff; background:rgba(15,16,23,.88); font-size:11px; font-weight:800; cursor:pointer; backdrop-filter:blur(14px); }
+        .player-skip-btn { position:absolute; right:16px; bottom:max(126px,calc(env(safe-area-inset-bottom) + 120px)); z-index:604; display:none; border:1px solid rgba(255,255,255,.25); border-radius:12px; padding:10px 13px; color:#fff; background:rgba(15,16,23,.88); font-size:11px; font-weight:800; cursor:pointer; backdrop-filter:blur(14px); }
         .player-skip-btn.show { display:block; }
         .autoplay-countdown { position:absolute; inset:0; z-index:606; display:none; align-items:center; justify-content:center; padding:25px; background:rgba(5,6,10,.78); backdrop-filter:blur(8px); }
         .autoplay-countdown.show { display:flex; }
@@ -1287,7 +1292,7 @@
                 <h1>Yarch terus berkembang</h1>
                 <p>Lihat fitur baru, peningkatan pengalaman, dan bug yang telah diperbaiki dari versi terbaru hingga versi sebelumnya.</p>
             </section>
-            <div class="changelog-current"><span><strong id="changelogCurrentVersion">V20.4.36</strong><br>Versi yang sedang digunakan</span><button type="button" onclick="checkAppConfiguration(true)"><i class="fa-solid fa-rotate"></i> Periksa update</button></div>
+            <div class="changelog-current"><span><strong id="changelogCurrentVersion">V20.4.39</strong><br>Versi yang sedang digunakan</span><button type="button" onclick="checkAppConfiguration(true)"><i class="fa-solid fa-rotate"></i> Periksa update</button></div>
             <main class="changelog-timeline" id="changelogTimeline" aria-live="polite"></main>
         </div>
 
@@ -1503,7 +1508,7 @@
 
             <div class="video-container" onclick="if(document.getElementById('qualityMenu').style.display==='flex') toggleQualityMenu();">
                 <div class="resume-banner" id="resumeBanner">Melanjutkan tontonan terakhir</div>
-                <video id="mainVideoPlayer" controls playsinline controlsList="nodownload noremoteplayback" oncontextmenu="return false;" disableRemotePlayback>
+                <video id="mainVideoPlayer" playsinline controlsList="nodownload noremoteplayback" oncontextmenu="return false;" disableRemotePlayback>
                     <source src="" type="video/mp4" id="videoSource">
                     Browser Anda tidak mendukung pemutar video html5.
                 </video>
@@ -1525,12 +1530,18 @@
                     </div>
                     <input id="localSubtitleFile" type="file" accept=".srt,.vtt,text/vtt,application/x-subrip" hidden onchange="loadLocalSubtitle(this.files[0])">
                 </div>
+                <div class="player-timeline" aria-label="Kontrol posisi video">
+                    <span class="player-time-label" id="playerCurrentTime">0:00</span>
+                    <input class="player-seek-range" id="playerSeekRange" type="range" min="0" max="1000" value="0" step="1" aria-label="Geser posisi video" oninput="seekToPlayerPosition(this.value)">
+                    <span class="player-time-label" id="playerDuration">0:00</span>
+                </div>
                 <div class="player-tools">
                     <button class="player-control player-icon-btn" onclick="openAdjacentVideo(-1)" title="Episode sebelumnya"><i class="fa-solid fa-backward-step"></i></button>
                     <button class="player-control player-icon-btn" onclick="seekVideo(-10)" title="Mundur 10 detik"><i class="fa-solid fa-rotate-left"></i></button>
                     <button class="player-control player-icon-btn player-play-btn" id="playerPlayButton" onclick="toggleVideoPlayback()" title="Putar atau jeda"><i class="fa-solid fa-play"></i></button>
                     <button class="player-control player-icon-btn" onclick="seekVideo(10)" title="Maju 10 detik"><i class="fa-solid fa-rotate-right"></i></button>
                     <button class="player-control player-icon-btn player-optional-btn" onclick="openAdjacentVideo(1)" title="Episode berikutnya"><i class="fa-solid fa-forward-step"></i></button>
+                    <button class="player-control player-icon-btn player-volume-btn" id="playerVolumeButton" onclick="toggleVideoMute()" title="Matikan suara" aria-label="Matikan suara"><i class="fa-solid fa-volume-high"></i></button>
                     <button class="player-control player-icon-btn" id="playerFullscreenButton" onclick="toggleVideoFullscreen()" title="Layar penuh" aria-label="Aktifkan layar penuh"><i class="fa-solid fa-expand"></i></button>
                     <button class="player-control player-icon-btn" onclick="togglePlayerSettings(event)" title="Pengaturan pemutar"><i class="fa-solid fa-sliders"></i></button>
                 </div>
@@ -1650,14 +1661,14 @@
             <button class="account-menu-item" type="button" onclick="openAppInfo('about')"><i class="fa-solid fa-circle-info"></i><span>Tentang Yarch</span><i class="fa-solid fa-chevron-right"></i></button>
             <button class="account-menu-item" type="button" onclick="closeAccountMenu();openAdminContact()"><i class="fa-solid fa-headset"></i><span>Hubungi Admin</span><i class="fa-solid fa-chevron-right"></i></button>
             <div class="account-menu-divider" style="margin-top:11px"></div>
-            <button class="account-menu-item updates-menu-item" type="button" onclick="closeAccountMenu();openChangelogPage()"><i class="fa-solid fa-clock-rotate-left"></i><span class="account-menu-item-copy"><strong>Updates</strong><small>V20.4.36 • Riwayat perbaikan</small></span><i class="fa-solid fa-chevron-right"></i></button>
+            <button class="account-menu-item updates-menu-item" type="button" onclick="closeAccountMenu();openChangelogPage()"><i class="fa-solid fa-clock-rotate-left"></i><span class="account-menu-item-copy"><strong>Updates</strong><small>V20.4.39 • Riwayat perbaikan</small></span><i class="fa-solid fa-chevron-right"></i></button>
             <button class="account-menu-item danger" id="accountMenuLogout" type="button" onclick="closeAccountMenu();doLogout()"><i class="fa-solid fa-right-from-bracket"></i><span>Keluar dari Akun</span><i class="fa-solid fa-chevron-right"></i></button>
         </aside>
     </div>
     <div class="profile-modal-backdrop" id="profileEditorModal" onclick="if(event.target===this)closeProfileEditor()"><section class="profile-modal-sheet" role="dialog" aria-modal="true" aria-labelledby="profileEditorTitle"><div class="profile-modal-head"><div class="profile-modal-icon"><i class="fa-solid fa-user-pen"></i></div><div class="profile-modal-title"><h3 id="profileEditorTitle">Lengkapi Profil</h3><p>Informasi tanggal lahir disimpan secara privat untuk verifikasi usia.</p></div><button class="profile-modal-close" onclick="closeProfileEditor()"><i class="fa-solid fa-xmark"></i></button></div><div class="profile-modal-form"><label for="profileDisplayName">Nama tampilan</label><input id="profileDisplayName" maxlength="35" placeholder="Nama tampilan"><label for="profileBioInput">Bio singkat</label><textarea id="profileBioInput" maxlength="160" placeholder="Ceritakan genre atau karakter favoritmu..."></textarea><div class="profile-modal-grid"><div><label for="profileBirthDate">Tanggal lahir</label><input id="profileBirthDate" type="date"></div><div><label for="profileGender">Jenis kelamin</label><select id="profileGender"><option value="">Tidak disebutkan</option><option value="Laki-laki">Laki-laki</option><option value="Perempuan">Perempuan</option><option value="Lainnya">Lainnya</option></select></div></div><label for="profileLocation">Kota / lokasi (opsional)</label><input id="profileLocation" maxlength="60" placeholder="Contoh: Jakarta"><button class="profile-modal-save" onclick="saveSocialProfile()"><i class="fa-solid fa-floppy-disk"></i> Simpan Profil</button></div></section></div>
     <div class="profile-modal-backdrop" id="shareProfileModal" onclick="if(event.target===this)closeShareProfile()"><section class="profile-modal-sheet" role="dialog" aria-modal="true"><div class="profile-modal-head"><div class="profile-modal-icon"><i class="fa-solid fa-share-nodes"></i></div><div class="profile-modal-title"><h3>Bagikan Profil</h3><p>Undang teman melihat profil, statistik, dan favorit yang kamu izinkan.</p></div><button class="profile-modal-close" onclick="closeShareProfile()"><i class="fa-solid fa-xmark"></i></button></div><div class="share-profile-preview"><img id="shareProfileAvatar" alt="Foto profil"><div><strong id="shareProfileName">Pembaca Yarch</strong><span id="shareProfileLevel">Profil pembaca</span></div></div><div class="share-url-row"><input id="shareProfileUrl" readonly><button onclick="shareProfileVia('copy')" aria-label="Salin tautan"><i class="fa-regular fa-copy"></i></button></div><div class="share-option-grid"><button class="share-option" onclick="shareProfileVia('native')"><i class="fa-solid fa-arrow-up-from-bracket"></i>Bagikan</button><button class="share-option" onclick="shareProfileVia('whatsapp')"><i class="fa-brands fa-whatsapp" style="color:#18a957"></i>WhatsApp</button><button class="share-option" onclick="shareProfileVia('telegram')"><i class="fa-brands fa-telegram" style="color:#2b9bd7"></i>Telegram</button><button class="share-option" onclick="shareProfileVia('copy')"><i class="fa-solid fa-link"></i>Salin</button></div></section></div>
     <div class="profile-modal-backdrop" id="ageGateModal"><section class="profile-modal-sheet age-gate-sheet" role="dialog" aria-modal="true" aria-labelledby="ageGateTitle"><div class="age-gate-shield"><i class="fa-solid fa-shield-halved"></i></div><h3 id="ageGateTitle">Verifikasi Usia</h3><p id="ageGateMessage">Konten ini ditujukan untuk pengguna yang telah memenuhi batas usia.</p><div class="profile-modal-form"><label for="ageGateBirthDate" style="text-align:left">Tanggal lahir</label><input id="ageGateBirthDate" type="date" oninput="updateAgeGateButton()" onchange="updateAgeGateButton()"><div class="age-gate-status" id="ageGateStatus" role="status" aria-live="polite"></div><label class="age-confirm-check"><input id="ageGateConfirm" type="checkbox" onchange="updateAgeGateButton()"><span>Saya menyatakan tanggal lahir yang dimasukkan benar dan memahami bahwa konten dapat memuat tema dewasa.</span></label></div><div class="age-gate-actions"><button class="age-cancel" onclick="resolveAgeGate(false)">Kembali</button><button class="age-continue" id="ageGateContinue" disabled onclick="resolveAgeGate(true)">Verifikasi & Masuk</button></div></section></div>
-    <div class="update-modal-backdrop" id="updateModal"><div class="update-sheet"><div class="update-icon"><i class="fa-solid fa-cloud-arrow-down"></i></div><h2>Versi baru tersedia</h2><p>Pembaruan aplikasi sudah siap. Proses ini akan membersihkan cache antarmuka lama tanpa menghapus akun, bookmark, atau riwayat Anda.</p><div class="update-version-line"><span id="updateCurrentVersion">V20.4.36</span><i class="fa-solid fa-arrow-right"></i><span id="updateLatestVersion">V20.4.36</span></div><div class="update-changelog" id="updateChangelog">Peningkatan stabilitas dan tampilan.</div><div class="update-actions"><button class="update-action update-later" onclick="dismissAppUpdate()">Nanti</button><button class="update-action update-now" onclick="applyAppUpdate()"><i class="fa-solid fa-bolt"></i> Perbarui Sekarang</button></div></div></div>
+    <div class="update-modal-backdrop" id="updateModal"><div class="update-sheet"><div class="update-icon"><i class="fa-solid fa-cloud-arrow-down"></i></div><h2>Versi baru tersedia</h2><p>Pembaruan aplikasi sudah siap. Proses ini akan membersihkan cache antarmuka lama tanpa menghapus akun, bookmark, atau riwayat Anda.</p><div class="update-version-line"><span id="updateCurrentVersion">V20.4.39</span><i class="fa-solid fa-arrow-right"></i><span id="updateLatestVersion">V20.4.39</span></div><div class="update-changelog" id="updateChangelog">Peningkatan stabilitas dan tampilan.</div><div class="update-actions"><button class="update-action update-later" onclick="dismissAppUpdate()">Nanti</button><button class="update-action update-now" onclick="applyAppUpdate()"><i class="fa-solid fa-bolt"></i> Perbarui Sekarang</button></div></div></div>
 
     <div class="home-action-backdrop" id="requestContentModal" role="dialog" aria-modal="true" aria-labelledby="requestContentTitle" onclick="if(event.target===this)closeRequestModal()">
         <div class="home-action-sheet">
@@ -1722,7 +1733,7 @@
         const app = initializeApp(firebaseConfig);
         const db = getFirestore(app);
         const auth = getAuth(app);
-        const APP_VERSION = '20.4.36';
+        const APP_VERSION = '20.4.39';
         const ADMIN_UID = 'dWUWpKAWQRRxMOzjzaOA3zXWZLp2';
 
         // ================= PENYIMPANAN OFFLINE (INDEXEDDB) =================
@@ -1846,7 +1857,8 @@
         }
         window.accountMenuNavigate=function(page){closeAccountMenu();switchNav(page);}
         const APP_CHANGELOG = [
-            {version:'20.4.36',label:'Terbaru',title:'Folder dan video File Manager kembali tampil',changes:['Helper nama season dan arc kini dapat dipakai konsisten oleh seluruh bagian panel admin.'],fixes:['Memperbaiki error getAdminSeasonLabel is not defined yang menghentikan pemuatan folder dan video.','Data media lama tetap dipertahankan dan dapat dimuat kembali.']},
+            {version:'20.4.39',label:'Terbaru',title:'Panel intro rapi dan layar penuh video lebih nyaman',changes:['Pengaturan Lewati Intro tersusun dalam dua kolom Mulai dan Selesai yang jelas.','Papan angka tetap dipakai untuk mengisi waktu HH:MM:SS dengan tanda titik dua otomatis.','Pemutar memakai satu rangkaian kontrol yang konsisten, termasuk posisi video dan suara.'],fixes:['Menghilangkan kontrol video bawaan yang bertumpuk dengan kontrol pemutar aplikasi.','Tombol layar penuh, garis waktu, dan Lewati Intro ditempatkan terpisah agar tidak saling menutupi.']},
+            {version:'20.4.36',label:'Sebelumnya',title:'Folder dan video File Manager kembali tampil',changes:['Helper nama season dan arc kini dapat dipakai konsisten oleh seluruh bagian panel admin.'],fixes:['Memperbaiki error getAdminSeasonLabel is not defined yang menghentikan pemuatan folder dan video.','Data media lama tetap dipertahankan dan dapat dimuat kembali.']},
             {version:'20.4.35',label:'',title:'Lewati intro dan diagnosis File Manager',changes:['Admin dapat mengatur waktu mulai dan selesai intro pada setiap episode.','Player menampilkan tombol Lewati Intro hanya pada rentang yang ditentukan.'],fixes:['Pesan koneksi File Manager kini membedakan perangkat offline dan kegagalan pembacaan folder.','Tersedia tombol Coba Lagi tanpa menutup File Manager.','Kegagalan membaca folder tidak lagi menyatakan media Storage terhapus.']},
             {version:'20.4.34',title:'Stabilisasi pembuatan dan import konten',changes:['Import JSON mempertahankan nama season, daftar arc, rentang, dan mode tanpa season.','Metadata AI dapat memuat struktur arc bila tersedia.'],fixes:['Reset form tidak lagi membawa arc dari judul sebelumnya.','Rentang arc bertumpuk ditolak dengan pesan jelas.','Audit yang tertunda tidak lagi membuat judul tersimpan terlihat gagal.']},
             {version:'20.4.33',title:'Perbaikan pembuatan folder episode',changes:['Folder langsung dianggap berhasil setelah dokumen episode tersimpan.','Konfirmasi sukses menawarkan akses langsung ke upload media.'],fixes:['Kegagalan sinkronisasi ringkasan atau audit tidak lagi membuat folder seolah gagal dibuat.','Kesalahan penyimpanan kini ditampilkan melalui pesan yang jelas.']},
@@ -4955,6 +4967,57 @@
             const player=document.getElementById('mainVideoPlayer');
             if(player.paused) player.play().catch(()=>{}); else player.pause();
         }
+        function formatPlayerClock(value) {
+            const total = Math.max(0, Math.floor(Number(value) || 0));
+            const hours = Math.floor(total / 3600);
+            const minutes = Math.floor((total % 3600) / 60);
+            const seconds = total % 60;
+            return hours
+                ? `${hours}:${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`
+                : `${minutes}:${String(seconds).padStart(2, '0')}`;
+        }
+        function syncPlayerTimeline() {
+            const player = document.getElementById('mainVideoPlayer');
+            const currentLabel = document.getElementById('playerCurrentTime');
+            const durationLabel = document.getElementById('playerDuration');
+            const seekRange = document.getElementById('playerSeekRange');
+            if (!player || !seekRange) return;
+            const duration = Number.isFinite(player.duration) ? player.duration : 0;
+            const current = Number(player.currentTime) || 0;
+            if (currentLabel) currentLabel.textContent = formatPlayerClock(current);
+            if (durationLabel) durationLabel.textContent = formatPlayerClock(duration);
+            seekRange.value = duration > 0 ? String(Math.round(Math.min(1, current / duration) * 1000)) : '0';
+            seekRange.disabled = duration <= 0;
+        }
+        window.seekToPlayerPosition = function(value) {
+            const player = document.getElementById('mainVideoPlayer');
+            const duration = Number(player?.duration);
+            if (!player || !Number.isFinite(duration) || duration <= 0) return;
+            player.currentTime = (Math.max(0, Math.min(1000, Number(value) || 0)) / 1000) * duration;
+            syncPlayerTimeline();
+        }
+        function syncVideoVolumeButton() {
+            const player = document.getElementById('mainVideoPlayer');
+            const button = document.getElementById('playerVolumeButton');
+            const icon = button?.querySelector('i');
+            if (!player || !button || !icon) return;
+            const muted = player.muted || player.volume === 0;
+            icon.className = `fa-solid ${muted ? 'fa-volume-xmark' : player.volume < .5 ? 'fa-volume-low' : 'fa-volume-high'}`;
+            button.title = muted ? 'Aktifkan suara' : 'Matikan suara';
+            button.setAttribute('aria-label', button.title);
+        }
+        window.toggleVideoMute = function() {
+            const player = document.getElementById('mainVideoPlayer');
+            if (!player) return;
+            player.muted = !player.muted;
+            syncVideoVolumeButton();
+        }
+        const playerTimelineVideo = document.getElementById('mainVideoPlayer');
+        playerTimelineVideo?.addEventListener('timeupdate', syncPlayerTimeline);
+        playerTimelineVideo?.addEventListener('loadedmetadata', syncPlayerTimeline);
+        playerTimelineVideo?.addEventListener('durationchange', syncPlayerTimeline);
+        playerTimelineVideo?.addEventListener('loadstart', syncPlayerTimeline);
+        playerTimelineVideo?.addEventListener('volumechange', syncVideoVolumeButton);
         function syncPlayerPlayButton() {
             const player=document.getElementById('mainVideoPlayer');
             const icon=document.querySelector('#playerPlayButton i');

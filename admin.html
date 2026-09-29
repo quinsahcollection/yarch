@@ -2412,6 +2412,9 @@
                     if (item && typeof item === 'object') return item.url || item.downloadURL || item.src || '';
                     return '';
                 }).filter(value => typeof value === 'string' && value.trim()).map(value => value.trim());
+                const parentComic = (window.allComicsList || []).find(item => item.id === comicId);
+                const hasVideoMedia = mediaUrls.some(url => /\.(?:mp4|webm|ogv|ogg|mov|m4v|mkv)(?:$|[?#])/i.test(url));
+                window.galleryState.entryFormat = parentComic?.format === 'film' || hasVideoMedia ? 'film' : 'komik';
 
                 window.galleryState.level = 'chapter_folder';
                 window.galleryState.chapterFolderId = chapterId;
@@ -2450,7 +2453,11 @@
             breadcrumb.innerHTML = bcHtml;
 
             const isInsideFolder = (window.galleryState.level === 'chapter_folder');
-            const showIntroTiming = isInsideFolder && window.galleryState.entryFormat === 'film';
+            const parentComic = (window.allComicsList || []).find(item => item.id === window.galleryState.comicId);
+            const hasVideoMedia = (window.galleryState.currentChapterImages || []).some(url => /\.(?:mp4|webm|ogv|ogg|mov|m4v|mkv)(?:$|[?#])/i.test(String(url || '')));
+            const isFilmFolder = window.galleryState.entryFormat === 'film' || parentComic?.format === 'film' || hasVideoMedia;
+            if (isInsideFolder && isFilmFolder) window.galleryState.entryFormat = 'film';
+            const showIntroTiming = isInsideFolder && isFilmFolder;
             btnUpload.style.display = isInsideFolder ? 'flex' : 'none';
             footerPublish.style.display = isInsideFolder ? 'flex' : 'none';
             const introControls = document.getElementById('introTimingControls');
@@ -2650,7 +2657,8 @@
                 const chapterDocRef = doc(db, "comics", comicId, "chapters", chapterId);
                 const formTitle = document.getElementById('chapterTitle').value.trim();
                 const selectedComic = window.allComicsList.find(item => item.id === comicId);
-                const isFilm = (selectedComic?.format || window.galleryState.entryFormat) === 'film';
+                const finalHasVideo = finalUrls.some(url => /\.(?:mp4|webm|ogv|ogg|mov|m4v|mkv)(?:$|[?#])/i.test(String(url || '')));
+                const isFilm = selectedComic?.format === 'film' || window.galleryState.entryFormat === 'film' || finalHasVideo;
                 const chapterSnapshot = await getDoc(chapterDocRef);
                 const previousChapter = chapterSnapshot.exists() ? chapterSnapshot.data() : {};
                 if(!chapterSnapshot.exists()) throw new Error('Folder chapter/episode tidak ditemukan. Muat ulang file manager lalu coba kembali.');

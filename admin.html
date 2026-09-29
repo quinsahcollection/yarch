@@ -1920,7 +1920,7 @@
 
         // Papan angka ponsel hanya perlu memasukkan digit. Titik dua disisipkan
         // otomatis setiap dua digit agar urutannya selalu jam:menit:detik.
-        window.handleIntroTimeInput = function(input, stateKey) {
+        window.handleIntroTimeInput = function(input, stateKey, updateState = true) {
             if (!input || !['introStart', 'introEnd'].includes(stateKey)) return;
             const before = String(input.value || '');
             const cursor = Number.isFinite(input.selectionStart) ? input.selectionStart : before.length;
@@ -1928,18 +1928,18 @@
             const digits = before.replace(/\D/g, '').slice(0, 6);
             const formatted = digits.match(/.{1,2}/g)?.join(':') || '';
             input.value = formatted;
-            window.galleryState[`${stateKey}Input`] = formatted;
+            if (updateState) window.galleryState[`${stateKey}Input`] = formatted;
             const nextCursor = Math.min(formatted.length, digitsBeforeCursor + Math.floor(digitsBeforeCursor / 2));
             requestAnimationFrame(() => {
                 try { input.setSelectionRange(nextCursor, nextCursor); } catch (_) {}
             });
         };
-        window.completeIntroTimeInput = function(input, stateKey) {
+        window.completeIntroTimeInput = function(input, stateKey, updateState = true) {
             if (!input || !['introStart', 'introEnd'].includes(stateKey)) return;
             const digits = String(input.value || '').replace(/\D/g, '').slice(0, 6);
             const formatted = digits ? digits.padEnd(6, '0').match(/.{2}/g).join(':') : '';
             input.value = formatted;
-            window.galleryState[`${stateKey}Input`] = formatted;
+            if (updateState) window.galleryState[`${stateKey}Input`] = formatted;
         };
 
         window.selectedMediaLanguages = [];
@@ -3626,9 +3626,9 @@
             const result = await Swal.fire({
                 title: 'Pilih Frame Thumbnail',
                 width: 720,
-                html: `<div style="text-align:left"><video id="thumbnailFrameVideo" src="${cleanUrl}" crossorigin="anonymous" controls playsinline preload="metadata" style="display:block;width:100%;max-height:52vh;background:#000;border-radius:12px"></video><div style="display:flex;align-items:center;gap:10px;margin-top:14px"><input id="thumbnailFrameRange" type="range" min="0" max="1" step="0.1" value="0" style="flex:1"><strong id="thumbnailFrameTime" style="min-width:92px;text-align:right">0:00 / 0:00</strong></div><p style="margin:9px 0 0;color:#64748b;font-size:12px">Putar atau geser sampai gambar yang diinginkan terlihat, lalu tekan Gunakan Frame Ini.</p></div>`,
+                html: `<div style="text-align:left"><video id="thumbnailFrameVideo" src="${cleanUrl}" crossorigin="anonymous" controls playsinline preload="metadata" style="display:block;width:100%;max-height:42vh;background:#000;border-radius:12px"></video><div style="display:flex;align-items:center;gap:10px;margin-top:14px"><input id="thumbnailFrameRange" type="range" min="0" max="1" step="0.1" value="0" style="flex:1"><strong id="thumbnailFrameTime" style="min-width:92px;text-align:right">0:00 / 0:00</strong></div><p style="margin:9px 0 12px;color:#64748b;font-size:12px">Geser video ke frame thumbnail yang diinginkan, lalu atur rentang intro di bawah.</p><section style="padding:13px;border:1px solid #ddd6fe;border-radius:13px;background:#f7f5ff"><div style="display:flex;align-items:center;gap:8px;margin-bottom:10px;color:#40358f;font-weight:750"><i class="fa-solid fa-forward"></i><span>Atur Lewati Intro</span></div><div style="display:flex;gap:10px;flex-wrap:wrap"><label style="display:grid;gap:5px;flex:1 1 180px;font-size:12px;font-weight:700;color:#545269">Mulai intro<input id="thumbnailIntroStart" type="text" inputmode="numeric" pattern="[0-9]*" maxlength="8" autocomplete="off" placeholder="00:00:00" value="${formatAdminDuration(window.galleryState?.introStart||0)}" oninput="window.handleIntroTimeInput(this,'introStart',false)" onblur="window.completeIntroTimeInput(this,'introStart',false)" style="box-sizing:border-box;width:100%;height:42px;padding:0 10px;border:1px solid #c9c2f2;border-radius:9px;background:#fff;font-size:16px;font-variant-numeric:tabular-nums"></label><label style="display:grid;gap:5px;flex:1 1 180px;font-size:12px;font-weight:700;color:#545269">Selesai intro<input id="thumbnailIntroEnd" type="text" inputmode="numeric" pattern="[0-9]*" maxlength="8" autocomplete="off" placeholder="00:00:00" value="${formatAdminDuration(window.galleryState?.introEnd||0)}" oninput="window.handleIntroTimeInput(this,'introEnd',false)" onblur="window.completeIntroTimeInput(this,'introEnd',false)" style="box-sizing:border-box;width:100%;height:42px;padding:0 10px;border:1px solid #c9c2f2;border-radius:9px;background:#fff;font-size:16px;font-variant-numeric:tabular-nums"></label></div><p style="margin:9px 0 0;color:#777393;font-size:11px;line-height:1.45">Contoh 00:01:30 sampai 00:02:15. Tombol Lewati Intro akan tampil otomatis saat video berada pada rentang ini.</p></section></div>`,
                 showCancelButton: true,
-                confirmButtonText: '<i class="fa-solid fa-camera"></i> Gunakan Frame Ini',
+                confirmButtonText: '<i class="fa-solid fa-camera"></i> Simpan Thumbnail & Intro',
                 cancelButtonText: 'Batal',
                 confirmButtonColor: '#7c3aed',
                 didOpen: () => {
@@ -3643,8 +3643,24 @@
                 },
                 preConfirm: async () => {
                     const video = document.getElementById('thumbnailFrameVideo');
+                    const startInput = document.getElementById('thumbnailIntroStart');
+                    const endInput = document.getElementById('thumbnailIntroEnd');
                     if (!video || !video.videoWidth || !video.videoHeight) {
                         Swal.showValidationMessage('Video belum siap. Tunggu hingga gambarnya tampil.');
+                        return false;
+                    }
+                    const introStart = parseAdminDurationSeconds(startInput?.value || '');
+                    const introEnd = parseAdminDurationSeconds(endInput?.value || '');
+                    if (introStart < 0 || introEnd < 0) {
+                        Swal.showValidationMessage('Format waktu harus HH:MM:SS. Menit dan detik harus di bawah 60.');
+                        return false;
+                    }
+                    if ((introStart > 0 || introEnd > 0) && introEnd <= introStart) {
+                        Swal.showValidationMessage('Waktu selesai intro harus lebih besar dari waktu mulai.');
+                        return false;
+                    }
+                    if (Number.isFinite(video.duration) && video.duration > 0 && introEnd > video.duration) {
+                        Swal.showValidationMessage('Waktu selesai intro melebihi durasi video.');
                         return false;
                     }
                     try {
@@ -3662,7 +3678,7 @@
                         const response = await fetch(WORKER_URL, {method:'POST', headers:await getWorkerAuthHeaders(), body:formData});
                         const data = await response.json().catch(() => ({}));
                         if (!response.ok || !data.url) throw new Error(data.error || 'Upload thumbnail gagal.');
-                        return data.url;
+                        return {thumbnailUrl:data.url,introStart,introEnd,introStartInput:startInput?.value||'',introEndInput:endInput?.value||''};
                     } catch (error) {
                         Swal.showValidationMessage(error.name === 'SecurityError' ? 'Frame tidak dapat diambil karena izin CORS video. Pastikan domain R2 mengizinkan domain aplikasi.' : error.message);
                         return false;
@@ -3670,12 +3686,20 @@
                 }
             });
 
-            if (!result.isConfirmed || !result.value) return;
+            if (!result.isConfirmed || !result.value?.thumbnailUrl) return;
             try {
-                await updateDoc(doc(db, 'comics', comicId, 'chapters', chapterId), {thumbnailUrl:result.value, updatedAt:serverTimestamp()});
-                window.galleryState.chapterThumbnailUrl = result.value;
+                await updateDoc(doc(db, 'comics', comicId, 'chapters', chapterId), {thumbnailUrl:result.value.thumbnailUrl,introStart:result.value.introStart,introEnd:result.value.introEnd,updatedAt:serverTimestamp()});
+                window.galleryState.chapterThumbnailUrl = result.value.thumbnailUrl;
+                window.galleryState.introStart = result.value.introStart;
+                window.galleryState.introEnd = result.value.introEnd;
+                window.galleryState.introStartInput = formatAdminDuration(result.value.introStart);
+                window.galleryState.introEndInput = formatAdminDuration(result.value.introEnd);
+                const footerStart = document.getElementById('episodeIntroStart');
+                const footerEnd = document.getElementById('episodeIntroEnd');
+                if (footerStart) footerStart.value = window.galleryState.introStartInput;
+                if (footerEnd) footerEnd.value = window.galleryState.introEndInput;
                 window.loadCloudGallery();
-                Swal.fire({title:'Thumbnail tersimpan',text:'Frame video akan tampil pada daftar isi.',icon:'success',timer:1600,showConfirmButton:false});
+                Swal.fire({title:'Thumbnail & intro tersimpan',text:'Frame thumbnail dan waktu Lewati Intro sudah disimpan pada episode ini.',icon:'success',timer:1800,showConfirmButton:false});
             } catch (error) {
                 Swal.fire('Thumbnail Gagal', error.message || 'URL thumbnail tidak dapat disimpan.', 'error');
             }

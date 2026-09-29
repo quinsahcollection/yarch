@@ -190,7 +190,8 @@
         .upload-progress-panel.error { background: #fef2f2; border-color: #fecaca; color: #b91c1c; }
 
         .gallery-grid { flex-grow: 1; padding: 20px; overflow-y: auto; display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 15px; background: var(--bg-light); align-content: start; }
-        .intro-timing-controls { display:none; flex:1 1 100%; width:100%; min-width:0; grid-template-columns:repeat(2,minmax(0,1fr)); gap:12px; padding:14px; border:1px solid #ddd6fe; border-radius:14px; background:linear-gradient(145deg,#faf8ff,#f2f0ff); box-shadow:0 4px 14px rgba(91,76,205,.07); }
+        .intro-timing-controls { display:grid; flex:1 1 100%; width:100%; min-width:0; grid-template-columns:repeat(2,minmax(0,1fr)); gap:12px; padding:14px; border:1px solid #ddd6fe; border-radius:14px; background:linear-gradient(145deg,#faf8ff,#f2f0ff); box-shadow:0 4px 14px rgba(91,76,205,.07); }
+        .intro-timing-controls[hidden], #modalFooterPublish:not(.folder-open) #introTimingControls { display:none !important; }
         .intro-timing-heading { grid-column:1/-1; display:flex; align-items:center; gap:10px; }
         .intro-timing-icon { width:36px; height:36px; display:grid; place-items:center; flex:0 0 36px; border-radius:12px; color:#5b4dcc; background:#e9e5ff; }
         .intro-timing-heading strong,.intro-timing-heading small { display:block; }
@@ -240,14 +241,14 @@
         .media-card.selected .check-circle { background: var(--primary); color: white; border-color: var(--primary); }
         
         .media-info { padding: 8px 10px; text-align: center; font-size: 11px; color: var(--text-muted); font-weight: 500; border-bottom: 1px solid #f1f5f9; }
-        .media-actions { padding: 8px; display: flex; gap: 6px; background: #f8fafc; margin-top: auto; }
+        .media-actions { padding: 8px; display: flex; gap: 6px; background: #f8fafc; margin-top: auto; align-items:center; }
         
-        .btn-pilih { flex: 1; background: var(--primary); color: white; border: none; padding: 6px; border-radius: 6px; font-weight: 600; font-size: 12px; cursor: pointer; transition: 0.2s; }
+        .btn-pilih { flex: 1 1 auto; min-width:0; height:38px; min-height:38px; max-height:38px; box-sizing:border-box; background: var(--primary); color: white; border: none; padding: 0 8px; border-radius: 6px; font-weight: 600; font-size: 12px; cursor: pointer; transition: 0.2s; }
         .btn-pilih:hover { background: var(--primary-hover); }
         .media-card.selected .btn-pilih { background: var(--success); }
         
-        .btn-icon-outline { background: var(--white); border: 1px solid var(--border); border-radius: 6px; width: 30px; height: 30px; display: flex; align-items: center; justify-content: center; cursor: pointer; color: var(--text-muted); transition: 0.2s; font-size: 13px; }
-        .btn-video-thumbnail { min-width:38px; min-height:38px; color:#6247d8; border-color:#cfc8ff; background:#f5f3ff; touch-action:manipulation; }
+        .btn-icon-outline { flex:0 0 38px; box-sizing:border-box; background: var(--white); border: 1px solid var(--border); border-radius: 6px; width: 38px; min-width:38px; max-width:38px; height:38px; min-height:38px; max-height:38px; padding:0; display: flex; align-items: center; justify-content: center; cursor: pointer; color: var(--text-muted); transition: 0.2s; font-size: 13px; }
+        .btn-video-thumbnail { color:#6247d8; border-color:#cfc8ff; background:#f5f3ff; touch-action:manipulation; }
         .btn-video-thumbnail:active { background:#e9e5ff; transform:scale(.96); }
         .btn-icon-outline:hover { background: #f1f5f9; color: var(--text-dark); }
         .btn-icon-outline.text-danger { color: var(--danger); border-color: #fecaca; }
@@ -391,9 +392,13 @@
             .media-card { min-width:0; }
             .media-info { overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
             .media-actions { gap:5px; }
-            .btn-pilih { min-width:0; }
+            #cloudGalleryGrid .media-actions > button { height:42px !important; min-height:42px !important; max-height:42px !important; }
+            #cloudGalleryGrid .media-actions > .btn-icon-outline { flex:0 0 42px; width:42px !important; min-width:42px !important; max-width:42px !important; }
+            #cloudGalleryGrid .media-actions > .btn-pilih { flex:1 1 auto; min-width:0; padding:0 5px; }
             .empty-gallery { min-height:42vh; padding:28px 16px; font-size:13px; }
             #modalFooterPublish { padding:12px 14px !important; flex:0 0 auto; max-height:none; overflow:visible; }
+            #modalFooterPublish.folder-open #introTimingControls { display:grid !important; }
+            #modalFooterPublish.folder-open > .btn-success-sm { display:inline-flex !important; }
             #modalFooterPublish > div, #modalFooterPublish .btn-success-sm { width:100%; box-sizing:border-box; }
             #modalFooterPublish .btn-success-sm { justify-content:center; min-height:46px; font-size:14px; }
         }
@@ -952,7 +957,7 @@
                     <input type="date" id="modalChapterUpdateDate" style="padding: 6px; border: 1px solid #cbd5e1; border-radius: 6px; font-size: 13px; outline: none; background: white; cursor: pointer;">
                 </div>
 
-                <div id="introTimingControls" class="intro-timing-controls">
+                <div id="introTimingControls" class="intro-timing-controls" hidden>
                     <div class="intro-timing-heading"><span class="intro-timing-icon"><i class="fa-solid fa-forward"></i></span><span><strong>Lewati Intro</strong><small>Atur bagian awal yang ingin dilewati</small></span></div>
                     <label class="intro-time-field"><span>Mulai intro</span><input type="text" id="episodeIntroStart" inputmode="numeric" pattern="[0-9]*" maxlength="8" autocomplete="off" placeholder="00:00:00" aria-label="Waktu mulai intro jam menit detik" oninput="window.handleIntroTimeInput(this, 'introStart')" onblur="window.completeIntroTimeInput(this, 'introStart')"></label>
                     <label class="intro-time-field"><span>Selesai intro</span><input type="text" id="episodeIntroEnd" inputmode="numeric" pattern="[0-9]*" maxlength="8" autocomplete="off" placeholder="00:00:00" aria-label="Waktu selesai intro jam menit detik" oninput="window.handleIntroTimeInput(this, 'introEnd')" onblur="window.completeIntroTimeInput(this, 'introEnd')"></label>
@@ -2477,8 +2482,12 @@
             const showIntroTiming = isInsideFolder;
             btnUpload.style.setProperty('display', isInsideFolder ? 'flex' : 'none', 'important');
             footerPublish.style.setProperty('display', isInsideFolder ? 'flex' : 'none', 'important');
+            footerPublish.classList.toggle('folder-open', isInsideFolder);
             const introControls = document.getElementById('introTimingControls');
-            if (introControls) introControls.style.setProperty('display', showIntroTiming ? 'grid' : 'none', 'important');
+            if (introControls) {
+                introControls.hidden = !showIntroTiming;
+                introControls.style.setProperty('display', showIntroTiming ? 'grid' : 'none', 'important');
+            }
             if (showIntroTiming) {
                 const startInput = document.getElementById('episodeIntroStart');
                 const endInput = document.getElementById('episodeIntroEnd');

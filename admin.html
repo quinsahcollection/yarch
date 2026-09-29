@@ -951,7 +951,7 @@
                 </div>
 
                 <div id="introTimingControls" class="intro-timing-controls">
-                    <div class="intro-timing-heading"><span class="intro-timing-icon"><i class="fa-solid fa-forward"></i></span><span><strong>Lewati Intro</strong><small>Atur bagian awal yang ingin dilewati</small></span></div>
+                    <div class="intro-timing-heading"><span class="intro-timing-icon"><i class="fa-solid fa-forward"></i></span><span><strong>Lewati Intro</strong><small>Atur waktu intro episode; panel selalu tersedia di folder episode</small></span></div>
                     <label class="intro-time-field"><span>Mulai intro</span><input type="text" id="episodeIntroStart" inputmode="numeric" pattern="[0-9]*" maxlength="8" autocomplete="off" placeholder="00:00:00" aria-label="Waktu mulai intro jam menit detik" oninput="window.handleIntroTimeInput(this, 'introStart')" onblur="window.completeIntroTimeInput(this, 'introStart')"></label>
                     <label class="intro-time-field"><span>Selesai intro</span><input type="text" id="episodeIntroEnd" inputmode="numeric" pattern="[0-9]*" maxlength="8" autocomplete="off" placeholder="00:00:00" aria-label="Waktu selesai intro jam menit detik" oninput="window.handleIntroTimeInput(this, 'introEnd')" onblur="window.completeIntroTimeInput(this, 'introEnd')"></label>
                     <p class="intro-timing-help">Ketik jam, menit, detik. Tanda titik dua akan muncul otomatis.</p>
@@ -2464,7 +2464,10 @@
             const uploaderIsVideo = Boolean(uploadInput?.accept?.includes('video/')) || /video/i.test(uploadButtonLabel);
             const isFilmFolder = window.galleryState.entryFormat === 'film' || parentComic?.format === 'film' || hasVideoMedia || uploaderIsVideo;
             if (isInsideFolder && isFilmFolder) window.galleryState.entryFormat = 'film';
-            const showIntroTiming = isInsideFolder && isFilmFolder;
+            // Tampilkan pengaturan waktu pada semua folder episode. Format media
+            // lama tidak selalu konsisten, jadi jangan sembunyikan panel intro
+            // hanya karena metadata folder menyebut komik.
+            const showIntroTiming = isInsideFolder;
             btnUpload.style.setProperty('display', isInsideFolder ? 'flex' : 'none', 'important');
             footerPublish.style.setProperty('display', isInsideFolder ? 'flex' : 'none', 'important');
             const introControls = document.getElementById('introTimingControls');
@@ -2674,13 +2677,13 @@
                     updateDate: finalUpdateDate,
                     updatedAt: serverTimestamp()
                 };
+                const introStart = parseAdminDurationSeconds(document.getElementById('episodeIntroStart')?.value || '');
+                const introEnd = parseAdminDurationSeconds(document.getElementById('episodeIntroEnd')?.value || '');
+                if (introStart < 0 || introEnd < 0) throw new Error('Format waktu intro harus HH:MM:SS; nilai menit dan detik harus di bawah 60.');
+                if ((introStart > 0 || introEnd > 0) && introEnd <= introStart) throw new Error('Waktu selesai intro harus lebih besar dari waktu mulai.');
+                publishData.introStart = introStart;
+                publishData.introEnd = introEnd;
                 if (isFilm) {
-                    const introStart = parseAdminDurationSeconds(document.getElementById('episodeIntroStart')?.value || '');
-                    const introEnd = parseAdminDurationSeconds(document.getElementById('episodeIntroEnd')?.value || '');
-                    if (introStart < 0 || introEnd < 0) throw new Error('Format waktu intro harus HH:MM:SS; nilai menit dan detik harus di bawah 60.');
-                    if ((introStart > 0 || introEnd > 0) && introEnd <= introStart) throw new Error('Waktu selesai intro harus lebih besar dari waktu mulai.');
-                    publishData.introStart = introStart;
-                    publishData.introEnd = introEnd;
                     const manualThumbnail = String(document.getElementById('episodeThumbnailUrl')?.value || previousChapter.thumbnailUrl || '').trim();
                     const firstUploadedImage = finalUrls.find(url => !isCloudVideo(url));
                     publishData.thumbnailUrl = manualThumbnail || firstUploadedImage || previousChapter.thumbnailUrl || '';

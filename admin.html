@@ -2453,23 +2453,28 @@
             breadcrumb.innerHTML = bcHtml;
 
             const isInsideFolder = (window.galleryState.level === 'chapter_folder');
+            // Sinkronkan mode uploader sebelum menentukan panel intro. Pada data
+            // lama, format judul di Firestore kadang tidak cocok dengan tipe media.
+            syncCloudMediaMode();
             const parentComic = (window.allComicsList || []).find(item => item.id === window.galleryState.comicId);
-            const hasVideoMedia = (window.galleryState.currentChapterImages || []).some(url => /\.(?:mp4|webm|ogv|ogg|mov|m4v|mkv)(?:$|[?#])/i.test(String(url || '')));
-            const isFilmFolder = window.galleryState.entryFormat === 'film' || parentComic?.format === 'film' || hasVideoMedia;
+            const currentMedia = window.galleryState.currentChapterImages || [];
+            const hasVideoMedia = currentMedia.some(url => isCloudVideo(url));
+            const uploadInput = document.getElementById('cloudUploadInput');
+            const uploadButtonLabel = document.getElementById('cloudUploadButtonText')?.textContent || '';
+            const uploaderIsVideo = Boolean(uploadInput?.accept?.includes('video/')) || /video/i.test(uploadButtonLabel);
+            const isFilmFolder = window.galleryState.entryFormat === 'film' || parentComic?.format === 'film' || hasVideoMedia || uploaderIsVideo;
             if (isInsideFolder && isFilmFolder) window.galleryState.entryFormat = 'film';
             const showIntroTiming = isInsideFolder && isFilmFolder;
-            btnUpload.style.display = isInsideFolder ? 'flex' : 'none';
-            footerPublish.style.display = isInsideFolder ? 'flex' : 'none';
+            btnUpload.style.setProperty('display', isInsideFolder ? 'flex' : 'none', 'important');
+            footerPublish.style.setProperty('display', isInsideFolder ? 'flex' : 'none', 'important');
             const introControls = document.getElementById('introTimingControls');
-            if (introControls) introControls.style.display = showIntroTiming ? 'grid' : 'none';
+            if (introControls) introControls.style.setProperty('display', showIntroTiming ? 'grid' : 'none', 'important');
             if (showIntroTiming) {
                 const startInput = document.getElementById('episodeIntroStart');
                 const endInput = document.getElementById('episodeIntroEnd');
                 startInput.value = window.galleryState.introStartInput ?? formatAdminDuration(window.galleryState.introStart || 0);
                 endInput.value = window.galleryState.introEndInput ?? formatAdminDuration(window.galleryState.introEnd || 0);
             }
-            syncCloudMediaMode();
-
             grid.innerHTML = '<div style="grid-column: 1/-1; text-align:center; padding:30px; font-weight:500;"><i class="fa-solid fa-spinner fa-spin"></i> Sinkronisasi Folder...</div>';
 
             try {

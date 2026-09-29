@@ -941,9 +941,9 @@
 
                 <div id="introTimingControls" style="display:none;align-items:center;gap:8px;flex-wrap:wrap;background:#f5f3ff;padding:8px 12px;border-radius:8px;border:1px solid #ddd6fe;">
                     <span style="font-size:12px;font-weight:800;color:#5b4dcc"><i class="fa-solid fa-forward"></i> Lewati Intro</span>
-                    <label style="font-size:11px;font-weight:700;margin:0">Mulai <input type="text" id="episodeIntroStart" inputmode="numeric" placeholder="00:00" oninput="window.galleryState.introStartInput=this.value" style="width:78px;padding:6px;border:1px solid #c4b5fd;border-radius:6px"></label>
-                    <label style="font-size:11px;font-weight:700;margin:0">Selesai <input type="text" id="episodeIntroEnd" inputmode="numeric" placeholder="01:30" oninput="window.galleryState.introEndInput=this.value" style="width:78px;padding:6px;border:1px solid #c4b5fd;border-radius:6px"></label>
-                    <span style="font-size:9px;color:#756ca5">Format MM:SS atau HH:MM:SS</span>
+                    <label style="font-size:11px;font-weight:700;margin:0">Mulai <input type="text" id="episodeIntroStart" inputmode="numeric" pattern="[0-9]*" maxlength="8" autocomplete="off" placeholder="00:00:00" aria-label="Waktu mulai intro jam menit detik" oninput="window.handleIntroTimeInput(this, 'introStart')" style="width:104px;padding:6px;border:1px solid #c4b5fd;border-radius:6px;font-variant-numeric:tabular-nums"></label>
+                    <label style="font-size:11px;font-weight:700;margin:0">Selesai <input type="text" id="episodeIntroEnd" inputmode="numeric" pattern="[0-9]*" maxlength="8" autocomplete="off" placeholder="00:00:00" aria-label="Waktu selesai intro jam menit detik" oninput="window.handleIntroTimeInput(this, 'introEnd')" style="width:104px;padding:6px;border:1px solid #c4b5fd;border-radius:6px;font-variant-numeric:tabular-nums"></label>
+                    <span style="font-size:9px;color:#756ca5">Ketik jam, menit, detik; tanda : muncul otomatis</span>
                 </div>
 
                 <button class="btn-success-sm" style="display: inline-flex; padding: 12px 20px; font-size: 15px;" onclick="window.confirmAndPublishChapter()">
@@ -1904,8 +1904,25 @@
             const hours = Math.floor(total / 3600);
             const minutes = Math.floor((total % 3600) / 60);
             const remainingSeconds = total % 60;
-            return `${hours}:${String(minutes).padStart(2, '0')}:${String(remainingSeconds).padStart(2, '0')}`;
+            return `${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}:${String(remainingSeconds).padStart(2, '0')}`;
         }
+
+        // Papan angka ponsel hanya perlu memasukkan digit. Titik dua disisipkan
+        // otomatis setiap dua digit agar urutannya selalu jam:menit:detik.
+        window.handleIntroTimeInput = function(input, stateKey) {
+            if (!input || !['introStart', 'introEnd'].includes(stateKey)) return;
+            const before = String(input.value || '');
+            const cursor = Number.isFinite(input.selectionStart) ? input.selectionStart : before.length;
+            const digitsBeforeCursor = (before.slice(0, cursor).match(/\d/g) || []).length;
+            const digits = before.replace(/\D/g, '').slice(0, 6);
+            const formatted = digits.match(/.{1,2}/g)?.join(':') || '';
+            input.value = formatted;
+            window.galleryState[`${stateKey}Input`] = formatted;
+            const nextCursor = Math.min(formatted.length, digitsBeforeCursor + Math.floor(digitsBeforeCursor / 2));
+            requestAnimationFrame(() => {
+                try { input.setSelectionRange(nextCursor, nextCursor); } catch (_) {}
+            });
+        };
 
         window.selectedMediaLanguages = [];
 
@@ -2629,7 +2646,7 @@
                 if (isFilm) {
                     const introStart = parseAdminDurationSeconds(document.getElementById('episodeIntroStart')?.value || '');
                     const introEnd = parseAdminDurationSeconds(document.getElementById('episodeIntroEnd')?.value || '');
-                    if (introStart < 0 || introEnd < 0) throw new Error('Format waktu intro harus MM:SS atau HH:MM:SS.');
+                    if (introStart < 0 || introEnd < 0) throw new Error('Format waktu intro harus HH:MM:SS; nilai menit dan detik harus di bawah 60.');
                     if ((introStart > 0 || introEnd > 0) && introEnd <= introStart) throw new Error('Waktu selesai intro harus lebih besar dari waktu mulai.');
                     publishData.introStart = introStart;
                     publishData.introEnd = introEnd;

@@ -383,7 +383,7 @@
             .breadcrumb::-webkit-scrollbar { display:none; }
             .modal-toolbar > div:last-child { width:100%; }
             .gallery-search { width:100%; max-width:none; margin:0; }
-            .gallery-grid { flex: 0 1 auto; min-height: 120px; max-height: 42dvh; grid-template-columns: repeat(2, minmax(0,1fr)); gap:10px; padding:12px; }
+            .gallery-grid { flex: 1 1 auto; min-height: 120px; max-height: 42dvh; grid-template-columns: repeat(2, minmax(0,1fr)); gap:10px; padding:12px; }
             .folder-card { min-width:0; min-height:0; height:190px; padding:12px 8px; justify-content:center; }
             .folder-icon.comic-cover { width:74px; height:105px; margin-bottom:10px; }
             .folder-title { width:100%; font-size:13px; display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden; }
@@ -393,7 +393,7 @@
             .media-actions { gap:5px; }
             .btn-pilih { min-width:0; }
             .empty-gallery { min-height:42vh; padding:28px 16px; font-size:13px; }
-            #modalFooterPublish { padding:12px 14px !important; flex:0 1 auto; max-height:34dvh; overflow-y:auto; }
+            #modalFooterPublish { padding:12px 14px !important; flex:0 0 auto; max-height:none; overflow:visible; }
             #modalFooterPublish > div, #modalFooterPublish .btn-success-sm { width:100%; box-sizing:border-box; }
             #modalFooterPublish .btn-success-sm { justify-content:center; min-height:46px; font-size:14px; }
         }
@@ -1919,6 +1919,9 @@
             const remainingSeconds = total % 60;
             return `${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}:${String(remainingSeconds).padStart(2, '0')}`;
         }
+        // Dipakai juga oleh modul File Manager dan dialog pemilihan thumbnail.
+        window.parseAdminDurationSeconds = parseAdminDurationSeconds;
+        window.formatAdminDuration = formatAdminDuration;
 
         // Papan angka ponsel hanya perlu memasukkan digit. Titik dua disisipkan
         // otomatis setiap dua digit agar urutannya selalu jam:menit:detik.
@@ -3539,8 +3542,8 @@
             window.galleryState.chapterThumbnailUrl = thumbnailUrl;
             window.galleryState.introStart = Math.max(0, Number(introStart || 0));
             window.galleryState.introEnd = Math.max(0, Number(introEnd || 0));
-            window.galleryState.introStartInput = formatAdminDuration(window.galleryState.introStart);
-            window.galleryState.introEndInput = formatAdminDuration(window.galleryState.introEnd);
+            window.galleryState.introStartInput = window.formatAdminDuration(window.galleryState.introStart);
+            window.galleryState.introEndInput = window.formatAdminDuration(window.galleryState.introEnd);
             localStorage.setItem('activeChapterFolderId', chapterId);
             window.loadCloudGallery(); 
         }
@@ -3628,7 +3631,7 @@
             const result = await Swal.fire({
                 title: 'Pilih Frame Thumbnail',
                 width: 720,
-                html: `<div style="text-align:left"><video id="thumbnailFrameVideo" src="${cleanUrl}" crossorigin="anonymous" controls playsinline preload="metadata" style="display:block;width:100%;max-height:42vh;background:#000;border-radius:12px"></video><div style="display:flex;align-items:center;gap:10px;margin-top:14px"><input id="thumbnailFrameRange" type="range" min="0" max="1" step="0.1" value="0" style="flex:1"><strong id="thumbnailFrameTime" style="min-width:92px;text-align:right">0:00 / 0:00</strong></div><p style="margin:9px 0 12px;color:#64748b;font-size:12px">Geser video ke frame thumbnail yang diinginkan, lalu atur rentang intro di bawah.</p><section style="padding:13px;border:1px solid #ddd6fe;border-radius:13px;background:#f7f5ff"><div style="display:flex;align-items:center;gap:8px;margin-bottom:10px;color:#40358f;font-weight:750"><i class="fa-solid fa-forward"></i><span>Atur Lewati Intro</span></div><div style="display:flex;gap:10px;flex-wrap:wrap"><label style="display:grid;gap:5px;flex:1 1 180px;font-size:12px;font-weight:700;color:#545269">Mulai intro<input id="thumbnailIntroStart" type="text" inputmode="numeric" pattern="[0-9]*" maxlength="8" autocomplete="off" placeholder="00:00:00" value="${formatAdminDuration(window.galleryState?.introStart||0)}" oninput="window.handleIntroTimeInput(this,'introStart',false)" onblur="window.completeIntroTimeInput(this,'introStart',false)" style="box-sizing:border-box;width:100%;height:42px;padding:0 10px;border:1px solid #c9c2f2;border-radius:9px;background:#fff;font-size:16px;font-variant-numeric:tabular-nums"></label><label style="display:grid;gap:5px;flex:1 1 180px;font-size:12px;font-weight:700;color:#545269">Selesai intro<input id="thumbnailIntroEnd" type="text" inputmode="numeric" pattern="[0-9]*" maxlength="8" autocomplete="off" placeholder="00:00:00" value="${formatAdminDuration(window.galleryState?.introEnd||0)}" oninput="window.handleIntroTimeInput(this,'introEnd',false)" onblur="window.completeIntroTimeInput(this,'introEnd',false)" style="box-sizing:border-box;width:100%;height:42px;padding:0 10px;border:1px solid #c9c2f2;border-radius:9px;background:#fff;font-size:16px;font-variant-numeric:tabular-nums"></label></div><p style="margin:9px 0 0;color:#777393;font-size:11px;line-height:1.45">Contoh 00:01:30 sampai 00:02:15. Tombol Lewati Intro akan tampil otomatis saat video berada pada rentang ini.</p></section></div>`,
+                html: `<div style="text-align:left"><video id="thumbnailFrameVideo" src="${cleanUrl}" crossorigin="anonymous" controls playsinline preload="metadata" style="display:block;width:100%;max-height:42vh;background:#000;border-radius:12px"></video><div style="display:flex;align-items:center;gap:10px;margin-top:14px"><input id="thumbnailFrameRange" type="range" min="0" max="1" step="0.1" value="0" style="flex:1"><strong id="thumbnailFrameTime" style="min-width:92px;text-align:right">0:00 / 0:00</strong></div><p style="margin:9px 0 12px;color:#64748b;font-size:12px">Geser video ke frame thumbnail yang diinginkan, lalu atur rentang intro di bawah.</p><section style="padding:13px;border:1px solid #ddd6fe;border-radius:13px;background:#f7f5ff"><div style="display:flex;align-items:center;gap:8px;margin-bottom:10px;color:#40358f;font-weight:750"><i class="fa-solid fa-forward"></i><span>Atur Lewati Intro</span></div><div style="display:flex;gap:10px;flex-wrap:wrap"><label style="display:grid;gap:5px;flex:1 1 180px;font-size:12px;font-weight:700;color:#545269">Mulai intro<input id="thumbnailIntroStart" type="text" inputmode="numeric" pattern="[0-9]*" maxlength="8" autocomplete="off" placeholder="00:00:00" value="${window.formatAdminDuration(window.galleryState?.introStart||0)}" oninput="window.handleIntroTimeInput(this,'introStart',false)" onblur="window.completeIntroTimeInput(this,'introStart',false)" style="box-sizing:border-box;width:100%;height:42px;padding:0 10px;border:1px solid #c9c2f2;border-radius:9px;background:#fff;font-size:16px;font-variant-numeric:tabular-nums"></label><label style="display:grid;gap:5px;flex:1 1 180px;font-size:12px;font-weight:700;color:#545269">Selesai intro<input id="thumbnailIntroEnd" type="text" inputmode="numeric" pattern="[0-9]*" maxlength="8" autocomplete="off" placeholder="00:00:00" value="${window.formatAdminDuration(window.galleryState?.introEnd||0)}" oninput="window.handleIntroTimeInput(this,'introEnd',false)" onblur="window.completeIntroTimeInput(this,'introEnd',false)" style="box-sizing:border-box;width:100%;height:42px;padding:0 10px;border:1px solid #c9c2f2;border-radius:9px;background:#fff;font-size:16px;font-variant-numeric:tabular-nums"></label></div><p style="margin:9px 0 0;color:#777393;font-size:11px;line-height:1.45">Contoh 00:01:30 sampai 00:02:15. Tombol Lewati Intro akan tampil otomatis saat video berada pada rentang ini.</p></section></div>`,
                 showCancelButton: true,
                 confirmButtonText: '<i class="fa-solid fa-camera"></i> Simpan Thumbnail & Intro',
                 cancelButtonText: 'Batal',
@@ -3651,8 +3654,8 @@
                         Swal.showValidationMessage('Video belum siap. Tunggu hingga gambarnya tampil.');
                         return false;
                     }
-                    const introStart = parseAdminDurationSeconds(startInput?.value || '');
-                    const introEnd = parseAdminDurationSeconds(endInput?.value || '');
+                    const introStart = window.parseAdminDurationSeconds(startInput?.value || '');
+                    const introEnd = window.parseAdminDurationSeconds(endInput?.value || '');
                     if (introStart < 0 || introEnd < 0) {
                         Swal.showValidationMessage('Format waktu harus HH:MM:SS. Menit dan detik harus di bawah 60.');
                         return false;
@@ -3694,8 +3697,8 @@
                 window.galleryState.chapterThumbnailUrl = result.value.thumbnailUrl;
                 window.galleryState.introStart = result.value.introStart;
                 window.galleryState.introEnd = result.value.introEnd;
-                window.galleryState.introStartInput = formatAdminDuration(result.value.introStart);
-                window.galleryState.introEndInput = formatAdminDuration(result.value.introEnd);
+                window.galleryState.introStartInput = window.formatAdminDuration(result.value.introStart);
+                window.galleryState.introEndInput = window.formatAdminDuration(result.value.introEnd);
                 const footerStart = document.getElementById('episodeIntroStart');
                 const footerEnd = document.getElementById('episodeIntroEnd');
                 if (footerStart) footerStart.value = window.galleryState.introStartInput;

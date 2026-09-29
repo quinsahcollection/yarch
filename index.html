@@ -1294,7 +1294,7 @@
                 <h1>Yarch terus berkembang</h1>
                 <p>Lihat fitur baru, peningkatan pengalaman, dan bug yang telah diperbaiki dari versi terbaru hingga versi sebelumnya.</p>
             </section>
-            <div class="changelog-current"><span><strong id="changelogCurrentVersion">V20.4.56</strong><br>Versi yang sedang digunakan</span><button type="button" onclick="checkAppConfiguration(true)"><i class="fa-solid fa-rotate"></i> Periksa update</button></div>
+            <div class="changelog-current"><span><strong id="changelogCurrentVersion">V20.4.57</strong><br>Versi yang sedang digunakan</span><button type="button" onclick="checkAppConfiguration(true)"><i class="fa-solid fa-rotate"></i> Periksa update</button></div>
             <main class="changelog-timeline" id="changelogTimeline" aria-live="polite"></main>
         </div>
 
@@ -1663,14 +1663,14 @@
             <button class="account-menu-item" type="button" onclick="openAppInfo('about')"><i class="fa-solid fa-circle-info"></i><span>Tentang Yarch</span><i class="fa-solid fa-chevron-right"></i></button>
             <button class="account-menu-item" type="button" onclick="closeAccountMenu();openAdminContact()"><i class="fa-solid fa-headset"></i><span>Hubungi Admin</span><i class="fa-solid fa-chevron-right"></i></button>
             <div class="account-menu-divider" style="margin-top:11px"></div>
-            <button class="account-menu-item updates-menu-item" type="button" onclick="closeAccountMenu();openChangelogPage()"><i class="fa-solid fa-clock-rotate-left"></i><span class="account-menu-item-copy"><strong>Updates</strong><small>V20.4.56 • Riwayat perbaikan</small></span><i class="fa-solid fa-chevron-right"></i></button>
+            <button class="account-menu-item updates-menu-item" type="button" onclick="closeAccountMenu();openChangelogPage()"><i class="fa-solid fa-clock-rotate-left"></i><span class="account-menu-item-copy"><strong>Updates</strong><small>V20.4.57 • Riwayat perbaikan</small></span><i class="fa-solid fa-chevron-right"></i></button>
             <button class="account-menu-item danger" id="accountMenuLogout" type="button" onclick="closeAccountMenu();doLogout()"><i class="fa-solid fa-right-from-bracket"></i><span>Keluar dari Akun</span><i class="fa-solid fa-chevron-right"></i></button>
         </aside>
     </div>
     <div class="profile-modal-backdrop" id="profileEditorModal" onclick="if(event.target===this)closeProfileEditor()"><section class="profile-modal-sheet" role="dialog" aria-modal="true" aria-labelledby="profileEditorTitle"><div class="profile-modal-head"><div class="profile-modal-icon"><i class="fa-solid fa-user-pen"></i></div><div class="profile-modal-title"><h3 id="profileEditorTitle">Lengkapi Profil</h3><p>Informasi tanggal lahir disimpan secara privat untuk verifikasi usia.</p></div><button class="profile-modal-close" onclick="closeProfileEditor()"><i class="fa-solid fa-xmark"></i></button></div><div class="profile-modal-form"><label for="profileDisplayName">Nama tampilan</label><input id="profileDisplayName" maxlength="35" placeholder="Nama tampilan"><label for="profileBioInput">Bio singkat</label><textarea id="profileBioInput" maxlength="160" placeholder="Ceritakan genre atau karakter favoritmu..."></textarea><div class="profile-modal-grid"><div><label for="profileBirthDate">Tanggal lahir</label><input id="profileBirthDate" type="date"></div><div><label for="profileGender">Jenis kelamin</label><select id="profileGender"><option value="">Tidak disebutkan</option><option value="Laki-laki">Laki-laki</option><option value="Perempuan">Perempuan</option><option value="Lainnya">Lainnya</option></select></div></div><label for="profileLocation">Kota / lokasi (opsional)</label><input id="profileLocation" maxlength="60" placeholder="Contoh: Jakarta"><button class="profile-modal-save" onclick="saveSocialProfile()"><i class="fa-solid fa-floppy-disk"></i> Simpan Profil</button></div></section></div>
     <div class="profile-modal-backdrop" id="shareProfileModal" onclick="if(event.target===this)closeShareProfile()"><section class="profile-modal-sheet" role="dialog" aria-modal="true"><div class="profile-modal-head"><div class="profile-modal-icon"><i class="fa-solid fa-share-nodes"></i></div><div class="profile-modal-title"><h3>Bagikan Profil</h3><p>Undang teman melihat profil, statistik, dan favorit yang kamu izinkan.</p></div><button class="profile-modal-close" onclick="closeShareProfile()"><i class="fa-solid fa-xmark"></i></button></div><div class="share-profile-preview"><img id="shareProfileAvatar" alt="Foto profil"><div><strong id="shareProfileName">Pembaca Yarch</strong><span id="shareProfileLevel">Profil pembaca</span></div></div><div class="share-url-row"><input id="shareProfileUrl" readonly><button onclick="shareProfileVia('copy')" aria-label="Salin tautan"><i class="fa-regular fa-copy"></i></button></div><div class="share-option-grid"><button class="share-option" onclick="shareProfileVia('native')"><i class="fa-solid fa-arrow-up-from-bracket"></i>Bagikan</button><button class="share-option" onclick="shareProfileVia('whatsapp')"><i class="fa-brands fa-whatsapp" style="color:#18a957"></i>WhatsApp</button><button class="share-option" onclick="shareProfileVia('telegram')"><i class="fa-brands fa-telegram" style="color:#2b9bd7"></i>Telegram</button><button class="share-option" onclick="shareProfileVia('copy')"><i class="fa-solid fa-link"></i>Salin</button></div></section></div>
     <div class="profile-modal-backdrop" id="ageGateModal"><section class="profile-modal-sheet age-gate-sheet" role="dialog" aria-modal="true" aria-labelledby="ageGateTitle"><div class="age-gate-shield"><i class="fa-solid fa-shield-halved"></i></div><h3 id="ageGateTitle">Verifikasi Usia</h3><p id="ageGateMessage">Konten ini ditujukan untuk pengguna yang telah memenuhi batas usia.</p><div class="profile-modal-form"><label for="ageGateBirthDate" style="text-align:left">Tanggal lahir</label><input id="ageGateBirthDate" type="date" oninput="updateAgeGateButton()" onchange="updateAgeGateButton()"><div class="age-gate-status" id="ageGateStatus" role="status" aria-live="polite"></div><label class="age-confirm-check"><input id="ageGateConfirm" type="checkbox" onchange="updateAgeGateButton()"><span>Saya menyatakan tanggal lahir yang dimasukkan benar dan memahami bahwa konten dapat memuat tema dewasa.</span></label></div><div class="age-gate-actions"><button class="age-cancel" onclick="resolveAgeGate(false)">Kembali</button><button class="age-continue" id="ageGateContinue" disabled onclick="resolveAgeGate(true)">Verifikasi & Masuk</button></div></section></div>
-    <div class="update-modal-backdrop" id="updateModal"><div class="update-sheet"><div class="update-icon"><i class="fa-solid fa-cloud-arrow-down"></i></div><h2>Versi baru tersedia</h2><p>Pembaruan aplikasi sudah siap. Proses ini akan membersihkan cache antarmuka lama tanpa menghapus akun, bookmark, atau riwayat Anda.</p><div class="update-version-line"><span id="updateCurrentVersion">V20.4.56</span><i class="fa-solid fa-arrow-right"></i><span id="updateLatestVersion">V20.4.56</span></div><div class="update-changelog" id="updateChangelog">Peningkatan stabilitas dan tampilan.</div><div class="update-actions"><button class="update-action update-later" onclick="dismissAppUpdate()">Nanti</button><button class="update-action update-now" onclick="applyAppUpdate()"><i class="fa-solid fa-bolt"></i> Perbarui Sekarang</button></div></div></div>
+    <div class="update-modal-backdrop" id="updateModal"><div class="update-sheet"><div class="update-icon"><i class="fa-solid fa-cloud-arrow-down"></i></div><h2>Versi baru tersedia</h2><p>Pembaruan aplikasi sudah siap. Proses ini akan membersihkan cache antarmuka lama tanpa menghapus akun, bookmark, atau riwayat Anda.</p><div class="update-version-line"><span id="updateCurrentVersion">V20.4.57</span><i class="fa-solid fa-arrow-right"></i><span id="updateLatestVersion">V20.4.57</span></div><div class="update-changelog" id="updateChangelog">Peningkatan stabilitas dan tampilan.</div><div class="update-actions"><button class="update-action update-later" onclick="dismissAppUpdate()">Nanti</button><button class="update-action update-now" onclick="applyAppUpdate()"><i class="fa-solid fa-bolt"></i> Perbarui Sekarang</button></div></div></div>
 
     <div class="home-action-backdrop" id="requestContentModal" role="dialog" aria-modal="true" aria-labelledby="requestContentTitle" onclick="if(event.target===this)closeRequestModal()">
         <div class="home-action-sheet">
@@ -1721,7 +1721,7 @@
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
         import { getFirestore, collection, getDocs, getDoc, getCountFromServer, doc, query, where, orderBy, limit, startAfter, updateDoc, increment, setDoc, deleteDoc, addDoc, serverTimestamp, runTransaction, writeBatch } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
-        import { getAuth, onAuthStateChanged, signInWithEmailAndPassword, createUserWithEmailAndPassword, signOut, sendPasswordResetEmail, GoogleAuthProvider, signInWithPopup, signInWithRedirect, getRedirectResult } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+        import { getAuth, onAuthStateChanged, signInWithEmailAndPassword, createUserWithEmailAndPassword, signOut, sendPasswordResetEmail, GoogleAuthProvider, signInWithPopup, signInWithRedirect, getRedirectResult, signInAnonymously } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
 
         const firebaseConfig = {
             apiKey: "AIzaSyAt1V2Ogx0P8rSLSNz9_zZpYt00cCN5JL0",
@@ -1735,7 +1735,16 @@
         const app = initializeApp(firebaseConfig);
         const db = getFirestore(app);
         const auth = getAuth(app);
-        const APP_VERSION = '20.4.56';
+        // Auth anonim dipisahkan dari sesi akun utama agar pengunjung tetap dihitung
+        // tanpa mengubah status login dan antarmuka akun mereka.
+        const viewCounterApp = initializeApp(firebaseConfig, 'yarchViewCounter');
+        const viewCounterDb = getFirestore(viewCounterApp);
+        const viewCounterAuth = getAuth(viewCounterApp);
+        let primaryAuthReadyResolve;
+        const primaryAuthReady = new Promise(resolve=>{primaryAuthReadyResolve=resolve;});
+        let guestViewIdentityPromise = null;
+        const VIEW_COUNT_COOLDOWN_MS = 6 * 60 * 60 * 1000;
+        const APP_VERSION = '20.4.57';
         const ADMIN_UID = 'dWUWpKAWQRRxMOzjzaOA3zXWZLp2';
 
         // ================= PENYIMPANAN OFFLINE (INDEXEDDB) =================
@@ -1859,7 +1868,8 @@
         }
         window.accountMenuNavigate=function(page){closeAccountMenu();switchNav(page);}
         const APP_CHANGELOG = [
-            {version:'20.4.56',label:'Terbaru',title:'Atur Lewati Intro langsung dari Pilih Thumbnail',changes:['Kolom Mulai Intro dan Selesai Intro dipindahkan ke dialog Pilih Frame Thumbnail.','Tombol Simpan Thumbnail & Intro menyimpan frame dan rentang intro sekaligus.','Panel intro terpisah di bawah File Manager dihapus.'],fixes:['Pengaturan intro tidak lagi bergantung pada footer File Manager yang tidak tampil di ponsel.']},
+            {version:'20.4.57',label:'Terbaru',title:'Hitung view pengunjung dan akun dengan jeda anti-spam',changes:['View judul komik, chapter, dan episode kini juga mencakup pengunjung yang belum login.','Akun dan pengunjung yang sama dapat menambah view kembali setelah 6 jam.','Jumlah view unik tetap satu per identitas; penghitung total bertambah untuk kunjungan berikutnya yang memenuhi jeda.'],fixes:['Aturan Firestore memvalidasi setiap penambahan view dan menjaga hitungan total agar tidak dapat dinaikkan tanpa transaksi viewer yang sah.']},
+            {version:'20.4.56',label:'Riwayat',title:'Atur Lewati Intro langsung dari Pilih Thumbnail',changes:['Kolom Mulai Intro dan Selesai Intro dipindahkan ke dialog Pilih Frame Thumbnail.','Tombol Simpan Thumbnail & Intro menyimpan frame dan rentang intro sekaligus.','Panel intro terpisah di bawah File Manager dihapus.'],fixes:['Pengaturan intro tidak lagi bergantung pada footer File Manager yang tidak tampil di ponsel.']},
             {version:'20.4.55',label:'Sebelumnya',title:'Tombol media mobile dan panel intro dipastikan tampil',changes:['Tombol Pilih dibuat selebar kartu dan tombol ikon disusun dalam kisi agar tidak saling mendorong atau terpotong.','Panel Lewati Intro mengikuti footer folder episode; panel tetap terlihat setiap kali folder dibuka.'],fixes:['Menghilangkan ketergantungan panel intro pada atribut tersembunyi yang sebelumnya bisa tertinggal saat berpindah folder.']},
             {version:'20.4.54',label:'Sebelumnya',title:'Panel intro dan tombol File Manager dirapikan',changes:['Panel Lewati Intro dan tombol Simpan & Publikasikan dipastikan tampil saat folder episode dibuka.','Ukuran tombol Pilih, preview, thumbnail, download, dan hapus diseragamkan pada kartu media.'],fixes:['Mencegah panel intro tertinggal tersembunyi setelah berpindah folder.']},
             {version:'20.4.53',label:'Sebelumnya',title:'File Manager layar penuh dan pengaturan intro satu tempat',changes:['File Manager memenuhi layar pada ponsel agar ruang daftar folder dan media lebih nyaman digunakan.','Pengaturan Lewati Intro hanya tersedia di panel folder episode.','Dialog Pilih Frame Thumbnail hanya mengatur dan menyimpan thumbnail.'],fixes:['Mencegah pengaturan intro ganda dan thumbnail mengubah nilai intro secara tidak sengaja.']},
@@ -2311,6 +2321,7 @@
             updateHomeAccountIdentity(user);
         }
         onAuthStateChanged(auth, async (user) => {
+            primaryAuthReadyResolve?.();primaryAuthReadyResolve=null;
             window.chapterReactionState?.clear();
             document.querySelectorAll('.chapter-reaction-btn').forEach(button=>{button.classList.remove('active');const icon=button.querySelector('i');if(icon)icon.className=`fa-regular ${button.classList.contains('up')?'fa-thumbs-up':'fa-thumbs-down'}`;});
             if (user) {
@@ -4243,15 +4254,42 @@
             } catch(e) { window.showToast("Gagal menyimpan rating. Cek Rules Firebase."); }
         }
 
-        function canCountView(comicId) {
-            const key = `lastView_${comicId}`;
-            const last = Number(localStorage.getItem(key) || 0);
-            return { allowed:Date.now() - last > 6 * 60 * 60 * 1000, key };
+        async function getViewIdentity(){
+            await primaryAuthReady;
+            if(auth.currentUser)return {uid:auth.currentUser.uid,db};
+            if(!guestViewIdentityPromise){
+                guestViewIdentityPromise=(async()=>{
+                    if(!viewCounterAuth.currentUser){
+                        await new Promise(resolve=>{
+                            let unsubscribe=()=>{};
+                            unsubscribe=onAuthStateChanged(viewCounterAuth,()=>{unsubscribe();resolve();});
+                        });
+                    }
+                    const user=viewCounterAuth.currentUser||(await signInAnonymously(viewCounterAuth)).user;
+                    return {uid:user.uid,db:viewCounterDb};
+                })().catch(error=>{guestViewIdentityPromise=null;throw error;});
+            }
+            return guestViewIdentityPromise;
         }
-        async function recordVerifiedComicView(comicId){
-            if(!auth.currentUser||!comicId)return false;
-            const comicRef=doc(db,'comics',comicId),viewerRef=doc(db,'comics',comicId,'viewers',auth.currentUser.uid);
-            return runTransaction(db,async transaction=>{const viewer=await transaction.get(viewerRef);if(viewer.exists())return false;transaction.set(viewerRef,{userId:auth.currentUser.uid,viewedAt:serverTimestamp()});transaction.update(comicRef,{views:increment(1)});return true;});
+        function canCountView(comicId,uid) {
+            const key = `lastView_${uid}_${comicId}`;
+            const last = Number(localStorage.getItem(key) || 0);
+            return { allowed:Date.now() - last >= VIEW_COUNT_COOLDOWN_MS, key };
+        }
+        async function recordVerifiedComicView(comicId,identity){
+            if(!identity?.uid||!comicId)return null;
+            const activeDb=identity.db,uid=identity.uid,comicRef=doc(activeDb,'comics',comicId),viewerRef=doc(activeDb,'comics',comicId,'viewers',uid);
+            return runTransaction(activeDb,async transaction=>{
+                const viewer=await transaction.get(viewerRef),comic=await transaction.get(comicRef);
+                if(!comic.exists())return null;
+                const oldViewer=viewer.exists()?viewer.data():null,lastViewed=oldViewer?.lastViewedAt||oldViewer?.viewedAt,lastViewedMs=lastViewed?.toMillis?.()||0;
+                if(oldViewer&&Date.now()-lastViewedMs<VIEW_COUNT_COOLDOWN_MS)return null;
+                const views=Math.max(0,Number(comic.data().views||0))+1;
+                if(oldViewer)transaction.update(viewerRef,{lastViewedAt:serverTimestamp(),viewCount:Number(oldViewer.viewCount||1)+1});
+                else transaction.set(viewerRef,{userId:uid,viewedAt:serverTimestamp(),lastViewedAt:serverTimestamp(),viewCount:1});
+                transaction.update(comicRef,{views:increment(1)});
+                return {views};
+            });
         }
 
         function profileAge(birthDate){if(!/^\d{4}-\d{2}-\d{2}$/.test(String(birthDate||'')))return null;const born=new Date(`${birthDate}T00:00:00`),now=new Date();if(Number.isNaN(born.getTime())||born>now)return null;let age=now.getFullYear()-born.getFullYear();const month=now.getMonth()-born.getMonth();if(month<0||(month===0&&now.getDate()<born.getDate()))age--;return age;}
@@ -4325,11 +4363,12 @@
                 const data = window.comicsData[comicId];
                 
                 try {
-                    const viewGate = canCountView(comicId);
-                    if(!fromHistory && viewGate.allowed) {
-                        const counted=await recordVerifiedComicView(comicId);
-                        if(counted){window.comicsData[comicId].views=(data.views||0)+1;recordDailyAnalytics({views:1});}
-                        localStorage.setItem(viewGate.key,String(Date.now()));
+                    if(!fromHistory) {
+                        const identity=await getViewIdentity(),viewGate=canCountView(comicId,identity.uid);
+                        if(viewGate.allowed){
+                            const counted=await recordVerifiedComicView(comicId,identity);
+                            if(counted){window.comicsData[comicId].views=counted.views;localStorage.setItem(viewGate.key,String(Date.now()));if(auth.currentUser)recordDailyAnalytics({views:1});}
+                        }
                     }
                 } catch(e) {}
 
@@ -4478,8 +4517,23 @@
             try{const chapterRef=doc(db,'comics',comicId,'chapters',chapterId),reactionRef=doc(db,'comics',comicId,'chapters',chapterId,'reactions',auth.currentUser.uid);const result=await runTransaction(db,async transaction=>{const chapterSnap=await transaction.get(chapterRef),reactionSnap=await transaction.get(reactionRef);if(!chapterSnap.exists())throw new Error('Chapter tidak ditemukan');const data=chapterSnap.data(),oldReaction=reactionSnap.exists()?String(reactionSnap.data().reaction||''):'',nextReaction=oldReaction===reaction?'':reaction;let upCount=Math.max(0,Number(data.upCount||0)),downCount=Math.max(0,Number(data.downCount||0));if(oldReaction==='up')upCount=Math.max(0,upCount-1);if(oldReaction==='down')downCount=Math.max(0,downCount-1);if(nextReaction==='up')upCount+=1;if(nextReaction==='down')downCount+=1;transaction.update(chapterRef,{upCount,downCount});if(nextReaction)transaction.set(reactionRef,{userId:auth.currentUser.uid,reaction:nextReaction,updatedAt:serverTimestamp()});else if(reactionSnap.exists())transaction.delete(reactionRef);return{upCount,downCount,reaction:nextReaction,viewCount:Number(data.viewCount||0)};});window.chapterReactionState.set(chapterMetricKey(comicId,chapterId),result.reaction);updateChapterMetricUI(comicId,chapterId,result,result.reaction);}catch(error){window.showToast('Penilaian belum dapat disimpan. Publikasikan Firestore Rules terbaru.');reportBackgroundError('Penilaian chapter gagal',error);}finally{buttons.forEach(item=>item.disabled=false);}
         };
         async function recordChapterView(comicId,chapterId){
-            const uid=auth.currentUser?.uid,key=`${uid||''}:${comicId}:${chapterId}`;if(!uid||!comicId||!chapterId||window.chapterViewsRecordedSession.has(key))return;window.chapterViewsRecordedSession.add(key);
-            try{const chapterRef=doc(db,'comics',comicId,'chapters',chapterId),viewerRef=doc(db,'comics',comicId,'chapters',chapterId,'viewers',uid),count=await runTransaction(db,async transaction=>{const viewer=await transaction.get(viewerRef);if(viewer.exists())return null;const chapter=await transaction.get(chapterRef);if(!chapter.exists())return null;const viewCount=Math.max(0,Number(chapter.data().viewCount||0))+1;transaction.update(chapterRef,{viewCount});transaction.set(viewerRef,{userId:uid,viewedAt:serverTimestamp()});return viewCount;});if(count!==null)updateChapterMetricUI(comicId,chapterId,{viewCount:count},window.chapterReactionState.get(chapterMetricKey(comicId,chapterId))||'');}catch(error){window.chapterViewsRecordedSession.delete(key);reportBackgroundError('Tayangan chapter gagal dicatat',error);}
+            if(!comicId||!chapterId)return;
+            let identity;try{identity=await getViewIdentity();}catch(error){reportBackgroundError('Identitas pengunjung untuk hitungan tayangan gagal dibuat',error);return;}
+            const uid=identity.uid,key=`${uid}:${comicId}:${chapterId}`;if(window.chapterViewsRecordedSession.has(key))return;window.chapterViewsRecordedSession.add(key);
+            try{
+                const activeDb=identity.db,chapterRef=doc(activeDb,'comics',comicId,'chapters',chapterId),viewerRef=doc(activeDb,'comics',comicId,'chapters',chapterId,'viewers',uid);
+                const count=await runTransaction(activeDb,async transaction=>{
+                    const viewer=await transaction.get(viewerRef),chapter=await transaction.get(chapterRef);if(!chapter.exists())return null;
+                    const oldViewer=viewer.exists()?viewer.data():null,lastViewed=oldViewer?.lastViewedAt||oldViewer?.viewedAt,lastViewedMs=lastViewed?.toMillis?.()||0;
+                    if(oldViewer&&Date.now()-lastViewedMs<VIEW_COUNT_COOLDOWN_MS)return null;
+                    const viewCount=Math.max(0,Number(chapter.data().viewCount||0))+1;
+                    if(oldViewer)transaction.update(viewerRef,{lastViewedAt:serverTimestamp(),viewCount:Number(oldViewer.viewCount||1)+1});
+                    else transaction.set(viewerRef,{userId:uid,viewedAt:serverTimestamp(),lastViewedAt:serverTimestamp(),viewCount:1});
+                    transaction.update(chapterRef,{viewCount});return viewCount;
+                });
+                if(count!==null)updateChapterMetricUI(comicId,chapterId,{viewCount:count},window.chapterReactionState.get(chapterMetricKey(comicId,chapterId))||'');
+            }catch(error){reportBackgroundError('Tayangan chapter gagal dicatat',error);}
+            finally{window.chapterViewsRecordedSession.delete(key);}
         }
         window.shareChapterEpisode=async function(comicId,chapterId,chapterNum){
             const comic=window.comicsData[comicId]||{},isVideo=isVideoContent(comic);let chapter={};

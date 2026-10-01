@@ -314,13 +314,14 @@
         .reader-title.selectable::after { content:'\f078'; margin-left:7px; font-family:'Font Awesome 6 Free'; font-size:9px; font-weight:900; color:#aaa; }
         .media-chapter-picker { position:fixed; top:66px; left:50%; z-index:607; display:none; width:min(calc(100% - 24px),496px); max-height:min(62vh,520px); overflow:auto; padding:10px; border:1px solid rgba(255,255,255,.12); border-radius:17px; color:#fff; background:rgba(20,21,29,.97); box-shadow:0 18px 48px rgba(0,0,0,.48); backdrop-filter:blur(20px); transform:translateX(-50%); }
         .media-chapter-picker.show { display:block; animation:fadeIn .18s ease; }
+        #playerChapterPicker { position:absolute; top:78px; max-height:min(62vh,520px); }
         .media-picker-head { display:flex; align-items:center; justify-content:space-between; padding:5px 7px 10px; color:#b9bdca; font-size:11px; font-weight:800; }
         .media-picker-list { display:grid; gap:6px; }
         .media-picker-item { width:100%; min-height:44px; display:flex; align-items:center; justify-content:space-between; gap:10px; padding:9px 11px; border:0; border-radius:11px; color:#d8dae3; background:rgba(255,255,255,.07); cursor:pointer; text-align:left; font-size:11px; font-weight:700; }
         .media-picker-item small { flex:0 0 auto; color:#9297a8; font-size:9px; }
         .media-picker-item.active { color:#fff; background:linear-gradient(135deg,#6d5dfc,#5153e8); }
         .media-picker-item.active small { color:rgba(255,255,255,.75); }
-        @media(min-width:600px){.media-chapter-picker{top:88px}}
+        @media(min-width:600px){.media-chapter-picker{top:88px}#playerChapterPicker{top:88px}}
         .reader-images.mode-horizontal { flex-direction:row; align-items:stretch; overflow-x:auto; overflow-y:hidden; height:100vh; padding:0; scroll-snap-type:x mandatory; }
         .reader-images.mode-horizontal img { flex:0 0 100%; width:100%; height:100vh; object-fit:contain; scroll-snap-align:start; }
         .reader-images.fit-height:not(.mode-horizontal) img { width:auto; max-width:100%; max-height:100vh; object-fit:contain; }
@@ -364,7 +365,7 @@
         .player-header { gap:10px; background:rgba(8,9,14,.88); backdrop-filter:blur(18px); }
         .player-tools { position:absolute; left:50%; bottom:max(64px,calc(env(safe-area-inset-bottom) + 60px)); z-index:603; display:flex; align-items:center; justify-content:center; gap:7px; width:max-content; max-width:calc(100% - 24px); padding:9px; border:1px solid rgba(255,255,255,.09); border-radius:20px; background:rgba(15,16,23,.9); box-shadow:0 12px 35px rgba(0,0,0,.38); backdrop-filter:blur(18px); transform:translateX(-50%); transition:opacity .35s ease,visibility .35s ease; }
         .player-timeline { position:absolute; left:16px; right:16px; bottom:max(12px,env(safe-area-inset-bottom)); z-index:602; display:flex; align-items:center; gap:10px; min-height:32px; padding:4px 10px; border:1px solid rgba(255,255,255,.08); border-radius:12px; color:#fff; background:rgba(12,13,19,.68); backdrop-filter:blur(12px); transition:opacity .35s ease,visibility .35s ease; }
-        .video-container.player-controls-hidden .player-tools,.video-container.player-controls-hidden .player-timeline,.video-container.player-controls-hidden .player-skip-btn { opacity:0; visibility:hidden; pointer-events:none; }
+        .video-container.player-controls-hidden .player-tools,.video-container.player-controls-hidden .player-timeline,.video-container.player-controls-hidden .player-skip-btn,.video-container.player-controls-hidden .player-landscape-episode-btn { opacity:0; visibility:hidden; pointer-events:none; }
         .player-time-label { min-width:40px; color:#f6f6fa; font-size:10px; font-variant-numeric:tabular-nums; font-weight:700; text-align:center; white-space:nowrap; }
         .player-seek-range { flex:1; min-width:0; height:5px; margin:0; accent-color:#756cff; cursor:pointer; touch-action:pan-x; }
         .player-volume-btn { flex:0 0 40px; width:40px; padding:0; display:grid; place-items:center; cursor:pointer; font-size:13px; }
@@ -386,8 +387,9 @@
         .player-setting-field { display:grid; gap:6px; color:#aeb2c1; font-size:10px; font-weight:750; }
         .player-settings-actions { display:grid; grid-template-columns:repeat(3,1fr); gap:8px; margin-top:12px; }
         .player-settings-actions button { width:100%; }
-        .player-skip-btn { position:absolute; right:16px; bottom:max(126px,calc(env(safe-area-inset-bottom) + 120px)); z-index:604; display:none; border:1px solid rgba(255,255,255,.25); border-radius:12px; padding:10px 13px; color:#fff; background:rgba(15,16,23,.88); font-size:11px; font-weight:800; cursor:pointer; backdrop-filter:blur(14px); transition:opacity .35s ease,visibility .35s ease; }
+        .player-skip-btn { position:absolute; right:16px; bottom:max(142px,calc(env(safe-area-inset-bottom) + 138px)); z-index:604; display:none; border:1px solid rgba(255,255,255,.25); border-radius:12px; padding:10px 13px; color:#fff; background:rgba(15,16,23,.88); font-size:11px; font-weight:800; cursor:pointer; backdrop-filter:blur(14px); transition:opacity .35s ease,visibility .35s ease; }
         .player-skip-btn.show { display:block; }
+        .player-landscape-episode-btn { position:absolute; top:max(10px,calc(env(safe-area-inset-top) + 6px)); left:50%; z-index:608; display:none; align-items:center; gap:8px; max-width:min(54vw,280px); padding:10px 14px; border:1px solid rgba(255,255,255,.22); border-radius:13px; color:#fff; background:rgba(15,16,23,.88); box-shadow:0 8px 22px rgba(0,0,0,.28); backdrop-filter:blur(14px); transform:translateX(-50%); font-size:12px; font-weight:800; cursor:pointer; white-space:nowrap; }
         .autoplay-countdown { position:absolute; inset:0; z-index:606; display:none; align-items:center; justify-content:center; padding:25px; background:rgba(5,6,10,.78); backdrop-filter:blur(8px); }
         .autoplay-countdown.show { display:flex; }
         .autoplay-card { width:min(88%,330px); padding:24px; text-align:center; border:1px solid rgba(255,255,255,.15); border-radius:22px; background:#171820; box-shadow:0 20px 60px rgba(0,0,0,.45); }
@@ -399,6 +401,10 @@
         video.subtitle-small::cue { font-size:75%; }
         video.subtitle-large::cue { font-size:135%; }
         @media(max-width:430px){.player-tools{gap:5px;padding:7px}.player-icon-btn{flex-basis:38px;width:38px;height:38px}.player-play-btn{flex-basis:46px;width:46px;height:46px}.player-tools .player-optional-btn{display:none}.player-settings-grid{grid-template-columns:1fr}.reader-settings{left:12px;right:12px;width:auto}.reader-images.mode-double{gap:2px;padding-left:2px;padding-right:2px}}
+        @media (orientation:landscape) and (max-height:600px){#playerTitle{visibility:hidden;pointer-events:none}#playerChapterPicker{top:max(72px,calc(env(safe-area-inset-top) + 64px));width:min(540px,calc(100vw - 28px));max-height:calc(100dvh - env(safe-area-inset-top) - 100px);padding:8px}.player-landscape-episode-btn{display:flex;top:max(18px,calc(env(safe-area-inset-top) + 8px))}.media-picker-item{min-height:40px;padding:7px 10px}.media-picker-head{padding-bottom:7px}}
+        .video-container:fullscreen #playerChapterPicker,.video-container:-webkit-full-screen #playerChapterPicker{top:max(56px,calc(env(safe-area-inset-top) + 48px));max-height:calc(100dvh - env(safe-area-inset-top) - 76px)}
+        .video-container:fullscreen .player-landscape-episode-btn,.video-container:-webkit-full-screen .player-landscape-episode-btn{display:flex;top:max(10px,calc(env(safe-area-inset-top) + 6px))}
+        .video-container:fullscreen .player-skip-btn,.video-container:-webkit-full-screen .player-skip-btn{bottom:max(146px,calc(env(safe-area-inset-bottom) + 142px))}
 
         /* AUTH & DETAILED PROFILE PAGE */
         .profile-hero { background: linear-gradient(135deg, var(--primary-blue), var(--dark-blue)); padding: 35px 20px 25px; color: white; text-align: center; border-bottom-left-radius: 24px; border-bottom-right-radius: 24px; }
@@ -1294,7 +1300,7 @@
                 <h1>Yarch terus berkembang</h1>
                 <p>Lihat fitur baru, peningkatan pengalaman, dan bug yang telah diperbaiki dari versi terbaru hingga versi sebelumnya.</p>
             </section>
-            <div class="changelog-current"><span><strong id="changelogCurrentVersion">V20.4.57</strong><br>Versi yang sedang digunakan</span><button type="button" onclick="checkAppConfiguration(true)"><i class="fa-solid fa-rotate"></i> Periksa update</button></div>
+            <div class="changelog-current"><span><strong id="changelogCurrentVersion">V20.4.58</strong><br>Versi yang sedang digunakan</span><button type="button" onclick="checkAppConfiguration(true)"><i class="fa-solid fa-rotate"></i> Periksa update</button></div>
             <main class="changelog-timeline" id="changelogTimeline" aria-live="polite"></main>
         </div>
 
@@ -1499,8 +1505,6 @@
                 <div class="reader-title selectable" id="playerTitle" onclick="toggleMediaChapterPicker('player',event)" title="Pilih episode">Memuat Film...</div>
                 <button class="btn-toggle-quality" onclick="toggleQualityMenu()"><i class="fa-solid fa-gear"></i> Resolusi</button>
             </div>
-            <div class="media-chapter-picker" id="playerChapterPicker" onclick="event.stopPropagation()"></div>
-            
             <div class="quality-selector" id="qualityMenu">
                 <button class="quality-btn" onclick="changeQuality('1080')">1080p FHD</button>
                 <button class="quality-btn" onclick="changeQuality('720')">720p HD</button>
@@ -1509,6 +1513,8 @@
             </div>
 
             <div class="video-container" onclick="if(document.getElementById('qualityMenu').style.display==='flex') toggleQualityMenu();">
+                <button class="player-landscape-episode-btn" onclick="event.stopPropagation();toggleMediaChapterPicker('player',event)" aria-label="Pilih episode"><i class="fa-solid fa-list"></i><span>Pilih episode</span><i class="fa-solid fa-chevron-down"></i></button>
+                <div class="media-chapter-picker" id="playerChapterPicker" onclick="event.stopPropagation()"></div>
                 <div class="resume-banner" id="resumeBanner">Melanjutkan tontonan terakhir</div>
                 <video id="mainVideoPlayer" playsinline controlsList="nodownload noremoteplayback" oncontextmenu="return false;" disableRemotePlayback>
                     <source src="" type="video/mp4" id="videoSource">
@@ -1663,14 +1669,14 @@
             <button class="account-menu-item" type="button" onclick="openAppInfo('about')"><i class="fa-solid fa-circle-info"></i><span>Tentang Yarch</span><i class="fa-solid fa-chevron-right"></i></button>
             <button class="account-menu-item" type="button" onclick="closeAccountMenu();openAdminContact()"><i class="fa-solid fa-headset"></i><span>Hubungi Admin</span><i class="fa-solid fa-chevron-right"></i></button>
             <div class="account-menu-divider" style="margin-top:11px"></div>
-            <button class="account-menu-item updates-menu-item" type="button" onclick="closeAccountMenu();openChangelogPage()"><i class="fa-solid fa-clock-rotate-left"></i><span class="account-menu-item-copy"><strong>Updates</strong><small>V20.4.57 • Riwayat perbaikan</small></span><i class="fa-solid fa-chevron-right"></i></button>
+            <button class="account-menu-item updates-menu-item" type="button" onclick="closeAccountMenu();openChangelogPage()"><i class="fa-solid fa-clock-rotate-left"></i><span class="account-menu-item-copy"><strong>Updates</strong><small>V20.4.58 • Riwayat perbaikan</small></span><i class="fa-solid fa-chevron-right"></i></button>
             <button class="account-menu-item danger" id="accountMenuLogout" type="button" onclick="closeAccountMenu();doLogout()"><i class="fa-solid fa-right-from-bracket"></i><span>Keluar dari Akun</span><i class="fa-solid fa-chevron-right"></i></button>
         </aside>
     </div>
     <div class="profile-modal-backdrop" id="profileEditorModal" onclick="if(event.target===this)closeProfileEditor()"><section class="profile-modal-sheet" role="dialog" aria-modal="true" aria-labelledby="profileEditorTitle"><div class="profile-modal-head"><div class="profile-modal-icon"><i class="fa-solid fa-user-pen"></i></div><div class="profile-modal-title"><h3 id="profileEditorTitle">Lengkapi Profil</h3><p>Informasi tanggal lahir disimpan secara privat untuk verifikasi usia.</p></div><button class="profile-modal-close" onclick="closeProfileEditor()"><i class="fa-solid fa-xmark"></i></button></div><div class="profile-modal-form"><label for="profileDisplayName">Nama tampilan</label><input id="profileDisplayName" maxlength="35" placeholder="Nama tampilan"><label for="profileBioInput">Bio singkat</label><textarea id="profileBioInput" maxlength="160" placeholder="Ceritakan genre atau karakter favoritmu..."></textarea><div class="profile-modal-grid"><div><label for="profileBirthDate">Tanggal lahir</label><input id="profileBirthDate" type="date"></div><div><label for="profileGender">Jenis kelamin</label><select id="profileGender"><option value="">Tidak disebutkan</option><option value="Laki-laki">Laki-laki</option><option value="Perempuan">Perempuan</option><option value="Lainnya">Lainnya</option></select></div></div><label for="profileLocation">Kota / lokasi (opsional)</label><input id="profileLocation" maxlength="60" placeholder="Contoh: Jakarta"><button class="profile-modal-save" onclick="saveSocialProfile()"><i class="fa-solid fa-floppy-disk"></i> Simpan Profil</button></div></section></div>
     <div class="profile-modal-backdrop" id="shareProfileModal" onclick="if(event.target===this)closeShareProfile()"><section class="profile-modal-sheet" role="dialog" aria-modal="true"><div class="profile-modal-head"><div class="profile-modal-icon"><i class="fa-solid fa-share-nodes"></i></div><div class="profile-modal-title"><h3>Bagikan Profil</h3><p>Undang teman melihat profil, statistik, dan favorit yang kamu izinkan.</p></div><button class="profile-modal-close" onclick="closeShareProfile()"><i class="fa-solid fa-xmark"></i></button></div><div class="share-profile-preview"><img id="shareProfileAvatar" alt="Foto profil"><div><strong id="shareProfileName">Pembaca Yarch</strong><span id="shareProfileLevel">Profil pembaca</span></div></div><div class="share-url-row"><input id="shareProfileUrl" readonly><button onclick="shareProfileVia('copy')" aria-label="Salin tautan"><i class="fa-regular fa-copy"></i></button></div><div class="share-option-grid"><button class="share-option" onclick="shareProfileVia('native')"><i class="fa-solid fa-arrow-up-from-bracket"></i>Bagikan</button><button class="share-option" onclick="shareProfileVia('whatsapp')"><i class="fa-brands fa-whatsapp" style="color:#18a957"></i>WhatsApp</button><button class="share-option" onclick="shareProfileVia('telegram')"><i class="fa-brands fa-telegram" style="color:#2b9bd7"></i>Telegram</button><button class="share-option" onclick="shareProfileVia('copy')"><i class="fa-solid fa-link"></i>Salin</button></div></section></div>
     <div class="profile-modal-backdrop" id="ageGateModal"><section class="profile-modal-sheet age-gate-sheet" role="dialog" aria-modal="true" aria-labelledby="ageGateTitle"><div class="age-gate-shield"><i class="fa-solid fa-shield-halved"></i></div><h3 id="ageGateTitle">Verifikasi Usia</h3><p id="ageGateMessage">Konten ini ditujukan untuk pengguna yang telah memenuhi batas usia.</p><div class="profile-modal-form"><label for="ageGateBirthDate" style="text-align:left">Tanggal lahir</label><input id="ageGateBirthDate" type="date" oninput="updateAgeGateButton()" onchange="updateAgeGateButton()"><div class="age-gate-status" id="ageGateStatus" role="status" aria-live="polite"></div><label class="age-confirm-check"><input id="ageGateConfirm" type="checkbox" onchange="updateAgeGateButton()"><span>Saya menyatakan tanggal lahir yang dimasukkan benar dan memahami bahwa konten dapat memuat tema dewasa.</span></label></div><div class="age-gate-actions"><button class="age-cancel" onclick="resolveAgeGate(false)">Kembali</button><button class="age-continue" id="ageGateContinue" disabled onclick="resolveAgeGate(true)">Verifikasi & Masuk</button></div></section></div>
-    <div class="update-modal-backdrop" id="updateModal"><div class="update-sheet"><div class="update-icon"><i class="fa-solid fa-cloud-arrow-down"></i></div><h2>Versi baru tersedia</h2><p>Pembaruan aplikasi sudah siap. Proses ini akan membersihkan cache antarmuka lama tanpa menghapus akun, bookmark, atau riwayat Anda.</p><div class="update-version-line"><span id="updateCurrentVersion">V20.4.57</span><i class="fa-solid fa-arrow-right"></i><span id="updateLatestVersion">V20.4.57</span></div><div class="update-changelog" id="updateChangelog">Peningkatan stabilitas dan tampilan.</div><div class="update-actions"><button class="update-action update-later" onclick="dismissAppUpdate()">Nanti</button><button class="update-action update-now" onclick="applyAppUpdate()"><i class="fa-solid fa-bolt"></i> Perbarui Sekarang</button></div></div></div>
+    <div class="update-modal-backdrop" id="updateModal"><div class="update-sheet"><div class="update-icon"><i class="fa-solid fa-cloud-arrow-down"></i></div><h2>Versi baru tersedia</h2><p>Pembaruan aplikasi sudah siap. Proses ini akan membersihkan cache antarmuka lama tanpa menghapus akun, bookmark, atau riwayat Anda.</p><div class="update-version-line"><span id="updateCurrentVersion">V20.4.58</span><i class="fa-solid fa-arrow-right"></i><span id="updateLatestVersion">V20.4.58</span></div><div class="update-changelog" id="updateChangelog">Peningkatan stabilitas dan tampilan.</div><div class="update-actions"><button class="update-action update-later" onclick="dismissAppUpdate()">Nanti</button><button class="update-action update-now" onclick="applyAppUpdate()"><i class="fa-solid fa-bolt"></i> Perbarui Sekarang</button></div></div></div>
 
     <div class="home-action-backdrop" id="requestContentModal" role="dialog" aria-modal="true" aria-labelledby="requestContentTitle" onclick="if(event.target===this)closeRequestModal()">
         <div class="home-action-sheet">
@@ -1744,7 +1750,7 @@
         const primaryAuthReady = new Promise(resolve=>{primaryAuthReadyResolve=resolve;});
         let guestViewIdentityPromise = null;
         const VIEW_COUNT_COOLDOWN_MS = 6 * 60 * 60 * 1000;
-        const APP_VERSION = '20.4.57';
+        const APP_VERSION = '20.4.58';
         const ADMIN_UID = 'dWUWpKAWQRRxMOzjzaOA3zXWZLp2';
 
         // ================= PENYIMPANAN OFFLINE (INDEXEDDB) =================
@@ -1868,7 +1874,8 @@
         }
         window.accountMenuNavigate=function(page){closeAccountMenu();switchNav(page);}
         const APP_CHANGELOG = [
-            {version:'20.4.57',label:'Terbaru',title:'Hitung view pengunjung dan akun dengan jeda anti-spam',changes:['View judul komik, chapter, dan episode kini juga mencakup pengunjung yang belum login.','Akun dan pengunjung yang sama dapat menambah view kembali setelah 6 jam.','Jumlah view unik tetap satu per identitas; penghitung total bertambah untuk kunjungan berikutnya yang memenuhi jeda.'],fixes:['Aturan Firestore memvalidasi setiap penambahan view dan menjaga hitungan total agar tidak dapat dinaikkan tanpa transaksi viewer yang sah.']},
+            {version:'20.4.58',label:'Terbaru',title:'Player lebih rapi dan pilih episode landscape',changes:['Tombol Lewati Intro dipindahkan agar memiliki jarak aman dari panel kontrol bawah.','Daftar episode dapat dibuka dari tombol pilihan episode saat layar landscape maupun fullscreen.','Pemilihan episode portrait tetap menggunakan judul episode di bagian atas.'],fixes:['Daftar episode kini berada di dalam area fullscreen player sehingga tetap tersedia saat video layar penuh.']},
+            {version:'20.4.57',label:'Sebelumnya',title:'Hitung view pengunjung dan akun dengan jeda anti-spam',changes:['View judul komik, chapter, dan episode kini juga mencakup pengunjung yang belum login.','Akun dan pengunjung yang sama dapat menambah view kembali setelah 6 jam.','Jumlah view unik tetap satu per identitas; penghitung total bertambah untuk kunjungan berikutnya yang memenuhi jeda.'],fixes:['Aturan Firestore memvalidasi setiap penambahan view dan menjaga hitungan total agar tidak dapat dinaikkan tanpa transaksi viewer yang sah.']},
             {version:'20.4.56',label:'Riwayat',title:'Atur Lewati Intro langsung dari Pilih Thumbnail',changes:['Kolom Mulai Intro dan Selesai Intro dipindahkan ke dialog Pilih Frame Thumbnail.','Tombol Simpan Thumbnail & Intro menyimpan frame dan rentang intro sekaligus.','Panel intro terpisah di bawah File Manager dihapus.'],fixes:['Pengaturan intro tidak lagi bergantung pada footer File Manager yang tidak tampil di ponsel.']},
             {version:'20.4.55',label:'Sebelumnya',title:'Tombol media mobile dan panel intro dipastikan tampil',changes:['Tombol Pilih dibuat selebar kartu dan tombol ikon disusun dalam kisi agar tidak saling mendorong atau terpotong.','Panel Lewati Intro mengikuti footer folder episode; panel tetap terlihat setiap kali folder dibuka.'],fixes:['Menghilangkan ketergantungan panel intro pada atribut tersembunyi yang sebelumnya bisa tertinggal saat berpindah folder.']},
             {version:'20.4.54',label:'Sebelumnya',title:'Panel intro dan tombol File Manager dirapikan',changes:['Panel Lewati Intro dan tombol Simpan & Publikasikan dipastikan tampil saat folder episode dibuka.','Ukuran tombol Pilih, preview, thumbnail, download, dan hapus diseragamkan pada kartu media.'],fixes:['Mencegah panel intro tertinggal tersembunyi setelah berpindah folder.']},
@@ -5236,7 +5243,8 @@
             if (player?.paused || player?.ended) return;
             fullscreenControlsHideTimer = setTimeout(() => {
                 const settingsOpen = document.getElementById('playerSettingsPanel')?.classList.contains('show');
-                if (isPlayerFullscreen() && !player.paused && !player.ended && !settingsOpen) {
+                const episodePickerOpen = document.getElementById('playerChapterPicker')?.classList.contains('show');
+                if (isPlayerFullscreen() && !player.paused && !player.ended && !settingsOpen && !episodePickerOpen) {
                     fullscreenPlayerContainer.classList.add('player-controls-hidden');
                 }
             }, 2800);

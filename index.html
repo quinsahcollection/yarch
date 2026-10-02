@@ -158,6 +158,44 @@
         @media(max-width:760px){.blog-page-inner{padding:16px 15px 48px}.blog-topbar{min-height:58px;padding:8px 14px}.blog-top-note{display:none}.blog-brand-mark{width:34px;height:34px}.blog-brand-copy strong{font-size:12px}.blog-brand-copy span{font-size:9px}.blog-top-action{height:36px;padding:0 9px;font-size:9px}.blog-hero{grid-template-columns:1fr;gap:4px;min-height:unset;padding:24px 21px 8px;border-radius:23px}.blog-hero h1{font-size:39px}.blog-hero-copy>p{font-size:12px}.blog-hero-art{min-height:174px}.blog-art-card{width:125px;height:162px;border-width:4px;border-radius:17px;padding:12px}.blog-art-card:nth-child(2){width:110px;height:145px;margin:20px 0 0 95px}.blog-art-card strong{font-size:14px}.blog-toolbar{align-items:stretch;flex-direction:column;margin:22px 0 14px}.blog-search{width:100%}.blog-featured-grid{grid-template-columns:1fr;gap:11px}.blog-feature-card,.blog-feature-card:first-child{min-height:220px;padding:17px;border-radius:17px}.blog-feature-card:not(:first-child){min-height:180px}.blog-card-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}.blog-card-body{padding:11px}.blog-card-body strong{font-size:12px}.blog-card-excerpt{font-size:9px}.blog-card-foot{font-size:8px}.blog-article-toolbar{margin-top:0}.blog-article-header h1{font-size:31px}.blog-article-header .blog-article-excerpt{font-size:12px}.blog-article-cover{aspect-ratio:16/9;max-height:300px;margin:17px auto;border-radius:17px}.blog-article-layout{grid-template-columns:1fr;gap:13px}.blog-toc{position:static;padding:14px;order:-1}.blog-article-body{padding:19px 17px;border-radius:17px}.blog-section p{font-size:14px;line-height:1.8}}
         @media(max-width:390px){.blog-card-grid{grid-template-columns:1fr}.blog-card-cover{aspect-ratio:16/8}.blog-hero h1{font-size:34px}.blog-topbar{gap:8px}}
         @media(min-width:1100px){.blog-page-inner{padding-top:34px}.blog-feature-card{min-height:280px}.blog-feature-card:first-child{min-height:340px}}
+        /* Layar penuh untuk halaman informasi dan aksi akun */
+        .fullscreen-info-page{align-items:stretch!important;justify-content:stretch!important;padding:0!important;background:radial-gradient(ellipse at 8% 0%,rgba(119,91,255,.12),transparent 34%),#f7f7fc!important;backdrop-filter:none!important;-webkit-backdrop-filter:none!important;touch-action:auto!important}
+        .fullscreen-info-page .home-action-sheet{width:100%;max-width:none;height:100%;max-height:none;overflow:auto;padding:0 0 max(28px,env(safe-area-inset-bottom));border-radius:0;background:transparent;box-shadow:none;touch-action:pan-y}
+        .fullscreen-info-page .home-action-head{position:sticky;top:0;z-index:8;align-items:center;gap:14px;width:100%;max-width:1080px;min-height:76px;margin:0 auto;padding:12px 24px;padding-top:max(12px,env(safe-area-inset-top));border-bottom:1px solid rgba(226,226,241,.88);background:rgba(255,255,255,.92);backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px)}
+        .fullscreen-info-page .home-action-icon{width:42px;height:42px;flex:0 0 42px;border-radius:14px;font-size:16px}
+        .fullscreen-info-page .home-action-head h3{color:#25263c;font-size:17px;letter-spacing:-.025em}
+        .fullscreen-info-page .home-action-head p{font-size:10px}
+        .fullscreen-info-page .home-action-close{width:40px;height:40px;flex:0 0 40px;margin-left:auto;border:1px solid #e6e5f1;border-radius:13px;background:#f6f5fc;color:#6c67aa}
+        #appInfoModal .app-info-content{width:min(850px,calc(100% - 40px));margin:28px auto 64px;padding:clamp(22px,5vw,52px);border:1px solid #e9e7f3;border-radius:26px;background:#fff;box-shadow:0 16px 48px rgba(44,43,83,.07);color:#606477;font-size:15px;line-height:1.85}
+        #appInfoModal .app-info-content p+p{margin-top:16px}
+        #appInfoModal .app-info-content h4{margin:27px 0 7px;color:#2c2d45;font-size:18px;line-height:1.35}
+        #appInfoModal .app-info-content ul{margin:10px 0 0 22px}
+        #appInfoModal .app-info-content li+li{margin-top:9px}
+        #appInfoModal .app-info-date{margin-bottom:14px;padding:8px 12px;font-size:11px}
+        #requestContentModal .home-action-head{min-height:64px}
+        #requestContentModal .request-page-brand{display:flex;align-items:center;gap:10px;color:#5d57cd;font-size:11px;font-weight:850;letter-spacing:.09em}
+        #requestContentModal .request-page-brand i{width:36px;height:36px;display:grid;place-items:center;border-radius:12px;background:linear-gradient(135deg,#7162ef,#bd6be5);color:#fff;font-size:14px}
+        #requestContentModal .request-hero,#requestContentModal .home-action-label,#requestContentModal .request-type-switch,#requestContentModal .home-action-input,#requestContentModal .home-action-buttons,#requestContentModal .request-channel-note{display:block;width:min(760px,calc(100% - 40px));margin-left:auto;margin-right:auto}
+        #requestContentModal .request-hero{position:relative;overflow:hidden;margin-top:34px;margin-bottom:27px;padding:clamp(25px,5vw,48px);border:1px solid #e6e2fb;border-radius:27px;background:linear-gradient(115deg,#fff 0%,#f1efff 61%,#fff1f5 100%);box-shadow:0 14px 38px rgba(60,53,133,.07)}
+        #requestContentModal .request-hero h3{max-width:570px;color:#292940;font-size:clamp(26px,4.5vw,42px);line-height:1.13;letter-spacing:-.045em}
+        #requestContentModal .request-hero p{max-width:590px;margin-top:12px;color:#73758a;font-size:14px;line-height:1.75}
+        #requestContentModal .request-illustration{width:54px;height:54px;margin-bottom:20px;border-radius:17px;font-size:21px}
+        #requestContentModal .home-action-label{margin-top:20px;margin-bottom:8px;color:#34354d;font-size:13px}
+        #requestContentModal .request-type-switch{margin-bottom:16px}
+        #requestContentModal .request-type-option span{min-height:52px;font-size:13px}
+        #requestContentModal .home-action-input{height:auto;min-height:52px;margin-bottom:4px;padding:14px 16px;border-radius:14px;font-size:14px}
+        #requestContentModal textarea.home-action-input{min-height:118px}
+        #requestContentModal .home-action-buttons{display:grid;grid-template-columns:1fr 1fr;gap:11px;margin-top:22px}
+        #requestContentModal .home-action-button{min-height:52px;font-size:13px}
+        #requestContentModal .request-channel-note{margin-top:15px;font-size:11px;line-height:1.6}
+        #adminContactModal .contact-page-intro{width:min(850px,calc(100% - 40px));margin:35px auto 20px;padding:clamp(24px,5vw,44px);border:1px solid #e6e3f8;border-radius:26px;background:linear-gradient(115deg,#fff,#f1efff 68%,#fff2f5);box-shadow:0 14px 38px rgba(60,53,133,.06)}
+        #adminContactModal .contact-page-intro h2{margin:0;color:#282940;font-size:clamp(25px,4vw,38px);letter-spacing:-.04em}
+        #adminContactModal .contact-page-intro p{max-width:620px;margin:10px 0 0;color:#73758a;font-size:14px;line-height:1.75}
+        #adminContactModal .contact-choice{width:min(850px,calc(100% - 40px));min-height:82px;margin:11px auto 0;padding:17px 19px;border-color:#e6e6f0;border-radius:17px;background:#fff;box-shadow:0 8px 24px rgba(38,39,72,.045)}
+        #adminContactModal .contact-choice i{width:45px;height:45px;border-radius:14px;font-size:19px}
+        #adminContactModal .contact-choice strong{font-size:14px}
+        #adminContactModal .contact-choice span{font-size:12px}
+        @media(max-width:760px){.fullscreen-info-page .home-action-head{min-height:64px;padding:9px 15px;padding-top:max(9px,env(safe-area-inset-top))}.fullscreen-info-page .home-action-icon{width:38px;height:38px;flex-basis:38px;border-radius:12px}.fullscreen-info-page .home-action-head h3{font-size:15px}.fullscreen-info-page .home-action-head p{font-size:9px}#appInfoModal .app-info-content{width:calc(100% - 28px);margin:17px auto 36px;padding:22px 19px;border-radius:20px;font-size:14px}#appInfoModal .app-info-content h4{margin-top:23px;font-size:16px}#requestContentModal .request-hero{width:calc(100% - 28px);margin-top:20px;margin-bottom:20px;padding:25px 21px;border-radius:21px}#requestContentModal .request-hero h3{font-size:30px}#requestContentModal .request-hero p{font-size:12px}#requestContentModal .home-action-label,#requestContentModal .request-type-switch,#requestContentModal .home-action-input,#requestContentModal .home-action-buttons,#requestContentModal .request-channel-note{width:calc(100% - 32px)}#requestContentModal .home-action-buttons{grid-template-columns:1fr}#adminContactModal .contact-page-intro{width:calc(100% - 28px);margin:22px auto 16px;padding:24px 21px;border-radius:21px}#adminContactModal .contact-page-intro p{font-size:12px}#adminContactModal .contact-choice{width:calc(100% - 28px);min-height:76px;padding:14px}}
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 
         /* DETAIL PAGE */
@@ -1322,7 +1360,7 @@
                 <h1>Yarch terus berkembang</h1>
                 <p>Lihat fitur baru, peningkatan pengalaman, dan bug yang telah diperbaiki dari versi terbaru hingga versi sebelumnya.</p>
             </section>
-            <div class="changelog-current"><span><strong id="changelogCurrentVersion">V20.4.59</strong><br>Versi yang sedang digunakan</span><button type="button" onclick="checkAppConfiguration(true)"><i class="fa-solid fa-rotate"></i> Periksa update</button></div>
+            <div class="changelog-current"><span><strong id="changelogCurrentVersion">V20.4.60</strong><br>Versi yang sedang digunakan</span><button type="button" onclick="checkAppConfiguration(true)"><i class="fa-solid fa-rotate"></i> Periksa update</button></div>
             <main class="changelog-timeline" id="changelogTimeline" aria-live="polite"></main>
         </div>
 
@@ -1713,18 +1751,18 @@
             <button class="account-menu-item" type="button" onclick="openAppInfo('about')"><i class="fa-solid fa-circle-info"></i><span>Tentang Yarch</span><i class="fa-solid fa-chevron-right"></i></button>
             <button class="account-menu-item" type="button" onclick="closeAccountMenu();openAdminContact()"><i class="fa-solid fa-headset"></i><span>Hubungi Admin</span><i class="fa-solid fa-chevron-right"></i></button>
             <div class="account-menu-divider" style="margin-top:11px"></div>
-            <button class="account-menu-item updates-menu-item" type="button" onclick="closeAccountMenu();openChangelogPage()"><i class="fa-solid fa-clock-rotate-left"></i><span class="account-menu-item-copy"><strong>Updates</strong><small>V20.4.59 • Riwayat perbaikan</small></span><i class="fa-solid fa-chevron-right"></i></button>
+            <button class="account-menu-item updates-menu-item" type="button" onclick="closeAccountMenu();openChangelogPage()"><i class="fa-solid fa-clock-rotate-left"></i><span class="account-menu-item-copy"><strong>Updates</strong><small>V20.4.60 • Riwayat perbaikan</small></span><i class="fa-solid fa-chevron-right"></i></button>
             <button class="account-menu-item danger" id="accountMenuLogout" type="button" onclick="closeAccountMenu();doLogout()"><i class="fa-solid fa-right-from-bracket"></i><span>Keluar dari Akun</span><i class="fa-solid fa-chevron-right"></i></button>
         </aside>
     </div>
     <div class="profile-modal-backdrop" id="profileEditorModal" onclick="if(event.target===this)closeProfileEditor()"><section class="profile-modal-sheet" role="dialog" aria-modal="true" aria-labelledby="profileEditorTitle"><div class="profile-modal-head"><div class="profile-modal-icon"><i class="fa-solid fa-user-pen"></i></div><div class="profile-modal-title"><h3 id="profileEditorTitle">Lengkapi Profil</h3><p>Informasi tanggal lahir disimpan secara privat untuk verifikasi usia.</p></div><button class="profile-modal-close" onclick="closeProfileEditor()"><i class="fa-solid fa-xmark"></i></button></div><div class="profile-modal-form"><label for="profileDisplayName">Nama tampilan</label><input id="profileDisplayName" maxlength="35" placeholder="Nama tampilan"><label for="profileBioInput">Bio singkat</label><textarea id="profileBioInput" maxlength="160" placeholder="Ceritakan genre atau karakter favoritmu..."></textarea><div class="profile-modal-grid"><div><label for="profileBirthDate">Tanggal lahir</label><input id="profileBirthDate" type="date"></div><div><label for="profileGender">Jenis kelamin</label><select id="profileGender"><option value="">Tidak disebutkan</option><option value="Laki-laki">Laki-laki</option><option value="Perempuan">Perempuan</option><option value="Lainnya">Lainnya</option></select></div></div><label for="profileLocation">Kota / lokasi (opsional)</label><input id="profileLocation" maxlength="60" placeholder="Contoh: Jakarta"><button class="profile-modal-save" onclick="saveSocialProfile()"><i class="fa-solid fa-floppy-disk"></i> Simpan Profil</button></div></section></div>
     <div class="profile-modal-backdrop" id="shareProfileModal" onclick="if(event.target===this)closeShareProfile()"><section class="profile-modal-sheet" role="dialog" aria-modal="true"><div class="profile-modal-head"><div class="profile-modal-icon"><i class="fa-solid fa-share-nodes"></i></div><div class="profile-modal-title"><h3>Bagikan Profil</h3><p>Undang teman melihat profil, statistik, dan favorit yang kamu izinkan.</p></div><button class="profile-modal-close" onclick="closeShareProfile()"><i class="fa-solid fa-xmark"></i></button></div><div class="share-profile-preview"><img id="shareProfileAvatar" alt="Foto profil"><div><strong id="shareProfileName">Pembaca Yarch</strong><span id="shareProfileLevel">Profil pembaca</span></div></div><div class="share-url-row"><input id="shareProfileUrl" readonly><button onclick="shareProfileVia('copy')" aria-label="Salin tautan"><i class="fa-regular fa-copy"></i></button></div><div class="share-option-grid"><button class="share-option" onclick="shareProfileVia('native')"><i class="fa-solid fa-arrow-up-from-bracket"></i>Bagikan</button><button class="share-option" onclick="shareProfileVia('whatsapp')"><i class="fa-brands fa-whatsapp" style="color:#18a957"></i>WhatsApp</button><button class="share-option" onclick="shareProfileVia('telegram')"><i class="fa-brands fa-telegram" style="color:#2b9bd7"></i>Telegram</button><button class="share-option" onclick="shareProfileVia('copy')"><i class="fa-solid fa-link"></i>Salin</button></div></section></div>
     <div class="profile-modal-backdrop" id="ageGateModal"><section class="profile-modal-sheet age-gate-sheet" role="dialog" aria-modal="true" aria-labelledby="ageGateTitle"><div class="age-gate-shield"><i class="fa-solid fa-shield-halved"></i></div><h3 id="ageGateTitle">Verifikasi Usia</h3><p id="ageGateMessage">Konten ini ditujukan untuk pengguna yang telah memenuhi batas usia.</p><div class="profile-modal-form"><label for="ageGateBirthDate" style="text-align:left">Tanggal lahir</label><input id="ageGateBirthDate" type="date" oninput="updateAgeGateButton()" onchange="updateAgeGateButton()"><div class="age-gate-status" id="ageGateStatus" role="status" aria-live="polite"></div><label class="age-confirm-check"><input id="ageGateConfirm" type="checkbox" onchange="updateAgeGateButton()"><span>Saya menyatakan tanggal lahir yang dimasukkan benar dan memahami bahwa konten dapat memuat tema dewasa.</span></label></div><div class="age-gate-actions"><button class="age-cancel" onclick="resolveAgeGate(false)">Kembali</button><button class="age-continue" id="ageGateContinue" disabled onclick="resolveAgeGate(true)">Verifikasi & Masuk</button></div></section></div>
-    <div class="update-modal-backdrop" id="updateModal"><div class="update-sheet"><div class="update-icon"><i class="fa-solid fa-cloud-arrow-down"></i></div><h2>Versi baru tersedia</h2><p>Pembaruan aplikasi sudah siap. Proses ini akan membersihkan cache antarmuka lama tanpa menghapus akun, bookmark, atau riwayat Anda.</p><div class="update-version-line"><span id="updateCurrentVersion">V20.4.59</span><i class="fa-solid fa-arrow-right"></i><span id="updateLatestVersion">V20.4.59</span></div><div class="update-changelog" id="updateChangelog">Peningkatan stabilitas dan tampilan.</div><div class="update-actions"><button class="update-action update-later" onclick="dismissAppUpdate()">Nanti</button><button class="update-action update-now" onclick="applyAppUpdate()"><i class="fa-solid fa-bolt"></i> Perbarui Sekarang</button></div></div></div>
+    <div class="update-modal-backdrop" id="updateModal"><div class="update-sheet"><div class="update-icon"><i class="fa-solid fa-cloud-arrow-down"></i></div><h2>Versi baru tersedia</h2><p>Pembaruan aplikasi sudah siap. Proses ini akan membersihkan cache antarmuka lama tanpa menghapus akun, bookmark, atau riwayat Anda.</p><div class="update-version-line"><span id="updateCurrentVersion">V20.4.60</span><i class="fa-solid fa-arrow-right"></i><span id="updateLatestVersion">V20.4.60</span></div><div class="update-changelog" id="updateChangelog">Peningkatan stabilitas dan tampilan.</div><div class="update-actions"><button class="update-action update-later" onclick="dismissAppUpdate()">Nanti</button><button class="update-action update-now" onclick="applyAppUpdate()"><i class="fa-solid fa-bolt"></i> Perbarui Sekarang</button></div></div></div>
 
-    <div class="home-action-backdrop" id="requestContentModal" role="dialog" aria-modal="true" aria-labelledby="requestContentTitle" onclick="if(event.target===this)closeRequestModal()">
+    <div class="home-action-backdrop fullscreen-info-page" id="requestContentModal" role="dialog" aria-modal="true" aria-labelledby="requestContentTitle" onclick="if(event.target===this)closeRequestModal()">
         <div class="home-action-sheet">
-            <div class="home-action-head" style="margin-bottom:5px"><div style="flex:1"></div><button class="home-action-close" type="button" onclick="closeRequestModal()" aria-label="Tutup"><i class="fa-solid fa-xmark"></i></button></div>
+            <div class="home-action-head" style="margin-bottom:5px"><div class="request-page-brand"><i class="fa-solid fa-paper-plane"></i><span>YARCH • REQUEST KONTEN</span></div><button class="home-action-close" type="button" onclick="closeRequestModal()" aria-label="Tutup"><i class="fa-solid fa-xmark"></i></button></div>
             <div class="request-hero"><div class="request-illustration"><i class="fa-solid fa-paper-plane"></i></div><h3 id="requestContentTitle">Belum menemukan judul yang dicari?</h3><p>Kirim request kepada admin. Setiap masukan akan ditinjau sebelum ditambahkan ke koleksi Yarch.</p></div>
             <label class="home-action-label">Jenis konten</label>
             <div class="request-type-switch"><label class="request-type-option"><input type="radio" name="requestContentType" value="Komik / Manga" checked><span><i class="fa-solid fa-book-open"></i> Komik / Manga</span></label><label class="request-type-option"><input type="radio" name="requestContentType" value="Film / Anime"><span><i class="fa-solid fa-circle-play"></i> Film / Anime</span></label></div>
@@ -1737,16 +1775,17 @@
         </div>
     </div>
 
-    <div class="home-action-backdrop" id="adminContactModal" role="dialog" aria-modal="true" aria-labelledby="adminContactTitle" onclick="if(event.target===this)closeAdminContact()">
+    <div class="home-action-backdrop fullscreen-info-page" id="adminContactModal" role="dialog" aria-modal="true" aria-labelledby="adminContactTitle" onclick="if(event.target===this)closeAdminContact()">
         <div class="home-action-sheet">
             <div class="home-action-head"><div class="home-action-icon"><i class="fa-solid fa-headset"></i></div><div><h3 id="adminContactTitle">Hubungi Tim Yarch</h3><p>Pilih admin atau layanan pelanggan yang ingin dihubungi.</p></div><button class="home-action-close" type="button" onclick="closeAdminContact()" aria-label="Tutup"><i class="fa-solid fa-xmark"></i></button></div>
+            <section class="contact-page-intro"><h2>Kami siap membantu.</h2><p>Pilih jalur komunikasi yang paling nyaman untuk bantuan akun, masukan, laporan kendala, atau pertanyaan tentang Yarch.</p></section>
             <button class="contact-choice" type="button" onclick="openAdminChannel('whatsapp-admin')"><i class="fa-brands fa-whatsapp"></i><span><strong>Herman Kosasi (Admin)</strong><span>081294114812</span></span></button>
             <button class="contact-choice" type="button" onclick="openAdminChannel('whatsapp-support')"><i class="fa-brands fa-whatsapp"></i><span><strong>Willy Saputra — Layanan Pelanggan</strong><span>08987786789</span></span></button>
             <button class="contact-choice email" type="button" onclick="openAdminChannel('email')"><i class="fa-regular fa-envelope"></i><span><strong>Email</strong><span>hrmnkosasi@gmail.com</span></span></button>
         </div>
     </div>
 
-    <div class="home-action-backdrop" id="appInfoModal" role="dialog" aria-modal="true" aria-labelledby="appInfoTitle" onclick="if(event.target===this)closeAppInfo()">
+    <div class="home-action-backdrop fullscreen-info-page" id="appInfoModal" role="dialog" aria-modal="true" aria-labelledby="appInfoTitle" onclick="if(event.target===this)closeAppInfo()">
         <div class="home-action-sheet">
             <div class="home-action-head"><div class="home-action-icon" id="appInfoIcon"><i class="fa-solid fa-circle-info"></i></div><div style="min-width:0;flex:1"><h3 id="appInfoTitle">Informasi Yarch</h3><p id="appInfoSubtitle">Informasi aplikasi</p></div><button class="home-action-close" type="button" onclick="closeAppInfo()" aria-label="Tutup"><i class="fa-solid fa-xmark"></i></button></div>
             <div class="app-info-content" id="appInfoContent"></div>
@@ -1794,7 +1833,7 @@
         const primaryAuthReady = new Promise(resolve=>{primaryAuthReadyResolve=resolve;});
         let guestViewIdentityPromise = null;
         const VIEW_COUNT_COOLDOWN_MS = 6 * 60 * 60 * 1000;
-        const APP_VERSION = '20.4.59';
+        const APP_VERSION = '20.4.60';
         const ADMIN_UID = 'dWUWpKAWQRRxMOzjzaOA3zXWZLp2';
 
         // ================= PENYIMPANAN OFFLINE (INDEXEDDB) =================
@@ -1918,6 +1957,7 @@
         }
         window.accountMenuNavigate=function(page){closeAccountMenu();switchNav(page);}
         const APP_CHANGELOG = [
+            {version:'20.4.60',label:'Terbaru',title:'Halaman informasi layar penuh',changes:['Request Konten, Privacy & Policy, Tentang Yarch, dan Hubungi Admin kini tampil dalam halaman penuh.','Tampilan memakai bilah atas, konten lebih lapang, dan susunan yang menyesuaikan ponsel serta desktop.'],fixes:['Tombol kembali browser, Escape, dan tombol tutup menutup halaman informasi dengan benar.','Alur request melalui WhatsApp/email dan pilihan kontak admin tetap berfungsi.']},
             {version:'20.4.59',label:'Terbaru',title:'Blog Anime layar penuh',changes:['Halaman Blog kini menjadi ruang baca penuh layar dengan pencarian, kategori, dan artikel pilihan.','Setiap artikel memiliki daftar isi otomatis dan navigasi ke bagian yang dipilih.','Admin dapat membuat draft, mengatur cover dan kategori, menyusun bagian artikel, lalu mempublikasikannya.'],fixes:['Artikel publik hanya menampilkan tulisan berstatus terbit.']},
             {version:'20.4.58',label:'Terbaru',title:'Player lebih rapi dan pilih episode landscape',changes:['Tombol Lewati Intro dipindahkan agar memiliki jarak aman dari panel kontrol bawah.','Daftar episode dapat dibuka dari tombol pilihan episode saat layar landscape maupun fullscreen.','Pemilihan episode portrait tetap menggunakan judul episode di bagian atas.'],fixes:['Daftar episode kini berada di dalam area fullscreen player sehingga tetap tersedia saat video layar penuh.']},
             {version:'20.4.57',label:'Sebelumnya',title:'Hitung view pengunjung dan akun dengan jeda anti-spam',changes:['View judul komik, chapter, dan episode kini juga mencakup pengunjung yang belum login.','Akun dan pengunjung yang sama dapat menambah view kembali setelah 6 jam.','Jumlah view unik tetap satu per identitas; penghitung total bertambah untuk kunjungan berikutnya yang memenuhi jeda.'],fixes:['Aturan Firestore memvalidasi setiap penambahan view dan menjaga hitungan total agar tidak dapat dinaikkan tanpa transaksi viewer yang sah.']},
@@ -2009,6 +2049,11 @@
         };
         window.closeChangelogPage=function(){if(history.state?.comicApp&&history.state.view==='changelog')history.back();else window.switchNav('home');};
         let appInfoScrollY=0;
+        let fullContentOriginalTitle='';
+        const FULL_CONTENT_TYPES=['privacy','about','request','contact'];
+        function hideFullContentPage(){['appInfoModal','requestContentModal','adminContactModal'].forEach(id=>document.getElementById(id)?.classList.remove('show'));document.title=fullContentOriginalTitle||'Yarch - Komik & Anime';fullContentOriginalTitle='';unlockBlogBody();}
+        window.openContentPage=function(type,fromHistory=false){if(!FULL_CONTENT_TYPES.includes(type))return;closeAccountMenu();if(!fromHistory&&history.state?.view!=='contentPage')pushAppState('contentPage',{contentPageType:type});if(!fromHistory||!fullContentOriginalTitle)fullContentOriginalTitle=document.title;window.pauseAllFeedVideos?.(true);if(document.getElementById('feedCommentModal')?.classList.contains('show'))window.closeFeedComments();lockBlogBody();document.getElementById('appInfoModal').classList.remove('show');document.getElementById('requestContentModal').classList.remove('show');document.getElementById('adminContactModal').classList.remove('show');if(type==='privacy'||type==='about'){window.renderAppInfo(type);document.getElementById('appInfoModal').classList.add('show');document.title=`${type==='privacy'?'Privacy & Policy':'Tentang Yarch'} • Yarch`;}else if(type==='request'){document.getElementById('requestContentModal').classList.add('show');document.title='Request Konten • Yarch';setTimeout(()=>document.getElementById('requestContentName')?.focus(),140);}else{document.getElementById('adminContactModal').classList.add('show');document.title='Hubungi Yarch • Yarch';}};
+        function closeFullContentPage(type){if(history.state?.comicApp&&history.state.view==='contentPage'&&(!type||history.state.contentPageType===type)){history.back();return;}hideFullContentPage();}
         let blogArticlesCache=[];
         let blogActiveCategory='all';
         let blogSearchTerm='';
@@ -2063,17 +2108,16 @@
         window.closeBlogPage=function(){if(history.state?.comicApp&&history.state.view==='blogArticle'){history.back();return;}if(history.state?.comicApp&&history.state.view==='blog'){history.back();return;}hideBlogSurface();window.switchNav('home');};
         function hideBlogSurface(){const page=document.getElementById('blog-page');page.classList.remove('show');page.setAttribute('aria-hidden','true');document.title='Yarch - Komik & Anime';unlockBlogBody();}
         window.loadPublicBlogArticles=loadPublicBlogArticles;
-        window.closeAppInfo=function(){const modal=document.getElementById('appInfoModal');if(!modal?.classList.contains('show'))return;modal.classList.remove('show');document.body.style.position='';document.body.style.top='';document.body.style.left='';document.body.style.right='';document.body.style.width='';document.body.style.overflow='';window.scrollTo(0,appInfoScrollY);}
-        window.openAppInfo=function(type){
-            if(type==='blog'){closeAccountMenu();window.openBlogPage();return;}
-            closeAccountMenu();
+        window.closeAppInfo=function(){closeFullContentPage();}
+        window.openAppInfo=function(type){if(type==='blog'){closeAccountMenu();window.openBlogPage();return;}if(type==='privacy'||type==='about')window.openContentPage(type);}
+        window.renderAppInfo=function(type){
             const modal=document.getElementById('appInfoModal'),title=document.getElementById('appInfoTitle'),subtitle=document.getElementById('appInfoSubtitle'),content=document.getElementById('appInfoContent'),icon=document.getElementById('appInfoIcon');
             const info={
                 privacy:{title:'Privacy & Policy',subtitle:'Kebijakan privasi dan penggunaan data Yarch',icon:'fa-shield-halved',html:`<span class="app-info-date">Terakhir diperbarui: 21 September 2026</span><p>Kebijakan ini menjelaskan informasi yang diproses ketika Anda menggunakan Yarch serta pilihan yang tersedia untuk mengelola data tersebut.</p><h4>1. Informasi yang diproses</h4><ul><li>Informasi akun seperti alamat email, nama tampilan, dan identitas pengguna.</li><li>Foto profil, bio, preferensi privasi, koleksi, bookmark, komentar, rating, serta judul yang diikuti.</li><li>Riwayat dan progres membaca atau menonton agar aktivitas dapat dilanjutkan pada posisi terakhir.</li><li>Data teknis terbatas seperti waktu aktivitas, status login, pengaturan aplikasi, dan laporan kesalahan.</li></ul><h4>2. Tujuan penggunaan</h4><p>Data digunakan untuk autentikasi, sinkronisasi profil, penyimpanan koleksi dan progres, personalisasi rekomendasi, komentar, notifikasi pembaruan, keamanan akun, serta peningkatan performa aplikasi.</p><h4>3. Penyimpanan dan layanan pendukung</h4><p>Yarch dapat menggunakan Firebase untuk autentikasi dan basis data, Cloudflare R2/Workers untuk penyimpanan atau pengiriman media, serta hosting web untuk menjalankan aplikasi. Setiap penyedia dapat memproses data teknis sesuai kebijakan layanannya.</p><h4>4. Penyimpanan lokal</h4><p>Browser dapat menyimpan cache, pengaturan, riwayat, dan status sesi melalui localStorage, IndexedDB, atau teknologi sejenis. Data lokal dapat dihapus melalui pengaturan browser, tetapi tindakan tersebut dapat menghapus preferensi dan progres yang belum tersinkron.</p><h4>5. Berbagi data</h4><p>Yarch tidak menjual data pribadi pengguna. Informasi hanya dibagikan kepada penyedia layanan yang diperlukan untuk menjalankan aplikasi, ketika diwajibkan oleh hukum, atau atas persetujuan pengguna.</p><h4>6. Profil, komentar, dan visibilitas</h4><p>Nama dan foto profil dapat tampil pada komentar serta profil publik. Pengguna dapat mengatur visibilitas profil, statistik, dan favorit melalui halaman Profil.</p><h4>7. Keamanan dan masa penyimpanan</h4><p>Langkah keamanan yang wajar digunakan untuk melindungi data. Namun, tidak ada layanan internet yang dapat menjamin keamanan mutlak. Data disimpan selama akun atau fitur terkait masih digunakan, atau selama diperlukan untuk operasional, keamanan, dan penyelesaian sengketa.</p><h4>8. Hak dan pilihan pengguna</h4><p>Pengguna dapat memperbarui informasi profil dan pengaturan privasi. Permintaan akses, koreksi, atau penghapusan data dapat disampaikan melalui menu Hubungi Admin. Verifikasi akun mungkin diperlukan sebelum permintaan diproses.</p><h4>9. Pengguna di bawah umur</h4><p>Pengguna yang belum memenuhi usia yang dipersyaratkan di wilayahnya harus menggunakan aplikasi dengan izin dan pengawasan orang tua atau wali.</p><h4>10. Perubahan kebijakan</h4><p>Kebijakan dapat diperbarui saat fitur atau layanan berubah. Tanggal pembaruan akan dicantumkan pada bagian atas halaman ini.</p><h4>11. Kontak</h4><p>Pertanyaan mengenai privasi dapat dikirim ke <strong>hrmnkosasi@gmail.com</strong> atau melalui menu Hubungi Admin.</p>`},
                 about:{title:'Tentang Yarch',subtitle:'Aplikasi koleksi komik, film, dan anime',icon:'fa-circle-info',html:'<p>Yarch dibuat untuk membantu pengguna menemukan, menyimpan, membaca, dan menonton koleksi favorit dalam satu aplikasi.</p><h4>Tim Yarch</h4><p><strong>Herman Kosasi</strong><br>Founder, pembuat aplikasi, dan administrator.</p><p><strong>Willy Saputra</strong><br>Tim Yarch dan layanan pelanggan (Support).</p><h4>Hubungi kami</h4><p>Masukan, laporan masalah, bantuan akun, dan permintaan konten dapat dikirim melalui menu Hubungi Admin.</p>'}
             }[type]||null;
             if(!info||!modal)return;
-            title.textContent=info.title;subtitle.textContent=info.subtitle;content.innerHTML=info.html;icon.innerHTML=`<i class="fa-solid ${info.icon}"></i>`;appInfoScrollY=window.scrollY||document.documentElement.scrollTop||0;document.body.style.position='fixed';document.body.style.top=`-${appInfoScrollY}px`;document.body.style.left='0';document.body.style.right='0';document.body.style.width='100%';document.body.style.overflow='hidden';modal.classList.add('show');
+            title.textContent=info.title;subtitle.textContent=info.subtitle;content.innerHTML=info.html;icon.innerHTML=`<i class="fa-solid ${info.icon}"></i>`;
         }
         function gameLevel(points=0){const level=Math.floor(points/100)+1;const names=['Pemula','Penjelajah','Pembaca Aktif','Kolektor','Ahli Cerita','Legenda'];return {level,name:names[Math.min(names.length-1,Math.floor((level-1)/3))],progress:points%100};}
         function ensureWeekly(){const key=weekKey();if(!window.gameData.weekly||window.gameData.weekly.key!==key)window.gameData.weekly={key,chapters:0,watchMinutes:0,comments:0};}
@@ -2212,6 +2256,7 @@
                 return;
             }
             if(!state?.comicApp) return;
+            if(state.view!=='contentPage'&&['appInfoModal','requestContentModal','adminContactModal'].some(id=>document.getElementById(id)?.classList.contains('show')))hideFullContentPage();
             if(document.getElementById('blog-page')?.classList.contains('show')&&!['blog','blogArticle'].includes(state.view))hideBlogSurface();
             window.handlingPopState = true;
             try {
@@ -2228,6 +2273,7 @@
                 if(state.view !== 'reader') stopReaderProgressTracking();
                 if(state.view !== 'detail') document.getElementById('detailTrailer').src = '';
                 if(['home','discovery','shorts','updates','bookmark','profile'].includes(state.view)) window.switchNav(state.view, null, true);
+                else if(state.view === 'contentPage') window.openContentPage(state.contentPageType,true);
                 else if(state.view === 'history') await window.openHistoryPage(true);
                 else if(state.view === 'changelog') window.openChangelogPage(true);
                 else if(state.view === 'blog') window.openBlogPage(true);
@@ -2354,7 +2400,7 @@
         if('serviceWorker' in navigator && location.protocol !== 'file:'){
             let reloadingForWorker=false;
             navigator.serviceWorker.addEventListener('controllerchange',()=>{if(reloadingForWorker)return;reloadingForWorker=true;location.reload();});
-            navigator.serviceWorker.register('./sw-v20.1.js?v=20.4.59',{updateViaCache:'none'}).then(reg=>{reg.update();document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible')reg.update();});window.addEventListener('pageshow',()=>reg.update());}).catch(()=>{});
+            navigator.serviceWorker.register('./sw-v20.1.js?v=20.4.60',{updateViaCache:'none'}).then(reg=>{reg.update();document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible')reg.update();});window.addEventListener('pageshow',()=>reg.update());}).catch(()=>{});
         }
         document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible'){window.checkAppConfiguration(false);recordDailyAnalytics({});}});
         async function applyRemoteDisplayConfig(){try{const snap=await getDoc(doc(db,'settings','appConfig'));if(!snap.exists())return;const c=snap.data();if(c.appName)document.title=c.appName;if(/^#[0-9a-f]{6}$/i.test(c.themeColor||''))document.documentElement.style.setProperty('--primary-blue',c.themeColor);const recommendation=document.getElementById('recommendationSection');if(recommendation)recommendation.style.display=c.enableRecommendations===false?'none':'block';document.body.classList.toggle('gamification-off',c.enableGamification===false);if(c.announcement&&localStorage.getItem('seenAnnouncementV20.1')!==c.announcement){localStorage.setItem('seenAnnouncementV20.1',c.announcement);setTimeout(()=>window.showToast(c.announcement),1200);}}catch(e){}}
@@ -3854,13 +3900,10 @@
             link.href = url; link.target = '_blank'; link.rel = 'noopener noreferrer';
             document.body.appendChild(link); link.click(); link.remove();
         }
-        window.openRequestModal = function() {
-            document.getElementById('requestContentModal')?.classList.add('show');
-            setTimeout(() => document.getElementById('requestContentName')?.focus(), 120);
-        }
-        window.closeRequestModal = function() { document.getElementById('requestContentModal')?.classList.remove('show'); }
-        window.openAdminContact = function() { document.getElementById('adminContactModal')?.classList.add('show'); }
-        window.closeAdminContact = function() { document.getElementById('adminContactModal')?.classList.remove('show'); }
+        window.openRequestModal = function() { window.openContentPage('request'); }
+        window.closeRequestModal = function() { closeFullContentPage('request'); }
+        window.openAdminContact = function() { window.openContentPage('contact'); }
+        window.closeAdminContact = function() { closeFullContentPage('contact'); }
         window.sendContentRequest = function(channel) {
             const type = document.querySelector('input[name="requestContentType"]:checked')?.value || 'Konten';
             const title = document.getElementById('requestContentName')?.value.trim() || '';
@@ -5462,6 +5505,8 @@
 
         document.addEventListener('keydown',event=>{
             if(event.key==='Escape'&&document.getElementById('blog-page')?.classList.contains('show')){if(history.state?.view==='blogArticle')closeBlogArticle();else closeBlogPage();return;}
+            if(event.key==='Escape'&&document.getElementById('requestContentModal')?.classList.contains('show')){closeRequestModal();return;}
+            if(event.key==='Escape'&&document.getElementById('adminContactModal')?.classList.contains('show')){closeAdminContact();return;}
             if(event.key==='Escape'&&document.getElementById('accountMenu')?.classList.contains('show')){closeAccountMenu();return;}
             if(event.key==='Escape'&&document.getElementById('appInfoModal')?.classList.contains('show')){closeAppInfo();return;}
             const readerVisible=document.getElementById('reader-page')?.style.display==='block';
